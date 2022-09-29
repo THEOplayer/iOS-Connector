@@ -1,0 +1,394 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		74867A7C28EF22FF00FFA08F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A7B28EF22FF00FFA08F /* AppDelegate.swift */; };
+		74867A7E28EF22FF00FFA08F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A7D28EF22FF00FFA08F /* SceneDelegate.swift */; };
+		74867A8028EF22FF00FFA08F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A7F28EF22FF00FFA08F /* ViewController.swift */; };
+		74867A8328EF22FF00FFA08F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74867A8128EF22FF00FFA08F /* Main.storyboard */; };
+		74867A8528EF230000FFA08F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74867A8428EF230000FFA08F /* Assets.xcassets */; };
+		74867A8828EF230000FFA08F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74867A8628EF230000FFA08F /* LaunchScreen.storyboard */; };
+		74867A9128EF266B00FFA08F /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A8F28EF266B00FFA08F /* PlayerView.swift */; };
+		74867A9228EF266B00FFA08F /* ConvivaConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A9028EF266B00FFA08F /* ConvivaConfig.swift */; };
+		74867A9828EF274300FFA08F /* THEOplayerConvivaConnector in Frameworks */ = {isa = PBXBuildFile; productRef = 74867A9728EF274300FFA08F /* THEOplayerConvivaConnector */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		74867A7828EF22FF00FFA08F /* ConvivaReporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConvivaReporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		74867A7B28EF22FF00FFA08F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		74867A7D28EF22FF00FFA08F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		74867A7F28EF22FF00FFA08F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		74867A8228EF22FF00FFA08F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		74867A8428EF230000FFA08F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		74867A8728EF230000FFA08F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		74867A8928EF230000FFA08F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		74867A8F28EF266B00FFA08F /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		74867A9028EF266B00FFA08F /* ConvivaConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvivaConfig.swift; sourceTree = "<group>"; };
+		74867A9328EF267E00FFA08F /* THEOplayerConvivaConnector */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = THEOplayerConvivaConnector; path = ../..; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		74867A7528EF22FF00FFA08F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				74867A9828EF274300FFA08F /* THEOplayerConvivaConnector in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		74867A6F28EF22FF00FFA08F = {
+			isa = PBXGroup;
+			children = (
+				74867A9328EF267E00FFA08F /* THEOplayerConvivaConnector */,
+				74867A7A28EF22FF00FFA08F /* ConvivaReporter */,
+				74867A7928EF22FF00FFA08F /* Products */,
+				74867A9428EF26FE00FFA08F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		74867A7928EF22FF00FFA08F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				74867A7828EF22FF00FFA08F /* ConvivaReporter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		74867A7A28EF22FF00FFA08F /* ConvivaReporter */ = {
+			isa = PBXGroup;
+			children = (
+				74867A7B28EF22FF00FFA08F /* AppDelegate.swift */,
+				74867A7D28EF22FF00FFA08F /* SceneDelegate.swift */,
+				74867A7F28EF22FF00FFA08F /* ViewController.swift */,
+				74867A9028EF266B00FFA08F /* ConvivaConfig.swift */,
+				74867A8F28EF266B00FFA08F /* PlayerView.swift */,
+				74867A8128EF22FF00FFA08F /* Main.storyboard */,
+				74867A8428EF230000FFA08F /* Assets.xcassets */,
+				74867A8628EF230000FFA08F /* LaunchScreen.storyboard */,
+				74867A8928EF230000FFA08F /* Info.plist */,
+			);
+			name = ConvivaReporter;
+			path = ../ConvivaReporter;
+			sourceTree = "<group>";
+		};
+		74867A9428EF26FE00FFA08F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		74867A7728EF22FF00FFA08F /* ConvivaReporter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 74867A8C28EF230000FFA08F /* Build configuration list for PBXNativeTarget "ConvivaReporter" */;
+			buildPhases = (
+				74867A7428EF22FF00FFA08F /* Sources */,
+				74867A7528EF22FF00FFA08F /* Frameworks */,
+				74867A7628EF22FF00FFA08F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ConvivaReporter;
+			packageProductDependencies = (
+				74867A9728EF274300FFA08F /* THEOplayerConvivaConnector */,
+			);
+			productName = ConvivaReporter;
+			productReference = 74867A7828EF22FF00FFA08F /* ConvivaReporter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		74867A7028EF22FF00FFA08F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					74867A7728EF22FF00FFA08F = {
+						CreatedOnToolsVersion = 14.0;
+					};
+				};
+			};
+			buildConfigurationList = 74867A7328EF22FF00FFA08F /* Build configuration list for PBXProject "ConvivaReporter" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 74867A6F28EF22FF00FFA08F;
+			productRefGroup = 74867A7928EF22FF00FFA08F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				74867A7728EF22FF00FFA08F /* ConvivaReporter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		74867A7628EF22FF00FFA08F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				74867A8828EF230000FFA08F /* LaunchScreen.storyboard in Resources */,
+				74867A8528EF230000FFA08F /* Assets.xcassets in Resources */,
+				74867A8328EF22FF00FFA08F /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		74867A7428EF22FF00FFA08F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				74867A8028EF22FF00FFA08F /* ViewController.swift in Sources */,
+				74867A9228EF266B00FFA08F /* ConvivaConfig.swift in Sources */,
+				74867A7C28EF22FF00FFA08F /* AppDelegate.swift in Sources */,
+				74867A7E28EF22FF00FFA08F /* SceneDelegate.swift in Sources */,
+				74867A9128EF266B00FFA08F /* PlayerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		74867A8128EF22FF00FFA08F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				74867A8228EF22FF00FFA08F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		74867A8628EF230000FFA08F /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				74867A8728EF230000FFA08F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		74867A8A28EF230000FFA08F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		74867A8B28EF230000FFA08F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		74867A8D28EF230000FFA08F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7TD9A665TC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../ConvivaReporter/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theotechnologies.samples.ConvivaReporter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		74867A8E28EF230000FFA08F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7TD9A665TC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../ConvivaReporter/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theotechnologies.samples.ConvivaReporter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		74867A7328EF22FF00FFA08F /* Build configuration list for PBXProject "ConvivaReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				74867A8A28EF230000FFA08F /* Debug */,
+				74867A8B28EF230000FFA08F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		74867A8C28EF230000FFA08F /* Build configuration list for PBXNativeTarget "ConvivaReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				74867A8D28EF230000FFA08F /* Debug */,
+				74867A8E28EF230000FFA08F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		74867A9728EF274300FFA08F /* THEOplayerConvivaConnector */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = THEOplayerConvivaConnector;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 74867A7028EF22FF00FFA08F /* Project object */;
+}

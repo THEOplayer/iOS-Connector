@@ -1,0 +1,79 @@
+import THEOplayerSDK
+
+extension THEOplayer {
+    var verizonMedia: VerizonMedia { .init() }
+}
+
+struct VerizonMedia {
+    var ads: VerizonMediaAds { .init() }
+}
+
+struct VerizonMediaAds {
+    var adBreaks = VerizonMediaAdBreakArray()
+}
+
+struct VerizonMediaAdBreakArray: EventDispatcherProtocol {
+    func addEventListener<E>(type: THEOplayerSDK.EventType<E>, listener: @escaping (E) -> ()) -> THEOplayerSDK.EventListener where E : THEOplayerSDK.EventProtocol {
+        MockedEventListener()
+    }
+    
+    func removeEventListener<E>(type: THEOplayerSDK.EventType<E>, listener: THEOplayerSDK.EventListener) where E : THEOplayerSDK.EventProtocol {}
+}
+
+class MockedEventListener: EventListener {}
+
+typealias VerizonMediaAddAdBreakEvent     = VerizonMediaAdBreakBeginEvent
+typealias VerizonMediaRemoveAdBreakEvent  = VerizonMediaAdBreakBeginEvent
+typealias VerizonMediaAdBreakEndEvent     = VerizonMediaAdBreakBeginEvent
+typealias VerizonMediaAdBreakSkipEvent    = VerizonMediaAdBreakBeginEvent
+class VerizonMediaAdBreakBeginEvent: EventProtocol {
+    var adBreak: VerizonMediaAdBreak?
+    
+    var type: String { fatalError() }
+    var date: Date { fatalError() }
+}
+
+typealias VerizonMediaAdEndEvent = VerizonMediaAdBeginEvent
+class VerizonMediaAdBeginEvent: EventProtocol {
+    var ad: VerizonMediaAd?
+    
+    var type: String { fatalError() }
+    var date: Date { fatalError() }
+}
+
+typealias VerizonMediaAdArray = [VerizonMediaAd]
+
+fileprivate func mock<E: EventProtocol>(eventType: E.Type) -> EventType<E> {
+    unsafeBitCast(AdsEventTypes.AD_BEGIN, to: EventType<E>.self)
+}
+
+enum VerizonMediaAdBreakArrayEventTypes {
+    static let ADD_AD_BREAK = mock(eventType: VerizonMediaAddAdBreakEvent.self)
+    static let REMOVE_AD_BREAK = mock(eventType: VerizonMediaRemoveAdBreakEvent.self)
+}
+
+enum VerizonMediaAdBreakEventTypes {
+    static let AD_BREAK_BEGIN = mock(eventType: VerizonMediaAdBreakBeginEvent.self)
+    static let AD_BREAK_SKIP = mock(eventType: VerizonMediaAdBreakSkipEvent.self)
+    static let AD_BREAK_END = mock(eventType: VerizonMediaAdBreakSkipEvent.self)
+}
+
+enum VerizonMediaAdEventTypes {
+    static let AD_BEGIN = mock(eventType: VerizonMediaAdBeginEvent.self)
+    static let AD_END   = mock(eventType:   VerizonMediaAdEndEvent.self)
+}
+
+protocol VerizonMediaAd: EventDispatcherProtocol {
+    var creative: String { get }
+    var duration: Double { get }
+    var width:  Double { get }
+    var height: Double { get }
+}
+
+protocol VerizonMediaAdBreak: EventDispatcherProtocol {
+    var startTime: Double { get }
+    var duration: Double? {get}
+    func isEqual(_ object: Any?) -> Bool
+    var hash: Int { get }
+    var ads: VerizonMediaAdArray { get }
+}
