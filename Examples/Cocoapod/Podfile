@@ -1,0 +1,37 @@
+platform :ios, '12.0'
+
+target 'ConvivaReporter' do
+  # Use the ConvivaConnector that is locally defined in the parent directory
+  pod 'THEOplayerConvivaConnector', :path => '../../'
+
+  # When you want to use a custom THEOplayerSDK build:
+  #  - place your build at './TheoPod/Frameworks/THEOplayerSDK.xcframework'
+  #  - uncomment the following line
+  # pod 'THEOplayerSDK-basic', :path => 'TheoPod'
+end
+
+post_install { |installer|
+  theoFeatures = []
+  
+  # Extract features from THEO SDK
+  if theoPlayerTarget = installer.pod_targets.find { |target| target.name.start_with?("THEOplayerSDK") }
+    theoPlayerXcFramework = theoPlayerTarget.xcframeworks.values[0][0]
+    if ios_arm64_slice = theoPlayerXcFramework.slices.find{ |slice| slice.identifier == "ios-arm64" }
+      info_plist_path = ios_arm64_slice.path + "info.plist"
+      cflist = CFPropertyList::List.new(:file => info_plist_path)
+      info_plist = CFPropertyList.native_types(cflist.value)
+      theoFeatures = info_plist["THEOplayer build information"]["Features"].split(',')
+    end
+  end
+  
+  # Expose features to Conviva Connector
+  if theoFeatures.include?("verizonmedia")
+    if convivaConnectorTarget = installer.pods_project.targets.find { |target| target.name == "THEOplayerConvivaConnector" }
+      puts "Enabling verizon media connector in conviva connector"
+      convivaConnectorTarget.build_configurations.each do |config|
+        config.build_settings["SWIFT_ACTIVE_COMPILATION_CONDITIONS"] += " VERIZONMEDIA"
+      end
+    end
+  end
+  
+}

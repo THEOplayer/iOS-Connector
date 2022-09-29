@@ -1,0 +1,27 @@
+PODS:
+  - ConvivaSDK (4.0.31)
+  - THEOplayerConvivaConnector (0.1.0):
+    - ConvivaSDK (= 4.0.31)
+    - THEOplayerSDK-basic (~> 4.0)
+  - THEOplayerSDK-basic (4.1.0)
+
+DEPENDENCIES:
+  - THEOplayerConvivaConnector (from `../../`)
+
+SPEC REPOS:
+  trunk:
+    - ConvivaSDK
+    - THEOplayerSDK-basic
+
+EXTERNAL SOURCES:
+  THEOplayerConvivaConnector:
+    :path: "../../"
+
+SPEC CHECKSUMS:
+  ConvivaSDK: aad03829423c39b33cd97eeac19f0259c365b53b
+  THEOplayerConvivaConnector: a4717271d7afb675f0af82d015b550ecadce91a5
+  THEOplayerSDK-basic: c098600baf70f4d28c9cb6493856b47ba0088c12
+
+PODFILE CHECKSUM: 372c796d613c9ffef1e824d535c286966d957659
+
+COCOAPODS: 1.11.3
