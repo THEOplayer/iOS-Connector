@@ -16,11 +16,11 @@ struct HashableVerizonMediaAdBreak: Swift.Hashable {
     let adBreak: VerizonMediaAdBreak
     
     static func == (lhs: HashableVerizonMediaAdBreak, rhs: HashableVerizonMediaAdBreak) -> Bool {
-        lhs.adBreak.isEqual(rhs.adBreak)
+        lhs.adBreak.identifier == rhs.adBreak.identifier
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(adBreak.hash)
+        hasher.combine(adBreak.identifier)
     }
 }
 #endif
