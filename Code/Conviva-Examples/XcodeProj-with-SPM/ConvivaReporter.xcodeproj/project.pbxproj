@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7467ACDE28F6EA8B00F80FDA /* THEOplayerConnectorConviva in Frameworks */ = {isa = PBXBuildFile; productRef = 7467ACDD28F6EA8B00F80FDA /* THEOplayerConnectorConviva */; };
 		74867A7C28EF22FF00FFA08F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A7B28EF22FF00FFA08F /* AppDelegate.swift */; };
 		74867A7E28EF22FF00FFA08F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A7D28EF22FF00FFA08F /* SceneDelegate.swift */; };
 		74867A8028EF22FF00FFA08F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A7F28EF22FF00FFA08F /* ViewController.swift */; };
@@ -15,7 +16,6 @@
 		74867A8828EF230000FFA08F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74867A8628EF230000FFA08F /* LaunchScreen.storyboard */; };
 		74867A9128EF266B00FFA08F /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A8F28EF266B00FFA08F /* PlayerView.swift */; };
 		74867A9228EF266B00FFA08F /* ConvivaConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A9028EF266B00FFA08F /* ConvivaConfig.swift */; };
-		74867A9828EF274300FFA08F /* THEOplayerConvivaConnector in Frameworks */ = {isa = PBXBuildFile; productRef = 74867A9728EF274300FFA08F /* THEOplayerConvivaConnector */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +29,7 @@
 		74867A8928EF230000FFA08F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		74867A8F28EF266B00FFA08F /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		74867A9028EF266B00FFA08F /* ConvivaConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvivaConfig.swift; sourceTree = "<group>"; };
-		74867A9328EF267E00FFA08F /* THEOplayerConvivaConnector */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = THEOplayerConvivaConnector; path = ../..; sourceTree = "<group>"; };
+		74F7409628F6EE230079BACA /* ios-connectors */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-connectors"; path = ../../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74867A9828EF274300FFA08F /* THEOplayerConvivaConnector in Frameworks */,
+				7467ACDE28F6EA8B00F80FDA /* THEOplayerConnectorConviva in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,7 +47,7 @@
 		74867A6F28EF22FF00FFA08F = {
 			isa = PBXGroup;
 			children = (
-				74867A9328EF267E00FFA08F /* THEOplayerConvivaConnector */,
+				74F7409628F6EE230079BACA /* ios-connectors */,
 				74867A7A28EF22FF00FFA08F /* ConvivaReporter */,
 				74867A7928EF22FF00FFA08F /* Products */,
 				74867A9428EF26FE00FFA08F /* Frameworks */,
@@ -76,7 +76,7 @@
 				74867A8928EF230000FFA08F /* Info.plist */,
 			);
 			name = ConvivaReporter;
-			path = ../ConvivaReporter;
+			path = ../SharedCode;
 			sourceTree = "<group>";
 		};
 		74867A9428EF26FE00FFA08F /* Frameworks */ = {
@@ -103,7 +103,7 @@
 			);
 			name = ConvivaReporter;
 			packageProductDependencies = (
-				74867A9728EF274300FFA08F /* THEOplayerConvivaConnector */,
+				7467ACDD28F6EA8B00F80FDA /* THEOplayerConnectorConviva */,
 			);
 			productName = ConvivaReporter;
 			productReference = 74867A7828EF22FF00FFA08F /* ConvivaReporter.app */;
@@ -133,6 +133,9 @@
 				Base,
 			);
 			mainGroup = 74867A6F28EF22FF00FFA08F;
+			packageReferences = (
+				7467ACDC28F6EA8B00F80FDA /* XCRemoteSwiftPackageReference "ios-connectors" */,
+			);
 			productRefGroup = 74867A7928EF22FF00FFA08F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -313,7 +316,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7TD9A665TC;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ../ConvivaReporter/Info.plist;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -341,7 +344,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7TD9A665TC;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ../ConvivaReporter/Info.plist;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -383,10 +386,22 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		7467ACDC28F6EA8B00F80FDA /* XCRemoteSwiftPackageReference "ios-connectors" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/THEOplayer/ios-connectors";
+			requirement = {
+				branch = develop;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		74867A9728EF274300FFA08F /* THEOplayerConvivaConnector */ = {
+		7467ACDD28F6EA8B00F80FDA /* THEOplayerConnectorConviva */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = THEOplayerConvivaConnector;
+			package = 7467ACDC28F6EA8B00F80FDA /* XCRemoteSwiftPackageReference "ios-connectors" */;
+			productName = THEOplayerConnectorConviva;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
