@@ -87,7 +87,7 @@
 				748F02DF28EEEB44005ADBC5 /* Info.plist */,
 			);
 			name = ConvivaReporter;
-			path = ../ConvivaReporter;
+			path = ../SharedCode;
 			sourceTree = "<group>";
 		};
 		CA85E88AD870E0649F2847E1 /* Frameworks */ = {
@@ -367,7 +367,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7TD9A665TC;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ../ConvivaReporter/Info.plist;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -396,7 +396,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7TD9A665TC;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ../ConvivaReporter/Info.plist;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

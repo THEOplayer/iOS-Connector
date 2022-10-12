@@ -8,7 +8,7 @@
 
 import UIKit
 import THEOplayerSDK
-import THEOplayerConvivaConnector
+import THEOplayerConnectorConviva
 
 class ViewController: UIViewController {
     let conviva = ConvivaConnector(

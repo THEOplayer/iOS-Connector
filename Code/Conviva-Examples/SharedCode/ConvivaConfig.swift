@@ -5,7 +5,7 @@
 //  Created by Damiaan Dufaux on 06/10/2022.
 //
 
-import THEOplayerConvivaConnector
+import THEOplayerConnectorConviva
 
 let convivaConfig = ConvivaConfiguration(
     customerKey: "put your customer key here",
