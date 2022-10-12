@@ -5,10 +5,9 @@
 //  Created by Damiaan Dufaux on 22/09/2022.
 //
 
-#if VERIZONMEDIA
-
 import THEOplayerSDK
 import ConvivaSDK
+import THEOplayerConnectorConviva
 
 class VerizonAdEventConvivaReporter: VerizonAdEventProcessor, ConvivaAdPlaybackEventsReporter {
     let videoAnalytics: CISVideoAnalytics
@@ -63,5 +62,3 @@ class VerizonAdEventConvivaReporter: VerizonAdEventProcessor, ConvivaAdPlaybackE
         adAnalytics.reportAdEnded()
     }
 }
-
-#endif

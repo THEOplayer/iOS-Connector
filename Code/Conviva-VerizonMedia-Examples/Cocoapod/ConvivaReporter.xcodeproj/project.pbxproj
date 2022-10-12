@@ -1,0 +1,460 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4D9899B1282BA8EF09C27A07 /* libPods-ConvivaReporter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA779A198C226166174CB504 /* libPods-ConvivaReporter.a */; };
+		74867A6C28EF071300FFA08F /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A6B28EF071300FFA08F /* PlayerView.swift */; };
+		74867A6E28EF0F6000FFA08F /* ConvivaConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74867A6D28EF0F6000FFA08F /* ConvivaConfig.swift */; };
+		748F02D228EEEB43005ADBC5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748F02D128EEEB43005ADBC5 /* AppDelegate.swift */; };
+		748F02D428EEEB43005ADBC5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748F02D328EEEB43005ADBC5 /* SceneDelegate.swift */; };
+		748F02D628EEEB43005ADBC5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748F02D528EEEB43005ADBC5 /* ViewController.swift */; };
+		748F02D928EEEB43005ADBC5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 748F02D728EEEB43005ADBC5 /* Main.storyboard */; };
+		748F02DB28EEEB44005ADBC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 748F02DA28EEEB44005ADBC5 /* Assets.xcassets */; };
+		748F02DE28EEEB44005ADBC5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 748F02DC28EEEB44005ADBC5 /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0D220F2CA2B9F84B9AC45FC7 /* Pods-ConvivaReporter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConvivaReporter.debug.xcconfig"; path = "Target Support Files/Pods-ConvivaReporter/Pods-ConvivaReporter.debug.xcconfig"; sourceTree = "<group>"; };
+		74867A6B28EF071300FFA08F /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		74867A6D28EF0F6000FFA08F /* ConvivaConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvivaConfig.swift; sourceTree = "<group>"; };
+		748F02CE28EEEB43005ADBC5 /* ConvivaReporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConvivaReporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		748F02D128EEEB43005ADBC5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		748F02D328EEEB43005ADBC5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		748F02D528EEEB43005ADBC5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		748F02D828EEEB43005ADBC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		748F02DA28EEEB44005ADBC5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		748F02DD28EEEB44005ADBC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		748F02DF28EEEB44005ADBC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		87934F19A275DF821F7EE484 /* Pods-ConvivaReporter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConvivaReporter.release.xcconfig"; path = "Target Support Files/Pods-ConvivaReporter/Pods-ConvivaReporter.release.xcconfig"; sourceTree = "<group>"; };
+		DA779A198C226166174CB504 /* libPods-ConvivaReporter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ConvivaReporter.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		748F02CB28EEEB43005ADBC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D9899B1282BA8EF09C27A07 /* libPods-ConvivaReporter.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5A0B67FE73A07A618A59250F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0D220F2CA2B9F84B9AC45FC7 /* Pods-ConvivaReporter.debug.xcconfig */,
+				87934F19A275DF821F7EE484 /* Pods-ConvivaReporter.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		748F02C528EEEB43005ADBC5 = {
+			isa = PBXGroup;
+			children = (
+				748F02D028EEEB43005ADBC5 /* ConvivaReporter */,
+				748F02CF28EEEB43005ADBC5 /* Products */,
+				5A0B67FE73A07A618A59250F /* Pods */,
+				CA85E88AD870E0649F2847E1 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		748F02CF28EEEB43005ADBC5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				748F02CE28EEEB43005ADBC5 /* ConvivaReporter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		748F02D028EEEB43005ADBC5 /* ConvivaReporter */ = {
+			isa = PBXGroup;
+			children = (
+				748F02D528EEEB43005ADBC5 /* ViewController.swift */,
+				74867A6D28EF0F6000FFA08F /* ConvivaConfig.swift */,
+				74867A6B28EF071300FFA08F /* PlayerView.swift */,
+				748F02D328EEEB43005ADBC5 /* SceneDelegate.swift */,
+				748F02D128EEEB43005ADBC5 /* AppDelegate.swift */,
+				748F02D728EEEB43005ADBC5 /* Main.storyboard */,
+				748F02DA28EEEB44005ADBC5 /* Assets.xcassets */,
+				748F02DC28EEEB44005ADBC5 /* LaunchScreen.storyboard */,
+				748F02DF28EEEB44005ADBC5 /* Info.plist */,
+			);
+			name = ConvivaReporter;
+			path = ../SharedCode;
+			sourceTree = "<group>";
+		};
+		CA85E88AD870E0649F2847E1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DA779A198C226166174CB504 /* libPods-ConvivaReporter.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		748F02CD28EEEB43005ADBC5 /* ConvivaReporter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 748F02E228EEEB44005ADBC5 /* Build configuration list for PBXNativeTarget "ConvivaReporter" */;
+			buildPhases = (
+				CF486EF356723A31A8CF440F /* [CP] Check Pods Manifest.lock */,
+				748F02CA28EEEB43005ADBC5 /* Sources */,
+				748F02CB28EEEB43005ADBC5 /* Frameworks */,
+				748F02CC28EEEB43005ADBC5 /* Resources */,
+				5AE3FF79E219AA17771A26F2 /* [CP] Embed Pods Frameworks */,
+				FBEA17D9ECD56612619ADF12 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ConvivaReporter;
+			productName = ConvivaReporter;
+			productReference = 748F02CE28EEEB43005ADBC5 /* ConvivaReporter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		748F02C628EEEB43005ADBC5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					748F02CD28EEEB43005ADBC5 = {
+						CreatedOnToolsVersion = 14.0;
+					};
+				};
+			};
+			buildConfigurationList = 748F02C928EEEB43005ADBC5 /* Build configuration list for PBXProject "ConvivaReporter" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 748F02C528EEEB43005ADBC5;
+			productRefGroup = 748F02CF28EEEB43005ADBC5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				748F02CD28EEEB43005ADBC5 /* ConvivaReporter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		748F02CC28EEEB43005ADBC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				748F02DE28EEEB44005ADBC5 /* LaunchScreen.storyboard in Resources */,
+				748F02DB28EEEB44005ADBC5 /* Assets.xcassets in Resources */,
+				748F02D928EEEB43005ADBC5 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5AE3FF79E219AA17771A26F2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ConvivaReporter/Pods-ConvivaReporter-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ConvivaReporter/Pods-ConvivaReporter-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ConvivaReporter/Pods-ConvivaReporter-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CF486EF356723A31A8CF440F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ConvivaReporter-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FBEA17D9ECD56612619ADF12 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ConvivaReporter/Pods-ConvivaReporter-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ConvivaReporter/Pods-ConvivaReporter-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ConvivaReporter/Pods-ConvivaReporter-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		748F02CA28EEEB43005ADBC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				748F02D628EEEB43005ADBC5 /* ViewController.swift in Sources */,
+				74867A6E28EF0F6000FFA08F /* ConvivaConfig.swift in Sources */,
+				748F02D228EEEB43005ADBC5 /* AppDelegate.swift in Sources */,
+				748F02D428EEEB43005ADBC5 /* SceneDelegate.swift in Sources */,
+				74867A6C28EF071300FFA08F /* PlayerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		748F02D728EEEB43005ADBC5 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				748F02D828EEEB43005ADBC5 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		748F02DC28EEEB44005ADBC5 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				748F02DD28EEEB44005ADBC5 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		748F02E028EEEB44005ADBC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		748F02E128EEEB44005ADBC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		748F02E328EEEB44005ADBC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0D220F2CA2B9F84B9AC45FC7 /* Pods-ConvivaReporter.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7TD9A665TC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theotechnologies.samples.ConvivaReporter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		748F02E428EEEB44005ADBC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 87934F19A275DF821F7EE484 /* Pods-ConvivaReporter.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7TD9A665TC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theotechnologies.samples.ConvivaReporter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		748F02C928EEEB43005ADBC5 /* Build configuration list for PBXProject "ConvivaReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				748F02E028EEEB44005ADBC5 /* Debug */,
+				748F02E128EEEB44005ADBC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		748F02E228EEEB44005ADBC5 /* Build configuration list for PBXNativeTarget "ConvivaReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				748F02E328EEEB44005ADBC5 /* Debug */,
+				748F02E428EEEB44005ADBC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 748F02C628EEEB43005ADBC5 /* Project object */;
+}
