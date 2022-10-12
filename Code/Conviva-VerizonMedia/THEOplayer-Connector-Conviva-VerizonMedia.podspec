@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
-  s.name             = 'THEOplayer-Connector-Conviva'
-  s.module_name      = 'THEOplayerConnectorConviva'
+  s.name             = 'THEOplayer-Connector-Conviva-VerizonMedia'
+  s.module_name      = 'THEOplayerConnectorConvivaVerizonMedia'
   s.version          = '4.2.1'
   s.summary          = 'Integration between the THEOplayerSDK and ConvivaSDK'
 
@@ -17,4 +17,5 @@ Pod::Spec.new do |s|
       
   s.dependency 'ConvivaSDK', '4.0.31'
   s.dependency 'THEOplayerSDK-basic', '~> 4.0'
+  s.dependency 'THEOplayer-Connector-Conviva'
 end

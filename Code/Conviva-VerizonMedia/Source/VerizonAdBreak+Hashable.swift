@@ -5,7 +5,6 @@
 //  Created by Damiaan Dufaux on 28/09/2022.
 //
 
-#if VERIZONMEDIA
 import THEOplayerSDK
 
 extension VerizonMediaAdBreak {
@@ -23,4 +22,3 @@ struct HashableVerizonMediaAdBreak: Swift.Hashable {
         hasher.combine(adBreak.identifier)
     }
 }
-#endif

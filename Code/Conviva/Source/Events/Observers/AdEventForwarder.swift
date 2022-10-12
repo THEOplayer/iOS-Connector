@@ -7,7 +7,7 @@
 
 import THEOplayerSDK
 
-struct AdEventForwarder {
+public struct AdEventForwarder {
     let playerObserver: DispatchObserver
     let adsObserver: DispatchObserver
 
@@ -17,7 +17,7 @@ struct AdEventForwarder {
         adsObserver = DispatchObserver(dispatcher: player.ads, eventListeners: Self.forwardAdEvents(from: player.ads, to: eventProcessor, using: filter))
     }
  
-    static func forwardAdPlaybackEvents(from player: THEOplayer, to processor: AdPlaybackEventProcessor, using filter: Filter) -> [RemovableEventListenerProtocol] {
+    public static func forwardAdPlaybackEvents(from player: THEOplayer, to processor: AdPlaybackEventProcessor, using filter: Filter) -> [RemovableEventListenerProtocol] {
         [
             player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: filter.conditionalSender(processor.adPlay)),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: filter.conditionalSender(processor.adPlaying)),
@@ -54,7 +54,7 @@ protocol AdEventProcessor: AdPlaybackEventProcessor {
     func adError(event: AdErrorEvent)
 }
 
-protocol AdPlaybackEventProcessor {
+public protocol AdPlaybackEventProcessor {
     func adPlay(event: PlayEvent)
     func adPlaying(event: PlayingEvent)
     func adTimeUpdate(event: TimeUpdateEvent)

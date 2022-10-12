@@ -5,9 +5,8 @@
 //  Created by Damiaan Dufaux on 21/09/2022.
 //
 
-#if VERIZONMEDIA
-
 import THEOplayerSDK
+import THEOplayerConnectorConviva
 
 struct VerizonAdEventForwarder {
     let playerObserver: DispatchObserver
@@ -109,5 +108,3 @@ protocol VerizonAdEventProcessor: AdPlaybackEventProcessor {
     func adBegin(event: VerizonMediaAdBeginEvent)
     func adEnd(event: VerizonMediaAdEndEvent)
 }
-
-#endif

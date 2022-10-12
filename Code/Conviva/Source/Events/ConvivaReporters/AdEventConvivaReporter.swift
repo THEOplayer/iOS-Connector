@@ -8,18 +8,18 @@
 import ConvivaSDK
 import THEOplayerSDK
 
-class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter {
+public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter {
     static let serializationFormatter: NumberFormatter = createSerializationFormatter()
     
-    let videoAnalytics: CISVideoAnalytics
-    let adAnalytics: CISAdAnalytics
+    public let videoAnalytics: CISVideoAnalytics
+    public let adAnalytics: CISAdAnalytics
         
     init(video: CISVideoAnalytics, ads: CISAdAnalytics) {
         videoAnalytics = video
         adAnalytics = ads
     }
     
-    func adBreakBegin(event: AdBreakBeginEvent) {
+    public func adBreakBegin(event: AdBreakBeginEvent) {
         guard let adBreak = event.ad else { return }
         //TODO: report 'separate' instead of 'content' for adPlayer when using IMA
         videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: .CLIENT_SIDE, adBreakInfo: [
@@ -29,11 +29,11 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         ])
     }
     
-    func adBreakEnd(event: AdBreakEndEvent) {
+    public func adBreakEnd(event: AdBreakEndEvent) {
         videoAnalytics.reportAdBreakEnded()
     }
     
-    func adBegin(event: AdBeginEvent) {
+    public func adBegin(event: AdBeginEvent) {
         guard let ad = event.ad else { return }
         
         let info = ad.convivaInfo
@@ -47,11 +47,11 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         }
     }
     
-    func adEnd(event: AdEndEvent) {
+    public func adEnd(event: AdEndEvent) {
         adAnalytics.reportAdEnded()
     }
     
-    func adError(event: AdErrorEvent) {
+    public func adError(event: AdErrorEvent) {
         if let ad = event.ad {
             adAnalytics.reportAdFailed(
                 event.error ?? "An error occured while playing ad \(ad.id ?? "without id")",
@@ -71,7 +71,7 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
     }
     
     /// Serializes a number into a string without 'grouping separators' and using a `"."` as decimal separator
-    static func serialize(number: NSNumber) -> String {
+    public static func serialize(number: NSNumber) -> String {
         serializationFormatter.string(from: number) ?? number.description(withLocale: Utilities.en_usLocale)
     }
 }
@@ -91,25 +91,25 @@ extension Ad {
     }
 }
 
-protocol ConvivaAdPlaybackEventsReporter: AdPlaybackEventProcessor {
+public protocol ConvivaAdPlaybackEventsReporter: AdPlaybackEventProcessor {
     var videoAnalytics: CISVideoAnalytics { get }
     var adAnalytics: CISAdAnalytics { get }
 }
 
 extension ConvivaAdPlaybackEventsReporter {
-    func adPlay(event: PlayEvent) {
+    public func adPlay(event: PlayEvent) {
         adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
     }
     
-    func adPlaying(event: PlayingEvent) {
+    public func adPlaying(event: PlayingEvent) {
         adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
     }
     
-    func adTimeUpdate(event: TimeUpdateEvent) {
+    public func adTimeUpdate(event: TimeUpdateEvent) {
         adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: NSNumber(value: event.currentTime))
     }
     
-    func adPause(event: PauseEvent) {
+    public func adPause(event: PauseEvent) {
         adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
     }
 }
