@@ -13,7 +13,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.31"),
-        .package(url: "https://github.com/Dev1an/theoplayer-sdk-ios", branch: "master"), //TODO: replace with official URL
+        .package(url: "https://github.com/THEOplayer/theoplayer-sdk-ios", exact: "4.3.3"),
     ],
     targets: [
         .target(
