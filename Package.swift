@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "THEOplayerConnectorConvivaVerizonMedia", targets: ["THEOplayerConnectorConvivaVerizonMedia"])
     ],
     dependencies: [
-        .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.31"),
+        .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.30"),
         .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-ios", .exact("4.1.1")),
     ],
     targets: [

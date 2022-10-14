@@ -12,7 +12,7 @@ public class ConvivaEndpoints {
     public let videoAnalytics: CISVideoAnalytics
     public let adAnalytics: CISAdAnalytics
     
-    init?(configuration: ConvivaConfiguration) {
+    public init?(configuration: ConvivaConfiguration) {
         guard let analytics = CISAnalyticsCreator.create(
             withCustomerKey: configuration.customerKey,
             settings: configuration.convivaSettingsDictionary
