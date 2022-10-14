@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="r5X-cG-ZbP">
-                                <rect key="frame" x="16" y="46.999999999999972" width="358" height="435.33333333333326"/>
+                                <rect key="frame" x="16" y="44" width="358" height="413.66666666666669"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O9V-wF-5tz">
                                         <rect key="frame" x="0.0" y="0.0" width="358" height="223.66666666666666"/>
@@ -27,42 +28,38 @@
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="mgu-sa-Bjv">
-                                        <rect key="frame" x="0.0" y="231.66666666666669" width="143" height="203.66666666666669"/>
+                                        <rect key="frame" x="0.0" y="231.66666666666669" width="106" height="182"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Load:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gd8-Bw-Itz">
-                                                <rect key="frame" x="0.0" y="0.0" width="42" height="34.333333333333336"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="42" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B0n-7f-55X">
-                                                <rect key="frame" x="0.0" y="42.333333333333314" width="143" height="34.333333333333343"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="filled" title="Big Buck Bunny"/>
+                                                <rect key="frame" x="0.0" y="38" width="106" height="30"/>
+                                                <state key="normal" title="Big buck bunny"/>
                                                 <connections>
                                                     <action selector="bbbButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8Wm-Sr-b7W"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="egf-hJ-oar">
-                                                <rect key="frame" x="0.0" y="84.666666666666629" width="95.333333333333329" height="34.333333333333343"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="filled" title="Star wars"/>
+                                                <rect key="frame" x="0.0" y="76" width="67" height="30"/>
+                                                <state key="normal" title="Star Wars"/>
                                                 <connections>
                                                     <action selector="starWarsButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CV9-vx-kq7"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QgQ-GA-IlY">
-                                                <rect key="frame" x="0.0" y="126.99999999999999" width="112.66666666666667" height="34.333333333333329"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="filled" title="Google IMA"/>
+                                                <rect key="frame" x="0.0" y="114" width="30" height="30"/>
+                                                <state key="normal" title="IMA"/>
                                                 <connections>
                                                     <action selector="imaButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LBK-Dv-cbW"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nQ4-BY-1ba">
-                                                <rect key="frame" x="0.0" y="169.33333333333331" width="131.66666666666666" height="34.333333333333343"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="filled" title="Verizon media"/>
+                                                <rect key="frame" x="0.0" y="152" width="97" height="30"/>
+                                                <state key="normal" title="Verizon Media"/>
                                                 <connections>
                                                     <action selector="VerizonButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FcZ-QZ-ELw"/>
                                                 </connections>

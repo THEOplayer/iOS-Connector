@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -30,7 +30,7 @@
 		74867A8928EF230000FFA08F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		74867A8F28EF266B00FFA08F /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		74867A9028EF266B00FFA08F /* ConvivaConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvivaConfig.swift; sourceTree = "<group>"; };
-		74F7409628F6EE230079BACA /* ios-connectors */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-connectors"; path = ../../..; sourceTree = "<group>"; };
+		74F7409628F6EE230079BACA /* ios-connector */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-connector"; path = ../../..; sourceTree = "<group>"; };
 		74F7409728F6F9E10079BACA /* theoplayer-sdk-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "theoplayer-sdk-ios"; path = "../../../Helpers/TheoSPM/theoplayer-sdk-ios"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -51,7 +51,7 @@
 			isa = PBXGroup;
 			children = (
 				74F7409728F6F9E10079BACA /* theoplayer-sdk-ios */,
-				74F7409628F6EE230079BACA /* ios-connectors */,
+				74F7409628F6EE230079BACA /* ios-connector */,
 				74867A7A28EF22FF00FFA08F /* ConvivaReporter */,
 				74867A7928EF22FF00FFA08F /* Products */,
 				74867A9428EF26FE00FFA08F /* Frameworks */,
@@ -130,7 +130,7 @@
 				};
 			};
 			buildConfigurationList = 74867A7328EF22FF00FFA08F /* Build configuration list for PBXProject "ConvivaReporter" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -139,7 +139,7 @@
 			);
 			mainGroup = 74867A6F28EF22FF00FFA08F;
 			packageReferences = (
-				7467ACDC28F6EA8B00F80FDA /* XCRemoteSwiftPackageReference "ios-connectors" */,
+				7467ACDC28F6EA8B00F80FDA /* XCRemoteSwiftPackageReference "ios-connector" */,
 			);
 			productRefGroup = 74867A7928EF22FF00FFA08F /* Products */;
 			projectDirPath = "";
@@ -248,10 +248,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -302,9 +303,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -317,6 +319,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7TD9A665TC;
@@ -334,6 +337,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theotechnologies.samples.ConvivaReporterVerizonMedia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -345,6 +349,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7TD9A665TC;
@@ -362,6 +367,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theotechnologies.samples.ConvivaReporterVerizonMedia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -392,12 +398,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7467ACDC28F6EA8B00F80FDA /* XCRemoteSwiftPackageReference "ios-connectors" */ = {
+		7467ACDC28F6EA8B00F80FDA /* XCRemoteSwiftPackageReference "ios-connector" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/THEOplayer/ios-connectors";
+			repositoryURL = "https://github.com/THEOplayer/ios-connector";
 			requirement = {
-				branch = develop;
-				kind = branch;
+				kind = exactVersion;
+				version = 4.1.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -405,7 +411,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7467ACDD28F6EA8B00F80FDA /* THEOplayerConnectorConviva */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7467ACDC28F6EA8B00F80FDA /* XCRemoteSwiftPackageReference "ios-connectors" */;
+			package = 7467ACDC28F6EA8B00F80FDA /* XCRemoteSwiftPackageReference "ios-connector" */;
 			productName = THEOplayerConnectorConviva;
 		};
 		74F7409828F6FA780079BACA /* THEOplayerConnectorConvivaVerizonMedia */ = {

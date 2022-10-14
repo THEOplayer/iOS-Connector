@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -12,23 +12,20 @@ let package = Package(
         .library(name: "THEOplayerConnectorConvivaVerizonMedia", targets: ["THEOplayerConnectorConvivaVerizonMedia"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.31"),
-        .package(url: "https://github.com/THEOplayer/theoplayer-sdk-ios", exact: "4.3.3"),
+        .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.31"),
+        .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-ios", .exact("4.1.1")),
     ],
     targets: [
         .target(
             name: "THEOplayerConnectorConviva",
-            dependencies: [
-                .product(name: "THEOplayerSDK", package: "theoplayer-sdk-ios"),
-                .product(name: "ConvivaSDK", package: "conviva-ios-sdk-spm"),
-            ],
+            dependencies: ["THEOplayerSDK", "ConvivaSDK"],
             path: "Code/Conviva/Source"
         ),
         .target(
             name: "THEOplayerConnectorConvivaVerizonMedia",
             dependencies: [
-                .product(name: "THEOplayerSDK", package: "theoplayer-sdk-ios"),
-                .product(name: "ConvivaSDK", package: "conviva-ios-sdk-spm"),
+                "THEOplayerSDK",
+                "ConvivaSDK",
                 .target(name: "THEOplayerConnectorConviva")
             ],
             path: "Code/Conviva-VerizonMedia/Source"
