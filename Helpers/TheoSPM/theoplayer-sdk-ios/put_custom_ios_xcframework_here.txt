@@ -1,0 +1,2 @@
+When using a custom THEO portal build, move the downloaded xcframework for iOS to this folder.
+You can also use a different folder structure. In that case make sure to update ./Package.swift to reflect to the correct xcframework path.

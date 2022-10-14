@@ -31,7 +31,7 @@
 		74867A8F28EF266B00FFA08F /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		74867A9028EF266B00FFA08F /* ConvivaConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvivaConfig.swift; sourceTree = "<group>"; };
 		74F7409628F6EE230079BACA /* ios-connectors */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-connectors"; path = ../../..; sourceTree = "<group>"; };
-		74F7409728F6F9E10079BACA /* theoplayer-sdk-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "theoplayer-sdk-ios"; path = "../../../../theoSpmIMA/theoplayer-sdk-ios"; sourceTree = "<group>"; };
+		74F7409728F6F9E10079BACA /* theoplayer-sdk-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "theoplayer-sdk-ios"; path = "../../../Helpers/TheoSPM/theoplayer-sdk-ios"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
