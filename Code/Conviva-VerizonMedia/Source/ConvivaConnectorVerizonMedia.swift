@@ -9,6 +9,7 @@ import ConvivaSDK
 import THEOplayerConnectorConviva
 import THEOplayerSDK
 
+/// Connects to a THEOplayer instance and reports its events to conviva
 public struct ConvivaConnectorVerizonMedia: ConvivaEndpointContainer {
     let base: ConvivaConnector
     let verizonMediaEventHandler: VerizonAdEventForwarder

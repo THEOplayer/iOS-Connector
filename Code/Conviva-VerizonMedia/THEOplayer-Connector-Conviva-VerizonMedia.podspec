@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
 
   s.source_files = 'Source/**/*'
       
-  s.dependency 'ConvivaSDK', '4.0.31'
+  s.dependency 'ConvivaSDK', '~> 4.0.30'
   s.dependency 'THEOplayerSDK-basic', '4.1.1'
   s.dependency 'THEOplayer-Connector-Conviva'
 end
