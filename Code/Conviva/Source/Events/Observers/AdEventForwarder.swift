@@ -30,15 +30,15 @@ public struct AdEventForwarder {
         [
             ads.addRemovableEventListener(
                 type: AdsEventTypes.AD_BREAK_BEGIN,
-                listener: filter.togglingSender(processor.adBreakBegin, setLetTroughTo: true)
+                listener: filter.togglingSender(processor.adBreakBegin, setLetThroughTo: true)
             ),
             ads.addRemovableEventListener(
                 type: AdsEventTypes.AD_BREAK_END,
-                listener: filter.togglingSender(processor.adBreakEnd, setLetTroughTo: false)
+                listener: filter.togglingSender(processor.adBreakEnd, setLetThroughTo: false)
             ),
             ads.addRemovableEventListener(
                 type: AdsEventTypes.AD_BEGIN,
-                listener: filter.togglingSender(processor.adBegin, setLetTroughTo: true)
+                listener: filter.togglingSender(processor.adBegin, setLetThroughTo: true)
             ),
             ads.addRemovableEventListener(type: AdsEventTypes.AD_END, listener: processor.adEnd),
             ads.addRemovableEventListener(type: AdsEventTypes.AD_ERROR, listener: processor.adError)

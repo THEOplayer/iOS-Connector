@@ -27,7 +27,7 @@ public class Filter {
         { self.sendConditionally(argument: $0, function: function) }
     }
     
-    public func togglingSender<Argument>(_ function: @escaping Function<Argument>, setLetTroughTo newValue: Bool) -> Function<Argument> {
+    public func togglingSender<Argument>(_ function: @escaping Function<Argument>, setLetThroughTo newValue: Bool) -> Function<Argument> {
         { argument in
             self.queue.sync {
                 self.letThrough = newValue

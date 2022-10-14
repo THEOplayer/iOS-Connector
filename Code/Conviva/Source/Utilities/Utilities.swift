@@ -14,7 +14,6 @@ enum Utilities {
     static let playerInfo = [
         CIS_SSDK_PLAYER_FRAMEWORK_NAME: playerFrameworkName,
         CIS_SSDK_PLAYER_FRAMEWORK_VERSION: THEOplayer.playerSuiteVersion
-        //TODO: add some platform info (is it using unified or web, etc.)
     ]
     
     static let en_usLocale = Locale(identifier: "en_US")
