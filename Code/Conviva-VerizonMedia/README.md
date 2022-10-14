@@ -1,12 +1,8 @@
 # THEOPlayer 🤝 Conviva
 
-The THEOplayer-Connector-Conviva for iOS provides an integration between the THEOplayerSDK and ConvivaSDK. It connects to the Conviva backend and reports events fired from THEOplayer instances.
+The THEOplayer-Connector-Conviva-VerizonMedia for iOS provides an integration between the THEOplayerSDK and ConvivaSDK. It connects to the Conviva backend and reports events fired from THEOplayer instances (including VerizonMedia ad events).
 
-For example xcode projects with this connector see [Conviva-Examples](../Conviva-Examples).
-
-**Verizon Media**
-
-For custom THEOplayerSDK builds with the VerizonMedia feature, use the [Conviva-VerizonMedia](../Conviva-VerizonMedia) connector.
+For example xcode projects with this connector see [Conviva-VerizonMedia-Examples](../Conviva-VerizonMedia-Examples).
 
 ## Installation
 
@@ -17,7 +13,7 @@ For custom THEOplayerSDK builds with the VerizonMedia feature, use the [Conviva-
 3. Select the version you want to use.
 4. Choose the Connector libraries you want to include in your app.
 
-To support custom feature builds of THEOplayerSDK perform the following steps:
+Because the VerizonMedia feature requires a custom build of the THEOplayerSDK perform the following steps:
 
 1. Clone this repository to your computer.
 2. Use a [local override](https://developer.apple.com/documentation/xcode/editing-a-package-dependency-as-a-local-package) of the `theoplayer-sdk-ios` package by selecting the folder `../../Helpers/TheoSPM/theoplayer-sdk-ios` in Finder and dragging it into the Project navigator of your Xcode project.
@@ -29,7 +25,7 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 2. To your Podfile, add the Conviva connector pods that you want to use in your app: `pod 'THEOplayer-Connector-Conviva'`
 3. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
 
-To support custom feature builds of THEOplayerSDK perform the following steps:
+Because the VerizonMedia feature requires a custom build of the THEOplayerSDK perform the following steps:
 
 1. Clone this repository to your computer.
 2. Use a [local override](https://guides.cocoapods.org/using/the-podfile.html#using-the-files-from-a-folder-local-to-the-machine) of the `THEOplayerSDK-basic` pod by adding the following line to your projects Podfile: `pod 'THEOplayerSDK-basic', :path => 'ios-connector/Helpers/TheoPod'` and make sure the path points to the [TheoPod folder](../../../Helpers/TheoPod).
