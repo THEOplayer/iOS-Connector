@@ -48,10 +48,11 @@ let configuration = ConvivaConfiguration(
 )
 ```
 
-Create a `ConvivaConnector` that uses this `configuration` and your `THEOplayer` instance:
+Create a `ConvivaConnectorVerizonMedia` that uses this `configuration` and your `THEOplayer` instance:
 
 ```swift
-let connector = ConvivaConnector(
+import THEOplayerConnectorConvivaVerizonMedia
+let connector = ConvivaConnectorVerizonMedia(
     configuration: configuration,
     player: yourTHEOplayer
 )

@@ -21,7 +21,6 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
     
     public func adBreakBegin(event: AdBreakBeginEvent) {
         guard let adBreak = event.ad else { return }
-        //TODO: report 'separate' instead of 'content' for adPlayer when using IMA
         videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: .CLIENT_SIDE, adBreakInfo: [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: adBreak.maxDuration)),
             CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: adBreak.timeOffset)),

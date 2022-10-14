@@ -44,12 +44,10 @@ protocol BasicEventProcessor {
     func playing(event: PlayingEvent)
     func timeUpdate(event: TimeUpdateEvent)
     func pause(event: PauseEvent)
- // func empty() // TODO: add this event
     func waiting(event: WaitingEvent)
     func seeking(event: SeekingEvent)
     func seeked(event: SeekedEvent)
     func error(event: ErrorEvent)
- // func segmentNotFound() // TODO: add this event
     func sourceChange(event: SourceChangeEvent, selectedSource: String?)
     func ended(event: EndedEvent)
     func durationChange(event: DurationChangeEvent)

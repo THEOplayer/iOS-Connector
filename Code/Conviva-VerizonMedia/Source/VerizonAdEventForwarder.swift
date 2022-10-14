@@ -57,15 +57,15 @@ struct VerizonAdEventForwarder {
                     eventListeners: [
                         adBreak.addRemovableEventListener(
                             type: VerizonMediaAdBreakEventTypes.AD_BREAK_BEGIN,
-                            listener: filter.togglingSender(eventProcessor.adBreakBegin, setLetTroughTo: true)
+                            listener: filter.togglingSender(eventProcessor.adBreakBegin, setLetThroughTo: true)
                         ),
                         adBreak.addRemovableEventListener(
                             type: VerizonMediaAdBreakEventTypes.AD_BREAK_END,
-                            listener: filter.togglingSender(eventProcessor.adBreakEnd, setLetTroughTo: false)
+                            listener: filter.togglingSender(eventProcessor.adBreakEnd, setLetThroughTo: false)
                         ),
                         adBreak.addRemovableEventListener(
                             type: VerizonMediaAdBreakEventTypes.AD_BREAK_SKIP,
-                            listener: filter.togglingSender(eventProcessor.adBreakSkip, setLetTroughTo: false)
+                            listener: filter.togglingSender(eventProcessor.adBreakSkip, setLetThroughTo: false)
                         )
                     ]
                 ),
@@ -75,7 +75,7 @@ struct VerizonAdEventForwarder {
                         eventListeners: [
                             ad.addRemovableEventListener(
                                 type: VerizonMediaAdEventTypes.AD_BEGIN,
-                                listener: filter.togglingSender(self.eventProcessor.adBegin, setLetTroughTo: true)
+                                listener: filter.togglingSender(self.eventProcessor.adBegin, setLetThroughTo: true)
                             ),
                             ad.addRemovableEventListener(
                                 type: VerizonMediaAdEventTypes.AD_END,

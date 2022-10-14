@@ -8,7 +8,6 @@
 
 import UIKit
 import THEOplayerSDK
-import THEOplayerConnectorConviva
 import THEOplayerConnectorConvivaVerizonMedia
 
 class ViewController: UIViewController {
