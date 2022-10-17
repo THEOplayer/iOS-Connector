@@ -10,15 +10,16 @@ import THEOplayerConnectorConviva
 import THEOplayerSDK
 
 @objc class THEOplayerConvivaConnectorVerizonMedia: NSObject {
-    let internalConnector: THEOplayerConvivaConnectorVerizonMedia
+    let internalConnector: ConvivaConnectorVerizonMedia
     
-    public init(conviva: ConvivaEndpoints, player: THEOplayer) {
-        internalConnector = .init(conviva: conviva, player: player)
+    init(conviva: ConvivaConnectorVerizonMedia) {
+        internalConnector = conviva
     }
     
     @objc public convenience init?(configuration: THEOplayerConvivaConfiguration, player: THEOplayer) {
         guard let endpoints = ConvivaEndpoints(configuration: configuration) else { return nil }
-        self.init(conviva: endpoints, player: player)
+        let base = ConvivaConnector(conviva: endpoints, player: player)
+        self.init(conviva: ConvivaConnectorVerizonMedia(base: base))
     }
     
     @objc
