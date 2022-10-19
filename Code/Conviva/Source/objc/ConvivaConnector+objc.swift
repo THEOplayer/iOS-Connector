@@ -5,7 +5,7 @@ import ConvivaSDK
 @objc public class THEOplayerConvivaConnector: NSObject {
     let internalConnector: ConvivaConnector
     
-    @objc public convenience init?(configuration: THEOplayerConvivaConfiguration, player: THEOplayer) {
+    @objc public convenience init?(configuration: THEOplayerConnectorConvivaConfiguration, player: THEOplayer) {
         guard let endpoints = ConvivaEndpoints(configuration: configuration) else { return nil }
         self.init(conviva: endpoints, player: player)
     }

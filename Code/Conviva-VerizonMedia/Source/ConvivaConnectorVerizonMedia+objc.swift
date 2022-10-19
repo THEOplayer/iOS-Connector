@@ -16,7 +16,7 @@ import THEOplayerSDK
         internalConnector = conviva
     }
     
-    @objc public convenience init?(configuration: THEOplayerConvivaConfiguration, player: THEOplayer) {
+    @objc public convenience init?(configuration: THEOplayerConnectorConvivaConfiguration, player: THEOplayer) {
         guard let endpoints = ConvivaEndpoints(configuration: configuration) else { return nil }
         let base = ConvivaConnector(conviva: endpoints, player: player)
         self.init(conviva: ConvivaConnectorVerizonMedia(base: base))

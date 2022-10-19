@@ -8,7 +8,7 @@
 import ConvivaSDK
 
 /// Settings that specify how to communicate with the Conviva backend
-@objc public class THEOplayerConvivaConfiguration: NSObject {
+@objc public class THEOplayerConnectorConvivaConfiguration: NSObject {
     let internalConfig: ConvivaConfiguration
         
     /// Creates an objc class that contains settings to connect to conviva
@@ -22,7 +22,7 @@ import ConvivaSDK
 }
 
 extension ConvivaEndpoints {
-    public convenience init?(configuration: THEOplayerConvivaConfiguration) {
+    public convenience init?(configuration: THEOplayerConnectorConvivaConfiguration) {
         self.init(configuration: configuration.internalConfig)
     }
 }
