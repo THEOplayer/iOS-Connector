@@ -9,7 +9,7 @@ For example xcode projects with this connector see [Conviva-VerizonMedia-Example
 ### [Swift Package Manager](https://swift.org/package-manager/)
 
 1. In Xcode, install the Conviva libraries by navigating to **File > Add Packages**
-2. In the prompt that appears, select the ios-connector GitHub repository: `https://github.com/THEOplayer/ios-connector`
+2. In the prompt that appears, select the iOS-Connector GitHub repository: `https://github.com/THEOplayer/iOS-Connector`
 3. Select the version you want to use.
 4. Choose the Connector libraries you want to include in your app.
 
@@ -32,7 +32,7 @@ Because the VerizonMedia feature requires a custom build of the THEOplayerSDK pe
 Because the VerizonMedia feature requires a custom build of the THEOplayerSDK perform the following steps:
 
 1. Clone this repository to your computer.
-2. Use a [local override](https://guides.cocoapods.org/using/the-podfile.html#using-the-files-from-a-folder-local-to-the-machine) of the `THEOplayerSDK-basic` pod by adding the following line to your projects Podfile: `pod 'THEOplayerSDK-basic', :path => 'ios-connector/Helpers/TheoPod'` and make sure the path points to the [TheoPod folder](../../../Helpers/TheoPod).
+2. Use a [local override](https://guides.cocoapods.org/using/the-podfile.html#using-the-files-from-a-folder-local-to-the-machine) of the `THEOplayerSDK-basic` pod by adding the following line to your projects Podfile: `pod 'THEOplayerSDK-basic', :path => 'iOS-Connector/Helpers/TheoPod'` and make sure the path points to the [TheoPod folder](../../../Helpers/TheoPod).
 
 ## Usage
 
