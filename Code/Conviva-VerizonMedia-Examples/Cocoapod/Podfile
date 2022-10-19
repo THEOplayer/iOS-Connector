@@ -2,8 +2,8 @@ platform :ios, '12.0'
 
 target 'ConvivaReporter' do
   # Use the ConvivaConnector that is locally defined in the parent directory
-  pod 'THEOplayer-Connector-Conviva',              :path => '../../Conviva'
-  pod 'THEOplayer-Connector-Conviva-VerizonMedia', :path => '../../Conviva-VerizonMedia'
+  pod 'THEOplayer-Connector-Conviva',              :path => '../../../'
+  pod 'THEOplayer-Connector-Conviva-VerizonMedia', :path => '../../../'
 
   # Place your THEOplayer build with VerizonMedia feature at '../../../Helpers/TheoPod/Frameworks/THEOplayerSDK.xcframework'
   pod 'THEOplayerSDK-basic', :path => '../../../Helpers/TheoPod'
