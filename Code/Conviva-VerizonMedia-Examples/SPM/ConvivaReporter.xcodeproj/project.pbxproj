@@ -403,7 +403,7 @@
 			repositoryURL = "https://github.com/THEOplayer/ios-connector";
 			requirement = {
 				kind = exactVersion;
-				version = 4.1.1;
+				version = 4.2.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

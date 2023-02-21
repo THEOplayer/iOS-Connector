@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = 'THEOplayer-Connector-Conviva-VerizonMedia'
   s.module_name      = 'THEOplayerConnectorConvivaVerizonMedia'
-  s.version          = '4.1.1'
+  s.version          = '4.2.0'
   s.summary          = 'Integration between a custom built THEOplayerSDK and ConvivaSDK'
 
   s.description      = 'This pod gives you access to classes that let you report events (including VerizonMedia ad events) from a THEOplayer instance to Conviva'
@@ -18,6 +18,6 @@ Pod::Spec.new do |s|
   s.static_framework = true
   s.swift_versions = ['5.3', '5.4', '5.5', '5.6', '5.7']
   s.dependency 'ConvivaSDK', '~> 4.0.30'
-  s.dependency 'THEOplayerSDK-basic', '4.1.1'
-  s.dependency 'THEOplayer-Connector-Conviva', '4.1.1'
+  s.dependency 'THEOplayerSDK-basic'
+  s.dependency 'THEOplayer-Connector-Conviva', '4.2.0'
 end
