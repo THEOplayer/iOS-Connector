@@ -60,10 +60,14 @@ class BasicEventConvivaReporter: BasicEventProcessor {
         currentSourceHasNotYetPlayedSinceSourceChange = true
         
         if let source = selectedSource {
-            conviva.setContentInfo([
+            var contentInfo = [
                 CIS_SSDK_METADATA_PLAYER_NAME: Utilities.playerFrameworkName,
                 CIS_SSDK_METADATA_STREAM_URL: source
-            ])
+            ]
+            if let title = event.source?.metadata?.title {
+                contentInfo[CIS_SSDK_METADATA_ASSET_NAME] = title
+            }
+            conviva.setContentInfo(contentInfo)
         }
     }
     

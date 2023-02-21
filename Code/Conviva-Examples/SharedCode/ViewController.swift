@@ -41,9 +41,12 @@ class ViewController: UIViewController {
             source: TypedSource(
                 src: bigBuckBunnyURL,
                 type: "application/x-mpegurl"
+            ),
+            metadata: MetadataDescription(
+                metadataKeys: nil,
+                title: "Big buck bunny"
             )
         )
-        report(assetName: "Big buck bunny")
     }
     
     @IBAction func starWarsButtonClicked(_ sender: UIButton) {
@@ -51,15 +54,12 @@ class ViewController: UIViewController {
             source: TypedSource(
                 src: starwarsURL.absoluteString,
                 type: "application/x-mpegurl"
+            ),
+            metadata: MetadataDescription(
+                metadataKeys: nil,
+                title: "Star wars episode VII the force awakens official comic-con 2015 reel (2015)"
             )
         )
-        report(assetName: "Star wars episode VII the force awakens official comic-con 2015 reel (2015)")
-    }
-        
-    func report(assetName: String) {
-        DispatchQueue.global().asyncAfter(deadline: .now() + 3) {
-            self.conviva.report(assetName: assetName)
-        }
     }
 }
 
