@@ -33,8 +33,8 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
     }
     
     public func adBegin(event: AdBeginEvent) {
-        guard let ad = event.ad else { return }
-        
+        guard let ad = event.ad, event.ad?.type == THEOplayerSDK.AdType.linear else { return }
+
         let info = ad.convivaInfo
         adAnalytics.reportAdLoaded(info)
         adAnalytics.reportAdStarted(info)
@@ -47,7 +47,9 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
     }
     
     public func adEnd(event: AdEndEvent) {
-        adAnalytics.reportAdEnded()
+        if event.ad?.type == THEOplayerSDK.AdType.linear {
+            adAnalytics.reportAdEnded()
+        }
     }
     
     public func adError(event: AdErrorEvent) {
