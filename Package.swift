@@ -9,13 +9,17 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(name: "THEOplayerConnectorConviva", targets: ["THEOplayerConnectorConviva"]),
-        .library(name: "THEOplayerConnectorConvivaVerizonMedia", targets: ["THEOplayerConnectorConvivaVerizonMedia"])
+        .library(name: "THEOplayerConnectorConvivaVerizonMedia", targets: ["THEOplayerConnectorConvivaVerizonMedia"]),
+        
+        .library(name: "THEOplayerConnectorNielsen", targets: ["THEOplayerConnectorNielsen"]),
     ],
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.30"),
         .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-ios", .exact("4.2.0")),
+        .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "9.0.0")
     ],
     targets: [
+        // CONVIVA \\
         .target(
             name: "THEOplayerConnectorConviva",
             dependencies: ["THEOplayerSDK", "ConvivaSDK"],
@@ -30,5 +34,12 @@ let package = Package(
             ],
             path: "Code/Conviva-VerizonMedia/Source"
         ),
+
+        // NIELSEN \\
+        .target(
+            name: "THEOplayerConnectorNielsen",
+            dependencies: ["THEOplayerSDK", "NielsenAppApi"],
+            path: "Code/Nielsen/Source"
+        )
     ]
 )
