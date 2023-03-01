@@ -38,7 +38,6 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
         let info = ad.convivaInfo
         adAnalytics.reportAdLoaded(info)
         adAnalytics.reportAdStarted(info)
-        adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
         if let width = ad.width, let height = ad.height {
             adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_RESOLUTION, value: NSValue(
                 cgSize: .init(width: width, height: height)
