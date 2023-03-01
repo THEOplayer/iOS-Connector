@@ -51,7 +51,7 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     }
     
     func error(event: ErrorEvent) {
-        conviva.reportPlaybackError(event.error, errorSeverity: .ERROR_FATAL)
+        conviva.reportPlaybackFailed(event.error, contentInfo: nil)
     }
     
     func sourceChange(event: SourceChangeEvent, selectedSource: String?) {
