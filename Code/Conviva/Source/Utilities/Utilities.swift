@@ -13,7 +13,7 @@ enum Utilities {
     
     static let playerInfo = [
         CIS_SSDK_PLAYER_FRAMEWORK_NAME: playerFrameworkName,
-        CIS_SSDK_PLAYER_FRAMEWORK_VERSION: THEOplayer.playerSuiteVersion
+        CIS_SSDK_PLAYER_FRAMEWORK_VERSION: THEOplayer.version
     ]
     
     static let en_usLocale = Locale(identifier: "en_US")
