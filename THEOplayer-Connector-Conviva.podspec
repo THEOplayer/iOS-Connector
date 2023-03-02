@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = 'THEOplayer-Connector-Conviva'
   s.module_name      = 'THEOplayerConnectorConviva'
-  s.version          = '4.2.0'
+  s.version          = '4.3.0'
   s.summary          = 'Integration between the THEOplayerSDK and ConvivaSDK'
 
   s.description      = 'This pod gives you access to classes that let you report playback events from a THEOplayer instance to Conviva'
