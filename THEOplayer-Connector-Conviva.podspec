@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.author           = "THEO technologies"
   s.source           = { :git => 'https://github.com/THEOplayer/iOS-Connector.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '12.0'
+  s.platforms    = { :ios => "12.0", :tvos => "12.0" }
 
   s.source_files = 'Code/Conviva/Source/**/*'
       
