@@ -86,7 +86,7 @@ extension Ad {
         }
         if let linearAd = self as? LinearAd, let duration = linearAd.duration {
             result[CIS_SSDK_METADATA_IS_LIVE] = false
-            result[CIS_SSDK_METADATA_DURATION] = NSNumber(value: duration)
+            result[CIS_SSDK_METADATA_DURATION] = NSNumber(value: Int(duration))
         }
         return result
     }
@@ -107,7 +107,7 @@ extension ConvivaAdPlaybackEventsReporter {
     }
     
     public func adTimeUpdate(event: TimeUpdateEvent) {
-        adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: NSNumber(value: event.currentTime))
+        adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: event.currentTimeInMilliseconds)
     }
     
     public func adPause(event: PauseEvent) {

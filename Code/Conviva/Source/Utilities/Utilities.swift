@@ -18,3 +18,9 @@ enum Utilities {
     
     static let en_usLocale = Locale(identifier: "en_US")
 }
+
+extension CurrentTimeEvent {
+    var currentTimeInMilliseconds: NSNumber {
+        NSNumber(value: Int(currentTime * 1000))
+    }
+}

@@ -31,7 +31,7 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     }
     
     func timeUpdate(event: TimeUpdateEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: NSNumber(value: event.currentTime))
+        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: event.currentTimeInMilliseconds)
     }
     
     func pause(event: PauseEvent) {
@@ -43,11 +43,11 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     }
     
     func seeking(event: SeekingEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_STARTED, value: NSNumber(value: event.currentTime))
+        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_STARTED, value: event.currentTimeInMilliseconds)
     }
     
     func seeked(event: SeekedEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_ENDED, value: NSNumber(value: event.currentTime))
+        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_ENDED, value: event.currentTimeInMilliseconds)
     }
     
     func error(event: ErrorEvent) {
