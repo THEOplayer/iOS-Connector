@@ -167,7 +167,7 @@ class THEOComScoreAdapter: NSObject {
     }
     
     func buildContentMetadata() {
-        let contentMetadata = SCORStreamingContentMetadata { builder in
+        let contentMetadata = SCORStreamingContentMetadata { (builder) in
             builder?.setMediaType(self.comscoreMetadata.mediaType)
             builder?.setUniqueId(self.comscoreMetadata.uniqueId)
             builder?.setLength(self.comscoreMetadata.length)
@@ -226,10 +226,10 @@ class THEOComScoreAdapter: NSObject {
             if let timeOfTvAiring = self.comscoreMetadata.tvAirTime {
                 builder?.setTimeOfTvAiringHours(timeOfTvAiring.hours, minutes: timeOfTvAiring.minutes)
             }
-            if let dateOfDigitalAiring = self.comscoreMetadata.digitalAiringDate {
+            if let dateOfDigitalAiring = self.comscoreMetadata.digitalAirDate {
                 builder?.setDateOfDigitalAiringYear(dateOfDigitalAiring.year, month: dateOfDigitalAiring.month, day: dateOfDigitalAiring.day)
             }
-            if let timeOfDigitalAiring = self.comscoreMetadata.digitalAiringTime {
+            if let timeOfDigitalAiring = self.comscoreMetadata.digitalAirTime {
                 builder?.setTimeOfDigitalAiringHours(timeOfDigitalAiring.hours, minutes: timeOfDigitalAiring.minutes)
             }
             if let feedType = self.comscoreMetadata.feedType {
@@ -251,7 +251,7 @@ class THEOComScoreAdapter: NSObject {
             if let mediaFormat = self.comscoreMetadata.mediaFormat {
                 builder?.setMediaFormat(mediaFormat)
             }
-            if let distributionModel = self.comscoreMetadata.contentDistributionModel {
+            if let distributionModel = self.comscoreMetadata.distributionModel {
                 builder?.setDistributionModel(distributionModel)
             }
             if let playlistTitle = self.comscoreMetadata.playlistTitle {
