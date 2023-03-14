@@ -32,12 +32,12 @@ public struct ComScoreMetadata {
     let genreId: String?
     let carryTvAdvertisementLoad: Bool?
     let classifyAsCompleteEpisode: Bool?
-    let productionDate: Date? //TODO change content metadata builder in adapter
-    let productionTime: Time?
-    let tvAirDate: Date? //TODO check occurences with lowercase data & change content metadata builder in adapter
-    let tvAirTime: Time?
-    let digitalAirDate: Date? //TODO heck occurences with lowercase data & change content metadata builder in adapter
-    let digitalAirTime: Time?
+    let productionDate: ComScoreDate? //TODO change content metadata builder in adapter
+    let productionTime: ComScoreTime?
+    let tvAirDate: ComScoreDate? //TODO check occurences with lowercase data & change content metadata builder in adapter
+    let tvAirTime: ComScoreTime?
+    let digitalAirDate: ComScoreDate? //TODO heck occurences with lowercase data & change content metadata builder in adapter
+    let digitalAirTime: ComScoreTime?
     let feedType: SCORStreamingContentFeedType?
     let classifyAsAudioStream: Bool
     let deliveryMode: SCORStreamingContentDeliveryMode?
@@ -77,12 +77,12 @@ public struct ComScoreMetadata {
                 genreId: String? = nil,
                 carryTvAdvertisementLoad: Bool? = nil,
                 classifyAsCompleteEpisode: Bool? = nil,
-                productionDate: Date? = nil,
-                productionTime: Time? = nil,
-                tvAirDate: Date? = nil,
-                tvAirTime: Time? = nil,
-                digitalAirDate: Date? = nil,
-                digitalAirTime: Time? = nil,
+                productionDate: ComScoreDate? = nil,
+                productionTime: ComScoreTime? = nil,
+                tvAirDate: ComScoreDate? = nil,
+                tvAirTime: ComScoreTime? = nil,
+                digitalAirDate: ComScoreDate? = nil,
+                digitalAirTime: ComScoreTime? = nil,
                 feedType: ComScoreFeedType? = nil,
                 classifyAsAudioStream: Bool,
                 deliveryMode: ComScoreDeliveryMode? = nil,

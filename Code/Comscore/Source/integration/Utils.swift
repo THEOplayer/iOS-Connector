@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Time {
+public struct ComScoreTime {
     let hours: Int
     let minutes: Int
     init(hours: Int, minutes: Int) {
@@ -16,7 +16,7 @@ public struct Time {
     }
 }
 
-public struct Date {
+public struct ComScoreDate {
     let year: Int
     let month: Int
     let day: Int

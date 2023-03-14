@@ -45,7 +45,7 @@ class THEOLog {
 
     private class func log(tag: String, message: String, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
         if isEnabled {
-            print("\(Date().toString()) \(tag)/\(String(describing: self)): [\(extractFileFromPath(filePath: filename)):\(trimFunctionName(funcName: funcName)):\(line)] -> \(message)")
+            print("\(Foundation.Date().toString()) \(tag)/\(String(describing: self)): [\(extractFileFromPath(filePath: filename)):\(trimFunctionName(funcName: funcName)):\(line)] -> \(message)")
         }
     }
 
