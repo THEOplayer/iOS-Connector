@@ -1,8 +1,7 @@
 //
-//  theoLogs.swift
-//  theoplayer-comscore-ios-integration
+//  THEOlog.swift
 //
-//  Copyright © 2021 THEOPlayer. All rights reserved.
+//  Copyright © THEOPlayer. All rights reserved.
 //
 import Foundation
 

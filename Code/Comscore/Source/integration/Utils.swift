@@ -1,8 +1,7 @@
 //
 //  Utils.swift
-//  THEOplayer-Connector-Comscore
 //
-//  Created by Wonne Joosen on 13/03/2023.
+//  Copyright © THEOPlayer. All rights reserved.
 //
 
 import Foundation

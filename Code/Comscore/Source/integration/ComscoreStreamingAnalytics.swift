@@ -1,8 +1,7 @@
 //
 //  ComscoreStreamingAnalytics.swift
-//  theoplayer-comscore-ios-integration
 //
-//  Copyright © 2021 THEOPlayer. All rights reserved.
+//  Copyright © THEOPlayer. All rights reserved.
 //
 
 import Foundation
@@ -19,7 +18,7 @@ public class ComScoreStreamingAnalytics {
      - player: Player instance to track
      - metadata: ComScore metadata associated with the content you are tracking
      */
-    init(player: THEOplayer, playerVersion: String, configuration: ComScoreConfiguration, metadata: ComScoreMetadata?) {
+    init(player: THEOplayer, playerVersion: String, configuration: ComScoreConfiguration, metadata: ComScoreMetadata) {
         adapter = THEOComScoreAdapter(
             player: player,
             playerVersion: playerVersion,

@@ -1,8 +1,7 @@
 //
-//  theoComscoreUserConsent.swift
-//  theoplayer-comscore-ios-integration
+//  Enums.swift
 //
-//  Copyright © 2021 THEOPlayer. All rights reserved.
+//  Copyright © THEOPlayer. All rights reserved.
 //
 
 import Foundation

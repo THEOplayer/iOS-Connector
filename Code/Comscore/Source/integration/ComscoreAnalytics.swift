@@ -1,8 +1,7 @@
 //
-//  theoComscoreAnalytics.swift
-//  theoplayer-comscore-ios-integration
+//  ComscoreAnalytics.swift
 //
-//  Copyright © 2021 THEOPlayer. All rights reserved.
+//  Copyright © THEOPlayer. All rights reserved.
 //
 
 import ComScore
@@ -74,7 +73,7 @@ public final class ComScoreAnalytics {
     }
 
     // Only call after you started app level tracking with start()
-    public static func THEOplayerComscoreSDK(player: THEOplayer, playerVersion: String, metadata: ComScoreMetadata?) -> ComScoreStreamingAnalytics {
+    public static func THEOplayerComscoreSDK(player: THEOplayer, playerVersion: String, metadata: ComScoreMetadata) -> ComScoreStreamingAnalytics {
         return ComScoreStreamingAnalytics(player: player, playerVersion: playerVersion, configuration: ComScoreAnalytics.configuration!, metadata: metadata)
     }
 
