@@ -1,0 +1,12 @@
+platform :ios, '12.0'
+
+target 'ComscoreReporter' do
+  # Use the ComscoreConnector that is locally defined in the parent directory
+  pod 'THEOplayer-Connector-Comscore', :path => '../../../'
+
+  # When you want to use a custom THEOplayerSDK build:
+  #  - place your build at '../../../Helpers/TheoPod/Frameworks/THEOplayerSDK.xcframework'
+  #  - uncomment the following line
+  # pod 'THEOplayerSDK-basic', :path => '../../../Helpers/TheoPod'
+
+end
