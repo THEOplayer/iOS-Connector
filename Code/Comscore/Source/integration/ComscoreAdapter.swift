@@ -1,8 +1,7 @@
 //
-//  theoComscoreAdapter.swift
-//  theoplayer-comscore-ios-integration
+//  ComscoreAdapter.swift
 //
-//  Copyright © 2021 THEOPlayer. All rights reserved.
+//  Copyright © THEOPlayer. All rights reserved.
 //
 
 import Foundation
@@ -23,7 +22,7 @@ class THEOComScoreAdapter: NSObject {
     private var comscoreMetadata : ComScoreMetadata
     private var comscoreState: ComScoreState = .initialized
     private let configuration: ComScoreConfiguration
-    private var currentAdCUSV: String = "-1"
+    private var currentAdId: String = "-1"
     private var currentAdDuration: Int = 0
     private var currentAdOffset: Int = 0
     private var currentContentMetadata: SCORStreamingContentMetadata?
@@ -42,11 +41,11 @@ class THEOComScoreAdapter: NSObject {
 
     // MARK: - Public methods and constructor
 
-    init(player: THEOplayer, playerVersion: String, configuration: ComScoreConfiguration, metadata: ComScoreMetadata?) {
+    init(player: THEOplayer, playerVersion: String, configuration: ComScoreConfiguration, metadata: ComScoreMetadata) {
         self.player = player
         self.playerVersion = playerVersion
         self.configuration = configuration
-        self.comscoreMetadata = metadata ?? ComScoreMetadata(mediaType: .longFormOnDemand, length: 0) //TODO
+        self.comscoreMetadata = metadata
         super.init()
         self.attachEventListeners()
         
@@ -151,7 +150,7 @@ class THEOComScoreAdapter: NSObject {
         
         let advertisementMetadata = SCORStreamingAdvertisementMetadata {builder in
             builder?.setMediaType(advertisementType)
-            builder?.setUniqueId(self.currentAdCUSV)
+            builder?.setUniqueId(self.currentAdId)
             builder?.setLength(self.currentAdDuration)
             builder?.setRelatedContentMetadata(self.currentContentMetadata)
         }
@@ -269,30 +268,6 @@ class THEOComScoreAdapter: NSObject {
             builder?.setCustomLabels(self.comscoreMetadata.customLabels)
         }
         self.currentContentMetadata = contentMetadata
-    }
-    
-    private func setCUSVId(ad: GoogleImaAd) {
-        if (ad.adSystem == "GDFP" ) {
-            currentAdCUSV = ad.creativeId!
-        } else {
-            currentAdCUSV = "-1"
-            let uids = ad.universalAdIds
-            let pattern = #"([a-z]{6}\w{7}[a-z])"#
-            let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive)
-            for uid in uids {
-                let uidvalue = uid.adIdValue
-                if let match = regex?.firstMatch(in: uidvalue, options: [], range: NSRange(location: 0, length: uidvalue.utf16.count)) {
-                    for i in 1..<match.numberOfRanges {
-                        if let statusCodeRange = Range(match.range(at: i), in: uidvalue) {
-                            print("CUSV found", uidvalue[statusCodeRange])
-                            currentAdCUSV = String(uidvalue[statusCodeRange])
-                            return
-                        }
-                    }
-                    currentAdCUSV = "-2"
-                }
-            }
-        }
     }
     
     // MARK: - State transitions
@@ -425,9 +400,12 @@ class THEOComScoreAdapter: NSObject {
     
     private func onAdBegin(event: AdBeginEvent) {
         print("THEOLog: DEBUG: AD_BEGIN event")
-        let ad = event.ad as! GoogleImaAd
+        let ad = event.ad!
         currentAdDuration = Int(player.duration! * 1000)
-        setCUSVId(ad: ad)
+        currentAdId = ad.id ?? "-1"
+        if let adProcessor = configuration.adIdProcessor {
+            currentAdId = adProcessor(ad)
+        }
         setAdMetadata()
     }
     
