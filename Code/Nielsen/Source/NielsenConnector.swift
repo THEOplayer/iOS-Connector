@@ -14,7 +14,8 @@ public struct NielsenConnector {
     public let player: THEOplayer
     
     let basicPlaybackEventHandler: BasicEventForwarder
-        
+    let adEventHandler: AdEventForwarder
+
     public init?(configuration: Any, player: THEOplayer) {
         guard let nielsen = NielsenAppApi(appInfo: configuration, delegate: nil) else { return nil }
         self.init(nielsen: nielsen, player: player)
@@ -25,8 +26,15 @@ public struct NielsenConnector {
         self.player = player
         
         // Report play, pause, etc.
-        basicPlaybackEventHandler = BasicEventForwarder(player: player, eventProcessor: BasicEventReporter(nielsen: nielsen))
+        basicPlaybackEventHandler = BasicEventForwarder(
+            player: player,
+            eventProcessor: BasicEventReporter(nielsen: nielsen)
+        )
         
-        // TODO: Report ad events
+        // Report ad events
+        adEventHandler = AdEventForwarder(
+            player: player,
+            eventProcessor: AdEventReporter(nielsen: nielsen)
+        )
     }
 }
