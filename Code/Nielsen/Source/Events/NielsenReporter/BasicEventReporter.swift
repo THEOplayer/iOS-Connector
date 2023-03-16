@@ -8,15 +8,42 @@
 import THEOplayerSDK
 import NielsenAppApi
 
-struct BasicEventReporter: BasicEventProcessor {
+let nielsenDefaultMetadata = [
+    "type": "content",
+    "adModel": "1"
+]
+
+class BasicEventReporter: BasicEventProcessor {
     let nielsen: NielsenAppApi
+    static let numberFormatter = createSerializationFormatter()
+
+    var currentSourceHasNotYetPlayedSinceSourceChange = true
     
-    func reportPlayheadPosition(from event: CurrentTimeEvent) {
-        nielsen.playheadPosition(.init(event.currentTime.rounded()))
+    init(nielsen: NielsenAppApi) {
+        self.nielsen = nielsen
     }
     
-    func play(event: THEOplayerSDK.PlayEvent) {
-        print("THEO-NIELSEN PLAY: PLAY event should be reported here")
+    func sourceChange(event: THEOplayerSDK.SourceChangeEvent, selectedSource: String?) {
+        reportEndedIfPlayed()
+        currentSourceHasNotYetPlayedSinceSourceChange = true
+    }
+    
+    func play(event: THEOplayerSDK.PlayEvent, selectedSource: String?) {
+        if currentSourceHasNotYetPlayedSinceSourceChange {
+            currentSourceHasNotYetPlayedSinceSourceChange = false
+
+            nielsen.play( selectedSource.map {["channelname": $0]} )
+        }
+    }
+    
+    func loadedMetadata(event: THEOplayerSDK.LoadedMetaDataEvent, duration: Double?) {
+        let metadata: [String: String]
+        if let duration = duration {
+            metadata = Self.append(duration: duration, to: nielsenDefaultMetadata)
+        } else {
+            metadata = nielsenDefaultMetadata
+        }
+        nielsen.loadMetadata(metadata)
     }
     
     func playing(event: THEOplayerSDK.PlayingEvent) {
@@ -31,43 +58,50 @@ struct BasicEventReporter: BasicEventProcessor {
         nielsen.stop()
     }
     
-    func waiting(event: THEOplayerSDK.WaitingEvent) {
-        nielsen.stop()
-    }
-    
-    func seeking(event: THEOplayerSDK.SeekingEvent) {
-        print("THEO-NIELSEN TODO: seeking event should be reported here")
-    }
-    
-    func seeked(event: THEOplayerSDK.SeekedEvent) {
-        print("THEO-NIELSEN TODO: seeked event should be reported here")
-    }
-    
-    func error(event: THEOplayerSDK.ErrorEvent) {
-        print("THEO-NIELSEN TODO: error event should be reported here")
-    }
-    
-    func sourceChange(event: THEOplayerSDK.SourceChangeEvent, selectedSource: String?) {
-        var playInfo = ["channelName": "TheoDemo"]
-        if let selectedSource = selectedSource {
-            playInfo["mediaURL"] = selectedSource
+    func cueEnter(event: THEOplayerSDK.EnterCueEvent) {
+        if let dictionary = event.cue.content as? [String:Any],
+           let owner = dictionary["ownerIdentifier"] as? String,
+           owner.starts(with: "www.nielsen.com") {
+            nielsen.sendID3(owner)
         }
-        nielsen.play(playInfo)
-        nielsen.loadMetadata([
-            "type": "content",
-            "adModel": "1"
-        ])
     }
     
     func ended(event: THEOplayerSDK.EndedEvent) {
         nielsen.end()
     }
     
-    func durationChange(event: THEOplayerSDK.DurationChangeEvent) {
-        print("THEO-NIELSEN TODO: durationChange event should be reported here")
+    func reportPlayheadPosition(from event: CurrentTimeEvent) {
+        nielsen.playheadPosition(.init(event.currentTime.rounded()))
+    }
+    
+    func durationChange(event: THEOplayerSDK.DurationChangeEvent, duration: Double) {
+        let metadata = Self.append(duration: duration, to: nielsenDefaultMetadata)
+        nielsen.loadMetadata(metadata)
     }
     
     func destroy(event: THEOplayerSDK.DestroyEvent) {
-        print("THEO-NIELSEN TODO: destroy event should be reported here")
+        nielsen.end()
+    }
+    
+    func reportEndedIfPlayed() {
+        let hasPlayed = !currentSourceHasNotYetPlayedSinceSourceChange
+        if hasPlayed {
+            nielsen.end()
+            currentSourceHasNotYetPlayedSinceSourceChange = true
+        }
+    }
+    
+    static func append(duration: Double, to metadata: [String: String]) -> [String: String] {
+        var appendedMetadata = metadata
+        appendedMetadata["length"] = Self.numberFormatter.string(from: duration as NSNumber)
+        return appendedMetadata
+    }
+    
+    static func createSerializationFormatter() -> NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.usesGroupingSeparator = false
+        formatter.decimalSeparator = "."
+        formatter.maximumFractionDigits = 6
+        return formatter
     }
 }

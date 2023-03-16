@@ -9,17 +9,19 @@ import THEOplayerSDK
 
 /// A place to safely store event listeners. Once instances of this object get released, listeners stored inside it are also removed
 public class DispatchObserver {
-    let dispatcher: EventDispatcherProtocol
+    private weak var _dispatcher: AnyObject?
     let eventListeners: [RemovableEventListenerProtocol]
-    
+        
     public init(dispatcher: EventDispatcherProtocol, eventListeners: [RemovableEventListenerProtocol]) {
-        self.dispatcher = dispatcher
+        _dispatcher = dispatcher as AnyObject
         self.eventListeners = eventListeners
     }
         
     deinit {
-        for listener in eventListeners {
-            dispatcher.remove(eventListener: listener)
+        if let dispatcher = _dispatcher as! EventDispatcherProtocol? {
+            for listener in eventListeners {
+                dispatcher.remove(eventListener: listener)
+            }
         }
     }
 }
