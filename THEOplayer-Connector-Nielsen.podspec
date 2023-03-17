@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = 'THEOplayer-Connector-Nielsen'
   s.module_name      = 'THEOplayerConnectorNielsen'
-  s.version          = '4.3.0'
+  s.version          = '4.3.1'
   s.summary          = 'Integration between the THEOplayerSDK and NielsenAppSDK'
 
   s.description      = 'This pod gives you access to classes that let you report playback events from a THEOplayer instance to Nielsen'

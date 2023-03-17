@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
   s.name             = 'THEOplayer-Connector-Utilities'
   s.module_name      = 'THEOplayerConnectorUtilities'
-  s.version          = '4.3.0'
+  s.version          = '4.3.1'
   s.summary          = 'Helpers for attaching and detaching event listeners on THEOplayers'
 
-  s.description      = 'Helpers for attaching and detaching event listeners on THEOplayers'
+  s.description      = 'This pod gives you access to helpers for attaching and detaching event listeners on THEOplayers'
 
   s.homepage         = 'https://github.com/THEOplayer/iOS-Connector'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
