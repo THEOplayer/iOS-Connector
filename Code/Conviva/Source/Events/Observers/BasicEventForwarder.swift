@@ -6,7 +6,7 @@
 //
 
 import THEOplayerSDK
-import THEOPlayerUtilities
+import THEOplayerConnectorUtilities
 
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
 struct BasicEventForwarder {

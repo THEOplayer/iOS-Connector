@@ -20,4 +20,5 @@ Pod::Spec.new do |s|
   s.dependency 'ConvivaSDK', '~> 4.0.30'
   s.dependency 'THEOplayerSDK-basic'
   s.dependency 'THEOplayer-Connector-Conviva', '4.2.0'
+  s.dependency 'THEOplayer-Connector-Utilities'
 end

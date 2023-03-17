@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
-  s.name             = 'THEOplayer-Connector-Conviva'
-  s.module_name      = 'THEOplayerConnectorConviva'
+  s.name             = 'THEOplayer-Connector-Nielsen'
+  s.module_name      = 'THEOplayerConnectorNielsen'
   s.version          = '4.3.0'
-  s.summary          = 'Integration between the THEOplayerSDK and ConvivaSDK'
+  s.summary          = 'Integration between the THEOplayerSDK and NielsenAppSDK'
 
-  s.description      = 'This pod gives you access to classes that let you report playback events from a THEOplayer instance to Conviva'
+  s.description      = 'This pod gives you access to classes that let you report playback events from a THEOplayer instance to Nielsen'
 
   s.homepage         = 'https://github.com/THEOplayer/iOS-Connector'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
@@ -13,11 +13,11 @@ Pod::Spec.new do |s|
 
   s.platforms    = { :ios => "12.0", :tvos => "12.0" }
 
-  s.source_files = 'Code/Conviva/Source/**/*'
+  s.source_files = 'Code/Nielsen/Source/**/*'
       
   s.static_framework = true
   s.swift_versions = ['5.3', '5.4', '5.5', '5.6', '5.7']
-  s.dependency 'ConvivaSDK', '~> 4.0.30'
+  s.dependency 'NielsenAppSDK-XC', '9.0.0.0'
   s.dependency 'THEOplayerSDK-basic'
   s.dependency 'THEOplayer-Connector-Utilities'
 end

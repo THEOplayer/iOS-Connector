@@ -13,7 +13,7 @@ let package = Package(
         
         .library(name: "THEOplayerConnectorNielsen", targets: ["THEOplayerConnectorNielsen"]),
         
-        .library(name: "THEOPlayerUtilities", targets: ["THEOPlayerUtilities"]),
+        .library(name: "THEOplayerConnectorUtilities", targets: ["THEOplayerConnectorUtilities"]),
     ],
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.30"),
@@ -27,7 +27,7 @@ let package = Package(
             dependencies: [
                 "THEOplayerSDK",
                 "ConvivaSDK",
-                .target(name: "THEOPlayerUtilities")
+                .target(name: "THEOplayerConnectorUtilities")
             ],
             path: "Code/Conviva/Source"
         ),
@@ -36,7 +36,8 @@ let package = Package(
             dependencies: [
                 "THEOplayerSDK",
                 "ConvivaSDK",
-                .target(name: "THEOplayerConnectorConviva")
+                .target(name: "THEOplayerConnectorConviva"),
+                .target(name: "THEOplayerConnectorUtilities")
             ],
             path: "Code/Conviva-VerizonMedia/Source"
         ),
@@ -47,16 +48,16 @@ let package = Package(
             dependencies: [
                 "THEOplayerSDK",
                 "NielsenAppApi",
-                .target(name: "THEOPlayerUtilities")
+                .target(name: "THEOplayerConnectorUtilities")
             ],
             path: "Code/Nielsen/Source"
         ),
         
         
         .target(
-            name: "THEOPlayerUtilities",
+            name: "THEOplayerConnectorUtilities",
             dependencies: ["THEOplayerSDK"],
-            path: "Code/THEOPlayerUtilities/Source"
+            path: "Code/Utilities/Source"
         )
     ]
 )
