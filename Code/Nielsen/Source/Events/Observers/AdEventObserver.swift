@@ -6,6 +6,7 @@
 //
 
 import THEOplayerSDK
+import THEOPlayerUtilities
 
 public struct AdEventForwarder {
     let adsObserver: DispatchObserver
