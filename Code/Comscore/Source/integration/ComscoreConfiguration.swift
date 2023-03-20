@@ -24,6 +24,7 @@ public class ComScoreConfiguration {
      - applicationName: Application name used for ComScore tracking
      - userConsent: User consent for ComScore data collection
      - enableChildDirectedApplicationMode: Controls collection of advertising id within the app
+     - adIdProcessor: Provide a closure if you want to customize how the ad id is determined. By default, the integration uses Ad.id.
      - debug: Debug mode
      */
     public init(publisherId: String, applicationName: String, userConsent: ComScoreUserConsent = .unknown, childDirectedAppMode: Bool = false, adIdProcessor: ((THEOplayerSDK.Ad) -> String)?,debug: Bool = false) {
