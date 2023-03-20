@@ -8,17 +8,35 @@
 import UIKit
 import THEOplayerSDK
 import THEOplayerConnectorComscore
+#if canImport(GoogleIMAIntegration)
+import GoogleIMAIntegration
+#endif
 
 class ViewController: UIViewController {
     
-    let comscore = ComscoreConnector(
-        configuration: comscoreConfig,
-        player: THEOplayer(with: nil, configuration: nil),
-        metadata: ComScoreMetadata(mediaType: .shortFormOnDemand, uniqueId: "0123ABC", length: 596, stationTitle: "THEO TV", programTitle: "Big Buck Bunny", episodeTitle: "Example Title", genreName: "animation", classifyAsAudioStream: false)
-    )
     
+    var comscore: ComscoreConnector
     @IBOutlet weak var playerViewContainer: UIView!
-    var player: THEOplayer { comscore.player }
+    var player: THEOplayer
+    
+    required init?(coder: NSCoder) {
+//        self.player = THEOplayer(with: nil, configuration: THEOplayerConfiguration(chromeless: false, ads: AdsConfiguration(
+//            showCountdown: true,
+//            preload: AdPreloadType.MIDROLL_AND_POSTROLL,
+//            googleIma: GoogleIMAAdsConfiguration(useNativeIma: false)
+//        )))
+        self.player = THEOplayer(with: nil, configuration: THEOplayerConfiguration(chromeless: true))
+        #if canImport(GoogleIMAIntegration)
+        let imaIntegration = GoogleIMAIntegrationFactory.createIntegration(on: player)
+        player.addIntegration(imaIntegration)
+        #endif
+        self.comscore = ComscoreConnector(
+            configuration: comscoreConfig,
+            player: player,
+            metadata: ComScoreMetadata(mediaType: .shortFormOnDemand, uniqueId: "0123ABC", length: 596, stationTitle: "THEO TV", programTitle: "Big Buck Bunny", episodeTitle: "Example Title", genreName: "animation", classifyAsAudioStream: false)
+        )
+        super.init(coder: coder)
+    }
     
 
     override func viewDidLoad() {
@@ -45,7 +63,7 @@ class ViewController: UIViewController {
                 title: "Big buck bunny"
             )
         )
-        comscore.comscore.update(metadata: ComScoreMetadata(mediaType: .shortFormOnDemand, uniqueId: "0123ABC", length: 596, stationTitle: "THEO TV", programTitle: "Big Buck Bunny", episodeTitle: "Example Title", genreName: "animation", classifyAsAudioStream: false))
+        comscore.streamingAnalytics.update(metadata: ComScoreMetadata(mediaType: .shortFormOnDemand, uniqueId: "0123ABC", length: 596, stationTitle: "THEO TV", programTitle: "Big Buck Bunny", episodeTitle: "Example Title", genreName: "animation", classifyAsAudioStream: false))
     }
     
     @IBAction func starWarsButtonClicked(_ sender: UIButton) {
@@ -54,13 +72,29 @@ class ViewController: UIViewController {
                 src: starwarsURL.absoluteString,
                 type: "application/x-mpegurl"
             ),
+            ads: [GoogleImaAdDescription(src: "https://cdn.theoplayer.com/demos/ads/vmap/single-pre-mid-post-no-skip.xml")],
             metadata: MetadataDescription(
                 metadataKeys: nil,
                 title: "Star wars episode VII the force awakens official comic-con 2015 reel (2015)"
             )
         )
-        comscore.comscore.update(metadata: ComScoreMetadata(mediaType: .shortFormOnDemand, uniqueId: "4567DEF", length: 211, stationTitle: "THEO TV", programTitle: "Star Wars", episodeTitle: "Episode VII The Force Awakens", genreName: "Science Fiction", classifyAsAudioStream: false))
+        comscore.streamingAnalytics.update(metadata: ComScoreMetadata(mediaType: .shortFormOnDemand, uniqueId: "4567DEF", length: 211, stationTitle: "THEO TV", programTitle: "Star Wars", episodeTitle: "Episode VII The Force Awakens", genreName: "Science Fiction", classifyAsAudioStream: false))
     }
+    
+    @IBAction func togglePlayPause(_ sender: UIButton) {
+        if (player.paused) {
+            player.play()
+        } else {
+            player.pause()
+        }
+    }
+    
+    @IBAction func seekForward(_ sender: Any) {
+        player.requestCurrentTime(completionHandler: {currentTime, error in
+            self.player.setCurrentTime(currentTime! + 10)
+        })
+    }
+    
 }
 
 let bigBuckBunnyURL = "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
