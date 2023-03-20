@@ -40,6 +40,6 @@ let comscoreConfig = ComScoreConfiguration(
     publisherId: "15866303",
     applicationName: "put your application name here",
     userConsent: .granted,
-    adIdProcessor: extractCUSV,
+    adIdProcessor: nil,
     debug: true
 )
