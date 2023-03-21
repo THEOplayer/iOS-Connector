@@ -1,6 +1,6 @@
 # THEOPlayer 🤝 Conviva
 
-The THEOplayer-Connector-Conviva for iOS provides an integration between the THEOplayerSDK and ConvivaSDK. It connects to the Conviva backend and reports events fired from THEOplayer instances.
+THEOplayer-Connector-Conviva for iOS provides an integration between the THEOplayerSDK and ConvivaSDK. It connects to the Conviva backend and reports events fired from THEOplayer instances.
 
 For example xcode projects with this connector see [Conviva-Examples](../Conviva-Examples).
 
@@ -35,7 +35,7 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 To support custom feature builds of THEOplayerSDK perform the following steps:
 
 1. Clone this repository to your computer.
-2. Use a [local override](https://guides.cocoapods.org/using/the-podfile.html#using-the-files-from-a-folder-local-to-the-machine) of the `THEOplayerSDK-basic` pod by adding the following line to your projects Podfile: `pod 'THEOplayerSDK-basic', :path => 'iOS-Connector/Helpers/TheoPod'` and make sure the path points to the [TheoPod folder](../../../Helpers/TheoPod).
+2. Use a [local override](https://guides.cocoapods.org/using/the-podfile.html#using-the-files-from-a-folder-local-to-the-machine) of the `THEOplayerSDK-basic` pod by adding the following line to your projects Podfile: `pod 'THEOplayerSDK-basic', :path => 'iOS-Connector/Helpers/TheoPod'` and make sure the path points to the [TheoPod folder](../../Helpers/TheoPod).
 
 ## Usage
 
@@ -64,7 +64,7 @@ let connector = ConvivaConnector(
 )
 ```
 
-Set report the viewer's ID:
+Report the viewer's ID:
 
 ```swift
 connector.report(viewerID: "John Doe")
@@ -84,7 +84,7 @@ In case you need to report additional information to conviva you can get access 
 - `connector.videoAnalytics` which gives you access to Conviva's `CISVideoAnalytics` type
 - `connector.adAnalytics` which gives you access to Conviva's `CISAdAnalytics` type
 
-## What events does this connector report to conviva?
+## What events does this connector report?
 
 ### Basic playback events
 
