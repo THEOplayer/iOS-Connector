@@ -1,7 +1,9 @@
+require_relative './THEOplayer-Connector-Version'
+
 Pod::Spec.new do |s|
   s.name             = 'THEOplayer-Connector-Utilities'
   s.module_name      = 'THEOplayerConnectorUtilities'
-  s.version          = '4.3.1'
+  s.version          = theoplayer_connector_version
   s.summary          = 'Helpers for attaching and detaching event listeners on THEOplayers'
 
   s.description      = 'This pod gives you access to helpers for attaching and detaching event listeners on THEOplayers'

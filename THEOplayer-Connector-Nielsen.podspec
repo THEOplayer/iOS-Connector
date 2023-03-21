@@ -1,7 +1,9 @@
+require_relative './THEOplayer-Connector-Version'
+
 Pod::Spec.new do |s|
   s.name             = 'THEOplayer-Connector-Nielsen'
   s.module_name      = 'THEOplayerConnectorNielsen'
-  s.version          = '4.3.1'
+  s.version          = theoplayer_connector_version
   s.summary          = 'Integration between the THEOplayerSDK and NielsenAppSDK'
 
   s.description      = 'This pod gives you access to classes that let you report playback events from a THEOplayer instance to Nielsen'
@@ -20,5 +22,5 @@ Pod::Spec.new do |s|
   s.ios.dependency 'NielsenAppSDK', '9.0.0.0'
   s.tvos.dependency 'NielsenTVOSAppSDK', '9.0.0.0'
   s.dependency 'THEOplayerSDK-basic'
-  s.dependency 'THEOplayer-Connector-Utilities'
+  s.dependency 'THEOplayer-Connector-Utilities', theoplayer_connector_version
 end
