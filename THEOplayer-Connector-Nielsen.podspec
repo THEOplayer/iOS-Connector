@@ -17,7 +17,8 @@ Pod::Spec.new do |s|
       
   s.static_framework = true
   s.swift_versions = ['5.3', '5.4', '5.5', '5.6', '5.7']
-  s.dependency 'NielsenAppSDK-XC', '9.0.0.0'
+  s.ios.dependency 'NielsenAppSDK', '9.0.0.0'
+  s.tvos.dependency 'NielsenTVOSAppSDK', '9.0.0.0'
   s.dependency 'THEOplayerSDK-basic'
   s.dependency 'THEOplayer-Connector-Utilities'
 end
