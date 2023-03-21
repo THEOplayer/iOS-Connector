@@ -6,7 +6,11 @@
 //
 
 import THEOplayerSDK
+#if os(iOS)
 import NielsenAppApi
+#elseif os(tvOS)
+import NielsenTVAppApi
+#endif
 
 let nielsenDefaultMetadata = [
     "type": "content",

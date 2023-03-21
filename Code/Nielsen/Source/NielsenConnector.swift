@@ -5,7 +5,11 @@
 //  Created by Damiaan Dufaux on 28/02/2023.
 //
 
+#if os(iOS)
 import NielsenAppApi
+#elseif os(tvOS)
+import NielsenTVAppApi
+#endif
 import THEOplayerSDK
 
 /// Connects to a THEOplayer instance and reports its events to Nielsen.
