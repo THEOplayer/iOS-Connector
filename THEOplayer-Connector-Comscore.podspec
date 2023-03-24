@@ -1,7 +1,9 @@
+require_relative './THEOplayer-Connector-Version'
+
 Pod::Spec.new do |s|
   s.name             = 'THEOplayer-Connector-Comscore'
   s.module_name      = 'THEOplayerConnectorComscore'
-  s.version          = '0.1.0'
+  s.version          = theoplayer_connector_version
   s.summary          = 'Integration between the THEOplayerSDK and ComScore'
 
   s.description      = 'This pod gives you access to classes that let you report playback events from a THEOplayer instance to Comscore'
