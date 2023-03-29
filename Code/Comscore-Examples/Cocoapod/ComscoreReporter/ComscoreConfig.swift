@@ -37,7 +37,7 @@ private func extractCUSV(ad: THEOplayerSDK.Ad) -> String {
 }
 
 let comscoreConfig = ComScoreConfiguration(
-    publisherId: "15866303",
+    publisherId: "put your publisher id here",
     applicationName: "put your application name here",
     userConsent: .granted,
     adIdProcessor: nil,
