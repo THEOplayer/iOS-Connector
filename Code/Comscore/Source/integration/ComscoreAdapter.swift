@@ -112,21 +112,60 @@ class THEOComScoreAdapter: NSObject {
 
     private func removeEventListeners() {
         // Remove event listeners
-        player.removeEventListener(type: AdsEventTypes.AD_BREAK_BEGIN, listener: listeners["adbreakBegin"]!)
-        player.removeEventListener(type: AdsEventTypes.AD_BREAK_END, listener: listeners["adbreakEnd"]!)
-        player.removeEventListener(type: AdsEventTypes.AD_BEGIN, listener: listeners["adBegin"]!)
-        player.removeEventListener(type: PlayerEventTypes.DESTROY, listener: listeners["destroy"]!)
-        player.removeEventListener(type: PlayerEventTypes.ENDED, listener: listeners["ended"]!)
-        player.removeEventListener(type: PlayerEventTypes.ERROR, listener: listeners["error"]!)
-        player.removeEventListener(type: PlayerEventTypes.LOADED_META_DATA, listener: listeners["loadedmetadata"]!)
-        player.removeEventListener(type: PlayerEventTypes.PAUSE, listener: listeners["pause"]!)
-        player.removeEventListener(type: PlayerEventTypes.RATE_CHANGE, listener: listeners["playbackRateChanged"]!)
-        player.removeEventListener(type: PlayerEventTypes.PLAYING, listener: listeners["playing"]!)
-        player.removeEventListener(type: PlayerEventTypes.SEEKED, listener: listeners["seeked"]!)
-        player.removeEventListener(type: PlayerEventTypes.SEEKING, listener: listeners["seeking"]!)
-        player.removeEventListener(type: PlayerEventTypes.SOURCE_CHANGE, listener: listeners["sourceChange"]!)
-        player.removeEventListener(type: PlayerEventTypes.WAITING, listener: listeners["waiting"]!)
+        if let adBreakBeginListener = listeners["adbreakBegin"] {
+            player.removeEventListener(type: AdsEventTypes.AD_BREAK_BEGIN, listener: adBreakBeginListener)
+        }
+        if let adbreakEndListener = listeners["adbreakEnd"] {
+            player.removeEventListener(type: AdsEventTypes.AD_BREAK_END, listener: adbreakEndListener)
+        }
         
+        if let adBeginListener = listeners["adBegin"] {
+            player.removeEventListener(type: AdsEventTypes.AD_BEGIN, listener: adBeginListener)
+        }
+        
+        if let destroyListener = listeners["destroy"] {
+            player.removeEventListener(type: PlayerEventTypes.DESTROY, listener: destroyListener)
+        }
+        
+        if let endedListener = listeners["ended"] {
+            player.removeEventListener(type: PlayerEventTypes.ENDED, listener: endedListener)
+        }
+        
+        if let errorListener = listeners["error"] {
+            player.removeEventListener(type: PlayerEventTypes.ERROR, listener: errorListener)
+        }
+        
+        if let loadedmetadataListener = listeners["loadedmetadata"] {
+            player.removeEventListener(type: PlayerEventTypes.LOADED_META_DATA, listener: loadedmetadataListener)
+        }
+        
+        if let pauseListener = listeners["pause"] {
+            player.removeEventListener(type: PlayerEventTypes.PAUSE, listener: pauseListener)
+        }
+        
+        if let playbackRateChangedListener = listeners["playbackRateChanged"] {
+            player.removeEventListener(type: PlayerEventTypes.RATE_CHANGE, listener: playbackRateChangedListener)
+        }
+        
+        if let playingListener = listeners["playing"] {
+            player.removeEventListener(type: PlayerEventTypes.PLAYING, listener: playingListener)
+        }
+        
+        if let seekedListener = listeners["seeked"] {
+            player.removeEventListener(type: PlayerEventTypes.SEEKED, listener: seekedListener)
+        }
+        
+        if let seekingListener = listeners["seeking"] {
+            player.removeEventListener(type: PlayerEventTypes.SEEKING, listener: seekingListener)
+        }
+        
+        if let sourceChangeListener = listeners["sourceChange"] {
+            player.removeEventListener(type: PlayerEventTypes.SOURCE_CHANGE, listener: sourceChangeListener)
+        }
+        
+        if let waitingListener = listeners["waiting"] {
+            player.removeEventListener(type: PlayerEventTypes.WAITING, listener: waitingListener)
+        }
         listeners.removeAll()
     }
     
@@ -366,7 +405,9 @@ class THEOComScoreAdapter: NSObject {
     func destroy() {
         print("notifyEnd because app was killed")
         transitionToStopped()
-        self.removeEventListeners()
+        if (self.listeners.count > 0) {
+            self.removeEventListeners()
+        }
         NotificationCenter.default.removeObserver(
             self,
             name: UIApplication.willResignActiveNotification,
