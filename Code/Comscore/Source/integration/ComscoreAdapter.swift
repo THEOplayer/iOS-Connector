@@ -68,7 +68,7 @@ class THEOComScoreAdapter: NSObject {
     }
 
     deinit {
-        print("THEOLog: DEBUG: will kill")
+        if configuration.debug { print("[THEOplayerConnectorComscore] Calling adapter destroy due to deinit") }
         destroy()
     }
     
@@ -83,12 +83,12 @@ class THEOComScoreAdapter: NSObject {
     
     public func setPersistentLabel(label: String, value: String) {
         notifyHiddenEvent(publisherId: self.configuration.publisherId, label: label, value: value)
-        print("ComScore persistent label set: [\(label):\(value)]")
+        if configuration.debug { print("[THEOplayerConnectorComscore] ComScore persistent label set: [\(label):\(value)]") }
     }
 
     public func setPersistentLabels(labels: [String: String]) {
         notifyHiddenEvents(publisherId: self.configuration.publisherId, labels: labels)
-        print("ComScore persistent labels set: [\(labels.map { "\($0.key):\($0.value)"})]")
+        if configuration.debug { print("[THEOplayerConnectorComscore] ComScore persistent labels set: [\(labels.map { "\($0.key):\($0.value)"})]") }
     }
     
     private func attachEventListeners() {
@@ -98,7 +98,7 @@ class THEOComScoreAdapter: NSObject {
         listeners["adBegin"] = player.ads.addEventListener(type: AdsEventTypes.AD_BEGIN, listener: onAdBegin)
         listeners["destroy"] = player.addEventListener(type: PlayerEventTypes.DESTROY, listener: onDestroy)
         listeners["ended"] = player.addEventListener(type: PlayerEventTypes.ENDED, listener: onEnded)
-        print("THEOLog: DEBUG: added the ended listener")
+        if configuration.debug { print("[THEOplayerConnectorComscore] added the ended listener") }
         listeners["error"] = player.addEventListener(type: PlayerEventTypes.ERROR, listener: onError)
         listeners["loadedmetadata"] = player.addEventListener(type: PlayerEventTypes.LOADED_META_DATA, listener: onLoadedMetadata)
         listeners["pause"] = player.addEventListener(type: PlayerEventTypes.PAUSE, listener: onPause)
@@ -171,7 +171,7 @@ class THEOComScoreAdapter: NSObject {
     
     // MARK: - Building and setting metadata
     private func setAdMetadata() {
-        print("THEOLog: DEBUG: setting ad metadata with ad duration ", currentAdDuration, " and ad offset ", currentAdOffset)
+        if configuration.debug { print("[THEOplayerConnectorComscore] setting ad metadata with ad duration ", currentAdDuration, " and ad offset ", currentAdOffset) }
         var advertisementType: SCORStreamingAdvertisementType
         if (comscoreMetadata.length == 0) {
             advertisementType = .live
@@ -197,7 +197,7 @@ class THEOComScoreAdapter: NSObject {
     }
     
     private func setContentMetadata() {
-        print("THEOLog: DEBUG: setting content metadata with duration ", comscoreMetadata.length)
+        if configuration.debug { print("[THEOplayerConnectorComscore] setting content metadata with duration ", comscoreMetadata.length) }
         if self.currentContentMetadata == nil {
             buildContentMetadata()
         }
@@ -312,19 +312,19 @@ class THEOComScoreAdapter: NSObject {
     // MARK: - State transitions
     private func transitionToAdvertisement() {
         self.accessQueue.sync {
-            print("DEBUG: trying to transition to ADVERTISEMENT while in ", comscoreState.rawValue)
+            if configuration.debug { print("[THEOplayerConnectorComscore] DEBUG: trying to transition to ADVERTISEMENT while in ", comscoreState.rawValue) }
             switch comscoreState {
             case .paused_ad, .initialized:
-                print("THEOLog: DEBUG: transitioned to ADVERTISEMENT while in ",comscoreState.rawValue);
+                if configuration.debug { print("[THEOplayerConnectorComscore] transitioned to ADVERTISEMENT while in ",comscoreState.rawValue) };
                 comscoreState = .advertisement
-                print("THEOLog: DEBUG: notifyPlay")
+                if configuration.debug { print("[THEOplayerConnectorComscore] notifyPlay") }
                 streamingAnalytics.notifyPlay()
                 break
             case .video, .paused_video, .stopped:
                 transitionToStopped();
-                print("THEOLog: DEBUG: transitioned to ADVERTISEMENT while in ",comscoreState.rawValue)
+                if configuration.debug { print("[THEOplayerConnectorComscore] transitioned to ADVERTISEMENT while in ",comscoreState.rawValue) }
                 comscoreState = .advertisement
-                print("THEOLog: DEBUG: notifyPlay")
+                if configuration.debug { print("[THEOplayerConnectorComscore] notifyPlay") }
                 streamingAnalytics.notifyPlay()
                 break
             default:
@@ -335,27 +335,27 @@ class THEOComScoreAdapter: NSObject {
     
     private func transitionToVideo() {
         self.accessQueue.sync {
-            print("THEOLog: DEBUG: trying to transition to VIDEO while in ", comscoreState.rawValue)
+            if configuration.debug { print("[THEOplayerConnectorComscore] trying to transition to VIDEO while in ", comscoreState.rawValue) }
             switch (comscoreState) {
             case .paused_video:
-                print("THEOLog: DEBUG: transitioned to VIDEO while in ", comscoreState.rawValue)
+                if configuration.debug { print("[THEOplayerConnectorComscore] transitioned to VIDEO while in ", comscoreState.rawValue) }
                 comscoreState = .video
-                print("THEOLog: DEBUG: notifyPlay")
+                if configuration.debug { print("[THEOplayerConnectorComscore] notifyPlay") }
                 streamingAnalytics.notifyPlay()
                 break
             case .advertisement, .paused_ad, .stopped:
                 transitionToStopped()
-                print("THEOLog: DEBUG: transitioned to VIDEO while in ", comscoreState.rawValue)
+                if configuration.debug { print("[THEOplayerConnectorComscore] transitioned to VIDEO while in ", comscoreState.rawValue) }
                 comscoreState = .video
                 setContentMetadata()
-                print("THEOLog: DEBUG: notifyPlay")
+                if configuration.debug { print("[THEOplayerConnectorComscore] notifyPlay") }
                 streamingAnalytics.notifyPlay()
                 break
             case .initialized:
-                print("THEOLog: DEBUG: transitioned to VIDEO while in ", comscoreState.rawValue)
+                if configuration.debug { print("[THEOplayerConnectorComscore] transitioned to VIDEO while in ", comscoreState.rawValue) }
                 comscoreState = .video
                 setContentMetadata()
-                print("THEOLog: DEBUG: notifyPlay")
+                if configuration.debug { print("[THEOplayerConnectorComscore] notifyPlay") }
                 streamingAnalytics.notifyPlay()
                 break
             default:
@@ -368,19 +368,19 @@ class THEOComScoreAdapter: NSObject {
         self.accessQueue.sync {
             switch comscoreState {
             case .video:
-                print("THEOLog: DEBUG: Transition to PAUSED_VIDEO while in ",comscoreState.rawValue)
+                if configuration.debug { print("[THEOplayerConnectorComscore] Transition to PAUSED_VIDEO while in ",comscoreState.rawValue) }
                 comscoreState = .paused_video
-                print("THEOLog: DEBUG: notifyPause")
+                if configuration.debug { print("[THEOplayerConnectorComscore] notifyPause") }
                 streamingAnalytics.notifyPause()
                 break
             case .advertisement:
-                print("THEOLog: DEBUG: Transition to PAUSED_AD while in ",comscoreState.rawValue)
+                if configuration.debug { print("[THEOplayerConnectorComscore] Transition to PAUSED_AD while in ",comscoreState.rawValue) }
                 comscoreState = .paused_ad
-                print("THEOLog: DEBUG: notifyPause")
+                if configuration.debug { print("[THEOplayerConnectorComscore] notifyPause") }
                 streamingAnalytics.notifyPause()
                 break
             default:
-                print("THEOLog: DEBUG: Ignoring transition to PAUSED while in ",comscoreState.rawValue)
+                if configuration.debug { print("[THEOplayerConnectorComscore] Ignoring transition to PAUSED while in ",comscoreState.rawValue) }
             }
         }
     }
@@ -389,12 +389,12 @@ class THEOComScoreAdapter: NSObject {
         self.accessQueue.sync {
             switch comscoreState {
             case .stopped, .initialized:
-                print("THEOLog: DEBUG: Ignoring transition to STOPPED while in STOPPED")
+                if configuration.debug { print("[THEOplayerConnectorComscore] Ignoring transition to STOPPED while in STOPPED") }
                 break
             default:
-                print("THEOLog: DEBUG: Transition to STOPPED while in ",comscoreState.rawValue)
+                if configuration.debug { print("[THEOplayerConnectorComscore] Transition to STOPPED while in ",comscoreState.rawValue) }
                 comscoreState = .stopped
-                print("THEOLog: DEBUG: notifyEnd")
+                if configuration.debug { print("[THEOplayerConnectorComscore] notifyEnd") }
                 streamingAnalytics.notifyEnd()
             }
                 
@@ -403,7 +403,7 @@ class THEOComScoreAdapter: NSObject {
     
     // MARK: - Random
     func destroy() {
-        print("notifyEnd because app was killed")
+        if configuration.debug { print("[THEOplayerConnectorComscore] notifyEnd because app was killed") }
         transitionToStopped()
         if (self.listeners.count > 0) {
             self.removeEventListeners()
@@ -426,21 +426,21 @@ class THEOComScoreAdapter: NSObject {
     
     @objc func applicationWillTerminate() {
         streamingAnalytics.notifyEnd()
-        print("THEOLog: DEBUG: notifyEnd")
+        if configuration.debug { print("[THEOplayerConnectorComscore] notifyEnd") }
     }
     
     
     // MARK: - THEO event handlers
     // Ads
     private func onAdbreakBegin(event: AdBreakBeginEvent) {
-        print("THEOLog: DEBUG: AD_BREAK_BEGIN event")
+        if configuration.debug { print("[THEOplayerConnectorComscore] AD_BREAK_BEGIN event") }
         currentAdOffset = Int((event.ad?.timeOffset)!);
         inAd = true;
         transitionToStopped()
     }
     
     private func onAdBegin(event: AdBeginEvent) {
-        print("THEOLog: DEBUG: AD_BEGIN event")
+        if configuration.debug { print("[THEOplayerConnectorComscore] AD_BEGIN event") }
         let ad = event.ad!
         currentAdDuration = Int(player.duration! * 1000)
         currentAdId = ad.id ?? "-1"
@@ -451,16 +451,16 @@ class THEOComScoreAdapter: NSObject {
     }
     
     private func onAdbreakEnd(event: AdBreakEndEvent) {
-        print("THEOLog: DEBUG: AD_BREAK_END event")
+        if configuration.debug { print("[THEOplayerConnectorComscore] AD_BREAK_END event") }
         inAd = false;
         transitionToStopped()
     }
     // Other
     private func onSourceChange(event: SourceChangeEvent) {
-        print("THEOLog: DEBUG: SOURCECHANGE event")
+        if configuration.debug { print("[THEOplayerConnectorComscore] SOURCECHANGE event") }
         comscoreState = .initialized
         currentContentMetadata = nil
-        print("THEOLog: DEBUG: createPlaybackSession")
+        if configuration.debug { print("[THEOplayerConnectorComscore] createPlaybackSession") }
         streamingAnalytics.createPlaybackSession()
         streamingAnalytics.setMediaPlayerName("THEOplayer")
         streamingAnalytics.setMediaPlayerVersion(playerVersion)
@@ -473,7 +473,7 @@ class THEOComScoreAdapter: NSObject {
                     let dvrWindowEnd = seekableRanges!.last?.end
                     let dvrWindowLengthInSeconds = dvrWindowEnd! - seekableRanges!.first!.start
                     if (dvrWindowLengthInSeconds > 0) {
-                        print("THEOLog: DEBUG: set DVR window length of ",dvrWindowLengthInSeconds)
+                        if self.configuration.debug { print("[THEOplayerConnectorComscore] set DVR window length of ",dvrWindowLengthInSeconds) }
                         self.streamingAnalytics.setDVRWindowLength(Int(dvrWindowLengthInSeconds*1000))
                     }
                 }
@@ -482,17 +482,17 @@ class THEOComScoreAdapter: NSObject {
     }
     
     private func onPlaying(event: PlayingEvent) {
-        print("THEOLog: DEBUG:  PLAYING event handler")
+        if configuration.debug { print("[THEOplayerConnectorComscore] PLAYING event") }
         if (isBuffering) {
             isBuffering = false
-            print("THEOLog: DEBUG: notifyBufferStop")
+            if configuration.debug { print("[THEOplayerConnectorComscore] notifyBufferStop") }
             streamingAnalytics.notifyBufferStop()
         }
         
         if (inAd) {
             transitionToAdvertisement() // will set ad metadata and notifyPlay if not done already
         } else if (currentAdOffset < 0) {
-            print("THEOLog: DEBUG: ignoring PLAYING event after post-roll")
+            if configuration.debug { print("[THEOplayerConnectorComscore] ignoring PLAYING event after post-roll") }
             return // last played ad was a post-roll so there's no real content coming, return and report nothing
         } else {
             transitionToVideo() // will set content metadata and notifyPlay if not done already
@@ -500,27 +500,27 @@ class THEOComScoreAdapter: NSObject {
     }
     
     private func onPause(event: PauseEvent) {
-        print("THEOLog: DEBUG: PAUSE event")
+        if configuration.debug { print("[THEOplayerConnectorComscore] PAUSE event") }
         transitionToPaused()
     }
     
     private func onSeeking(event: SeekingEvent) {
-        print("THEOLog: DEBUG: SEEKING event while in ", comscoreState.rawValue, " to currentTime ",event.currentTime)
+        if configuration.debug { print("[THEOplayerConnectorComscore] SEEKING event while in ", comscoreState.rawValue, " to currentTime ",event.currentTime) }
         if (event.currentTime == 0.0 && justRestarted) {
             return //ignore hiccup
         }
         
         if (comscoreState != .stopped && comscoreState != .initialized) {
-            print("THEOLog: DEBUG: notifySeekStart")
+            if configuration.debug { print("[THEOplayerConnectorComscore] notifySeekStart") }
             streamingAnalytics.notifySeekStart()
 
         }
     }
     
     private func onSeeked(event: SeekedEvent) {
-        print("THEOLog: DEBUG: SEEKED event")
+        if configuration.debug { print("[THEOplayerConnectorComscore] SEEKED event") }
         if (comscoreState == .stopped && event.currentTime < 0.5) {
-            print("THEOLog: DEBUG: step out of seeked handler because we're restarting the same VOD")
+            if configuration.debug { print("[THEOplayerConnectorComscore] step out of seeked handler because we're restarting the same VOD") }
             currentAdOffset = 0
             return
         }
@@ -532,17 +532,17 @@ class THEOComScoreAdapter: NSObject {
             player.requestSeekable(completionHandler: { seekableRanges, error in
                 let dvrWindowEnd = seekableRanges!.last?.end
                 let newDvrWindowOffsetInSeconds = dvrWindowEnd! - currentTime
-                print("THEOLog: DEBUG: new dvr window offset ", newDvrWindowOffsetInSeconds)
+                if self.configuration.debug { print("[THEOplayerConnectorComscore] new dvr window offset ", newDvrWindowOffsetInSeconds) }
                 self.streamingAnalytics.start(fromDvrWindowOffset: Int(newDvrWindowOffsetInSeconds*1000))
             })
         } else {
-            print("THEOLog: DEBUG: startFromPosition ", currentTime)
+            if configuration.debug { print("[THEOplayerConnectorComscore] startFromPosition ", currentTime) }
             streamingAnalytics.start(fromPosition: Int(currentTime*1000))
         }
     }
     
     private func onWaiting(event: WaitingEvent) {
-        print("THEOLog: DEBUG: WAITING event at currentTime ", event.currentTime)
+        if configuration.debug { print("[THEOplayerConnectorComscore] WAITING event at currentTime ", event.currentTime) }
         if (isBuffering) {
             return
         }
@@ -551,35 +551,35 @@ class THEOComScoreAdapter: NSObject {
         }
         if ((comscoreState == .advertisement && inAd) || (comscoreState == .video && !inAd)) {
             isBuffering = true
-            print("THEOLog: DEBUG: notifyBufferStart")
+            if configuration.debug { print("[THEOplayerConnectorComscore] notifyBufferStart") }
             streamingAnalytics.notifyBufferStart()
         }
     }
     
     private func onPlaybackRatechange(event: RateChangeEvent) {
-        print("THEOLog: DEBUG: notifyChangePlaybackRate to ", event.playbackRate)
+        if configuration.debug { print("[THEOplayerConnectorComscore] notifyChangePlaybackRate to ", event.playbackRate) }
         streamingAnalytics.notifyChangePlaybackRate(Float(event.playbackRate))
     }
     
     private func onError(event: ErrorEvent) {
-        print("THEOLog: DEBUG: ERROR event")
+        if configuration.debug { print("[THEOplayerConnectorComscore] ERROR event") }
         transitionToStopped()
     }
     
     private func onEnded(event: EndedEvent) {
-        print("THEOLog: DEBUG: ENDED event")
+        if configuration.debug { print("[THEOplayerConnectorComscore] ENDED event") }
         transitionToStopped()
         listeners["firstseekedafterended"] = player.addEventListener(type: PlayerEventTypes.SEEKED, listener: onFirstSeekedAfterEnded)
     }
     
     private func onDestroy(event: DestroyEvent) {
-        print("THEOLog: DEBUG: DESTROY event")
+        if configuration.debug { print("[THEOplayerConnectorComscore] DESTROY event") }
         destroy()
     }
     
     private func onFirstSeekedAfterEnded(event: SeekedEvent) {
         if (event.currentTime < 0.5) {
-            print("THEOLog: DEBUG: SEEKED back to start after ENDED, initiate new session. BTW seeked to ",event.currentTime)
+            if configuration.debug { print("[THEOplayerConnectorComscore] SEEKED back to start after ENDED, initiate new session. BTW seeked to ",event.currentTime) }
             streamingAnalytics.createPlaybackSession();
             streamingAnalytics.setMediaPlayerName("THEOplayer")
             streamingAnalytics.setMediaPlayerVersion(playerVersion)

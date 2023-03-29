@@ -38,7 +38,7 @@ public final class ComScoreAnalytics {
                 SCORAnalytics.start()
                 started = true
             } else {
-                print("ComScoreAnalytics has already been started. Ignoring call to start")
+                if configuration.debug { print("[THEOplayerConnectorComscore] ComScoreAnalytics has already been started. Ignoring call to start") }
             }
         }
     }
@@ -53,7 +53,7 @@ public final class ComScoreAnalytics {
         serialQueue.sync {
             if started {
                 notifyHiddenEvent(publisherId: ComScoreAnalytics.configuration?.publisherId, label: label, value: value)
-                print("ComScore persistent label set: [\(label):\(value)]")
+                if configuration!.debug { print("[THEOplayerConnectorComscore] ComScore persistent label set: [\(label):\(value)]") }
             }
         }
     }
@@ -67,7 +67,7 @@ public final class ComScoreAnalytics {
         serialQueue.sync {
             if started {
                 notifyHiddenEvents(publisherId: ComScoreAnalytics.configuration?.publisherId, labels: labels)
-                print("ComScore persistent labels set: [\(labels.map { "\($0.key):\($0.value)"})]")
+                if configuration!.debug { print("[THEOplayerConnectorComscore] ComScore persistent labels set: [\(labels.map { "\($0.key):\($0.value)"})]") }
             }
         }
     }
