@@ -113,14 +113,14 @@ class THEOComScoreAdapter: NSObject {
     private func removeEventListeners() {
         // Remove event listeners
         if let adBreakBeginListener = listeners["adbreakBegin"] {
-            player.removeEventListener(type: AdsEventTypes.AD_BREAK_BEGIN, listener: adBreakBeginListener)
+            player.ads.removeEventListener(type: AdsEventTypes.AD_BREAK_BEGIN, listener: adBreakBeginListener)
         }
         if let adbreakEndListener = listeners["adbreakEnd"] {
-            player.removeEventListener(type: AdsEventTypes.AD_BREAK_END, listener: adbreakEndListener)
+            player.ads.removeEventListener(type: AdsEventTypes.AD_BREAK_END, listener: adbreakEndListener)
         }
         
         if let adBeginListener = listeners["adBegin"] {
-            player.removeEventListener(type: AdsEventTypes.AD_BEGIN, listener: adBeginListener)
+            player.ads.removeEventListener(type: AdsEventTypes.AD_BEGIN, listener: adBeginListener)
         }
         
         if let destroyListener = listeners["destroy"] {
