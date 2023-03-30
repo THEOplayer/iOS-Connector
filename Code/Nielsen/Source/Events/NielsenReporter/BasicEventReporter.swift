@@ -17,7 +17,7 @@ let nielsenDefaultMetadata = [
     "adModel": "1"
 ]
 
-class BasicEventReporter: BasicEventProcessor {
+class BasicEventReporter: BasicEventProcessor {    
     let nielsen: NielsenAppApi
     static let numberFormatter = createSerializationFormatter()
 
@@ -35,8 +35,6 @@ class BasicEventReporter: BasicEventProcessor {
     func play(event: THEOplayerSDK.PlayEvent, selectedSource: String?) {
         if currentSourceHasNotYetPlayedSinceSourceChange {
             currentSourceHasNotYetPlayedSinceSourceChange = false
-
-            nielsen.play( selectedSource.map {["channelname": $0]} )
         }
     }
     
@@ -48,15 +46,7 @@ class BasicEventReporter: BasicEventProcessor {
             metadata = nielsenDefaultMetadata
         }
         nielsen.loadMetadata(metadata)
-    }
-    
-    func playing(event: THEOplayerSDK.PlayingEvent) {
-        reportPlayheadPosition(from: event)
-    }
-    
-    func timeUpdate(event: THEOplayerSDK.TimeUpdateEvent) {
-        reportPlayheadPosition(from: event)
-    }
+    }    
     
     func pause(event: THEOplayerSDK.PauseEvent) {
         nielsen.stop()
@@ -73,16 +63,7 @@ class BasicEventReporter: BasicEventProcessor {
     func ended(event: THEOplayerSDK.EndedEvent) {
         nielsen.end()
     }
-    
-    func reportPlayheadPosition(from event: CurrentTimeEvent) {
-        nielsen.playheadPosition(.init(event.currentTime.rounded()))
-    }
-    
-    func durationChange(event: THEOplayerSDK.DurationChangeEvent, duration: Double) {
-        let metadata = Self.append(duration: duration, to: nielsenDefaultMetadata)
-        nielsen.loadMetadata(metadata)
-    }
-    
+            
     func destroy(event: THEOplayerSDK.DestroyEvent) {
         nielsen.end()
     }
