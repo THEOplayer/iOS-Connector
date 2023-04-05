@@ -16,6 +16,8 @@ enum Utilities {
         CIS_SSDK_PLAYER_FRAMEWORK_VERSION: THEOplayer.version
     ]
     
+    static let defaultStringValue = "NA"
+    
     static let en_usLocale = Locale(identifier: "en_US")
 }
 

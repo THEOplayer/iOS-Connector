@@ -63,7 +63,7 @@ class BasicEventConvivaReporter: BasicEventProcessor {
             var contentInfo = [
                 CIS_SSDK_METADATA_PLAYER_NAME: Utilities.playerFrameworkName,
                 CIS_SSDK_METADATA_STREAM_URL: source,
-                CIS_SSDK_METADATA_ASSET_NAME: event.source?.metadata?.title ?? "NA"
+                CIS_SSDK_METADATA_ASSET_NAME: event.source?.metadata?.title ?? Utilities.defaultStringValue
             ]
             conviva.setContentInfo(contentInfo)
         }
