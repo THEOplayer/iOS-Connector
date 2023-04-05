@@ -39,14 +39,8 @@ class BasicEventReporter: BasicEventProcessor {
     }
     
     func loadedMetadata(event: THEOplayerSDK.LoadedMetaDataEvent, duration: Double?) {
-        let metadata: [String: String]
-        if let duration = duration {
-            metadata = Self.append(duration: duration, to: nielsenDefaultMetadata)
-        } else {
-            metadata = nielsenDefaultMetadata
-        }
-        nielsen.loadMetadata(metadata)
-    }    
+        nielsen.loadMetadata(nielsenDefaultMetadata)
+    }
     
     func pause(event: THEOplayerSDK.PauseEvent) {
         nielsen.stop()
@@ -74,13 +68,7 @@ class BasicEventReporter: BasicEventProcessor {
             nielsen.end()
             currentSourceHasNotYetPlayedSinceSourceChange = true
         }
-    }
-    
-    static func append(duration: Double, to metadata: [String: String]) -> [String: String] {
-        var appendedMetadata = metadata
-        appendedMetadata["length"] = Self.numberFormatter.string(from: duration as NSNumber)
-        return appendedMetadata
-    }
+    }    
     
     static func createSerializationFormatter() -> NumberFormatter {
         let formatter = NumberFormatter()
