@@ -55,11 +55,11 @@ class BasicEventReporter: BasicEventProcessor {
     }
     
     func ended(event: THEOplayerSDK.EndedEvent) {
-        nielsen.end()
+        reportEndedIfPlayed()
     }
             
     func destroy(event: THEOplayerSDK.DestroyEvent) {
-        nielsen.end()
+        reportEndedIfPlayed()
     }
     
     func reportEndedIfPlayed() {
