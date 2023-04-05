@@ -90,7 +90,7 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
 extension Ad {
     /// A dictionary containing all the ad info that can be passed to `CISAdAnalytics`'s `setAdInfo(_ convivaInfo: [:])` function.
     var convivaInfo: [AnyHashable: Any] {
-        var result = [AnyHashable: Any]()
+        var result: [AnyHashable: Any] = Utilities.playerInfo
         if let id = id {
             result[CIS_SSDK_METADATA_ASSET_NAME] = id
         }
