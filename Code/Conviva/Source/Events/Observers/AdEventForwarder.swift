@@ -15,7 +15,7 @@ public struct AdEventForwarder {
     init(player: THEOplayer, eventProcessor: AdEventProcessor) {
         let filter = Filter()
         playerObserver = DispatchObserver(dispatcher: player, eventListeners: Self.forwardAdPlaybackEvents(from: player, to: eventProcessor, using: filter))
-        adsObserver = DispatchObserver(dispatcher: player.ads, eventListeners: Self.forwardAdEvents(from: player.ads, to: eventProcessor, using: filter))
+        adsObserver = DispatchObserver(dispatcher: player.ads, eventListeners: Self.forwardAdEvents(from: player.ads, player: player, to: eventProcessor, using: filter))
     }
  
     public static func forwardAdPlaybackEvents(from player: THEOplayer, to processor: AdPlaybackEventProcessor, using filter: Filter) -> [RemovableEventListenerProtocol] {
@@ -27,7 +27,7 @@ public struct AdEventForwarder {
         ]
     }
 
-    static func forwardAdEvents(from ads: Ads, to processor: AdEventProcessor, using filter: Filter) -> [RemovableEventListenerProtocol] {
+    static func forwardAdEvents(from ads: Ads, player: THEOplayer, to processor: AdEventProcessor, using filter: Filter) -> [RemovableEventListenerProtocol] {
         [
             ads.addRemovableEventListener(
                 type: AdsEventTypes.AD_BREAK_BEGIN,
@@ -37,20 +37,25 @@ public struct AdEventForwarder {
                 type: AdsEventTypes.AD_BREAK_END,
                 listener: filter.togglingSender(processor.adBreakEnd, setLetThroughTo: false)
             ),
-            ads.addRemovableEventListener(
-                type: AdsEventTypes.AD_BEGIN,
-                listener: filter.togglingSender(processor.adBegin, setLetThroughTo: true)
-            ),
+            ads.addRemovableEventListener(type: AdsEventTypes.AD_BEGIN) {
+                filter.togglingSender(processor.adBegin, setLetThroughTo: true)(AdBeginWithDurationEvent(beginEvent: $0, duration: player.duration))
+            },
             ads.addRemovableEventListener(type: AdsEventTypes.AD_END, listener: processor.adEnd),
             ads.addRemovableEventListener(type: AdsEventTypes.AD_ERROR, listener: processor.adError)
         ]
     }
 }
 
+// Temporary workaround for missing LinearAd in Native THEOplayerGoogleIMAIntegration. Can be removed after THEO-10161 is completed.
+public struct AdBeginWithDurationEvent {
+    let beginEvent: AdBeginEvent
+    let duration: Double?
+}
+
 protocol AdEventProcessor: AdPlaybackEventProcessor {
     func adBreakBegin(event: AdBreakBeginEvent)
     func adBreakEnd(event: AdBreakEndEvent)
-    func adBegin(event: AdBeginEvent)
+    func adBegin(event: AdBeginWithDurationEvent)
     func adEnd(event: AdEndEvent)
     func adError(event: AdErrorEvent)
 }
