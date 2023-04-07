@@ -422,7 +422,7 @@ class THEOComScoreAdapter: NSObject {
     }
 
     @objc func applicationWillResignActive() {
-        player.pause()
+        //player.pause()
     }
     
     @objc func applicationWillTerminate() {
