@@ -28,6 +28,7 @@ class THEOComScoreAdapter: NSObject {
     private var currentContentMetadata: SCORStreamingContentMetadata?
     private var inAd: Bool = false
     private var isBuffering: Bool = false
+    private var isSeeking: Bool = false
     private let player: THEOplayer
     private let playerVersion: String
     private let streamingAnalytics = SCORStreamingAnalytics()
@@ -489,6 +490,13 @@ class THEOComScoreAdapter: NSObject {
             streamingAnalytics.notifyBufferStop()
         }
         
+        if (isSeeking) {
+            // player.seeking will already be false by now, so we maintain state in the adapter
+            isSeeking = false
+            if configuration.debug { print("[THEOplayerConnectorComscore] notifyPlay") }
+            streamingAnalytics.notifyPlay()
+        }
+        
         if (inAd) {
             transitionToAdvertisement() // will set ad metadata and notifyPlay if not done already
         } else if (currentAdOffset < 0) {
@@ -512,6 +520,7 @@ class THEOComScoreAdapter: NSObject {
         
         if (comscoreState != .stopped && comscoreState != .initialized) {
             if configuration.debug { print("[THEOplayerConnectorComscore] notifySeekStart") }
+            isSeeking = true
             streamingAnalytics.notifySeekStart()
 
         }
