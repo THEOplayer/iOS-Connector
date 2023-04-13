@@ -10,18 +10,23 @@ import THEOplayerSDK
 
 class BasicEventConvivaReporter: BasicEventProcessor {
     
+    struct Source {
+        var hasNotPlayedSinceSourceChange = true
+        var url: String?
+    }
+    
     /// The endpoint to which all the events are sent
     let conviva: CISVideoAnalytics
     
-    var currentSourceHasNotYetPlayedSinceSourceChange = true
+    var currentSource = Source()
         
     init(conviva: CISVideoAnalytics) {
         self.conviva = conviva
     }
 
     func play(event: PlayEvent) {
-        guard currentSourceHasNotYetPlayedSinceSourceChange else { return }
-        currentSourceHasNotYetPlayedSinceSourceChange = false
+        guard currentSource.hasNotPlayedSinceSourceChange else { return }
+        currentSource.hasNotPlayedSinceSourceChange = false
         
         conviva.reportPlaybackRequested(nil)
     }
@@ -57,15 +62,20 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     func sourceChange(event: SourceChangeEvent, selectedSource: String?) {
         reportEndedIfPlayed()
         
-        currentSourceHasNotYetPlayedSinceSourceChange = true
+        currentSource = Source()
         
         if let source = selectedSource {
-            var contentInfo = [
+            currentSource.url = source
+            let contentInfo = [
                 CIS_SSDK_METADATA_PLAYER_NAME: Utilities.playerFrameworkName,
                 CIS_SSDK_METADATA_STREAM_URL: source,
                 CIS_SSDK_METADATA_ASSET_NAME: event.source?.metadata?.title ?? Utilities.defaultStringValue
             ]
             conviva.setContentInfo(contentInfo)
+        } else {
+            #if DEBUG
+            print("[THEOplayerConnectorConviva] setting unknown source")
+            #endif
         }
     }
     
@@ -75,15 +85,15 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     }
     
     func reportEndedIfPlayed() {
-        let hasPlayed = !currentSourceHasNotYetPlayedSinceSourceChange
+        let hasPlayed = !currentSource.hasNotPlayedSinceSourceChange
         if hasPlayed {
             conviva.reportPlaybackEnded()
-            currentSourceHasNotYetPlayedSinceSourceChange = true
+            currentSource = Source()
         }
     }
     
     func durationChange(event: DurationChangeEvent) {
-        if let duration = event.duration {
+        if let duration = event.duration, currentSource.url != nil {
             if duration.isInfinite {
                 conviva.setContentInfo([
                     CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: true)
