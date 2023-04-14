@@ -114,4 +114,8 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     func destroy(event: DestroyEvent) {
         reportEndedIfPlayed()
     }
+    
+    deinit {
+        reportEndedIfPlayed()
+    }
 }
