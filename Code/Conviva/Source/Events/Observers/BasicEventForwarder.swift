@@ -12,11 +12,21 @@ import AVFoundation
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
 struct BasicEventForwarder {
     let observer: DispatchObserver
+    let networkObserver: DispatchObserver
     
     init(player: THEOplayer, eventProcessor: BasicEventProcessor) {
         observer = .init(
             dispatcher: player,
             eventListeners: Self.forwardEvents(from: player, to: eventProcessor)
+        )
+        networkObserver = .init(
+            dispatcher: player.network,
+            eventListeners: [
+                player.network.addRemovableEventListener(
+                    type: NetworkEventTypes.ERROR,
+                    listener: eventProcessor.networkError
+                )
+            ]
         )
     }
     
@@ -56,6 +66,7 @@ protocol BasicEventProcessor {
     func seeking(event: SeekingEvent)
     func seeked(event: SeekedEvent)
     func error(event: ErrorEvent)
+    func networkError(event: NetworkErrorEvent)
     func sourceChange(event: SourceChangeEvent, selectedSource: String?)
     func ended(event: EndedEvent)
     func durationChange(event: DurationChangeEvent)

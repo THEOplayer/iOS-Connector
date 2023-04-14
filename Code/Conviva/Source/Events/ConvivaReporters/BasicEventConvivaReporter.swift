@@ -59,6 +59,10 @@ class BasicEventConvivaReporter: BasicEventProcessor {
         conviva.reportPlaybackFailed(event.error, contentInfo: nil)
     }
     
+    func networkError(event: NetworkErrorEvent) {
+        conviva.reportPlaybackError(event.error?.message ?? Utilities.defaultStringValue, errorSeverity: .ERROR_WARNING)
+    }
+    
     func sourceChange(event: SourceChangeEvent, selectedSource: String?) {
         reportEndedIfPlayed()
         
