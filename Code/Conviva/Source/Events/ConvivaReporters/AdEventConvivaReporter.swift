@@ -56,6 +56,13 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
         }
     }
     
+    public func adRenderedFramerateUpdate(framerate: Float) {
+        adAnalytics.reportAdMetric(
+            CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE,
+            value: NSNumber(value: Int(framerate.rounded()))
+        )
+    }
+    
     public func adEnd(event: AdEndEvent) {
         if event.ad?.type == THEOplayerSDK.AdType.linear {
             adAnalytics.reportAdEnded()

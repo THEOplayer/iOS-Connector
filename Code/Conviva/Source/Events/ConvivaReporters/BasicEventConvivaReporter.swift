@@ -79,6 +79,10 @@ class BasicEventConvivaReporter: BasicEventProcessor {
         }
     }
     
+    func renderedFramerateUpdate(framerate: Float) {
+        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: NSNumber(value: Int(framerate.rounded())))
+    }
+    
     func ended(event: EndedEvent) {
         conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_STOPPED.rawValue)
         reportEndedIfPlayed()

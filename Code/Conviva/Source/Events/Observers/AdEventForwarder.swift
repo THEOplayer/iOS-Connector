@@ -22,7 +22,12 @@ public struct AdEventForwarder {
         [
             player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: filter.conditionalSender(processor.adPlay)),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: filter.conditionalSender(processor.adPlaying)),
-            player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE, listener: filter.conditionalSender(processor.adTimeUpdate)),
+            player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
+                filter.conditionalSender(processor.adTimeUpdate)($0)
+                if let rate = player.renderedFramerate {
+                    filter.conditionalSender(processor.adRenderedFramerateUpdate)(rate)
+                }
+            },
             player.addRemovableEventListener(type: PlayerEventTypes.PAUSE, listener: filter.conditionalSender(processor.adPause))
         ]
     }
@@ -64,5 +69,6 @@ public protocol AdPlaybackEventProcessor {
     func adPlay(event: PlayEvent)
     func adPlaying(event: PlayingEvent)
     func adTimeUpdate(event: TimeUpdateEvent)
+    func adRenderedFramerateUpdate(framerate: Float)
     func adPause(event: PauseEvent)
 }

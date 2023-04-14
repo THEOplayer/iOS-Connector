@@ -7,6 +7,7 @@
 
 import THEOplayerSDK
 import THEOplayerConnectorUtilities
+import AVFoundation
 
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
 struct BasicEventForwarder {
@@ -23,7 +24,12 @@ struct BasicEventForwarder {
         [
             player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: processor.play),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: processor.playing),
-            player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE, listener: processor.timeUpdate),
+            player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
+                processor.timeUpdate(event: $0)
+                if let rate = player.renderedFramerate {
+                    processor.renderedFramerateUpdate(framerate: rate)
+                }
+            },
             player.addRemovableEventListener(type: PlayerEventTypes.PAUSE, listener: processor.pause),
             player.addRemovableEventListener(type: PlayerEventTypes.WAITING, listener: processor.waiting),
             player.addRemovableEventListener(type: PlayerEventTypes.SEEKING, listener: processor.seeking),
@@ -44,6 +50,7 @@ protocol BasicEventProcessor {
     func play(event: PlayEvent)
     func playing(event: PlayingEvent)
     func timeUpdate(event: TimeUpdateEvent)
+    func renderedFramerateUpdate(framerate: Float)
     func pause(event: PauseEvent)
     func waiting(event: WaitingEvent)
     func seeking(event: SeekingEvent)
