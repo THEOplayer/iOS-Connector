@@ -27,6 +27,10 @@ class BasicEventReporter: BasicEventProcessor {
         self.nielsen = nielsen
     }
     
+    deinit {
+        reportEndedIfPlayed()
+    }
+    
     func sourceChange(event: THEOplayerSDK.SourceChangeEvent, selectedSource: String?) {
         reportEndedIfPlayed()
         currentSourceHasNotYetPlayedSinceSourceChange = true
