@@ -99,6 +99,7 @@ extension Ad {
     var convivaInfo: [AnyHashable: Any] {
         var result: [AnyHashable: Any] = Utilities.playerInfo
         result[CIS_SSDK_METADATA_ASSET_NAME] = id ?? Utilities.defaultStringValue
+        result[CIS_SSDK_METADATA_STREAM_URL] = resourceURI ?? Utilities.defaultStringValue
         if let linearAd = self as? LinearAd, let duration = linearAd.duration {
             result[CIS_SSDK_METADATA_IS_LIVE] = false
             result[CIS_SSDK_METADATA_DURATION] = NSNumber(value: Int(duration))
