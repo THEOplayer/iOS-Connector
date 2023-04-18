@@ -66,11 +66,14 @@ Hold a reference to your connector. Once the connector is released from memory i
 
 ### Basic playback events
 
-| THEOplayer event                  | NielsenAppApi report func      |
-| --------------------------------- | ------------------------------ |
-| PlayerEventTypes.LOADED_META_DATA | loadMetadata(_ metadata: Any?) |
-| PlayerEventTypes.PAUSE            | stop()                         |
-| PlayerEventTypes.SOURCE_CHANGE    | end()                          |
-| PlayerEventTypes.ENDED            | end()                          |
-| PlayerEventTypes.DESTROY          | end()                          |
-| TextTrackEventTypes.ENTER_CUE     | sendID3(_ data: String)        |
+| THEOplayer event                  | NielsenAppApi report func              |
+| --------------------------------- | -------------------------------------- |
+| PlayerEventTypes.PLAY             | play(_ channelInfo: Any?)              |
+| PlayerEventTypes.LOADED_META_DATA | loadMetadata(_ metadata: Any?)         |
+| PlayerEventTypes.PLAYING          | playheadPosition(_ playheadPos: Int64) |
+| PlayerEventTypes.TIME_UPDATE      | playheadPosition(_ playheadPos: Int64) |
+| PlayerEventTypes.PAUSE            | stop()                                 |
+| PlayerEventTypes.SOURCE_CHANGE    | end()                                  |
+| PlayerEventTypes.ENDED            | end()                                  |
+| PlayerEventTypes.DESTROY          | end()                                  |
+| TextTrackEventTypes.ENTER_CUE     | sendID3(_ data: String)                |

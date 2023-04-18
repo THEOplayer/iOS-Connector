@@ -32,6 +32,8 @@ struct BasicEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.LOADED_META_DATA) {
                 processor.loadedMetadata(event: $0, duration: player.duration)
             },
+            player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: processor.playing),
+            player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE, listener: processor.timeUpdate),
             player.addRemovableEventListener(type: PlayerEventTypes.PAUSE, listener: processor.pause),
             player.addRemovableEventListener(type: PlayerEventTypes.SOURCE_CHANGE) {
                 processor.sourceChange(event: $0, selectedSource: player.src)
@@ -63,6 +65,8 @@ struct BasicEventForwarder {
 protocol BasicEventProcessor {
     func play(event: PlayEvent, selectedSource: String?)
     func loadedMetadata(event: LoadedMetaDataEvent, duration: Double?)
+    func playing(event: PlayingEvent)
+    func timeUpdate(event: TimeUpdateEvent)
     func pause(event: PauseEvent)
     func sourceChange(event: SourceChangeEvent, selectedSource: String?)
     func ended(event: EndedEvent)
