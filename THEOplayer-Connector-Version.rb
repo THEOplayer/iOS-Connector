@@ -1,3 +1,3 @@
 def theoplayer_connector_version
-  return '5.0.3'
+  return '5.0.4'
 end
