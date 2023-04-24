@@ -22,7 +22,7 @@ struct AppEventConvivaReporter: AppEventProcessor {
     
     func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent) {
         if event.indicatedBitrate >= 0 {
-            video.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: NSNumber(value: event.indicatedBitrate))
+            video.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: NSNumber(value: event.indicatedBitrate / 1000))
         }
         
         if event.numberOfDroppedVideoFrames >= 0 {
