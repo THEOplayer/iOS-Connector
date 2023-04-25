@@ -12,21 +12,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
   - Report bitrates from iOS in kbps to conviva (a231831a)
 
-## [5.0.4] 2023-04-21
+## [5.0.4] - 2023-04-21
 
 ### Changed
 
 - Conviva
   - Report false as default for `CIS_SSDK_METADATA_IS_LIVE` (6bb45c17)
 
-## [5.0.3] 2023-04-17
+## [5.0.3] - 2023-04-17
 
 ### Added
 
 - Conviva
   - Report ad resourceURI’s (a6b158d9)
 
-## [5.0.2] 2023-04-14
+## [5.0.2] - 2023-04-14
 
 ### Added
 
@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Report ended when deinitialised (f49d2bb0)
   - Report network errors (02930576)
 
-## [5.0.1] 2023-04-13
+## [5.0.1] - 2023-04-13
 
 ### Changed
 
