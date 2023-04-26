@@ -24,7 +24,7 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
         // Report fore- and background changes
         appEventHandler = AppEventForwarder(
             player: player,
-            eventProcessor: AppEventConvivaReporter(analytics: analytics, video: videoAnalytics)
+            eventProcessor: AppEventConvivaReporter(analytics: analytics, video: videoAnalytics, ads: adAnalytics)
         )
         
         // Report play pause etc

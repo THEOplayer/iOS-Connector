@@ -41,7 +41,9 @@ class AppEventForwarder {
                 guard let event = item.accessLog()?.events.last else {return}
                 guard item == player.currentItem else { return } // TODO: Remove this.
 
-                eventProcessor.appGotNewAccessLogEntry(event: event)
+                player.ads.requestPlaying { isPlayingAd, error in
+                    eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: isPlayingAd == true)
+                }
             }
         )
     }
@@ -56,5 +58,5 @@ class AppEventForwarder {
 protocol AppEventProcessor {
     func appWillEnterForeground(notification: Notification)
     func appDidEnterBackground(notification: Notification)
-    func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent)
+    func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, isPlayingAd: Bool)
 }
