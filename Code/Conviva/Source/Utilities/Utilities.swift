@@ -23,8 +23,12 @@ enum Utilities {
 }
 
 extension THEOplayer {
+    var currentItem: AVPlayerItem? {
+        ((Mirror(reflecting: self).descendant("theoplayer") as? NSObject).map {Mirror(reflecting: $0).superclassMirror?.descendant("mainContentPlayer", "avPlayer")} as? AVPlayer)?.currentItem
+    }
+    
     var renderedFramerate: Float? {
-        ((Mirror(reflecting: self).descendant("theoplayer") as? NSObject).map {Mirror(reflecting: $0).superclassMirror?.descendant("mainContentPlayer", "avPlayer")} as? AVPlayer)?.currentItem?.tracks.first { $0.currentVideoFrameRate > 0 }?.currentVideoFrameRate
+        currentItem?.tracks.first { $0.currentVideoFrameRate > 0 }?.currentVideoFrameRate
     }
 }
 

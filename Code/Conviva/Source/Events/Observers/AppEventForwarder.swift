@@ -39,10 +39,8 @@ class AppEventForwarder {
             using: { [unowned player] notification in
                 guard let item = notification.object as? AVPlayerItem else {return}
                 guard let event = item.accessLog()?.events.last else {return}
-                let urlAsset = item.asset as? AVURLAsset // TODO: Remove this.
-                let src = urlAsset?.url.absoluteString ?? event.uri ?? item.description // TODO: Remove this.
-                guard src == player.src else { return } // TODO: Remove this.
-                
+                guard item == player.currentItem else { return } // TODO: Remove this.
+
                 eventProcessor.appGotNewAccessLogEntry(event: event)
             }
         )
