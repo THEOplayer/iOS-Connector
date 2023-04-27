@@ -1,6 +1,6 @@
 //
 //  BasicEventForwarder.swift
-//  
+//
 //
 //  Created by Damiaan Dufaux on 01/09/2022.
 //
@@ -34,7 +34,7 @@ struct BasicEventForwarder {
         [
             player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: processor.play),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: processor.playing),
-            player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
+            player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) { [unowned player] in
                 processor.timeUpdate(event: $0)
                 if let rate = player.renderedFramerate {
                     processor.renderedFramerateUpdate(framerate: rate)
@@ -45,7 +45,7 @@ struct BasicEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.SEEKING, listener: processor.seeking),
             player.addRemovableEventListener(type: PlayerEventTypes.SEEKED, listener: processor.seeked),
             player.addRemovableEventListener(type: PlayerEventTypes.ERROR, listener: processor.error),
-            player.addRemovableEventListener(type: PlayerEventTypes.SOURCE_CHANGE) {
+            player.addRemovableEventListener(type: PlayerEventTypes.SOURCE_CHANGE) { [unowned player] in
                 processor.sourceChange(event: $0, selectedSource: player.src)
             },
             player.addRemovableEventListener(type: PlayerEventTypes.ENDED, listener: processor.ended),

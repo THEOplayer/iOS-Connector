@@ -22,7 +22,7 @@ public struct AdEventForwarder {
         [
             player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: filter.conditionalSender(processor.adPlay)),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: filter.conditionalSender(processor.adPlaying)),
-            player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
+            player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) { [unowned player] in
                 filter.conditionalSender(processor.adTimeUpdate)($0)
                 if let rate = player.renderedFramerate {
                     filter.conditionalSender(processor.adRenderedFramerateUpdate)(rate)
@@ -42,7 +42,7 @@ public struct AdEventForwarder {
                 type: AdsEventTypes.AD_BREAK_END,
                 listener: filter.togglingSender(processor.adBreakEnd, setLetThroughTo: false)
             ),
-            ads.addRemovableEventListener(type: AdsEventTypes.AD_BEGIN) {
+            ads.addRemovableEventListener(type: AdsEventTypes.AD_BEGIN) { [unowned player] in
                 filter.togglingSender(processor.adBegin, setLetThroughTo: true)(AdBeginWithDurationEvent(beginEvent: $0, duration: player.duration))
             },
             ads.addRemovableEventListener(type: AdsEventTypes.AD_END, listener: processor.adEnd),
