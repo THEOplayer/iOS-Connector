@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Conviva
   - Report bitrates from iOS in kbps to conviva (a231831a)
+- Comscore
+  - Prevent crash that sometimes happened during playback (75e9eacb)
+
 
 ## [5.0.4] - 2023-04-21
 
