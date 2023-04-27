@@ -469,13 +469,18 @@ class THEOComScoreAdapter: NSObject {
     
     private func onLoadedMetadata(event: LoadedMetaDataEvent) {
         if (comscoreMetadata.length == 0 && !inAd) {
-            player.requestSeekable(completionHandler: {seekableRanges, error in
-                if ((seekableRanges?.count)! > 0) {
-                    let dvrWindowEnd = seekableRanges!.last?.end
-                    let dvrWindowLengthInSeconds = dvrWindowEnd! - seekableRanges!.first!.start
+            player.requestSeekable(completionHandler: { [weak self] seekableRanges, error in
+                if let welf = self,
+                   let foundRanges = seekableRanges?.sorted(by: { range1, range2 in range1.start < range2.start }),
+                   foundRanges.count > 0,
+                   let lastRange = foundRanges.last,
+                   let firstRange = foundRanges.first {
+                    let dvrWindowEnd = lastRange.end
+                    let dvrWindowStart = firstRange.start
+                    let dvrWindowLengthInSeconds = dvrWindowEnd - dvrWindowStart
                     if (dvrWindowLengthInSeconds > 0) {
-                        if self.configuration.debug { print("[THEOplayerConnectorComscore] set DVR window length of ",dvrWindowLengthInSeconds) }
-                        self.streamingAnalytics.setDVRWindowLength(Int(dvrWindowLengthInSeconds*1000))
+                        if welf.configuration.debug { print("[THEOplayerConnectorComscore] set DVR window length of ",dvrWindowLengthInSeconds) }
+                        welf.streamingAnalytics.setDVRWindowLength(Int(dvrWindowLengthInSeconds*1000))
                     }
                 }
             })
@@ -538,11 +543,16 @@ class THEOComScoreAdapter: NSObject {
         }
         let currentTime: Double = event.currentTime
         if (comscoreMetadata.length == 0) {
-            player.requestSeekable(completionHandler: { seekableRanges, error in
-                let dvrWindowEnd = seekableRanges!.last?.end
-                let newDvrWindowOffsetInSeconds = dvrWindowEnd! - currentTime
-                if self.configuration.debug { print("[THEOplayerConnectorComscore] new dvr window offset ", newDvrWindowOffsetInSeconds) }
-                self.streamingAnalytics.start(fromDvrWindowOffset: Int(newDvrWindowOffsetInSeconds*1000))
+            player.requestSeekable(completionHandler: { [weak self] seekableRanges, error in
+                if let welf = self,
+                   let foundRanges = seekableRanges?.sorted(by: { range1, range2 in range1.start < range2.start }),
+                   foundRanges.count > 0,
+                   let lastRange = foundRanges.last {
+                    let dvrWindowEnd = lastRange.end
+                    let newDvrWindowOffsetInSeconds = dvrWindowEnd - currentTime
+                    if welf.configuration.debug { print("[THEOplayerConnectorComscore] new dvr window offset ", newDvrWindowOffsetInSeconds) }
+                    welf.streamingAnalytics.start(fromDvrWindowOffset: Int(newDvrWindowOffsetInSeconds*1000))
+                }
             })
         } else {
             if configuration.debug { print("[THEOplayerConnectorComscore] startFromPosition ", currentTime) }
