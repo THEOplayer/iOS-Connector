@@ -7,12 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Conviva
+  - Reporting bitrates for ads (0af67a3c)
+
+### Fixed
+
+- Comscore
+  - Prevent crash that sometimes happened during playback (75e9eacb)
+- Conviva
+  - Fixed a bug that would cause the connector to not report bitrates when using manifest interception on the THEOplayer via the developer settings. (6ee5e519)
+
 ### Changed
 
 - Conviva
   - Report bitrates from iOS in kbps to conviva (a231831a)
-- Comscore
-  - Prevent crash that sometimes happened during playback (75e9eacb)
+  - Do not report empty sessions (4257d803)
 
 
 ## [5.0.4] - 2023-04-21
