@@ -8,7 +8,8 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
     
     let appEventHandler: AppEventForwarder
     let basicPlaybackEventHandler: BasicEventForwarder
-    let adEventHandler: AdEventForwarder
+    
+    let adEventHandler: AdEventForwarder?
     
     public init?(configuration: ConvivaConfiguration, player: THEOplayer) {
         guard let endpoints = ConvivaEndpoints(configuration: configuration) else { return nil }
@@ -34,9 +35,22 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
         )
         
         // Report ad events
-        adEventHandler = AdEventForwarder(
-            player: player,
-            eventProcessor: AdEventConvivaReporter(video: videoAnalytics, ads: adAnalytics)
-        )
+        if player.hasAdsImplementation {
+            adEventHandler = AdEventForwarder(
+                player: player,
+                eventProcessor: AdEventConvivaReporter(
+                    video: videoAnalytics,
+                    ads: adAnalytics
+                )
+            )
+        } else {
+            adEventHandler = nil
+        }
+    }
+}
+
+extension THEOplayer {
+    var hasAdsImplementation: Bool {
+        getAllIntegrations().contains { $0.type == .ADS }
     }
 }
