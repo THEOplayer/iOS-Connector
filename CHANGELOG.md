@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Conviva
+  - Do not use ads API when there is no ad integration on the THEOplayer
+
 ## [5.0.5] - 2023-04-27
 
 ### Added
