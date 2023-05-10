@@ -9,6 +9,8 @@ import THEOplayerSDK
 
 public protocol RemovableEventListenerProtocol {
     func remove(from dispatcher: EventDispatcherProtocol)
+    
+    var description: String {get}
 }
 
 public struct RemovableEventListener<Event: EventProtocol>: RemovableEventListenerProtocol {
@@ -22,6 +24,10 @@ public struct RemovableEventListener<Event: EventProtocol>: RemovableEventListen
     
     public func remove(from dispatcher: EventDispatcherProtocol) {
         dispatcher.removeEventListener(type: type, listener: listener)
+    }
+    
+    public var description: String {
+        type.name
     }
 }
 
