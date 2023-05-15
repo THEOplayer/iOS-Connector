@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [5.1] - 2023-5-15
 
 ### Fixed
 
 - Conviva
   - Do not use ads API when there is no ad integration on the THEOplayer
+  - Fix example with custom built framework
 
 ## [5.0.5] - 2023-04-27
 
@@ -191,7 +192,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva connector
 - Conviva-VerizonMedia connector
 
-[unreleased]: https://github.com/THEOplayer/iOS-Connector/compare/5.0.4...HEAD
+[unreleased]: https://github.com/THEOplayer/iOS-Connector/compare/5.1.0...HEAD
+[5.0.5]: https://github.com/THEOplayer/iOS-Connector/compare/5.0.4...5.0.5
 [5.0.4]: https://github.com/THEOplayer/iOS-Connector/compare/5.0.3...5.0.4
 [5.0.3]: https://github.com/THEOplayer/iOS-Connector/compare/5.0.2...5.0.3
 [5.0.2]: https://github.com/THEOplayer/iOS-Connector/compare/5.0.1...5.0.2
