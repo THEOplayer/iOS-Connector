@@ -14,10 +14,12 @@ let package = Package(
         .library(name: "THEOplayerConnectorNielsen", targets: ["THEOplayerConnectorNielsen"]),
         
         .library(name: "THEOplayerConnectorUtilities", targets: ["THEOplayerConnectorUtilities"]),
+
+        .library(name: "THEOplayerConnectorSideloadedSubtitle", targets: ["THEOplayerConnectorSideloadedSubtitle"]),
     ],
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.30"),
-        .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-ios", from: "5.1.0"),
+        .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-ios", from: "5.2.0"),
         .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "9.0.0")
     ],
     targets: [
@@ -53,11 +55,19 @@ let package = Package(
             path: "Code/Nielsen/Source"
         ),
         
-        
+        // UTILITY \\
         .target(
             name: "THEOplayerConnectorUtilities",
             dependencies: ["THEOplayerSDK"],
             path: "Code/Utilities/Source"
-        )
+        ),
+
+        // Sideloaded subtitles \\
+        .target(
+            name: "THEOplayerConnectorSideloadedSubtitle",
+            dependencies: ["THEOplayerSDK"],
+            path: "Code/Sideloaded-TextTracks/Sources/THEOplayerConnectorSideloadedSubtitle" 
+        ),
+
     ]
 )
