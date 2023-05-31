@@ -2,9 +2,10 @@
 
 A collection of components that connect third party software with THEOplayer for iOS
 
--   [THEOPlayer-Connector-**Conviva**](./Code/Conviva)
--   [THEOPlayer-Connector-**Nielsen**](./Code/Nielsen)
--   [THEOPlayer-Connector-**Comscore**](./Code/Comscore)
+-   [THEOplayer-Connector-**Conviva**](./Code/Conviva)
+-   [THEOplayer-Connector-**Nielsen**](./Code/Nielsen)
+-   [THEOplayer-Connector-**Comscore**](./Code/Comscore)
+-   [THEOplayer-Connector-**SideloadedSubtitle**](./Code/Sideloaded-TextTracks)
 
 ## Other platforms
 

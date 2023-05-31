@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.1] - 2023-5-15
+## [5.2.0] - 2023-05-31
+
+### Added
+
+- SideloadedSubtitle
+  - Added new connector to sideload subtitles on tvOS and iOS
+
+
+## [5.1.0] - 2023-05-15
 
 ### Fixed
 
@@ -192,7 +200,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva connector
 - Conviva-VerizonMedia connector
 
-[unreleased]: https://github.com/THEOplayer/iOS-Connector/compare/5.1.0...HEAD
+[unreleased]: https://github.com/THEOplayer/iOS-Connector/compare/5.2.0...HEAD
+[5.2.0]: https://github.com/THEOplayer/iOS-Connector/compare/5.1.0...5.2.0
+[5.1.0]: https://github.com/THEOplayer/iOS-Connector/compare/5.0.5...5.1.0
 [5.0.5]: https://github.com/THEOplayer/iOS-Connector/compare/5.0.4...5.0.5
 [5.0.4]: https://github.com/THEOplayer/iOS-Connector/compare/5.0.3...5.0.4
 [5.0.3]: https://github.com/THEOplayer/iOS-Connector/compare/5.0.2...5.0.3
