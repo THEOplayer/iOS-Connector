@@ -5,6 +5,7 @@ import ConvivaSDK
 public struct ConvivaConnector: ConvivaEndpointContainer {
     public let conviva: ConvivaEndpoints
     public let player: THEOplayer
+    public let storage: ConvivaConnectorStorage
     
     let appEventHandler: AppEventForwarder
     let basicPlaybackEventHandler: BasicEventForwarder
@@ -19,12 +20,13 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
     public init(conviva: ConvivaEndpoints, player: THEOplayer) {
         self.conviva = conviva
         self.player = player
+        self.storage = ConvivaConnectorStorage()
         
         let (analytics, videoAnalytics, adAnalytics) = (conviva.analytics, conviva.videoAnalytics, conviva.adAnalytics)
         
-        // Report fore- and background changes
         appEventHandler = AppEventForwarder(
             player: player,
+            storage: storage,
             eventProcessor: AppEventConvivaReporter(analytics: analytics, video: videoAnalytics, ads: adAnalytics)
         )
         
