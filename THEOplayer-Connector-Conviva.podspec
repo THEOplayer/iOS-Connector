@@ -21,5 +21,5 @@ Pod::Spec.new do |s|
   s.swift_versions = ['5.3', '5.4', '5.5', '5.6', '5.7']
   s.dependency 'ConvivaSDK', '~> 4.0.30'
   s.dependency 'THEOplayerSDK-core', "~> 5.4.2"
-  s.dependency 'THEOplayer-Connector-Utilities', theoplayer_connector_version
+  s.dependency 'THEOplayer-Connector-Utilities', "~> " + theoplayer_connector_version
 end
