@@ -22,5 +22,5 @@ Pod::Spec.new do |s|
   s.ios.dependency 'NielsenAppSDK', '9.0.0.0'
   s.tvos.dependency 'NielsenTVOSAppSDK', '9.0.0.0'
   s.dependency 'THEOplayerSDK-core', "~> 5.4.2"
-  s.dependency 'THEOplayer-Connector-Utilities', "~> " + theoplayer_connector_version
+  s.dependency 'THEOplayer-Connector-Utilities', "~> " + theoplayer_connector_major_minor_version, ">= " + theoplayer_connector_version
 end
