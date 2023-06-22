@@ -11,11 +11,11 @@ import AVFoundation
 
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
 struct BasicEventForwarder {
-    let observer: DispatchObserver
+    let playerObserver: DispatchObserver
     let networkObserver: DispatchObserver
     
     init(player: THEOplayer, eventProcessor: BasicEventProcessor) {
-        observer = .init(
+        playerObserver = .init(
             dispatcher: player,
             eventListeners: Self.forwardEvents(from: player, to: eventProcessor)
         )
