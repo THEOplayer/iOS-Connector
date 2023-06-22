@@ -17,11 +17,9 @@ class AppEventForwarder {
     let center = NotificationCenter.default
     let foregroundObserver, backgroundObserver, accessLogObserver: Any
     let player: THEOplayer
-    let storage: ConvivaConnectorStorage
     
-    init(player: THEOplayer, storage: ConvivaConnectorStorage, eventProcessor: AppEventProcessor) {
+    init(player: THEOplayer, eventProcessor: AppEventProcessor) {
         self.player = player
-        self.storage = storage
         
         foregroundObserver = center.addObserver(
             forName: willEnterForeground,
@@ -39,14 +37,13 @@ class AppEventForwarder {
             forName: newAccessLogEntry,
             object: .none,
             queue: .none,
-            using: { [unowned player, unowned storage] notification in
+            using: { [unowned player] notification in
                 guard let item = notification.object as? AVPlayerItem else {return}
                 guard let event = item.accessLog()?.events.last else {return}
                 guard item == player.currentItem else { return } // TODO: Remove this.
 
                 player.ads.requestPlaying { isPlayingAd, error in
-                    let map = eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: isPlayingAd == true)
-                    storage.storeKeyValueMap(map)
+                    eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: isPlayingAd == true)
                 }
             }
         )
@@ -62,5 +59,5 @@ class AppEventForwarder {
 protocol AppEventProcessor {
     func appWillEnterForeground(notification: Notification)
     func appDidEnterBackground(notification: Notification)
-    func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, isPlayingAd: Bool) -> [String:Any]
+    func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, isPlayingAd: Bool)
 }

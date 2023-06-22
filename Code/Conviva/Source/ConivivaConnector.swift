@@ -26,14 +26,13 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
         
         appEventHandler = AppEventForwarder(
             player: player,
-            storage: storage,
-            eventProcessor: AppEventConvivaReporter(analytics: analytics, video: videoAnalytics, ads: adAnalytics)
+            eventProcessor: AppEventConvivaReporter(analytics: analytics, video: videoAnalytics, ads: adAnalytics, storage: storage)
         )
         
         // Report play pause etc
         basicPlaybackEventHandler = BasicEventForwarder(
             player: player,
-            eventProcessor: BasicEventConvivaReporter(conviva: videoAnalytics)
+            eventProcessor: BasicEventConvivaReporter(conviva: videoAnalytics, storage: storage)
         )
         
         // Report ad events

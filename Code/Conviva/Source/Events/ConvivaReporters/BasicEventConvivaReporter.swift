@@ -21,11 +21,13 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     
     /// The endpoint to which all the events are sent
     let conviva: CISVideoAnalytics
+    let storage: ConvivaConnectorStorage
     
     var currentSession = Session()
         
-    init(conviva: CISVideoAnalytics) {
+    init(conviva: CISVideoAnalytics, storage: ConvivaConnectorStorage) {
         self.conviva = conviva
+        self.storage = storage
     }
 
     func play(event: PlayEvent) {
@@ -70,6 +72,9 @@ class BasicEventConvivaReporter: BasicEventProcessor {
         if event.source != currentSession.source?.description, currentSession.source != nil {
             reportEndedIfPlayed()
         }
+        
+        // clear all stored values for the previous source
+        self.storage.clear()
         
         let newSource: Session.Source?
         
