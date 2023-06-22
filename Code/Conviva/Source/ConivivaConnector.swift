@@ -7,9 +7,8 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
     public let player: THEOplayer
     public let storage: ConvivaConnectorStorage
     
-    let appEventHandler: AppEventForwarder
-    let basicPlaybackEventHandler: BasicEventForwarder
-    
+    let appEventForwarder: AppEventForwarder
+    let basicEventForwarder: BasicEventForwarder
     let adEventHandler: AdEventForwarder?
     
     public init?(configuration: ConvivaConfiguration, player: THEOplayer) {
@@ -24,18 +23,16 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
         
         let (analytics, videoAnalytics, adAnalytics) = (conviva.analytics, conviva.videoAnalytics, conviva.adAnalytics)
         
-        appEventHandler = AppEventForwarder(
+        appEventForwarder = AppEventForwarder(
             player: player,
             eventProcessor: AppEventConvivaReporter(analytics: analytics, video: videoAnalytics, ads: adAnalytics, storage: storage)
         )
         
-        // Report play pause etc
-        basicPlaybackEventHandler = BasicEventForwarder(
+        basicEventForwarder = BasicEventForwarder(
             player: player,
             eventProcessor: BasicEventConvivaReporter(conviva: videoAnalytics, storage: storage)
         )
         
-        // Report ad events
         if player.hasAdsImplementation {
             adEventHandler = AdEventForwarder(
                 player: player,
