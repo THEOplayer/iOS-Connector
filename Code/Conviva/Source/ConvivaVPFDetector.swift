@@ -34,7 +34,7 @@ class ConvivaVPFDetector {
     
     func transitionToWaiting() {
         playerIsWaiting = true
-        print("VPF Detector transitioned to waiting")
+        self.log("VPF Detector transitioned to waiting")
     }
 
     func detectsVPFOnPause(log: AVPlayerItemErrorLog, pauseTime: Date) -> Bool {
@@ -46,22 +46,28 @@ class ConvivaVPFDetector {
             }
         }
         if errorCountWithinDetectionRange >= self.errorCountTreshold {
-            print("VPF detected. (\(errorCountWithinDetectionRange) errors within error range.")
+            self.log("VPF detected. (\(errorCountWithinDetectionRange) errors within error range.")
             self.videoPlaybackFailureCallback?(self.vpfErrorDictionary)
             return true
         } else {
-            print("Pause event not interpreted as caused by network error. (\(errorCountWithinDetectionRange) errors within error range.")
+            self.log("Pause event not interpreted as caused by network error. (\(errorCountWithinDetectionRange) errors within error range.")
             return false
         }
     }
     
     func reset() {
-        print("VPF Detector reset")
+        self.log("VPF Detector reset")
         playerIsWaiting = false
     }
     
     func setVideoPlaybackFailureCallback(_ videoPlaybackFailureCallback: (([String: Any]) -> Void)? ) {
         self.videoPlaybackFailureCallback = videoPlaybackFailureCallback
+    }
+    
+    func log(_ text: String) {
+        #if DEBUG
+            print("[ConvivaVPFDetector]", text)
+        #endif
     }
 }
 

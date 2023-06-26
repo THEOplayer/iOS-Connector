@@ -32,6 +32,7 @@ class ConvivaReporter {
     }
     
     func reportPlay() {
+        self.log("reportPlay")
         if !currentSession.started {
             self.endPoints.videoAnalytics.reportPlaybackRequested(nil)
             self.currentSession.started = true
@@ -42,6 +43,7 @@ class ConvivaReporter {
     }
     
     func reportPlaying() {
+        self.log("reportPlaying")
         self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
         if self.inAdBreak {
             self.endPoints.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
@@ -49,6 +51,7 @@ class ConvivaReporter {
     }
     
     func reportTimeUpdate(timeInMSec: NSNumber) {
+        //self.log("reportTimeUpdate")
         self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: timeInMSec)
         if self.inAdBreak {
             self.endPoints.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: timeInMSec)
@@ -56,6 +59,7 @@ class ConvivaReporter {
     }
     
     func reportFrameRate(frameRate: NSNumber) {
+        //self.log("reportFrameRate")
         self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: frameRate)
         if self.inAdBreak {
             self.endPoints.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: frameRate)
@@ -63,6 +67,7 @@ class ConvivaReporter {
     }
     
     func reportPause() {
+        self.log("reportPause")
         self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
         if self.inAdBreak {
             self.endPoints.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
@@ -70,26 +75,32 @@ class ConvivaReporter {
     }
     
     func reportWaiting() {
+        self.log("reportWaiting")
         self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_BUFFERING.rawValue)
     }
     
     func reportSeeking(timeInMSec: NSNumber) {
+        self.log("reportSeeking")
         self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_STARTED, value: timeInMSec)
     }
     
     func reportSeeked(timeInMSec: NSNumber) {
+        self.log("reportSeeked")
         self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_ENDED, value: timeInMSec)
     }
     
     func reportError(error: String) {
+        self.log("reportError")
         self.endPoints.videoAnalytics.reportPlaybackFailed(error, contentInfo: nil)
     }
     
     func reportNetworkError(error: String) {
+        self.log("reportNetworkError")
         self.endPoints.videoAnalytics.reportPlaybackError(error, errorSeverity: .ERROR_WARNING)
     }
     
     func reportSourceChange(sourceDescription: SourceDescription?, selectedUrl: String?) {
+        self.log("reportSourceChange")
         if sourceDescription != currentSession.source?.description, currentSession.source != nil {
             self.validatePlaybackEnded()
         }
@@ -110,19 +121,19 @@ class ConvivaReporter {
             self.endPoints.videoAnalytics.setContentInfo(contentInfo)
         } else {
             newSource = nil
-            #if DEBUG
-            print("[THEOplayerConnectorConviva] setting unknown source")
-            #endif
+            self.log("setting unknown source")
         }
         self.currentSession.source = newSource
     }
     
     func reportEnded() {
+        self.log("reportEnded")
         self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_STOPPED.rawValue)
         self.validatePlaybackEnded()
     }
     
     private func validatePlaybackEnded() {
+        self.log("validatePlaybackEnded")
         if self.currentSession.started {
             self.endPoints.videoAnalytics.reportPlaybackEnded()
             self.currentSession = Session()
@@ -130,6 +141,7 @@ class ConvivaReporter {
     }
     
     func reportDurationChange(duration: Double?) {
+        self.log("reportDurationChange")
         if let newDuration = duration, self.currentSession.source?.url != nil {
             if newDuration.isInfinite {
                 self.endPoints.videoAnalytics.setContentInfo([
@@ -145,6 +157,7 @@ class ConvivaReporter {
     }
     
     func reportBitRate(kbps: NSNumber) {
+        self.log("reportBitRate")
         if inAdBreak {
             self.endPoints.adAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: kbps)
         } else {
@@ -154,6 +167,7 @@ class ConvivaReporter {
     }
     
     func reportDroppedFrames(count: NSNumber) {
+        self.log("reportDroppedFrames")
         if inAdBreak {
             self.endPoints.adAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL, value: count)
         } else {
@@ -162,18 +176,22 @@ class ConvivaReporter {
     }
     
     func reportDestroy() {
+        self.log("reportDestroy")
         self.validatePlaybackEnded()
     }
     
     func reportAppWillenterForeground() {
+        self.log("reportAppWillenterForeground")
         self.endPoints.analytics.reportAppForegrounded()
     }
     
     func reportAppDidenterBackground() {
+        self.log("reportAppDidenterBackground")
         self.endPoints.analytics.reportAppBackgrounded()
     }
     
     func reportAdBreakBegin(adBreak: AdBreak) {
+        self.log("reportAdBreakBegin")
         self.inAdBreak = true
         
         let formatter = NumberFormatter()
@@ -195,12 +213,14 @@ class ConvivaReporter {
     }
     
     func reportAdBreakEnd() {
+        self.log("reportAdBreakEnd")
         self.inAdBreak = false
         
         self.endPoints.videoAnalytics.reportAdBreakEnded()
     }
     
     func reportAdBegin(ad: Ad, duration: Double) {
+        self.log("reportAdBegin")
         var info = ad.convivaInfo
         // Temporary workaround for missing LinearAd in Native THEOplayerGoogleIMAIntegration. Can be removed after THEO-10161 is completed.
         if !info.keys.contains(CIS_SSDK_METADATA_IS_LIVE) {
@@ -211,6 +231,7 @@ class ConvivaReporter {
                 info[CIS_SSDK_METADATA_DURATION] = NSNumber(value: duration)
             }
         }
+        info["c3.csid"] = self.endPoints.videoAnalytics.getSessionId()
         self.endPoints.adAnalytics.reportAdLoaded(info)
         self.endPoints.adAnalytics.reportAdStarted(info)
         if let width = ad.width, let height = ad.height {
@@ -219,27 +240,38 @@ class ConvivaReporter {
     }
     
     func reportAdEnd() {
+        self.log("reportAdEnd")
         self.endPoints.adAnalytics.reportAdEnded()
     }
     
     func reportAdError(error: String, info: [AnyHashable: Any]?) {
+        self.log("reportAdError")
         self.endPoints.adAnalytics.reportAdFailed(error, adInfo: info)
     }
     
     func reportContentInfo(contentInfo: [String: Any]) {
+        self.log("reportContentInfo")
         self.endPoints.videoAnalytics.setContentInfo(contentInfo)
     }
     
     func reportAdInfo(adInfo: [String: Any]) {
+        self.log("reportAdInfo")
         self.endPoints.adAnalytics.setAdInfo(adInfo)
     }
     
     func reportStopAndStartNewSession(contentInfo: [String:Any]) {
+        self.log("reportStopAndStartNewSession")
         self.endPoints.videoAnalytics.reportPlaybackEnded()
         self.endPoints.videoAnalytics.reportPlaybackRequested(contentInfo)
         self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
         if let bitrate = self.storage.valueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE) as? NSNumber {
             self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrate)
         }
+    }
+    
+    func log(_ text: String) {
+        #if DEBUG
+            print("[ConvivaReporter]", text)
+        #endif
     }
 }
