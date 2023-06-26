@@ -1,5 +1,5 @@
 //
-//  VpfDetector.swift
+//  ConvivaVPFDetector.swift
 //  react-native-theoplayer-conviva
 //
 //  Created by Damiaan Dufaux on 21/04/2023.
@@ -83,9 +83,13 @@ extension ConvivaVPFDetector {
             Self(domain: NSURLErrorDomain, code: URLError.Code.cannotFindHost.rawValue),
             Self(domain: NSURLErrorDomain, code: URLError.Code.cannotConnectToHost.rawValue),
             Self(domain: NSURLErrorDomain, code: URLError.Code.networkConnectionLost.rawValue),
-            Self(domain: "CoreMediaErrorDomain", code: -12938), // HTTP 404: File Not Found
-            Self(domain: "CoreMediaErrorDomain", code: 12938), // HTTP 404: File Not Found
-            Self(domain: "CoreMediaErrorDomain", code: 12660), // HTTP 403: Forbidden
+            Self(domain: "CoreMediaErrorDomain", code: -12938), // 404: File Not Found
+            Self(domain: "CoreMediaErrorDomain", code: -12660), // 403: Forbidden
+            Self(domain: "CoreMediaErrorDomain", code: -12661), // 503: Unavailable
+            Self(domain: "CoreMediaErrorDomain", code: -16840), // 401: Unauthorized. iOS11
+            Self(domain: "CoreMediaErrorDomain", code: -12937), // Authentication Error
+            Self(domain: "CoreMediaErrorDomain", code: -12666), // Unrecognized http response
+            Self(domain: "CoreMediaErrorDomain", code: -12971), // The operation couldn’t be completed   failed to parse segment as either an MPEG-2 TS or an ES
         ])
     }
 }
