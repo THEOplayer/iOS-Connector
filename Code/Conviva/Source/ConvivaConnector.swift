@@ -20,14 +20,6 @@ public struct ConvivaConnector {
         self.convivaObserver = ConvivaObserver(player: player, reporter: self.convivaReporter, vpfDetector: self.convivaVPFDetector)
     }
     
-    public func report(viewerID: String) {
-        self.convivaReporter.reportViewerId(viewerID: viewerID)
-    }
-    
-    public func report(assetName: String) {
-        self.convivaReporter.reportAssetName(assetName: assetName)
-    }
-    
     public func destroy() {
         self.convivaObserver.destroy()
         self.convivaReporter.destroy()

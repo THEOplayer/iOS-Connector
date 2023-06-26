@@ -31,14 +31,6 @@ class ConvivaReporter {
         self.validatePlaybackEnded()
     }
     
-    func reportViewerId(viewerID: String) {
-        self.endPoints.videoAnalytics.setContentInfo([CIS_SSDK_METADATA_VIEWER_ID: viewerID])
-    }
-    
-    func reportAssetName(assetName: String) {
-        self.endPoints.videoAnalytics.setContentInfo([CIS_SSDK_METADATA_ASSET_NAME: assetName])
-    }
-    
     func reportPlay() {
         if !currentSession.started {
             self.endPoints.videoAnalytics.reportPlaybackRequested(nil)
