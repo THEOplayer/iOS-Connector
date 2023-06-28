@@ -13,10 +13,12 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
     
     public let videoAnalytics: CISVideoAnalytics
     public let adAnalytics: CISAdAnalytics
+    let storage: ConvivaConnectorStorage
         
-    init(video: CISVideoAnalytics, ads: CISAdAnalytics) {
+    init(video: CISVideoAnalytics, ads: CISAdAnalytics, storage: ConvivaConnectorStorage) {
         videoAnalytics = video
         adAnalytics = ads
+        self.storage = storage
     }
     
     public func adBreakBegin(event: AdBreakBeginEvent) {
@@ -36,6 +38,13 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
         guard let ad = event.beginEvent.ad, ad.type == THEOplayerSDK.AdType.linear else { return }
 
         var info = ad.convivaInfo
+        
+        // set Ad contentAssetName
+        if let contentAssetName = self.storage.valueForKey(CIS_SSDK_METADATA_ASSET_NAME) {
+            info["contentAssetName"] = contentAssetName
+        }
+        // set Ad session ID
+        info["c3.csid"] = self.videoAnalytics.getSessionId()
         
         // Temporary workaround for missing LinearAd in Native THEOplayerGoogleIMAIntegration. Can be removed after THEO-10161 is completed.
         if !info.keys.contains(CIS_SSDK_METADATA_IS_LIVE), let duration = event.duration {

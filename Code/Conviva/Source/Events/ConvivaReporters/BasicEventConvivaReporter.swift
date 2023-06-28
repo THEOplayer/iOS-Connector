@@ -80,14 +80,16 @@ class BasicEventConvivaReporter: BasicEventProcessor {
         
         if let source = event.source, let url = selectedSource {
             newSource = .init(description: source, url: url)
+            let assetName = source.metadata?.title ?? Utilities.defaultStringValue;
             let contentInfo = [
                 CIS_SSDK_METADATA_PLAYER_NAME: Utilities.playerFrameworkName,
                 CIS_SSDK_METADATA_STREAM_URL: url,
-                CIS_SSDK_METADATA_ASSET_NAME: source.metadata?.title ?? Utilities.defaultStringValue,
+                CIS_SSDK_METADATA_ASSET_NAME: assetName,
                 CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: false),
                 CIS_SSDK_METADATA_DURATION: NSNumber(value: -1)
             ] as [String: Any]
-            conviva.setContentInfo(contentInfo)
+            self.conviva.setContentInfo(contentInfo)
+            self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_ASSET_NAME, value: assetName)
         } else {
             newSource = nil
             #if DEBUG

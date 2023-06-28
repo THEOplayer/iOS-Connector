@@ -36,10 +36,7 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
         if player.hasAdsImplementation {
             adEventHandler = AdEventForwarder(
                 player: player,
-                eventProcessor: AdEventConvivaReporter(
-                    video: videoAnalytics,
-                    ads: adAnalytics
-                )
+                eventProcessor: AdEventConvivaReporter(video: videoAnalytics, ads: adAnalytics, storage: storage)
             )
         } else {
             adEventHandler = nil
