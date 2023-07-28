@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.7.0] - 2023-07-28
+
+### Added
+
+- Conviva
+  - Added additional Ad metadata properties
+
 ## [5.5.1] - 2023-06-29
 
 ### Fixed
@@ -13,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Reset stored bitrate value on source changes
   
 ### Added
+
 - Conviva
   - Send c3.csid and contentAssetName as adMetadata on AdBegin event
 
@@ -29,7 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - SideloadedSubtitle
   - Added new connector to sideload subtitles on tvOS and iOS
-
 
 ## [5.1.0] - 2023-05-15
 
