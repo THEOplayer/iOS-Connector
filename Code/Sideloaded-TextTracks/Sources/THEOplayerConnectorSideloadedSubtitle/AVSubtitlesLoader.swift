@@ -10,16 +10,16 @@ import AVFoundation
 import THEOplayerSDK
 
 class AVSubtitlesLoader: NSObject {
-    private let subtitles: [TextTrackDescription]?
+    private let subtitles: [TextTrackDescription]
     private(set) var variantTotalDuration: Double = 0
+    private let transformer = SubtitlesTransformer()
     
     init(subtitles: [TextTrackDescription]) {
         self.subtitles = subtitles
     }
     
     func handleMasterManifestRequest(_ request: AVAssetResourceLoadingRequest) -> Bool {
-        guard let originalURL = request.request.url?.withScheme(newScheme: URLScheme.https),
-                let subtitles = self.subtitles else {
+        guard let originalURL = request.request.url?.withScheme(newScheme: URLScheme.https) else {
             return false
         }
         
@@ -87,8 +87,31 @@ class AVSubtitlesLoader: NSObject {
         
         return true
     }
+
+    func handleSubtitleContent(_ request: AVAssetResourceLoadingRequest) -> Bool {
+        guard let customSchemeURL = request.request.url else {
+            return false
+        }
+
+        guard let originalURL = customSchemeURL.byRemovingScheme(scheme: URLScheme.subtitle) else {
+            print("[AVSubtitlesLoader] ERROR: Failed to revert subtitle URL!")
+            return false
+        }
+
+        let trackDescription: THEOplayerSDK.TextTrackDescription? = self.findTrackDescription(by: originalURL)
+        let format: THEOplayerSDK.TextTrackFormat = trackDescription?.format ?? .WebVTT
+        let timestamp: SSTextTrackDescription.WebVttTimestamp? = (trackDescription as? SSTextTrackDescription)?.vttTimestamp
+        let req: URLRequest? = self.transformer.composeTransformationRequest(with: originalURL.absoluteString, format: format, timestamp: timestamp)
+        let response = HTTPURLResponse(url: originalURL, statusCode: 301, httpVersion: nil, headerFields: nil)
+        request.response = response
+        request.redirect = req
+        request.finishLoading()
+
+        return true
+    }
     
     fileprivate func getSubtitleManifest(for originalURL: URL) -> String {
+        let subtitlesURL: URL = originalURL.byConcatingScheme(scheme: URLScheme.subtitle) ?? originalURL
         // if the variantTotalDuration is equal to zero then we can use a higher number as AVPlayer is not expecting the EXACT duration but the MAXIMUM duration that the stream can reach
         return """
         #EXTM3U
@@ -97,9 +120,19 @@ class AVSubtitlesLoader: NSObject {
         #EXT-X-PLAYLIST-TYPE:VOD
         #EXT-X-TARGETDURATION:\(self.variantTotalDuration == 0 ? Int.max : Int(self.variantTotalDuration))
         #EXTINF:\(self.variantTotalDuration == 0 ? String(Int.max) : String(format: "%.3f", self.variantTotalDuration))
-        \(originalURL.absoluteString)
+        \(subtitlesURL.absoluteString)
         #EXT-X-ENDLIST
         """
+    }
+
+    private func findTrackDescription(by subtitleURL: URL) -> THEOplayerSDK.TextTrackDescription? {
+        // find the track definition
+        guard let track: THEOplayerSDK.TextTrackDescription = self.subtitles.first(where: { subtitle in
+            return subtitle.src.absoluteString == subtitleURL.absoluteString
+        }) else {
+            return nil
+        }
+        return track
     }
 }
 
@@ -108,6 +141,7 @@ enum URLScheme: String {
     case https = "https"
     case masterm3u8 = "interceptedm3u8" // master manifest
     case subtitlesm3u8 = "subtitlesm3u8" // subtitle manifest
+    case subtitle = "subtitle" // subtitle data
     case variantm3u8 = "variantm3u8" // variant manifest
     
     var name: String {
@@ -127,7 +161,7 @@ extension AVSubtitlesLoader: ManifestInterceptor {
     
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
         if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
-            print("[AVSubtitlesLoader] renewalRequest", loadingRequest.request.url?.absoluteString ?? "")
+            print("[AVSubtitlesLoader] loadingRequest", loadingRequest.request.url?.absoluteString ?? "")
         }
         return intercept(loadingRequest: loadingRequest)
 
@@ -154,6 +188,9 @@ extension AVSubtitlesLoader: ManifestInterceptor {
         case URLScheme.subtitlesm3u8.name:
             // intercept the subtitle request to respond with the HLS subtitle
             return self.handleSubtitles(loadingRequest)
+        case URLScheme.subtitle.name:
+            // intercept subtitle content to modify (ie. SRT -> VTT, add time offset, etc.)
+            return self.handleSubtitleContent(loadingRequest)
         default:
             break
         }
@@ -184,5 +221,60 @@ extension THEOplayer {
         }
         
         self.source = source
+    }
+}
+
+/// A subclass of `TextTrackDescription` which extends and adds additional functionality.
+public class SSTextTrackDescription: TextTrackDescription {
+    /// A structure that represents the X-TIMESTAMP-MAP tag for WebVTT subtitles in the HLS spec.
+    public struct WebVttTimestamp {
+        /// The timestamp that represents the MPEGTS property of the X-TIMESTAMP-MAP tag.
+        public var pts: String?
+        /// The local time that represents the LOCAL property of the X-TIMESTAMP-MAP tag.
+        public var localTime: String?
+
+        /// :nodoc:
+        public init(pts: String? = nil, localTime: String? = nil) {
+            self.pts = pts
+            self.localTime = localTime
+        }
+    }
+
+    /**
+     Property that stores the value of the X-TIMESTAMP-MAP tag.
+
+     - Remark:
+        - Setting this property will add/replace the X-TIMESTAMP-MAP specified in the WebVTT source. Both `pts` and `localTime` properties should be different than nil.
+        - If the source already contains a X-TIMESTAMP-MAP tag, the values will not be automatically set. To get the values, use the `extractSourceTimestamp` method.
+     */
+    public var vttTimestamp: WebVttTimestamp = .init()
+
+    /**
+     Method that returns a closure that provides the values of the X-TIMESTAMP-MAP tag specified in the WebVTT source, represented using the `WebVttTimestamp` structure.
+
+     - Remark:
+        - Always returns a timestamp, but if the source does not specify the X-TIMESTAMP-MAP tag then the properties of the timestamp will be nil.
+     */
+    public func extractSourceTimestamp(completion: @escaping (_ timestamp: WebVttTimestamp, _ error: Error?) -> Void) {
+        let task = URLSession.shared.dataTask(with: URLRequest(url: self.src)) { data, res, err in
+            if let _data: Data = data,
+               let contentString = String(data: _data, encoding: .utf8),
+               err == nil {
+                if let values: (String, String) = TimestampStringUtils.getTimestampValues(from: contentString) {
+                    completion(.init(pts: values.0, localTime: values.1), nil)
+                } else {
+                    enum _Error: Error, CustomStringConvertible {
+                        case timestampNotFound
+                        public var description: String {
+                            return "Could not find a timestamp in the WebVTT file."
+                        }
+                    }
+                    completion(.init(), _Error.timestampNotFound)
+                }
+            } else {
+                completion(.init(), err)
+            }
+        }
+        task.resume()
     }
 }

@@ -20,7 +20,9 @@ let package = Package(
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.30"),
         .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-ios", from: "5.2.0"),
-        .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "9.0.0")
+        .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "9.0.0"),
+        .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
+        .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
     ],
     targets: [
         // CONVIVA \\
@@ -65,7 +67,11 @@ let package = Package(
         // Sideloaded subtitles \\
         .target(
             name: "THEOplayerConnectorSideloadedSubtitle",
-            dependencies: ["THEOplayerSDK"],
+            dependencies: [
+                "THEOplayerSDK",
+                "Swifter",
+                "SwiftSubtitles",
+            ],
             path: "Code/Sideloaded-TextTracks/Sources/THEOplayerConnectorSideloadedSubtitle" 
         ),
 
