@@ -224,6 +224,25 @@ extension THEOplayer {
     }
 }
 
+extension Cache {
+    /**
+    Creates a CachingTask and activates the side-loaded subtitle helper logic
+
+     - Remark:
+        - Once used this method, always use it to cache a source (even if there are no sideloaded subtitles in it), otherwise the subtitle helper logic can break the caching behavior
+     */
+    public func createTaskWithSubtitles(source: SourceDescription, parameters: CachingParameters?) -> CachingTask? {
+        if let sideLoadedTextTracks = source.textTracks, !sideLoadedTextTracks.isEmpty {
+            let subtitleLoader = AVSubtitlesLoader(subtitles: sideLoadedTextTracks)
+            self.developerSettings?.manifestInterceptor = subtitleLoader
+        } else {
+            self.developerSettings?.manifestInterceptor = nil
+        }
+
+        return createTask(source: source, parameters: parameters)
+    }
+}
+
 /// A subclass of `TextTrackDescription` which extends and adds additional functionality.
 public class SSTextTrackDescription: TextTrackDescription {
     /// A structure that represents the X-TIMESTAMP-MAP tag for WebVTT subtitles in the HLS spec.
