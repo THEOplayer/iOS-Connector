@@ -151,3 +151,31 @@ textTrack.vttTimestamp = .init(pts: "900000", localTime: "00:00:05.000")
 1. You should always use HLS subtitle rendition compliant WEBVTT files which are in sync with your streams and you should not be using the time shifting functionality.
 2. Shifting cues backward is only possible until the timestamp of the first cue (e.g. if your first cue has to be rendered at 10 sec, you should not shift the subtitle with 15 sec).
 3. Shifting forward is possible, but considered as hack, and it is not specification compliant manifest entry. Use it at your own risk!
+
+## Caching
+
+The caching feature of this connector allows to download a source alongside a sideloaded subtitle to store it locally on the device and play it offline. To make this happen, the connector provides an API extension.
+
+All that is needed is a source with a text track description:
+
+```swift
+public static var sourceWithSideloadedTextTrack: SourceDescription {
+    let typedSource = TypedSource(src: "https://sourceURL.com/manifest.m3u8, type: "application/x-mpegurl")
+    let textTrack = TextTrackDescription(src: "https://sideloadedurl.com/subtitle.vtt", srclang: "language_code", isDefault: false, kind: .subtitles, label: "Label", format: .WebVTT)
+    return SourceDescription(source: typedSource, textTracks: [textTrack])
+}
+```
+
+and to call the aforementioned API which creates a new caching task, and finally calling the start method:
+
+```swift
+let parameters = CachingParameters(expirationDate: .distantFuture)
+let task = THEOplayer.cache.createTaskWithSubtitles(source: sourceWithSideloadedTextTrack, parameters: parameters)
+task?.start()
+```
+
+For more information on how to implement offline playback with caching, please refer [to our guide](https://github.com/THEOplayer/samples-ios-sdk/tree/master/Offline-Playback/Guides/howto-offline-stream-caching).
+
+### Limitations
+
+Caching sources with sideloaded subtitles can only be done one task at a time. This is due to some technical complexities in the underlying implementation. This limitation may be addressed in future releases.
