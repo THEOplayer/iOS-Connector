@@ -224,6 +224,7 @@ extension THEOplayer {
     }
 }
 
+#if os(iOS)
 extension Cache {
     /**
     Creates a CachingTask and activates the side-loaded subtitle helper logic
@@ -242,6 +243,7 @@ extension Cache {
         return createTask(source: source, parameters: parameters)
     }
 }
+#endif
 
 /// A subclass of `TextTrackDescription` which extends and adds additional functionality.
 public class SSTextTrackDescription: TextTrackDescription {
