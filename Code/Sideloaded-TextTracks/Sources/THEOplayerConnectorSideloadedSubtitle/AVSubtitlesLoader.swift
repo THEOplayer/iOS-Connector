@@ -49,6 +49,15 @@ class AVSubtitlesLoader: NSObject {
                 request.finishLoading(with: URLError(URLError.cannotParseResponse))
                 return
             }
+            if let contentString = String(data: responseData, encoding: .utf8),
+               let timestampValues: (String, String) = TimestampStringUtils.getTimestampValues(from: contentString, origin: .QualityManifest) {
+                let timestamp = SSTextTrackDescription.WebVttTimestamp(pts: timestampValues.0, localTime: "00:00:00.000")
+                for subtitle in self.subtitles {
+                    if let _subtitle = subtitle as? SSTextTrackDescription {
+                        _subtitle.vttTimestamp = timestamp
+                    }
+                }
+            }
             self.variantTotalDuration = playlist.totalPlayListDuration
             let response = HTTPURLResponse(url: originalURL, statusCode: 200, httpVersion: nil, headerFields: nil)
             request.response = response

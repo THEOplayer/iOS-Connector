@@ -12,23 +12,29 @@ class TimestampStringUtils {
     private static let ptsKey: String = "MPEGTS"
     private static let localKey: String = "LOCAL"
 
-    private static func getTimestampValueIndexes(from string: String) -> (String.Index, String.Index)? {
-        guard let startIndex: String.Index = string.range(of: "\(Self.timestampTag)=")?.upperBound,
+    enum TimestampOrigin {
+        case SubtitleManifest
+        case QualityManifest
+    }
+
+    private static func getTimestampValueIndexes(from string: String, origin: TimestampOrigin) -> (String.Index, String.Index)? {
+        let _operator = origin == .SubtitleManifest ? "=" : ":"
+        guard let startIndex: String.Index = string.range(of: "\(Self.timestampTag)\(_operator)")?.upperBound,
               let endIndex: String.Index = string.suffix(from: startIndex).range(of: "\n")?.lowerBound else {
             return nil
         }
         return (startIndex, endIndex)
     }
 
-    private static func getTimestampValue(from string: String) -> String? {
-        guard let indexes: (String.Index, String.Index) = Self.getTimestampValueIndexes(from: string) else {
+    private static func getTimestampValue(from string: String, origin: TimestampOrigin) -> String? {
+        guard let indexes: (String.Index, String.Index) = Self.getTimestampValueIndexes(from: string, origin: origin) else {
             return nil
         }
         return String(string[indexes.0...string.index(before: indexes.1)])
     }
 
-    static func getTimestampValues(from string: String) -> (String, String)? {
-        guard let timestampValue: String = Self.getTimestampValue(from: string) else {
+    static func getTimestampValues(from string: String, origin: TimestampOrigin = .SubtitleManifest) -> (String, String)? {
+        guard let timestampValue: String = Self.getTimestampValue(from: string, origin: origin) else {
             return nil
         }
 
@@ -36,7 +42,8 @@ class TimestampStringUtils {
         var pts: String?
         var local: String?
         for parameter in parameters {
-            let keyValue: [String] = parameter.components(separatedBy: ":")
+            let _operator = origin == .SubtitleManifest ? ":" : "="
+            let keyValue: [String] = parameter.components(separatedBy: _operator)
             if let key: String = keyValue.first {
                 if key == Self.ptsKey,
                     let value: String = keyValue.last {
@@ -55,7 +62,7 @@ class TimestampStringUtils {
     }
 
     static func overrideTimestamp(in string: String, with values: (String, String)) -> String? {
-        guard let indexes: (String.Index, String.Index) = Self.getTimestampValueIndexes(from: string) else {
+        guard let indexes: (String.Index, String.Index) = Self.getTimestampValueIndexes(from: string, origin: .SubtitleManifest) else {
             print("[AVSubtitlesLoader] ERROR: Failed to override timestamp.")
             return nil
         }
