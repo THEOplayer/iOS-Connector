@@ -2,7 +2,7 @@ def theoplayer_connector_major_minor_version
   return '5.9'
 end
 def theoplayer_connector_bug_version
-  return '0'
+  return '1'
 end
 def theoplayer_connector_version
   return theoplayer_connector_major_minor_version + '.' + theoplayer_connector_bug_version
