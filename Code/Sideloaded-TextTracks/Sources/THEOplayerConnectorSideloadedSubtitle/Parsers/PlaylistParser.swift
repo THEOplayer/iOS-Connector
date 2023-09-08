@@ -22,6 +22,10 @@ class PlaylistParser {
                 completion(false)
                 return
             }
+			// Update the manifestUrl to the url received in the response (to pickup possible url redirect)
+			if let responseUrl = response?.url {
+			    self.manifestURL = responseUrl
+			}
             if self.isValidManifest(data: responseData) {
                 self.manifestData = responseData
                 completion(true)
