@@ -61,6 +61,7 @@ class SubtitlesTransformer {
         let handler: (HttpRequest) -> HttpResponse = { req in
             // Always return with HttpResponse.ok to fail gracefully. Otherwise player will stall.
             guard let contentURLStirng: String = Parameters.contentUrl.getValue(from: req.queryParams),
+			      let decodedContentUrlString = contentURLString.removingPercentEncoding,
                   let contentUrl: URL = URL(string: contentURLStirng) else {
                 let errorMessage: String = "Missing subtitle content URL."
                 print("[AVSubtitlesLoader] ERROR: \(errorMessage)")
