@@ -19,7 +19,11 @@ class HLSLine {
     var tag = String() // this value can either be the HLS TAG if the line is identified successfully, or the complete line if the identification fails
     var paramsString = String()
     var paramsObject = [String: String]()
-    
+
+    var uriParameter: String? {
+        return self.paramsObject[PlaylistParser.HLSKeywords.uri.rawValue]?.replacingOccurrences(of: "\"", with: String())
+    }
+
     init(lineString: String) {
         self.lineString = lineString
         self.parseLine(str: lineString)
@@ -52,6 +56,11 @@ class HLSLine {
             }
         }
         return lineDic
+    }
+
+    func updateUri(relativeUri: String, absoluteUri: String) {
+        self.paramsString = self.paramsString.replacingOccurrences(of: relativeUri, with: absoluteUri)
+        self.paramsObject.updateValue("\"\(absoluteUri)\"", forKey: PlaylistParser.HLSKeywords.uri.rawValue)
     }
     
     func joinLine() -> String {

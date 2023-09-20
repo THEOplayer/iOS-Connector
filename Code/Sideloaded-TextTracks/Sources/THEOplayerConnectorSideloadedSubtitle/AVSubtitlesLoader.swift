@@ -210,7 +210,7 @@ extension THEOplayer {
     public func setSourceWithSubtitles(source: SourceDescription?){
         
         if let source = source {
-            if let sideLoadedTextTracks = source.textTracks, !sideLoadedTextTracks.isEmpty {
+            if let sideLoadedTextTracks = SourceValidator.getValidTextTracks(source) {
                 let subtitleLoader = AVSubtitlesLoader(subtitles: sideLoadedTextTracks)
                 self.developerSettings?.manifestInterceptor = subtitleLoader
             } else {
@@ -233,7 +233,7 @@ extension Cache {
         - Once used this method, always use it to cache a source (even if there are no sideloaded subtitles in it), otherwise the subtitle helper logic can break the caching behavior
      */
     public func createTaskWithSubtitles(source: SourceDescription, parameters: CachingParameters?) -> CachingTask? {
-        if let sideLoadedTextTracks = source.textTracks, !sideLoadedTextTracks.isEmpty {
+        if let sideLoadedTextTracks = SourceValidator.getValidTextTracks(source) {
             let subtitleLoader = AVSubtitlesLoader(subtitles: sideLoadedTextTracks)
             self.developerSettings?.manifestInterceptor = subtitleLoader
         } else {

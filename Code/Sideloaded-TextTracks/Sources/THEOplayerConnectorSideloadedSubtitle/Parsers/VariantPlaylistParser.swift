@@ -48,20 +48,25 @@ class VariantPlaylistParser: PlaylistParser {
         let allLines = manifestString.components(separatedBy: "\n")
         var iterator = allLines.makeIterator()
         
-        while let line = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines) {
-            switch line {
-            case _ where line.hasPrefix(ManifestTags.ExtInf.rawValue):
-                guard let duration = Double(line.filter("0123456789.".contains)) else {
+        while let lineString = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines) {
+            let line = HLSLine(lineString: lineString)
+            // we need this to force-use the absoluteURL in any URI parameter in a line
+            // the reason for this behaviour is that AVPlayer will use the custom Scheme if relativeURL is provided
+            self.updateRelativeUri(line: line)
+
+            switch line.tag {
+            case ManifestTags.ExtInf.rawValue:
+                guard let duration = Double(lineString.filter("0123456789.".contains)) else {
                     return
                 }
                 self.totalPlayListDuration += duration
-                self.constructedManifestArray.append(line)
-                if let nextLine = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines), let fullURL = self.getFullURL(from: nextLine) {
+                self.constructedManifestArray.append(line.joinLine())
+                if let nextLine = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   let fullURL = self.getFullURL(from: nextLine) {
                     self.constructedManifestArray.append(fullURL.absoluteString)
                 }
             default:
-                self.constructedManifestArray.append(line)
-                break;
+                self.constructedManifestArray.append(line.joinLine())
             }
         }
     }
