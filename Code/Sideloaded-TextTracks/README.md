@@ -55,6 +55,8 @@ theoplayer.textTracks.addEventListener(type: TextTrackListEventTypes.ADD_TRACK) 
 }
 ```
 
+5. Loading thumbnail metadata through sideloaded WebVTT subtitles is not supported.
+
 ## Setting a time offset
 
 It is possible to shift the presentation of the cues by using the extended `SSTextTrackDescription` class instead of `TextTrackDescription`. It will provide an additional property `vttTimestamp` which allows to specify a [X-TIMESTAMP-MAP](https://datatracker.ietf.org/doc/html/draft-pantos-http-live-streaming-22#section-3.5).

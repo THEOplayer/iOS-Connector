@@ -49,9 +49,7 @@ class MasterPlaylistParser: PlaylistParser {
             let line = HLSLine(lineString: lineString)
             // we need this to force-use the absoluteURL in any URI parameter in a line
             // the reason for this behaviour is that AVPlayer will use the custom Scheme if relativeURL is provided
-            if let uri = line.paramsObject[HLSKeywords.uri.rawValue]?.replacingOccurrences(of: "\"", with: String()), let fullURL = self.getFullURL(from: uri) {
-                line.paramsObject[HLSKeywords.uri.rawValue] = "\"\(fullURL.absoluteString)\""
-            }
+            self.updateRelativeUri(line: line)
             
             switch line.tag {
             case ManifestTags.ExtXMedia.rawValue:
