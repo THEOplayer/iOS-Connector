@@ -75,11 +75,12 @@ class SubtitlesTransformer {
                 return HttpResponse.ok(.text(errorMessage))
             }
             guard let contentData: Data = data,
-                  var contentString: String = String(data: contentData, encoding: .utf8)?.removingPercentEncoding?.replacingOccurrences(of: "\r\n", with: "\n") else {
+                  let _contentString: String = String(data: contentData, encoding: .utf8)?.removingPercentEncoding ?? String(data: contentData, encoding: .utf8) else {
                 let errorMessage: String = "Missing subtitle content. Reason: Failed to encode content string."
                 print("[AVSubtitlesLoader] ERROR: \(errorMessage)")
                 return HttpResponse.ok(.text(errorMessage))
             }
+            var contentString: String = _contentString.replacingOccurrences(of: "\r\n", with: "\n")
 
             // SRT to VTT
             if Parameters.format.getValue(from: req.queryParams) == THEOplayerSDK.TextTrackFormat.SRT._rawValue {
