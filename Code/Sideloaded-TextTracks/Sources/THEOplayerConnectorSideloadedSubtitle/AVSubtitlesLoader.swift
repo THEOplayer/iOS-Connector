@@ -38,11 +38,14 @@ class AVSubtitlesLoader: NSObject {
     }
     
     func handleVariantManifest(_ request: AVAssetResourceLoadingRequest) -> Bool {
-        guard let customSchemeURL = request.request.url, let originalURL = customSchemeURL.byRemovingScheme(scheme: URLScheme.variantm3u8) else {
+        guard let customSchemeURL = request.request.url,
+              let originalURLString = customSchemeURL.absoluteString.byRemovingScheme(scheme: URLScheme.variantm3u8),
+              let originalURL = URL(string:originalURLString) else {
             print("[AVSubtitlesLoader] ERROR: Variant manifest is invalid")
             request.finishLoading(with: URLError(URLError.unsupportedURL))
             return false
         }
+        
         VariantPlaylistParser(url: originalURL).parse { playlist in
             guard let playlist = playlist, let responseData = playlist.manifestData else {
                 print("[AVSubtitlesLoader] ERROR: Couldn't find variant data")
@@ -63,7 +66,8 @@ class AVSubtitlesLoader: NSObject {
             return false
         }
         
-        guard let originalURL = customSchemeURL.byRemovingScheme(scheme: URLScheme.subtitlesm3u8) else {
+        guard let originalURLString = customSchemeURL.absoluteString.byRemovingScheme(scheme: URLScheme.subtitlesm3u8),
+              let originalURL = URL(string: originalURLString) else {
             print("[AVSubtitlesLoader] ERROR: Failed to revert subtitle URL!")
             return false
         }
@@ -93,7 +97,8 @@ class AVSubtitlesLoader: NSObject {
             return false
         }
 
-        guard let originalURL = customSchemeURL.byRemovingScheme(scheme: URLScheme.subtitle) else {
+        guard let originalURLString = customSchemeURL.absoluteString.byRemovingScheme(scheme: URLScheme.subtitle),
+              let originalURL = URL(string: originalURLString) else {
             print("[AVSubtitlesLoader] ERROR: Failed to revert subtitle URL!")
             return false
         }
@@ -111,7 +116,7 @@ class AVSubtitlesLoader: NSObject {
     }
     
     fileprivate func getSubtitleManifest(for originalURL: URL) -> String {
-        let subtitlesURL: URL = originalURL.byConcatingScheme(scheme: URLScheme.subtitle) ?? originalURL
+        let subtitlesURL: String = originalURL.absoluteString.byConcatenatingScheme(scheme: URLScheme.subtitle)
         // if the variantTotalDuration is equal to zero then we can use a higher number as AVPlayer is not expecting the EXACT duration but the MAXIMUM duration that the stream can reach
         return """
         #EXTM3U
@@ -120,7 +125,7 @@ class AVSubtitlesLoader: NSObject {
         #EXT-X-PLAYLIST-TYPE:VOD
         #EXT-X-TARGETDURATION:\(self.variantTotalDuration == 0 ? Int.max : Int(self.variantTotalDuration))
         #EXTINF:\(self.variantTotalDuration == 0 ? String(Int.max) : String(format: "%.3f", self.variantTotalDuration))
-        \(subtitlesURL.absoluteString)
+        \(subtitlesURL)
         #EXT-X-ENDLIST
         """
     }
