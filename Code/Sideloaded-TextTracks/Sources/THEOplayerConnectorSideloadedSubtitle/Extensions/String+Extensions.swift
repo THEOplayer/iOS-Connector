@@ -29,8 +29,12 @@ extension String {
         }
     }
     
-    func byConcatingScheme(scheme: URLScheme) -> String {
+    func byConcatenatingScheme(scheme: URLScheme) -> String {
         return scheme.urlScheme + self
+    }
+    
+    func byRemovingScheme(scheme: URLScheme) -> String? {
+        return self.replaceFirst(of: scheme.urlScheme, with: String())
     }
 
 }

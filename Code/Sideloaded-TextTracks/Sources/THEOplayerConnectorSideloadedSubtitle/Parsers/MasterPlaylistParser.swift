@@ -81,8 +81,8 @@ class MasterPlaylistParser: PlaylistParser {
     
     func appendSubtitlesLines(subtitles: [TextTrackDescription]) {
         for subtitle in subtitles {
-            if let label = subtitle.label, let encodedURL = subtitle.src.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
-                let subtitleCustomSchemePath = encodedURL.byConcatingScheme(scheme: URLScheme.subtitlesm3u8)
+            if let label = subtitle.label, let encodedURLString = subtitle.src.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                let subtitleCustomSchemePath = encodedURLString.byConcatenatingScheme(scheme: URLScheme.subtitlesm3u8)
                 let subtitleLine = "#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"\(self.subtitlesGroupId)\",NAME=\"\(label)\",URI=\"\(subtitleCustomSchemePath)\",LANGUAGE=\"\(subtitle.srclang)\""
                 if let linePosition = self.lastMediaLine {
                     self.constructedManifestArray.insert("\(subtitleLine)", at: linePosition)
@@ -97,9 +97,6 @@ class MasterPlaylistParser: PlaylistParser {
         guard let variantURL = self.getFullURL(from: path) else {
             return path.trimmingCharacters(in: .whitespacesAndNewlines)
         }
-        guard let url = variantURL.byConcatingScheme(scheme: URLScheme.variantm3u8) else {
-            return path
-        }
-        return url.absoluteString
+        return variantURL.absoluteString.byConcatenatingScheme(scheme: URLScheme.variantm3u8) 
     }
 }
