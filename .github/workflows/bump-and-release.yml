@@ -1,0 +1,44 @@
+name: Bump and release
+run-name: Bumping version to ${{ inputs.version }} and releasing 🚀
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to tag'
+        required: true
+        type: string
+      dryRun:
+        description: 'Dry run to only validate without release.'
+        required: false
+        default: true
+        type: boolean
+jobs:
+  Job-1:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "The version argument is ${{ inputs.version }}."
+      - run: echo "Github ref is -> ${github.ref}"
+      # - name: Update the version.json file
+      #   run: |
+      #     sh update_version_json.sh -v ${{ inputs.version }}
+      # - name: Commit and push the changes made to the version.json file
+      #   run: |
+      #     git add version.json
+      #     git commit -m "update version.json"
+      #     git push
+      # - name: Add and push new git tag
+      #   run: |
+      #     git tag ${{ inputs.version }}
+      #     git push origin ${{ inputs.version }}
+      # - name: Print cocoapods session
+      #   env:
+      #     COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+      #   run: |
+      #     if [ ${{ inputs.dryRun }} == true ]; then
+      #       echo "This is a dry run, <insert pod spec lint call here>"
+      #     else
+      #       echo "This is a regular run, <insert pod trunk push call here>"
+      #     fi
+      #     pod trunk me
