@@ -1,0 +1,22 @@
+name: Bump and release
+run-name: Bumping version to ${{ inputs.version }} and releasing. (dry run = ${{ inputs.dryRun }}) 🚀
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to tag'
+        required: true
+        type: string
+      dryRun:
+        description: 'Dry run to only validate without release.'
+        required: false
+        default: true
+        type: boolean
+jobs:
+  Job-1:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "The version argument is ${{ inputs.version }}."
+      - run: echo "Github ref is -> ${{ github.ref }}"
