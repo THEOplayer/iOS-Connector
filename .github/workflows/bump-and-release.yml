@@ -31,14 +31,16 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Update the version.json file
-        run: |
-          sh update_version_json.sh -v ${{ inputs.version }}
+        if: inputs.version != ''
+        run: sh update_version_json.sh -v ${{ inputs.version }}
       - name: Commit and push the changes made to the version.json file
+        if: inputs.version != ''
         run: |
           git add version.json
           git commit -m "update version.json"
           git push
       - name: Add and push new git tag
+        if: inputs.version != ''
         run: |
           git tag ${{ inputs.version }}
           git push origin ${{ inputs.version }}
