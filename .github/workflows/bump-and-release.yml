@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
       - id: store_previous_version
         run: |
-          previousVersion=$(ruby -r "./THEOplayer-Connector-Version.rb" -e "print_version")
+          previousVersion=$(ruby -r "./THEOplayer-Connector-Version.rb" -e "print_theoplayer_connector_version")
           echo "previousVersion=$previousVersion" >> "$GITHUB_OUTPUT"
       - name: Update the version.json file
         if: inputs.version != ''
