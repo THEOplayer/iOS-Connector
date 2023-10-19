@@ -21,7 +21,6 @@ on:
           - All
           - Utilities
           - Comscore
-          - Conviva-VerizonMedia
           - Conviva
           - SidelaodedSubtitle
 jobs:
@@ -58,9 +57,12 @@ jobs:
             for file in ${files[*]}
             do
               if [[ $file == *.podspec ]]; then
-                connectors+=("$prefix-$file")
+                if [[ $file != *Utilities.podspec && $file != *VerizonMedia.podspec ]]; then
+                  connectors+=("$file")
+                fi
               fi
             done
+            connectors=("$prefix-Utilities.podspec" "${connectors[@]}")
           else
             connectors+=("$prefix-${{ inputs.connectors }}.podspec")
           fi
