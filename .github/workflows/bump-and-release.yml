@@ -1,5 +1,5 @@
 name: Bump and release
-run-name: Bumping version to ${{ inputs.version }} and releasing. (dry run = ${{ inputs.dryRun }}) 🚀
+run-name: ${{ (inputs.version == '' && 'Not bumping version') || format('Bumping version to {0}', inputs.version) }} and ${{ (inputs.dryRun == true && 'validating') || 'releasing' }} ${{ inputs.connectors }}
 on:
   workflow_dispatch:
     inputs:
