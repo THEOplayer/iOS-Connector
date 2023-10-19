@@ -63,9 +63,20 @@ jobs:
             for file in ${files[*]}
             do
               if [[ $file == *.podspec ]]; then
-                if [[ $file != *Utilities.podspec && $file != *VerizonMedia.podspec ]]; then
-                  connectors+=("$file")
+                # we add the Utilities later at index 0
+                if [[ $file == *Utilities.podspec ]]; then
+                  continue
                 fi
+                # blacklisted podspecs
+                if [[ $file == *VerizonMedia.podspec || $file == *Nielsen.podspec ]]; then
+                  continue
+                fi
+                # Conviva validation depends on Utilities being available, which does not get published in a dry run
+                # => skip Conviva if dry run
+                if [[ $file == *Conviva.podspec && ${{ inputs.dryRun == true }} ]]; then
+                  continue
+                fi
+                connectors+=("$file")
               fi
             done
             connectors=("$prefix-Utilities.podspec" "${connectors[@]}")
