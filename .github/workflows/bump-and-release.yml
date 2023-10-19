@@ -26,9 +26,15 @@ on:
 jobs:
   Bump-And-Release:
     runs-on: macos-latest
+    outputs:
+      previousVersion: ${{ steps.store_previous_version.outputs.previousVersion }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
+      - id: store_previous_version
+        run: |
+          previousVersion=$(ruby -r "./version.rb" -e "print_version")
+          echo "previousVersion=$previousVersion" >> "$GITHUB_OUTPUT"
       - name: Update the version.json file
         if: inputs.version != ''
         run: sh update_version_json.sh -v ${{ inputs.version }}
@@ -70,3 +76,26 @@ jobs:
           do
             pod ${{ command }} ${{ connector }} --verbose
           done
+  Cleanup:
+    needs: Bump-And-Release
+    if: (inputs.dryRun == true && inputs.version != '') && (success() || failure())
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Update to latest
+        run: |
+          git fetch --all
+          git pull
+      - name: Remove and unpublish git tag
+        run: git push --delete origin refs/tags/${{ inputs.version }}
+      - name: Update(Revert) the version.json file back to the previous version
+        env:
+          PREVIOUS_VERSION: ${{ needs.Bump-And-Release.outputs.previousVersion }}
+        run: |
+          sh update_version_json.sh -v $PREVIOUS_VERSION
+      - name: Commit and push the changes made to the version.json file
+        run: |
+          git add version.json
+          git commit -m "update version.json"
+          git push
