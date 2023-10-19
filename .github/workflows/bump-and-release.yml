@@ -30,8 +30,6 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "The version argument is ${{ inputs.version }}."
-      - run: echo "Github ref is -> ${{ github.ref }}"
       - name: Update the version.json file
         run: |
           sh update_version_json.sh -v ${{ inputs.version }}
