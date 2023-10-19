@@ -95,8 +95,10 @@ jobs:
         run: |
           sh update_version_json.sh -v $PREVIOUS_VERSION
       - name: Commit and push the changes made to the version.json file
-        if: $(git diff version.json) != ''
         run: |
-          git add version.json
-          git commit -m "update version.json"
-          git push
+          diff=$(git diff version.json)
+          if [[ $diff != '' ]]; then
+            git add version.json
+            git commit -m "update version.json"
+            git push
+          fi
