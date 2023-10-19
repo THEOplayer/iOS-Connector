@@ -4,14 +4,26 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to tag'
-        required: true
+        description: 'Version to bump and tag. If unset, then skips version bump and tag.'
+        required: false
         type: string
       dryRun:
         description: 'Dry run to only validate without release.'
-        required: false
+        required: true
         default: true
         type: boolean
+      connectors:
+        description: 'Choose the Connector(s)'
+        required: true
+        type: choice
+        default: 'All'
+        options:
+          - All
+          - Utilities
+          - Comscore
+          - Conviva-VerizonMedia
+          - Conviva
+          - SidelaodedSubtitle
 jobs:
   Bump-And-Release:
     runs-on: macos-latest
