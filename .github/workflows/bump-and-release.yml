@@ -44,13 +44,27 @@ jobs:
         run: |
           git tag ${{ inputs.version }}
           git push origin ${{ inputs.version }}
-      - name: Print cocoapods session
+      - name: ${{ (inputs.dryRun == true && 'Validate') || 'Release' }} on Cocoapods
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
         run: |
-          if [ ${{ inputs.dryRun }} == true ]; then
-            echo "This is a dry run, <insert pod spec lint call here>"
+          # make the command
+          command="${{ (inputs.dryRun == true && 'spec lint') || 'trunk push' }}"
+          # make the list of connectors
+          prefix="THEOplayer-Connector"
+          connectors=()
+          if [ "${{ inputs.connectors }}" == "All" ]; then
+            files=(*)
+            for file in ${files[*]}
+            do
+              if [[ $file == *.podspec ]]; then
+                connectors+=("$prefix-$file")
+              fi
+            done
           else
-            echo "This is a regular run, <insert pod trunk push call here>"
+            connectors+=("$prefix-${{ inputs.connectors }}.podspec")
           fi
-          pod trunk me
+          for connector in ${connectors[*]}
+          do
+            pod ${{ command }} ${{ connector }} --verbose
+          done
