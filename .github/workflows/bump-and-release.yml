@@ -22,7 +22,7 @@ on:
           - Utilities
           - Comscore
           - Conviva
-          - SidelaodedSubtitle
+          - SideloadedSubtitle
 jobs:
   Bump-And-Release:
     runs-on: macos-latest
