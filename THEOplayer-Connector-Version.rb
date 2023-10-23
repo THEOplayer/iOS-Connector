@@ -1,10 +1,21 @@
+def versionJson
+  require "json"
+  jsonFile = File.open "./version.json"
+  json = JSON.load jsonFile
+end
+
 def theoplayer_connector_major_minor_version
-  return '6.1'
+  return versionJson["major_minor"]
 end
+
 def theoplayer_connector_bug_version
-  return '1'
+  return versionJson["patch"]
 end
+
 def theoplayer_connector_version
   return theoplayer_connector_major_minor_version + '.' + theoplayer_connector_bug_version
 end
 
+def print_theoplayer_connector_version
+  puts theoplayer_connector_version
+end
