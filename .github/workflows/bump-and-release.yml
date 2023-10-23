@@ -32,6 +32,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - id: store_previous_version
+        name: Store previous version value
         run: |
           previousVersion=$(ruby -r "./THEOplayer-Connector-Version.rb" -e "print_theoplayer_connector_version")
           echo "previousVersion=$previousVersion" >> "$GITHUB_OUTPUT"
