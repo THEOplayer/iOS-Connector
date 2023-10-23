@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
       - id: store_previous_version
         name: Store previous version value
         run: |
@@ -42,7 +44,6 @@ jobs:
       - name: Commit and push the changes made to the version.json file
         if: inputs.version != ''
         run: |
-          git remote set-url origin https://${{ github.actor}}:${{ github.token }}@github.com/${{ github.repository }}.git
           git add version.json
           git commit -m "update version.json"
           git push
