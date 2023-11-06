@@ -76,7 +76,7 @@ jobs:
                 fi
                 # Conviva validation depends on Utilities being available, which does not get published in a dry run
                 # => skip Conviva if dry run
-                if [[ $file == *Conviva.podspec && ${{ inputs.dryRun == true }} ]]; then
+                if [[ $file == *Conviva.podspec && ${{ inputs.dryRun }} == true ]]; then
                   continue
                 fi
                 connectors+=("$file")
