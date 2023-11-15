@@ -11,6 +11,7 @@ public class ComScoreConfiguration {
     public let publisherId: String
     public let applicationName: String
     public var userConsent: ComScoreUserConsent
+    public var usagePropertiesAutoUpdateMode: ComscoreUsagePropertiesAutoUpdateMode
     public let childDirectedAppMode: Bool
     public var adIdProcessor: ((THEOplayerSDK.Ad) -> String)? = nil
     public var debug: Bool
@@ -27,10 +28,11 @@ public class ComScoreConfiguration {
      - adIdProcessor: Provide a closure if you want to customize how the ad id is determined. By default, the integration uses Ad.id.
      - debug: Debug mode
      */
-    public init(publisherId: String, applicationName: String, userConsent: ComScoreUserConsent = .unknown, childDirectedAppMode: Bool = false, adIdProcessor: ((THEOplayerSDK.Ad) -> String)?,debug: Bool = false) {
+    public init(publisherId: String, applicationName: String, userConsent: ComScoreUserConsent = .unknown, usagePropertiesAutoUpdateMode: ComscoreUsagePropertiesAutoUpdateMode = .foregroundOnly, childDirectedAppMode: Bool = false, adIdProcessor: ((THEOplayerSDK.Ad) -> String)?,debug: Bool = false) {
         self.publisherId = publisherId
         self.applicationName = applicationName
         self.userConsent = userConsent
+        self.usagePropertiesAutoUpdateMode = usagePropertiesAutoUpdateMode
         self.childDirectedAppMode = childDirectedAppMode
         self.adIdProcessor = adIdProcessor
         self.debug = debug

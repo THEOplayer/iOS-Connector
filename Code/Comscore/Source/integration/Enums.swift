@@ -14,6 +14,24 @@ public enum ComScoreUserConsent: String {
     case unknown = "-1"
 }
 
+@frozen
+public enum ComscoreUsagePropertiesAutoUpdateMode: String {
+    case foregroundOnly
+    case foregroundAndBackground
+    case disabled
+    
+    func toComscore() -> SCORUsagePropertiesAutoUpdateMode {
+        switch self {
+        case .foregroundOnly:
+            return .foregroundOnly
+        case .foregroundAndBackground:
+            return .foregroundAndBackground
+        case .disabled:
+            return .disabled
+        }
+    }
+}
+
 /**
  ComScoreMediaType associated with the content you have loaded into the THEOPlayer
  */
