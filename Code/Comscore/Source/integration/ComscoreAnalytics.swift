@@ -26,6 +26,7 @@ final class ComScoreAnalytics {
                 })
                 SCORAnalytics.configuration().addClient(with: publisherConfig)
                 SCORAnalytics.configuration().applicationName = configuration.applicationName
+                SCORAnalytics.configuration().usagePropertiesAutoUpdateMode = configuration.usagePropertiesAutoUpdateMode.toComscore()
                 if configuration.userConsent != .unknown {
                     SCORAnalytics.configuration().setPersistentLabelWithName(
                         "cs_ucfr",
