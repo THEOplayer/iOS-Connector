@@ -7,6 +7,9 @@
 import Foundation
 import ComScore
 
+/**
+ ComScoreUserConsent: indicates whether user consent was provided.
+ */
 @frozen
 public enum ComScoreUserConsent: String {
     case denied = "0"
@@ -14,6 +17,10 @@ public enum ComScoreUserConsent: String {
     case unknown = "-1"
 }
 
+
+/**
+ ComscoreUsagePropertiesAutoUpdateMode:  controls if the library will update application usage times at a regular interval when it is in the foreground and/or background.
+ */
 @frozen
 public enum ComscoreUsagePropertiesAutoUpdateMode: String {
     case foregroundOnly
@@ -33,7 +40,7 @@ public enum ComscoreUsagePropertiesAutoUpdateMode: String {
 }
 
 /**
- ComScoreMediaType associated with the content you have loaded into the THEOPlayer
+ ComScoreMediaType: media type associated with the content you have loaded into the THEOPlayer
  */
 @frozen
 public enum ComScoreMediaType: String {
@@ -68,6 +75,9 @@ public enum ComScoreMediaType: String {
     }
 }
 
+/**
+ ComScoreFeedType: the type of feed provided on the live stream. Intended to be used on live streams using the same feed as was used for the live TV broadcast. Currently only used for implementations in the US.
+ */
 @frozen
 public enum ComScoreFeedType: String {
     case eastHD
@@ -89,6 +99,9 @@ public enum ComScoreFeedType: String {
     }
 }
 
+/**
+ ComScoreDeliveryMode: Identifies the content delivery to be on-demand or linear.
+ */
 @frozen
 public enum ComScoreDeliveryMode: String {
     case linear
@@ -104,6 +117,9 @@ public enum ComScoreDeliveryMode: String {
     }
 }
 
+/**
+ ComScoreDeliverySubscriptionType: the type of subscription of the user.
+ */
 @frozen
 public enum ComScoreDeliverySubscriptionType: String {
     case traditionalMvpd    // LIVE
@@ -131,6 +147,9 @@ public enum ComScoreDeliverySubscriptionType: String {
     }
 }
 
+/**
+ ComScoreDeliveryComposition: whether or not ads are delivered as part of the content stream.
+ */
 @frozen
 public enum ComScoreDeliveryComposition: String {
     case clean
@@ -145,7 +164,9 @@ public enum ComScoreDeliveryComposition: String {
         }
     }
 }
-
+/**
+ ComScoreDeliveryAdvertisementCapability: what capability is allowed for advertisement placements.
+ */
 @frozen
 public enum ComScoreDeliveryAdvertisementCapability: String {
     case none
@@ -185,6 +206,9 @@ public enum ComScoreDeliveryAdvertisementCapability: String {
     }
 }
 
+/**
+ComScoreMediaFormat: the type of content media loaded into THEOPlayer.
+ */
 @frozen
 public enum ComScoreMediaFormat: String {
     case fullContentEpisode
@@ -236,6 +260,9 @@ public enum ComScoreMediaFormat: String {
     }
 }
 
+/**
+ ComScoreDistributionModelL  where the content you have loaded into THEOPlayer was distributed.
+ */
 @frozen
 public enum ComScoreDistributionModel: String {
     case tvAndOnline
