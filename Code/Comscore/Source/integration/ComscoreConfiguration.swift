@@ -11,7 +11,7 @@ public class ComScoreConfiguration {
     public let publisherId: String
     public let applicationName: String
     public var userConsent: ComScoreUserConsent
-    public var usagePropertiesAutoUpdateMode: ComscoreUsagePropertiesAutoUpdateMode
+    public let usagePropertiesAutoUpdateMode: ComscoreUsagePropertiesAutoUpdateMode
     public let childDirectedAppMode: Bool
     public var adIdProcessor: ((THEOplayerSDK.Ad) -> String)? = nil
     public var debug: Bool
