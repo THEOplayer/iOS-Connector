@@ -23,11 +23,11 @@ public enum ComscoreUsagePropertiesAutoUpdateMode: String {
     func toComscore() -> SCORUsagePropertiesAutoUpdateMode {
         switch self {
         case .foregroundOnly:
-            return .foregroundOnly
+            return SCORUsagePropertiesAutoUpdateMode.foregroundOnly
         case .foregroundAndBackground:
-            return .foregroundAndBackground
+            return SCORUsagePropertiesAutoUpdateMode.foregroundAndBackground
         case .disabled:
-            return .disabled
+            return SCORUsagePropertiesAutoUpdateMode.disabled
         }
     }
 }
@@ -49,21 +49,21 @@ public enum ComScoreMediaType: String {
     func toComScore() -> SCORStreamingContentType {
         switch self {
         case .longFormOnDemand:
-            return .longFormOnDemand
+            return SCORStreamingContentType.longFormOnDemand
         case .shortFormOnDemand:
-            return .shortFormOnDemand
+            return SCORStreamingContentType.shortFormOnDemand
         case .live:
-            return .live
+            return SCORStreamingContentType.live
         case .userGeneratedLongFormOnDemand:
-            return .userGeneratedLongFormOnDemand
+            return SCORStreamingContentType.userGeneratedLongFormOnDemand
         case .userGeneratedShortFormOnDemand:
-            return .userGeneratedShortFormOnDemand
+            return SCORStreamingContentType.userGeneratedShortFormOnDemand
         case .userGeneratedLive:
-            return .userGeneratedLive
+            return SCORStreamingContentType.userGeneratedLive
         case .bumper:
-            return .bumper
+            return SCORStreamingContentType.bumper
         case .other:
-            return .other
+            return SCORStreamingContentType.other
         }
     }
 }
@@ -78,13 +78,13 @@ public enum ComScoreFeedType: String {
     func toComScore() -> SCORStreamingContentFeedType {
         switch self {
         case .eastHD:
-            return .eastHD
+            return SCORStreamingContentFeedType.eastHD
         case .westHD:
-            return .westHD
+            return SCORStreamingContentFeedType.westHD
         case .eastSD:
-            return .eastSD
+            return SCORStreamingContentFeedType.eastSD
         case .westSD:
-            return .westSD
+            return SCORStreamingContentFeedType.westSD
         }
     }
 }
@@ -97,9 +97,9 @@ public enum ComScoreDeliveryMode: String {
     func toComScore() -> SCORStreamingContentDeliveryMode {
         switch self {
         case .linear:
-            return .linear
+            return SCORStreamingContentDeliveryMode.linear
         case .ondemand:
-            return .ondemand
+            return SCORStreamingContentDeliveryMode.ondemand
         }
     }
 }
@@ -116,17 +116,17 @@ public enum ComScoreDeliverySubscriptionType: String {
     func toComScore() -> SCORStreamingContentDeliverySubscriptionType {
         switch self {
         case .traditionalMvpd:
-            return .traditionalMvpd
+            return SCORStreamingContentDeliverySubscriptionType.traditionalMvpd
         case .virtualMvpd:
-            return .virtualMvpd
+            return SCORStreamingContentDeliverySubscriptionType.virtualMvpd
         case .subscription:
-            return .subscription
+            return SCORStreamingContentDeliverySubscriptionType.subscription
         case .transactional:
-            return .transactional
+            return SCORStreamingContentDeliverySubscriptionType.transactional
         case .advertising:
-            return .advertising
+            return SCORStreamingContentDeliverySubscriptionType.advertising
         case .premium:
-            return .premium
+            return SCORStreamingContentDeliverySubscriptionType.premium
         }
     }
 }
@@ -139,9 +139,9 @@ public enum ComScoreDeliveryComposition: String {
     func toComScore() -> SCORStreamingContentDeliveryComposition {
         switch self {
         case .clean:
-            return .clean
+            return SCORStreamingContentDeliveryComposition.clean
         case .embed:
-            return .embed
+            return SCORStreamingContentDeliveryComposition.embed
         }
     }
 }
@@ -162,25 +162,25 @@ public enum ComScoreDeliveryAdvertisementCapability: String {
     func toComScore() -> SCORStreamingContentDeliveryAdvertisementCapability {
         switch self {
         case .none:
-            return .none
+            return SCORStreamingContentDeliveryAdvertisementCapability.none
         case .dynamicLoad:
-            return .dynamicLoad
+            return SCORStreamingContentDeliveryAdvertisementCapability.dynamicLoad
         case .dynamicReplacement:
-            return .dynamicReplacement
+            return SCORStreamingContentDeliveryAdvertisementCapability.dynamicReplacement
         case .linear1day:
-            return .linear1day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear1day
         case .linear2day:
-            return .linear2day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear2day
         case .linear3day:
-            return .linear3day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear3day
         case .linear4day:
-            return .linear4day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear4day
         case .linear5day:
-            return .linear5day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear5day
         case .linear6day:
-            return .linear6day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear6day
         case .linear7day:
-            return .linear7day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear7day
         }
     }
 }
@@ -205,33 +205,33 @@ public enum ComScoreMediaFormat: String {
     func toComsScore() -> SCORStreamingContentMediaFormat {
         switch self {
         case .fullContentEpisode:
-            return .fullContentEpisode
+            return SCORStreamingContentMediaFormat.fullContentEpisode
         case .fullContentMovie:
-            return .fullContentMovie
+            return SCORStreamingContentMediaFormat.fullContentMovie
         case .fullContentPodcast:
-            return .fullContentPodcast
+            return SCORStreamingContentMediaFormat.fullContentPodcast
         case .fullContentGeneric:
-            return .fullContentGeneric
+            return SCORStreamingContentMediaFormat.fullContentGeneric
         case .partialContentEpisode:
-            return .partialContentEpisode
+            return SCORStreamingContentMediaFormat.partialContentEpisode
         case .partialContentMovie:
-            return .partialContentMovie
+            return SCORStreamingContentMediaFormat.partialContentMovie
         case .partialContentPodcast:
-            return .partialContentPodcast
+            return SCORStreamingContentMediaFormat.partialContentPodcast
         case .partialContentGeneric:
-            return .partialContentGeneric
+            return SCORStreamingContentMediaFormat.partialContentGeneric
         case .previewEpisode:
-            return .previewEpisode
+            return SCORStreamingContentMediaFormat.previewEpisode
         case .previewMovie:
-            return .previewMovie
+            return SCORStreamingContentMediaFormat.previewMovie
         case .previewGeneric:
-            return .previewGeneric
+            return SCORStreamingContentMediaFormat.previewGeneric
         case .extraEpisode:
-            return .extraEpisode
+            return SCORStreamingContentMediaFormat.extraEpisode
         case .extraMovie:
-            return .extraMovie
+            return SCORStreamingContentMediaFormat.extraMovie
         case .extraGeneric:
-            return .extraGeneric
+            return SCORStreamingContentMediaFormat.extraGeneric
         }
     }
 }
@@ -244,9 +244,9 @@ public enum ComScoreDistributionModel: String {
     func toComsScore() -> SCORStreamingContentDistributionModel {
         switch self {
         case .tvAndOnline:
-            return .tvAndOnline
+            return SCORStreamingContentDistributionModel.tvAndOnline
         case .exclusivelyOnline:
-            return .exclusivelyOnline
+            return SCORStreamingContentDistributionModel.exclusivelyOnline
         }
     }
 }
