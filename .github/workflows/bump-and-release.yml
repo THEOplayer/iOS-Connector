@@ -1,0 +1,124 @@
+name: Bump and release
+run-name: ${{ (inputs.version == '' && 'Not bumping version') || format('Bumping version to {0}', inputs.version) }} and ${{ (inputs.dryRun == true && 'validating') || 'releasing' }} ${{ inputs.connectors }}
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to bump and tag. If unset, then skips version bump and tag.'
+        required: false
+        type: string
+      dryRun:
+        description: 'Dry run to only validate without release.'
+        required: true
+        default: true
+        type: boolean
+      connectors:
+        description: 'Choose the Connector(s)'
+        required: true
+        type: choice
+        default: 'All'
+        options:
+          - All
+          - Utilities
+          - Comscore
+          - Conviva
+          - SideloadedSubtitle
+jobs:
+  Bump-And-Release:
+    runs-on: macos-latest
+    outputs:
+      previousVersion: ${{ steps.store_previous_version.outputs.previousVersion }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+      - id: store_previous_version
+        name: Store previous version value
+        run: |
+          previousVersion=$(ruby -r "./THEOplayer-Connector-Version.rb" -e "print_theoplayer_connector_version")
+          echo "previousVersion=$previousVersion" >> "$GITHUB_OUTPUT"
+      - name: Update the version.json file
+        if: inputs.version != ''
+        run: sh update_version_json.sh -v ${{ inputs.version }}
+      - name: Commit and push the changes made to the version.json file
+        if: inputs.version != ''
+        run: |
+          git add version.json
+          git commit -m "update version.json"
+          git push
+      - name: Add and push new git tag
+        if: inputs.version != ''
+        run: |
+          git tag ${{ inputs.version }}
+          git push origin ${{ inputs.version }}
+      - name: ${{ (inputs.dryRun == true && 'Validate') || 'Release' }} on Cocoapods
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        run: |
+          # make the command
+          command="${{ (inputs.dryRun == true && 'spec lint') || 'trunk push' }}"
+          # make the list of connectors
+          prefix="THEOplayer-Connector"
+          connectors=()
+          if [ "${{ inputs.connectors }}" == "All" ]; then
+            files=(*)
+            for file in ${files[*]}
+            do
+              if [[ $file == *.podspec ]]; then
+                # we add the Utilities later at index 0
+                if [[ $file == *Utilities.podspec ]]; then
+                  continue
+                fi
+                # blacklisted podspecs
+                if [[ $file == *VerizonMedia.podspec || $file == *Nielsen.podspec ]]; then
+                  continue
+                fi
+                # Conviva validation depends on Utilities being available, which does not get published in a dry run
+                # => skip Conviva if dry run
+                if [[ $file == *Conviva.podspec && ${{ inputs.dryRun }} == true ]]; then
+                  continue
+                fi
+                connectors+=("$file")
+              fi
+            done
+            connectors=("$prefix-Utilities.podspec" "${connectors[@]}")
+          else
+            connectors+=("$prefix-${{ inputs.connectors }}.podspec")
+          fi
+          for connector in ${connectors[*]}
+          do
+            extraFlags=""
+            if [[ $connector == *Conviva.podspec ]]; then
+                extraFlags+="--synchronous"
+            fi
+            pod $command $connector --verbose --allow-warnings $extraFlags
+          done
+  Cleanup:
+    needs: Bump-And-Release
+    if: (inputs.dryRun == true && inputs.version != '') && (success() || failure())
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+      - name: Update to latest
+        run: |
+          git fetch --all
+          git pull
+      - name: Remove and unpublish git tag
+        run: git push --delete origin refs/tags/${{ inputs.version }}
+      - name: Update(Revert) the version.json file back to the previous version
+        env:
+          PREVIOUS_VERSION: ${{ needs.Bump-And-Release.outputs.previousVersion }}
+        run: |
+          sh update_version_json.sh -v $PREVIOUS_VERSION
+      - name: Commit and push the changes made to the version.json file
+        run: |
+          diff=$(git diff version.json)
+          if [[ $diff != '' ]]; then
+            git add version.json
+            git commit -m "update version.json"
+            git push
+          fi

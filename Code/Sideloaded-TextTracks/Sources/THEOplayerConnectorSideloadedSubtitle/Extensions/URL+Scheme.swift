@@ -28,14 +28,4 @@ extension URL {
         }
         return URL(string: self.absoluteString.replacingCharacters(in: range, with: newScheme + "://"))
     }
-    
-    func byConcatingScheme(scheme: URLScheme) -> URL? {
-        let urlStr = self.absoluteString.byConcatingScheme(scheme: scheme)
-        return URL(string: urlStr.trimmingCharacters(in: .whitespacesAndNewlines))
-    }
-    
-    func byRemovingScheme(scheme: URLScheme) -> URL? {
-        let urlStr = self.absoluteString.replaceFirst(of: scheme.urlScheme, with: String())
-        return URL(string: urlStr.trimmingCharacters(in: .whitespacesAndNewlines))
-    }
 }
