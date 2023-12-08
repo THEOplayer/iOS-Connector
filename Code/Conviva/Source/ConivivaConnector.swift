@@ -38,7 +38,7 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
         adEventHandler = AdEventForwarder(
             player: player,
             externalEventDispatcher: externalEventDispatcher,
-            eventProcessor: AdEventConvivaReporter(video: videoAnalytics, ads: adAnalytics, storage: storage)
+            eventProcessor: AdEventConvivaReporter(video: videoAnalytics, ads: adAnalytics, storage: storage, player: player)
         )
     }
 }
