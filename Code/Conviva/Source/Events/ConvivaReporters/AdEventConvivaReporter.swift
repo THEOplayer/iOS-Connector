@@ -56,8 +56,7 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
         info["c3.csid"] = self.videoAnalytics.getSessionId()
         
         // Temporary workaround for missing LinearAd in Native THEOplayerGoogleIMAIntegration. Can be removed after THEO-10161 is completed.
-		let infoDuration = info[CIS_SSDK_METADATA_DURATION] as? NSNumber
-		if !info.keys.contains(CIS_SSDK_METADATA_IS_LIVE), let duration = (infoDuration != nil ? Double(truncating: infoDuration!) : event.duration) {
+        if !info.keys.contains(CIS_SSDK_METADATA_IS_LIVE), let duration = event.duration {
             if duration.isInfinite {
                 info[CIS_SSDK_METADATA_IS_LIVE] = NSNumber(value: true)
             } else {
