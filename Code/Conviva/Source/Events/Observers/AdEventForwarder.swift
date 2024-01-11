@@ -11,11 +11,18 @@ import THEOplayerConnectorUtilities
 public struct AdEventForwarder {
     let playerObserver: DispatchObserver
     let adsObserver: DispatchObserver
+    let externalAdEventsObserver: DispatchObserver?
 
-    init(player: THEOplayer, eventProcessor: AdEventProcessor) {
+    init(player: THEOplayer, externalEventDispatcher: ExternalEventDispatcher? = nil, eventProcessor: AdEventProcessor) {
         let filter = Filter()
-        playerObserver = DispatchObserver(dispatcher: player, eventListeners: Self.forwardAdPlaybackEvents(from: player, to: eventProcessor, using: filter))
-        adsObserver = DispatchObserver(dispatcher: player.ads, eventListeners: Self.forwardAdEvents(from: player.ads, player: player, to: eventProcessor, using: filter))
+        self.playerObserver = DispatchObserver(dispatcher: player, eventListeners: Self.forwardAdPlaybackEvents(from: player, to: eventProcessor, using: filter))
+        self.adsObserver = DispatchObserver(dispatcher: player.ads, eventListeners: Self.forwardAdEvents(from: player.ads, player: player, to: eventProcessor, using: filter))
+        
+        if let externalDispatcher = externalEventDispatcher {
+            self.externalAdEventsObserver = DispatchObserver(dispatcher: externalDispatcher, eventListeners: Self.forwardAdEvents(from: externalDispatcher, player: player, to: eventProcessor, using: filter))
+        } else {
+            self.externalAdEventsObserver = nil
+        }
     }
  
     public static func forwardAdPlaybackEvents(from player: THEOplayer, to processor: AdPlaybackEventProcessor, using filter: Filter) -> [RemovableEventListenerProtocol] {
@@ -32,7 +39,7 @@ public struct AdEventForwarder {
         ]
     }
 
-    static func forwardAdEvents(from ads: Ads, player: THEOplayer, to processor: AdEventProcessor, using filter: Filter) -> [RemovableEventListenerProtocol] {
+    static func forwardAdEvents(from ads: THEOplayerSDK.EventDispatcherProtocol, player: THEOplayer, to processor: AdEventProcessor, using filter: Filter) -> [RemovableEventListenerProtocol] {
         [
             ads.addRemovableEventListener(
                 type: AdsEventTypes.AD_BREAK_BEGIN,

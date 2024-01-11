@@ -14,19 +14,25 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
     public let videoAnalytics: CISVideoAnalytics
     public let adAnalytics: CISAdAnalytics
     let storage: ConvivaConnectorStorage
+    private weak var player: THEOplayer?
         
-    init(video: CISVideoAnalytics, ads: CISAdAnalytics, storage: ConvivaConnectorStorage) {
+    init(video: CISVideoAnalytics, ads: CISAdAnalytics, storage: ConvivaConnectorStorage, player: THEOplayer) {
         videoAnalytics = video
         adAnalytics = ads
         self.storage = storage
+        self.player = player
+    }
+    
+    private func calculatedAdType() -> AdTechnology {
+        return (player?.source?.ads != nil) ? .CLIENT_SIDE : .SERVER_SIDE
     }
     
     public func adBreakBegin(event: AdBreakBeginEvent) {
         guard let adBreak = event.ad else { return }
-        videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: .CLIENT_SIDE, adBreakInfo: [
+        videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: self.calculatedAdType(), adBreakInfo: [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: adBreak.maxDuration)),
             CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: adBreak.timeOffset)),
-            CIS_SSDK_AD_BREAK_POD_POSITION: Self.serialize(number: .init(value: adBreak.convivaAdPosition.rawValue))
+            CIS_SSDK_AD_BREAK_POD_POSITION: adBreak.calculateCurrentAdBreakPosition()
         ])
     }
     
@@ -38,6 +44,9 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
         guard let ad = event.beginEvent.ad, ad.type == THEOplayerSDK.AdType.linear else { return }
 
         var info = ad.convivaInfo
+        
+        // set Ad technology
+        info["c3.ad.technology"] = self.calculatedAdType()
         
         // set Ad contentAssetName
         if let contentAssetName = self.storage.valueForKey(CIS_SSDK_METADATA_ASSET_NAME) {
@@ -62,6 +71,10 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
             adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_RESOLUTION, value: NSValue(
                 cgSize: .init(width: width, height: height)
             ))
+        }
+        
+        if self.calculatedAdType() == .SERVER_SIDE {
+            adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
         }
     }
     
@@ -103,6 +116,18 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
     }
 }
 
+extension AdBreak {
+    func calculateCurrentAdBreakPosition() -> String {
+        if self.timeOffset == 0 {
+            return "Pre-roll"
+        } else if self.timeOffset < 0 {
+            return "Post-roll"
+        } else {
+            return "Mid-roll"
+        }
+    }
+}
+
 extension Ad {
     /// A dictionary containing all the ad info that can be passed to `CISAdAnalytics`'s `setAdInfo(_ convivaInfo: [:])` function.
     var convivaInfo: [AnyHashable: Any] {
@@ -113,7 +138,6 @@ extension Ad {
         result[CIS_SSDK_METADATA_STREAM_URL] = resourceURI ?? Utilities.defaultStringValue
         result["c3.ad.id"] = nonEmpty(id) ?? Utilities.defaultStringValue
         result["c3.ad.creativeName"] = assetName
-        result["c3.ad.technology"] = AdTechnology.CLIENT_SIDE
         result["c3.ad.isSlate"] = "false"
         result["c3.ad.creativeId"] = nonEmpty(googleImaAd?.creativeId) ?? Utilities.defaultStringValue
         result["c3.ad.system"] = nonEmpty(googleImaAd?.adSystem) ?? Utilities.defaultStringValue
@@ -121,7 +145,7 @@ extension Ad {
         result["c3.ad.firstCreativeId"] = nonEmpty(googleImaAd?.wrapperCreativeIds.first) ?? nonEmpty(googleImaAd?.creativeId) ?? Utilities.defaultStringValue
         result["c3.ad.firstAdSystem"] = nonEmpty(googleImaAd?.wrapperAdSystems.first) ?? nonEmpty(googleImaAd?.adSystem) ?? Utilities.defaultStringValue
         result["c3.ad.adStitcher"] = Utilities.defaultStringValue
-        result["c3.ad.position"] = self.calculateCurrentAdBreakPosition(adBreak: self.adBreak)
+        result["c3.ad.position"] = self.adBreak?.calculateCurrentAdBreakPosition() ?? "Pre-roll"
         // linearAd specific
         if let linearAd = self as? LinearAd,
            let duration = linearAd.duration {
@@ -130,20 +154,6 @@ extension Ad {
         }
         
         return result
-    }
-    
-    private func calculateCurrentAdBreakPosition(adBreak: AdBreak?) -> String {
-        guard let adBr = adBreak else {
-            return "Mid-roll"
-        }
-        
-        if adBr.timeOffset == 0 {
-            return "Pre-roll"
-        } else if adBr.timeOffset < 0 {
-            return "Post-roll"
-        } else {
-            return "Mid-roll"
-        }
     }
     
     private func nonEmpty(_ s: String?) -> String? {
