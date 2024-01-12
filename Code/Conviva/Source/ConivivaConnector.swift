@@ -1,8 +1,6 @@
 import THEOplayerSDK
 import ConvivaSDK
 
-public typealias ExternalEventDispatcher = THEOplayerSDK.EventDispatcherProtocol & THEOplayerSDK.DispatchDispatch
-
 /// Connects to a THEOplayer instance and reports its events to conviva
 public struct ConvivaConnector: ConvivaEndpointContainer {
     public let conviva: ConvivaEndpoints
@@ -13,12 +11,12 @@ public struct ConvivaConnector: ConvivaEndpointContainer {
     let basicEventForwarder: BasicEventForwarder
     let adEventHandler: AdEventForwarder?
     
-    public init?(configuration: ConvivaConfiguration, player: THEOplayer, externalEventDispatcher: ExternalEventDispatcher? = nil) {
+    public init?(configuration: ConvivaConfiguration, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
         guard let endpoints = ConvivaEndpoints(configuration: configuration) else { return nil }
         self.init(conviva: endpoints, player: player, externalEventDispatcher: externalEventDispatcher)
     }
 
-    public init(conviva: ConvivaEndpoints, player: THEOplayer, externalEventDispatcher: ExternalEventDispatcher? = nil) {
+    public init(conviva: ConvivaEndpoints, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
         self.conviva = conviva
         self.player = player
         self.storage = ConvivaConnectorStorage()

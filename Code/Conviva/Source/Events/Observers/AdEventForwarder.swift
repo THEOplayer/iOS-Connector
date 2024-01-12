@@ -13,7 +13,7 @@ public struct AdEventForwarder {
     let adsObserver: DispatchObserver
     let externalAdEventsObserver: DispatchObserver?
 
-    init(player: THEOplayer, externalEventDispatcher: ExternalEventDispatcher? = nil, eventProcessor: AdEventProcessor) {
+    init(player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil, eventProcessor: AdEventProcessor) {
         let filter = Filter()
         self.playerObserver = DispatchObserver(dispatcher: player, eventListeners: Self.forwardAdPlaybackEvents(from: player, to: eventProcessor, using: filter))
         self.adsObserver = DispatchObserver(dispatcher: player.ads, eventListeners: Self.forwardAdEvents(from: player.ads, player: player, to: eventProcessor, using: filter))
