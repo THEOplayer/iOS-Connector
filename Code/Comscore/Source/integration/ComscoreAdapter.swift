@@ -442,13 +442,19 @@ class THEOComScoreAdapter: NSObject {
     
     private func onAdBegin(event: AdBeginEvent) {
         if configuration.debug { print("[THEOplayerConnectorComscore] AD_BEGIN event") }
-        let ad = event.ad!
-        currentAdDuration = Int(player.duration! * 1000)
-        currentAdId = ad.id ?? "-1"
-        if let adProcessor = configuration.adIdProcessor {
-            currentAdId = adProcessor(ad)
+        if let ad = event.ad {
+            currentAdDuration = 0
+            if let duration = player.duration {
+                if duration != .infinity && duration != .nan {
+                    currentAdDuration = Int(duration * 1000)
+                }
+            }
+            currentAdId = ad.id ?? "-1"
+            if let adProcessor = configuration.adIdProcessor {
+                currentAdId = adProcessor(ad)
+            }
+            setAdMetadata()
         }
-        setAdMetadata()
     }
     
     private func onAdbreakEnd(event: AdBreakEndEvent) {

@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
   - Updated deprecated name for access log notification to fix broken bitrate reporting.
   
+- Comscore
+  - Prevent Comscore connector crash when reporting ad info for a DAI stream
+  
 ### Changed
 
 - Conviva 
