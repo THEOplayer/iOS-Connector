@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Conviva
   - Updated deprecated name for access log notification to fix broken bitrate reporting.
+  
+### Changed
+
+- Conviva 
+  - Dropped the protocol dependency for the external event dispatcher.
 
 ## [6.1.1] - 2023-10-06
 
