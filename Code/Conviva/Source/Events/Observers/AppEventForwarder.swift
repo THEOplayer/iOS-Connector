@@ -11,8 +11,6 @@ import AVFoundation
 
 fileprivate let willEnterForeground = UIApplication.willEnterForegroundNotification
 fileprivate let didEnterBackground = UIApplication.didEnterBackgroundNotification
-fileprivate let oldAccessLogEntry = NSNotification.Name.AVPlayerItemNewAccessLogEntry
-fileprivate let newAccessLogEntry = AVPlayerItem.newAccessLogEntryNotification
 
 class AppEventForwarder {
     let center = NotificationCenter.default
@@ -37,9 +35,11 @@ class AppEventForwarder {
         )
         
         if #available(iOS 17.0, tvOS 17.0, *) {
-            accessLogNotificationName = Notification.Name("AVPlayerItemNewAccessLogEntry")
+			// AVPlayerItem.newAccessLogEntryNotification
+            accessLogNotificationName = Notification.Name("AVPlayerItemNewAccessLogEntry") 
         } else {
-            accessLogNotificationName = Notification.Name("AVPlayerItemNewAccessLogEntryNotification")
+			// NSNotification.Name.AVPlayerItemNewAccessLogEntry
+            accessLogNotificationName = Notification.Name("AVPlayerItemNewAccessLogEntryNotification") 
         }
         accessLogObserver = center.addObserver( // TODO: implement this in THEOplayerSDK using an observer on the correct player item so we can remove src URL checks
             forName: accessLogNotificationName,
