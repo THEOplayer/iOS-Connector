@@ -12,9 +12,14 @@ import AVFoundation
 fileprivate let willEnterForeground = UIApplication.willEnterForegroundNotification
 fileprivate let didEnterBackground = UIApplication.didEnterBackgroundNotification
 
+#if swift(>=5.9)
+fileprivate let accessLogNotificationName = AVPlayerItem.newAccessLogEntryNotification
+#else
+fileprivate let accessLogNotificationName = NSNotification.Name.AVPlayerItemNewAccessLogEntry
+#endif
+
 class AppEventForwarder {
     let center = NotificationCenter.default
-    let accessLogNotificationName: NSNotification.Name
     let foregroundObserver, backgroundObserver, accessLogObserver: Any
     let player: THEOplayer
     
@@ -33,14 +38,7 @@ class AppEventForwarder {
             queue: .none,
             using: eventProcessor.appDidEnterBackground
         )
-        
-        if #available(iOS 17.0, tvOS 17.0, *) {
-			// AVPlayerItem.newAccessLogEntryNotification
-            accessLogNotificationName = Notification.Name("AVPlayerItemNewAccessLogEntry") 
-        } else {
-			// NSNotification.Name.AVPlayerItemNewAccessLogEntry
-            accessLogNotificationName = Notification.Name("AVPlayerItemNewAccessLogEntryNotification") 
-        }
+		
         accessLogObserver = center.addObserver( // TODO: implement this in THEOplayerSDK using an observer on the correct player item so we can remove src URL checks
             forName: accessLogNotificationName,
             object: .none,
@@ -57,7 +55,7 @@ class AppEventForwarder {
     deinit {
         center.removeObserver(foregroundObserver, name: willEnterForeground, object: nil)
         center.removeObserver(backgroundObserver, name: didEnterBackground, object: nil)
-        center.removeObserver(accessLogObserver, name: self.accessLogNotificationName, object: nil)
+        center.removeObserver(accessLogObserver, name: accessLogNotificationName, object: nil)
     }
 }
 

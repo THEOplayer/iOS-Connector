@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Conviva
-  - Updated deprecated name for access log notification to take into account the iOS version.
+  - Updated deprecated name for access log notification to take into account the Swift version.
 
 ## [6.8.0] - 2024-01-16
 
