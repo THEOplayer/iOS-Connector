@@ -8,8 +8,8 @@
 import UIKit
 import THEOplayerSDK
 import THEOplayerConnectorComscore
-#if canImport(GoogleIMAIntegration)
-import GoogleIMAIntegration
+#if canImport(THEOplayerGoogleIMAIntegration)
+import THEOplayerGoogleIMAIntegration
 #endif
 
 class ViewController: UIViewController {
@@ -26,7 +26,7 @@ class ViewController: UIViewController {
 //            googleIma: GoogleIMAAdsConfiguration(useNativeIma: false)
 //        )))
         self.player = THEOplayer(with: nil, configuration: THEOplayerConfiguration(chromeless: true))
-        #if canImport(GoogleIMAIntegration)
+        #if canImport(THEOplayerGoogleIMAIntegration)
         let imaIntegration = GoogleIMAIntegrationFactory.createIntegration(on: player)
         player.addIntegration(imaIntegration)
         #endif
