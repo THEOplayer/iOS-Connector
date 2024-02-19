@@ -435,7 +435,9 @@ class THEOComScoreAdapter: NSObject {
     // Ads
     private func onAdbreakBegin(event: AdBreakBeginEvent) {
         if configuration.debug { print("[THEOplayerConnectorComscore] AD_BREAK_BEGIN event") }
-        currentAdOffset = Int((event.ad?.timeOffset)!);
+        if let timeOffset: Int = event.ad?.timeOffset {
+            self.currentAdOffset = timeOffset
+        }
         inAd = true;
         transitionToStopped()
     }
@@ -444,10 +446,9 @@ class THEOComScoreAdapter: NSObject {
         if configuration.debug { print("[THEOplayerConnectorComscore] AD_BEGIN event") }
         if let ad = event.ad {
             currentAdDuration = 0
-            if let duration = player.duration {
-                if duration != .infinity && duration != .nan {
-                    currentAdDuration = Int(duration * 1000)
-                }
+            if let linearAd = ad as? LinearAd,
+               let duration: Int = linearAd.duration {
+                self.currentAdDuration = duration
             }
             currentAdId = ad.id ?? "-1"
             if let adProcessor = configuration.adIdProcessor {
@@ -599,7 +600,9 @@ class THEOComScoreAdapter: NSObject {
             streamingAnalytics.createPlaybackSession();
             streamingAnalytics.setMediaPlayerName("THEOplayer")
             streamingAnalytics.setMediaPlayerVersion(playerVersion)
-            player.removeEventListener(type: PlayerEventTypes.SEEKED, listener: listeners["firstseekedafterended"]!)
+            if self.listeners["firstseekedafterended"] != nil {
+                player.removeEventListener(type: PlayerEventTypes.SEEKED, listener: listeners["firstseekedafterended"]!)
+            }
             justRestarted = true
         }
     }

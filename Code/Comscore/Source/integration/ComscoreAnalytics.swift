@@ -44,7 +44,7 @@ final class ComScoreAnalytics {
     }
 
     // Only call after you started app level tracking with start()
-    static func THEOplayerComscoreSDK(player: THEOplayer, playerVersion: String, metadata: ComScoreMetadata) -> ComScoreStreamingAnalytics {
-        return ComScoreStreamingAnalytics(player: player, playerVersion: playerVersion, configuration: ComScoreAnalytics.configuration!, metadata: metadata)
+    static func THEOplayerComscoreSDK(player: THEOplayer, playerVersion: String, metadata: ComScoreMetadata, configuration: ComScoreConfiguration) -> ComScoreStreamingAnalytics {
+        return ComScoreStreamingAnalytics(player: player, playerVersion: playerVersion, configuration: configuration, metadata: metadata)
     }
 }

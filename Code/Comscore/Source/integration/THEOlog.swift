@@ -50,12 +50,11 @@ class THEOLog {
 
     private class func extractFileFromPath(filePath: String) -> String {
         let components = filePath.components(separatedBy: "/")
-        if components.isEmpty {
-            return ""
-        } else {
-            // Remove .swift from file name
-            let fileName = components.last!
+        // Remove .swift from file name
+        if let fileName = components.last {
             return fileName.components(separatedBy: ".").first ?? fileName
+        } else {
+            return ""
         }
     }
 
