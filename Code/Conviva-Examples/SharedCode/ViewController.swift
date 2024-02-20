@@ -61,6 +61,18 @@ class ViewController: UIViewController {
             )
         )
     }
+
+    @IBAction func togglePlayPause(_ sender: UIButton) {
+        if self.player.paused {
+            self.player.play()
+        } else {
+            self.player.pause()
+        }
+    }
+
+    @IBAction func seekForward(_ sender: Any) {
+        self.player.setCurrentTime(self.player.currentTime + 10)
+    }
 }
 
 let bigBuckBunnyURL = "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
