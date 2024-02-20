@@ -174,7 +174,7 @@ class THEOComScoreAdapter: NSObject {
     private func setAdMetadata() {
         if configuration.debug { print("[THEOplayerConnectorComscore] setting ad metadata with ad duration ", currentAdDuration, " and ad offset ", currentAdOffset) }
         var advertisementType: SCORStreamingAdvertisementType
-        if (comscoreMetadata.length == 0) {
+        if self.comscoreMetadata.mediaType == .live {
             advertisementType = .live
         } else if (currentAdOffset == 0) {
             advertisementType = .onDemandPreRoll
@@ -475,7 +475,7 @@ class THEOComScoreAdapter: NSObject {
     }
     
     private func onLoadedMetadata(event: LoadedMetaDataEvent) {
-        if self.comscoreMetadata.length != 0 || self.inAd {
+        if self.comscoreMetadata.mediaType != .live || self.inAd {
             return
         }
 
@@ -545,7 +545,7 @@ class THEOComScoreAdapter: NSObject {
             justRestarted = false //hiccup is over
         }
         let currentTime: Double = event.currentTime
-        if self.comscoreMetadata.length == 0 {
+        if self.comscoreMetadata.mediaType == .live {
             let seekableRanges = self.player.seekable.sorted { $0.start < $1.start }
             if let dvrWindowEnd: Double = seekableRanges.last?.end {
                 let newDvrWindowOffsetInSeconds = dvrWindowEnd - currentTime
