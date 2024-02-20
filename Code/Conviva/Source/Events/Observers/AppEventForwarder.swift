@@ -42,9 +42,7 @@ class AppEventForwarder {
                 guard let event = item.accessLog()?.events.last else {return}
                 guard item == player.currentItem else { return } // TODO: Remove this.
 
-                player.ads.requestPlaying { isPlayingAd, error in
-                    eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: isPlayingAd == true)
-                }
+                eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: player.ads.playing)
             }
         )
     }
