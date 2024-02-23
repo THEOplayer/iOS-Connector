@@ -448,7 +448,7 @@ class THEOComScoreAdapter: NSObject {
             currentAdDuration = 0
             if let linearAd = ad as? LinearAd,
                let duration: Int = linearAd.duration {
-                self.currentAdDuration = duration
+                self.currentAdDuration = duration * 1000
             }
             currentAdId = ad.id ?? "-1"
             if let adProcessor = configuration.adIdProcessor {
