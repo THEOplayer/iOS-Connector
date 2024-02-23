@@ -90,9 +90,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func seekForward(_ sender: Any) {
-        player.requestCurrentTime(completionHandler: {currentTime, error in
-            self.player.setCurrentTime(currentTime! + 10)
-        })
+        self.player.currentTime = self.player.currentTime + 10
     }
     
 }
