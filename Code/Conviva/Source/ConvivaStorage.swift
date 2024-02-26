@@ -5,7 +5,7 @@
 //  Created on 20/06/2023.
 //
 
-public class ConvivaConnectorStorage {
+public class ConvivaStorage {
     private var storedValues: [String:Any] = [:]
     
     public func storeKeyValuePair(key: String, value: Any) {
