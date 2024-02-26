@@ -11,7 +11,11 @@ import AVFoundation
 
 fileprivate let willEnterForeground = UIApplication.willEnterForegroundNotification
 fileprivate let didEnterBackground = UIApplication.didEnterBackgroundNotification
-fileprivate let newAccessLogEntry = AVPlayerItem.newAccessLogEntryNotification
+// Xcode 15 (Swift 5.9) introduces (and only fires notification with) `AVPlayerItem.newAccessLogEntryNotification`, and deprecates `Notification.Name.AVPlayerItemNewAccessLogEntry` (doesn't fire notification anymore)
+// Older Xcode and Swift versions only fire notification with `Notification.Name.AVPlayerItemNewAccessLogEntry`
+// Both `AVPlayerItem.newAccessLogEntryNotification` and `Notification.Name.AVPlayerItemNewAccessLogEntry` are mapped to `Notification.Name("AVPlayerItemNewAccessLogEntry")`, hence we use that.
+// Once we drop support for older versions (below Xcode 15 and Swift 5.9) we can switch from `Notification.Name("AVPlayerItemNewAccessLogEntry")` to `AVPlayerItem.newAccessLogEntryNotification`.
+fileprivate let newAccessLogEntry = Notification.Name("AVPlayerItemNewAccessLogEntry")
 
 class AppEventForwarder {
     let center = NotificationCenter.default
@@ -42,9 +46,7 @@ class AppEventForwarder {
                 guard let event = item.accessLog()?.events.last else {return}
                 guard item == player.currentItem else { return } // TODO: Remove this.
 
-                player.ads.requestPlaying { isPlayingAd, error in
-                    eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: isPlayingAd == true)
-                }
+                eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: player.ads.playing)
             }
         )
     }
