@@ -8,16 +8,19 @@ public struct ConvivaConnector {
     private let convivaReporter: ConvivaReporter
     private let convivaVPFDetector: ConvivaVPFDetector
     
-    public init?(configuration: ConvivaConfiguration, player: THEOplayer) {
+    public init?(configuration: ConvivaConfiguration, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol) {
         guard let endpoints = ConvivaEndpoints(configuration: configuration) else { return nil }
-        self.init(conviva: endpoints, player: player)
+        self.init(conviva: endpoints, player: player, externalEventDispatcher: externalEventDispatcher)
     }
 
-    init(conviva: ConvivaEndpoints, player: THEOplayer) {
+    init(conviva: ConvivaEndpoints, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol) {
         self.endPoints = conviva
         self.convivaReporter = ConvivaReporter(endPoints: endPoints)
         self.convivaVPFDetector = ConvivaVPFDetector()
-        self.convivaObserver = ConvivaObserver(player: player, reporter: self.convivaReporter, vpfDetector: self.convivaVPFDetector)
+        self.convivaObserver = ConvivaObserver(player: player, 
+                                               reporter: self.convivaReporter,
+                                               vpfDetector: self.convivaVPFDetector,
+                                               externalEventDispatcher: externalEventDispatcher)
     }
     
     public func destroy() {

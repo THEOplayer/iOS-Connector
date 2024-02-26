@@ -12,6 +12,7 @@ class ConvivaObserver {
     private weak var player: THEOplayer?
     private weak var reporter: ConvivaReporter?
     private weak var vpfDetector: ConvivaVPFDetector?
+    private var externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol?
     
     // MARK: player event Listeners
     private var playListener: EventListener?
@@ -36,6 +37,12 @@ class ConvivaObserver {
     private var adBeginListener: EventListener?
     private var adEndListener: EventListener?
     private var adErrorListener: EventListener?
+    // MARK: external Ad event listeners
+    private var externalAdBreakBeginListener: EventListener?
+    private var externalAdBreakEndListener: EventListener?
+    private var externalAdBeginListener: EventListener?
+    private var externalAdEndListener: EventListener?
+    private var externalAdErrorListener: EventListener?
     
     // MARK: App observers
     private var foregroundObserver: Any?
@@ -43,15 +50,18 @@ class ConvivaObserver {
     private var accessLogObserver: Any?
 
     // MARK: init/destroy
-    init(player: THEOplayer, reporter: ConvivaReporter, vpfDetector: ConvivaVPFDetector) {
+    init(player: THEOplayer, reporter: ConvivaReporter, vpfDetector: ConvivaVPFDetector, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol) {
         self.player = player
         self.reporter = reporter
         self.vpfDetector = vpfDetector
+        self.externalEventDispatcher = externalEventDispatcher
 
         self.attachPlayerEventListeners()
         self.attachNetworkEventListeners()
         self.attachAdEventListeners()
         self.attachAppObservers()
+        
+        self.attachExternalAdEventListeners()
     }
     
     func destroy() {
@@ -59,6 +69,8 @@ class ConvivaObserver {
         self.dettachNetworkEventListeners()
         self.dettachAdEventListeners()
         self.dettachAppObservers()
+        
+        self.dettachExternalAdEventListeners()
     }
     
     // MARK: - attach/dettach Player event Listeners
@@ -275,6 +287,81 @@ class ConvivaObserver {
         // AD_ERROR
         if let adErrorListener = self.adErrorListener {
             player.ads.removeEventListener(type: AdsEventTypes.AD_ERROR, listener: adErrorListener)
+        }
+    }
+    
+    // MARK: - attach/dettach external Ad event Listeners
+    private func attachExternalAdEventListeners() {
+        guard let externalEventDispatcher = self.externalEventDispatcher else { return }
+        
+        // AD_BREAK_BEGIN
+        self.externalAdBreakBeginListener = externalEventDispatcher.addEventListener(type: AdsEventTypes.AD_BREAK_BEGIN) { [weak self] event in
+            if let adBreak = event.ad {
+                self?.reporter?.reportAdBreakBegin(adBreak: adBreak)
+            }
+        }
+        
+        // AD_BREAK_END
+        self.externalAdBreakEndListener = externalEventDispatcher.addEventListener(type: AdsEventTypes.AD_BREAK_END) { [weak self] event in
+            self?.reporter?.reportAdBreakEnd()
+        }
+        
+        // AD_BEGIN
+        self.externalAdBeginListener = externalEventDispatcher.addEventListener(type: AdsEventTypes.AD_BEGIN) { [weak self] event in
+            if let player = self?.player,
+               let duration = player.duration,
+               let ad = event.ad,
+               ad.type == AdType.linear {
+                self?.reporter?.reportAdBegin(ad: ad, duration: duration)
+            }
+        }
+        
+        // AD_END
+        self.externalAdEndListener = externalEventDispatcher.addEventListener(type: AdsEventTypes.AD_END) { [weak self] event in
+            if let ad = event.ad,
+               ad.type == AdType.linear {
+                self?.reporter?.reportAdEnd()
+            }
+        }
+        
+        // AD_ERROR
+        self.externalAdErrorListener = externalEventDispatcher.addEventListener(type: AdsEventTypes.AD_ERROR) { [weak self] event in
+            if let ad = event.ad {
+                self?.reporter?.reportAdError(error: event.error ?? "An error occured while playing ad \(ad.id ?? "without id")",
+                                              info: ad.convivaInfo)
+            } else {
+                self?.reporter?.reportAdError(error: event.error ?? "An error occured while playing an ad",
+                                              info: nil)
+            }
+        }
+    }
+    
+    private func dettachExternalAdEventListeners() {
+        guard let externalEventDispatcher = self.externalEventDispatcher else { return }
+        
+        // AD_BREAK_BEGIN
+        if let adBreakBeginListener = self.externalAdBreakBeginListener {
+            externalEventDispatcher.removeEventListener(type: AdsEventTypes.AD_BREAK_BEGIN, listener: adBreakBeginListener)
+        }
+        
+        // AD_BREAK_END
+        if let adBreakEndListener = self.externalAdBreakEndListener {
+            externalEventDispatcher.removeEventListener(type: AdsEventTypes.AD_BREAK_END, listener: adBreakEndListener)
+        }
+        
+        // AD_BEGIN
+        if let adBeginListener = self.externalAdBeginListener {
+            externalEventDispatcher.removeEventListener(type: AdsEventTypes.AD_BEGIN, listener: adBeginListener)
+        }
+        
+        // AD_END
+        if let adEndListener = self.externalAdEndListener {
+            externalEventDispatcher.removeEventListener(type: AdsEventTypes.AD_END, listener: adEndListener)
+        }
+        
+        // AD_ERROR
+        if let adErrorListener = self.externalAdErrorListener {
+            externalEventDispatcher.removeEventListener(type: AdsEventTypes.AD_ERROR, listener: adErrorListener)
         }
     }
     
