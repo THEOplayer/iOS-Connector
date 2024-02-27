@@ -9,6 +9,6 @@ public struct ComscoreConnector {
     public init(configuration: ComScoreConfiguration, player: THEOplayer, metadata: ComScoreMetadata) {
         ComScoreAnalytics.start(configuration: configuration)
         self.player = player
-        self.streamingAnalytics = ComScoreAnalytics.THEOplayerComscoreSDK(player: player, playerVersion: THEOplayer.version, metadata: metadata)
+        self.streamingAnalytics = ComScoreAnalytics.THEOplayerComscoreSDK(player: player, playerVersion: THEOplayer.version, metadata: metadata, configuration: configuration)
     }
 }

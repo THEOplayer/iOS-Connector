@@ -7,7 +7,7 @@
 import ComScore
 import THEOplayerSDK
 
-public final class ComScoreAnalytics {
+final class ComScoreAnalytics {
     private static let serialQueue = DispatchQueue(label: "com.theoplayer.comscore.ios.integration")
     private static var started: Bool = false
     private static var configuration: ComScoreConfiguration?
@@ -17,7 +17,7 @@ public final class ComScoreAnalytics {
      - Parameters:
      - configuration: The ComScoreConfiguration that contains application specific information
      */
-    public static func start(configuration: ComScoreConfiguration) {
+    static func start(configuration: ComScoreConfiguration) {
         serialQueue.sync {
             if !started {
                 ComScoreAnalytics.configuration = configuration
@@ -43,43 +43,8 @@ public final class ComScoreAnalytics {
         }
     }
 
-    /**
-     Set a persistent label on the ComScore PublisherConfiguration
-     - Parameters:
-     - label: The label name
-     - value: The label value
-     */
-    public static func setPersistentLabel(label: String, value: String) {
-        serialQueue.sync {
-            if started {
-                notifyHiddenEvent(publisherId: ComScoreAnalytics.configuration?.publisherId, label: label, value: value)
-                if configuration!.debug { print("[THEOplayerConnectorComscore] ComScore persistent label set: [\(label):\(value)]") }
-            }
-        }
-    }
-
-    /**
-     Set persistent labels on the ComScore PublisherConfiguration
-     - Parameters:
-     - label: The labels to set
-     */
-    public static func setPersistentLabels(labels: [String: String]) {
-        serialQueue.sync {
-            if started {
-                notifyHiddenEvents(publisherId: ComScoreAnalytics.configuration?.publisherId, labels: labels)
-                if configuration!.debug { print("[THEOplayerConnectorComscore] ComScore persistent labels set: [\(labels.map { "\($0.key):\($0.value)"})]") }
-            }
-        }
-    }
-
     // Only call after you started app level tracking with start()
-    public static func THEOplayerComscoreSDK(player: THEOplayer, playerVersion: String, metadata: ComScoreMetadata) -> ComScoreStreamingAnalytics {
-        return ComScoreStreamingAnalytics(player: player, playerVersion: playerVersion, configuration: ComScoreAnalytics.configuration!, metadata: metadata)
+    static func THEOplayerComscoreSDK(player: THEOplayer, playerVersion: String, metadata: ComScoreMetadata, configuration: ComScoreConfiguration) -> ComScoreStreamingAnalytics {
+        return ComScoreStreamingAnalytics(player: player, playerVersion: playerVersion, configuration: configuration, metadata: metadata)
     }
-
-}
-
-@frozen
-public enum ComScoreError: Error {
-    case notStarted
 }
