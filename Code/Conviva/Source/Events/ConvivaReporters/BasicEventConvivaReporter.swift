@@ -84,11 +84,9 @@ class BasicEventConvivaReporter: BasicEventProcessor {
             let contentInfo = [
                 CIS_SSDK_METADATA_PLAYER_NAME: Utilities.playerFrameworkName,
                 CIS_SSDK_METADATA_STREAM_URL: url,
-                CIS_SSDK_METADATA_ASSET_NAME: assetName,
-                CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: false),
-                CIS_SSDK_METADATA_DURATION: NSNumber(value: -1)
+                CIS_SSDK_METADATA_ASSET_NAME: assetName
             ] as [String: Any]
-            self.conviva.setContentInfo(contentInfo)
+            self.conviva.safeSetContentInfo(contentInfo)
             self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_ASSET_NAME, value: assetName)
         } else {
             newSource = nil
@@ -118,11 +116,11 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     func durationChange(event: DurationChangeEvent) {
         if let duration = event.duration, currentSession.source?.url != nil {
             if duration.isInfinite {
-                conviva.setContentInfo([
+                self.conviva.safeSetContentInfo([
                     CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: true)
                 ])
             } else {
-                conviva.setContentInfo([
+                self.conviva.safeSetContentInfo([
                     CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: false),
                     CIS_SSDK_METADATA_DURATION: NSNumber(value: duration)
                 ])
@@ -136,5 +134,12 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     
     deinit {
         reportEndedIfPlayed()
+    }
+}
+
+extension CISVideoAnalytics {
+    func safeSetContentInfo(_ contentInfo: [AnyHashable : Any]) {
+        let filteredContentInfo: [AnyHashable : Any] = contentInfo.filter { self.getMetadataInfo()[$0.key] == nil }
+        self.setContentInfo(filteredContentInfo)
     }
 }
