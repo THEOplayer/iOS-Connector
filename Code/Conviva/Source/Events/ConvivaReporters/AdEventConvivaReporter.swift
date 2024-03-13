@@ -8,12 +8,12 @@
 import ConvivaSDK
 import THEOplayerSDK
 
-public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter {
+class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter {
     static let serializationFormatter: NumberFormatter = createSerializationFormatter()
     
-    public let videoAnalytics: CISVideoAnalytics
-    public let adAnalytics: CISAdAnalytics
-    let storage: ConvivaConnectorStorage
+    var videoAnalytics: CISVideoAnalytics
+    var adAnalytics: CISAdAnalytics
+    private let storage: ConvivaConnectorStorage
     private weak var player: THEOplayer?
         
     init(video: CISVideoAnalytics, ads: CISAdAnalytics, storage: ConvivaConnectorStorage, player: THEOplayer) {

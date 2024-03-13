@@ -14,10 +14,11 @@ struct BasicEventForwarder {
     let playerObserver: DispatchObserver
     let networkObserver: DispatchObserver
     
-    init(player: THEOplayer, eventProcessor: BasicEventProcessor) {
+    
+    init(player: THEOplayer, vpfDetector: ConvivaVPFDetector, eventProcessor: BasicEventProcessor) {
         playerObserver = .init(
             dispatcher: player,
-            eventListeners: Self.forwardEvents(from: player, to: eventProcessor)
+            eventListeners: Self.forwardEvents(from: player, vpfDetector: vpfDetector, to: eventProcessor)
         )
         networkObserver = .init(
             dispatcher: player.network,
@@ -30,7 +31,7 @@ struct BasicEventForwarder {
         )
     }
     
-    static func forwardEvents(from player: THEOplayer, to processor: BasicEventProcessor) -> [RemovableEventListenerProtocol] {
+    static func forwardEvents(from player: THEOplayer, vpfDetector: ConvivaVPFDetector, to processor: BasicEventProcessor) -> [RemovableEventListenerProtocol] {
         [
             player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: processor.play),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: processor.playing),
@@ -40,8 +41,19 @@ struct BasicEventForwarder {
                     processor.renderedFramerateUpdate(framerate: rate)
                 }
             },
-            player.addRemovableEventListener(type: PlayerEventTypes.PAUSE, listener: processor.pause),
-            player.addRemovableEventListener(type: PlayerEventTypes.WAITING, listener: processor.waiting),
+            player.addRemovableEventListener(type: PlayerEventTypes.PAUSE) {
+                processor.pause(event: $0)
+                if let log = player.currentItem?.errorLog() {
+                    if vpfDetector.detectsVPFOnPause(log: log, pauseTime: $0.date) {
+                        processor.error(event: ErrorEvent(error: "Network Error", errorObject: nil, date: $0.date))
+                        player.stop()
+                    }
+                }
+            },
+            player.addRemovableEventListener(type: PlayerEventTypes.WAITING) {
+                processor.waiting(event: $0)
+                vpfDetector.transitionToWaiting()
+            },
             player.addRemovableEventListener(type: PlayerEventTypes.SEEKING, listener: processor.seeking),
             player.addRemovableEventListener(type: PlayerEventTypes.SEEKED, listener: processor.seeked),
             player.addRemovableEventListener(type: PlayerEventTypes.ERROR, listener: processor.error),

@@ -2,47 +2,82 @@ import THEOplayerSDK
 import ConvivaSDK
 
 /// Connects to a THEOplayer instance and reports its events to conviva
-public struct ConvivaConnector: ConvivaEndpointContainer {
-    public let conviva: ConvivaEndpoints
-    public let player: THEOplayer
-    public let storage: ConvivaConnectorStorage
+public struct ConvivaConnector {
+    private let storage = ConvivaConnectorStorage()
+    private let convivaVPFDetector = ConvivaVPFDetector()
     
-    let appEventForwarder: AppEventForwarder
-    let basicEventForwarder: BasicEventForwarder
-    let adEventHandler: AdEventForwarder?
+    private var endPoints: ConvivaEndpoints? = nil
+    private var appEventForwarder: AppEventForwarder? = nil
+    private var basicEventForwarder: BasicEventForwarder? = nil
+    private var adEventHandler: AdEventForwarder? = nil
     
     public init?(configuration: ConvivaConfiguration, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
-        guard let endpoints = ConvivaEndpoints(configuration: configuration) else { return nil }
-        self.init(conviva: endpoints, player: player, externalEventDispatcher: externalEventDispatcher)
+        guard let endPoints = ConvivaEndpoints(configuration: configuration) else { return nil }
+        self.init(conviva: endPoints, player: player, externalEventDispatcher: externalEventDispatcher)
     }
-
-    public init(conviva: ConvivaEndpoints, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
-        self.conviva = conviva
-        self.player = player
-        self.storage = ConvivaConnectorStorage()
+    
+    init(conviva: ConvivaEndpoints, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
+        self.endPoints = conviva
         
-        let (analytics, videoAnalytics, adAnalytics) = (conviva.analytics, conviva.videoAnalytics, conviva.adAnalytics)
-        
-        appEventForwarder = AppEventForwarder(
-            player: player,
-            eventProcessor: AppEventConvivaReporter(analytics: analytics, video: videoAnalytics, ads: adAnalytics, storage: storage)
-        )
-        
-        basicEventForwarder = BasicEventForwarder(
-            player: player,
-            eventProcessor: BasicEventConvivaReporter(conviva: videoAnalytics, storage: storage)
-        )
-        
-        adEventHandler = AdEventForwarder(
-            player: player,
-            externalEventDispatcher: externalEventDispatcher,
-            eventProcessor: AdEventConvivaReporter(video: videoAnalytics, ads: adAnalytics, storage: storage, player: player)
-        )
+        if let endPoints = self.endPoints {
+            self.appEventForwarder = AppEventForwarder(player: player,
+                                                  eventProcessor: AppEventConvivaReporter(analytics: endPoints.analytics,
+                                                                                          video: endPoints.videoAnalytics,
+                                                                                          ads: endPoints.adAnalytics,
+                                                                                          storage: self.storage)
+            )
+            
+            self.basicEventForwarder = BasicEventForwarder(player: player,
+                                                      vpfDetector: self.convivaVPFDetector,
+                                                      eventProcessor: BasicEventConvivaReporter(conviva: endPoints.videoAnalytics,
+                                                                                                storage: self.storage)
+            )
+            
+            self.adEventHandler = AdEventForwarder(player: player,
+                                              externalEventDispatcher: externalEventDispatcher,
+                                              eventProcessor: AdEventConvivaReporter(video: endPoints.videoAnalytics,
+                                                                                     ads: endPoints.adAnalytics,
+                                                                                     storage: self.storage,
+                                                                                     player: player)
+                                              
+            )
+        }
     }
-}
-
-extension THEOplayer {
-    var hasAdsImplementation: Bool {
-        getAllIntegrations().contains { $0.type == .ADS }
+    
+    public func report(viewerID: String) {
+        self.endPoints?.videoAnalytics.setContentInfo([CIS_SSDK_METADATA_VIEWER_ID: viewerID])
+    }
+        
+    public func report(assetName: String) {
+        self.endPoints?.videoAnalytics.setContentInfo([ CIS_SSDK_METADATA_ASSET_NAME: assetName])
+    }
+        
+    public func destroy() {
+        self.endPoints?.destroy()
+    }
+        
+    public func setContentInfo(_ contentInfo: [String: Any]) {
+        self.endPoints?.videoAnalytics.setContentInfo(contentInfo)
+    }
+        
+    public func setAdInfo(_ adInfo: [String: Any]) {
+        self.endPoints?.adAnalytics.setAdInfo(adInfo)
+    }
+        
+    public func reportPlaybackFailed(message: String) {
+        self.endPoints?.videoAnalytics.reportPlaybackFailed(message, contentInfo: nil)
+    }
+        
+    public func stopAndStartNewSession(contentInfo: [String: Any]) {
+        self.endPoints?.videoAnalytics.reportPlaybackEnded()
+        self.endPoints?.videoAnalytics.reportPlaybackRequested(contentInfo)
+        self.endPoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+        if let bitrate = self.storage.valueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE) as? NSNumber {
+            self.endPoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrate)
+        }
+    }
+        
+    public func setErrorCallback(onNativeError: (([String: Any]) -> Void)? ) {
+        self.convivaVPFDetector.setVideoPlaybackFailureCallback(onNativeError)
     }
 }

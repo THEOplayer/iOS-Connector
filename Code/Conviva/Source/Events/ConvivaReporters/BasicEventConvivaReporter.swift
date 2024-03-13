@@ -20,8 +20,8 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     }
     
     /// The endpoint to which all the events are sent
-    let conviva: CISVideoAnalytics
-    let storage: ConvivaConnectorStorage
+    private let conviva: CISVideoAnalytics
+    private let storage: ConvivaConnectorStorage
     
     var currentSession = Session()
         
@@ -46,6 +46,7 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     
     func pause(event: PauseEvent) {
         conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
+        
     }
     
     func waiting(event: WaitingEvent) {
