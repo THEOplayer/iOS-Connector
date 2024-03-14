@@ -43,14 +43,6 @@ public struct ConvivaConnector {
             )
         }
     }
-    
-    public func report(viewerID: String) {
-        self.endPoints?.videoAnalytics.setContentInfo([CIS_SSDK_METADATA_VIEWER_ID: viewerID])
-    }
-        
-    public func report(assetName: String) {
-        self.endPoints?.videoAnalytics.setContentInfo([ CIS_SSDK_METADATA_ASSET_NAME: assetName])
-    }
         
     public func destroy() {
         self.endPoints?.destroy()

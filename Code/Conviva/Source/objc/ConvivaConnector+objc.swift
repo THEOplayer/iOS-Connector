@@ -15,16 +15,6 @@ import ConvivaSDK
     }
     
     @objc
-    public func report(viewerID: String) {
-        internalConnector.report(viewerID: viewerID)
-    }
-    
-    @objc
-    public func report(assetName: String) {
-        internalConnector.report(assetName: assetName)
-    }
-    
-    @objc
     public func destroy() {
         internalConnector.destroy()
     }

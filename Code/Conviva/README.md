@@ -64,27 +64,23 @@ let connector = ConvivaConnector(
 )
 ```
 
-Report the viewer's ID:
+To report the **viewer's ID** you can pass additional matadata to the connector using the setContentInfo method
 
 ```swift
-connector.report(viewerID: "John Doe")
+let contentInfo = [
+   'Conviva.applicationName: 'your_app_name', 
+   'Conviva.viewerId': 'your_viewer_id'
+]
+connector.setContentInfo(contentInfo)
 ```
 
-For each asset you play, the asset name needs to be reported to Conviva. If you provide the asset name as `title` inside your `SourceDescription`'s `.metadata` property the connector will report that title automatically to Conviva as `CIS_SSDK_METADATA_ASSET_NAME`. If you do not provide the title in your `SourceDescription` you will need to manually report your asset name to conviva each time you change the source of your THEOPlayer. You can do this manual reporting using the following convenience method:
+For each asset you play, the **asset name** needs to be reported to Conviva which you can do by providing the asset name as a `title` field inside your `SourceDescription's metadata`. The connector will report that title to Conviva as `CIS_SSDK_METADATA_ASSET_NAME`:
 
 ```swift
-connector.report(assetName: "Star Wars episode II")
-```
+let mySource = SourceDescription(source: source, metadata: MetadataDescription(metadataKeys: ["title": "your_asset_name"]))
+````
+
+## Lifecycle
 
 Hold a reference to your connector. Once the connector is released from memory it will clean up itself and stop reporting to Conviva.
-
-In case you need to report additional information to conviva you can get access to the underlying Conviva types using:
-
-- `connector.analytics` which gives you access to Conviva's `CISAnalytics` type
-- `connector.videoAnalytics` which gives you access to Conviva's `CISVideoAnalytics` type
-- `connector.adAnalytics` which gives you access to Conviva's `CISAdAnalytics` type
-
-## What events does this connector report?
-
-### Basic playback events
 
