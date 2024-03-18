@@ -64,21 +64,21 @@ let connector = ConvivaConnector(
 )
 ```
 
-To report the **viewer's ID** you can pass additional matadata to the connector using the setContentInfo method
-
-```swift
-let contentInfo = [
-   'Conviva.applicationName: 'your_app_name', 
-   'Conviva.viewerId': 'your_viewer_id'
-]
-connector.setContentInfo(contentInfo)
-```
-
-For each asset you play, the **asset name** needs to be reported to Conviva which you can do by providing the asset name as a `title` field inside your `SourceDescription's metadata`. The connector will report that title to Conviva as `CIS_SSDK_METADATA_ASSET_NAME`:
+For each asset you play, the **asset name** needs to be reported to Conviva which you can do by providing the asset name as a `title` field inside your `SourceDescription's metadata`:
 
 ```swift
 let mySource = SourceDescription(source: source, metadata: MetadataDescription(metadataKeys: ["title": "your_asset_name"]))
 ````
+
+Alternatively, the **asset name** can be provided as contentInfo (`CIS_SSDK_METADATA_ASSET_NAME`) using the setContentInfo method, along with other metadata. For example to report the **viewer's ID**: 
+```swift
+let contentInfo = [ 
+   CIS_SSDK_METADATA_VIEWER_ID: "your_viewer_id"
+]
+connector.setContentInfo(contentInfo)
+```
+
+**Important note**: setting a new source on the player will reset previously set contentInfo. Make sure to use the `setContentInfo` method after receiving the SOURCE_CHANGE event.
 
 ## Lifecycle
 
