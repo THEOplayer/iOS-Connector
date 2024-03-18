@@ -27,8 +27,6 @@ class ViewController: UIViewController {
         playerView.frame = playerViewContainer.bounds
         playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         playerViewContainer.addSubview(playerView)
-        
-        conviva.report(viewerID: "User from CocoaPod example")
     }
 
     override func didReceiveMemoryWarning() {
