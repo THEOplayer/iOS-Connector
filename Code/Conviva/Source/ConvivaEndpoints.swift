@@ -1,9 +1,7 @@
 //
-//  File.swift
-//  
+//  ConvivaEndpoints.swift
 //
-//  Created by Damiaan Dufaux on 12/10/2022.
-//
+
 
 import ConvivaSDK
 

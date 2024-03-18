@@ -1,9 +1,6 @@
 //
 //  ConvivaConnectorStorage.swift
 //  
-//
-//  Created on 20/06/2023.
-//
 
 public class ConvivaConnectorStorage {
     private var storedValues: [String:Any] = [:]

@@ -1,9 +1,6 @@
 //
 //  AppStateConvivaReporter.swift
 //  
-//
-//  Created by Damiaan Dufaux on 27/09/2022.
-//
 
 import ConvivaSDK
 import AVFoundation

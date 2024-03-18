@@ -1,9 +1,6 @@
 //
 //  BasicEventForwarder.swift
 //  
-//
-//  Created by Damiaan Dufaux on 01/09/2022.
-//
 
 import THEOplayerSDK
 import THEOplayerConnectorUtilities

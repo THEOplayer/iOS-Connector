@@ -1,7 +1,5 @@
 //
-//  VpfDetector.swift
-//  react-native-theoplayer-conviva
-//
+//  ConvivaVPFDetector.swift
 //
 
 import Foundation

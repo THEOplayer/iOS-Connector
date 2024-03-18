@@ -1,3 +1,7 @@
+//
+//  ConvivaConnector+objc.swift
+//
+
 import THEOplayerSDK
 import ConvivaSDK
 

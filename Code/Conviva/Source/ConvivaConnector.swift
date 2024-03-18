@@ -1,3 +1,7 @@
+//
+//  ConvivaConnector.swift
+//
+
 import THEOplayerSDK
 import ConvivaSDK
 
@@ -6,10 +10,10 @@ public struct ConvivaConnector {
     private let storage = ConvivaConnectorStorage()
     private let convivaVPFDetector = ConvivaVPFDetector()
     
-    private var endPoints: ConvivaEndpoints? = nil
-    private var appEventForwarder: AppEventForwarder? = nil
-    private var basicEventForwarder: BasicEventForwarder? = nil
-    private var adEventHandler: AdEventForwarder? = nil
+    private var endPoints: ConvivaEndpoints?
+    private var appEventForwarder: AppEventForwarder?
+    private var basicEventForwarder: BasicEventForwarder?
+    private var adEventHandler: AdEventForwarder?
     
     public init?(configuration: ConvivaConfiguration, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
         guard let endPoints = ConvivaEndpoints(configuration: configuration) else { return nil }
@@ -29,7 +33,7 @@ public struct ConvivaConnector {
             
             self.basicEventForwarder = BasicEventForwarder(player: player,
                                                       vpfDetector: self.convivaVPFDetector,
-                                                      eventProcessor: BasicEventConvivaReporter(conviva: endPoints.videoAnalytics,
+                                                      eventProcessor: BasicEventConvivaReporter(video: endPoints.videoAnalytics,
                                                                                                 storage: self.storage)
             )
             
