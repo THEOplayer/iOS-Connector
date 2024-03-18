@@ -7,20 +7,20 @@ import AVFoundation
 
 struct AppEventConvivaReporter: AppEventProcessor {
     let analytics: CISAnalytics
-    let video: CISVideoAnalyticsProtocol
-    let ads: CISAdAnalyticsProtocol
+    let videoAnalytics: CISVideoAnalytics
+    let adAnalytics: CISAdAnalytics
     let storage: ConvivaConnectorStorage
 
     func appWillEnterForeground(notification: Notification) {
-        analytics.reportAppForegrounded()
+        self.analytics.reportAppForegrounded()
     }
     
     func appDidEnterBackground(notification: Notification) {
-        analytics.reportAppBackgrounded()
+        self.analytics.reportAppBackgrounded()
     }
     
     func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, isPlayingAd: Bool) {
-        let endpoint = isPlayingAd ? ads : video
+        let endpoint = isPlayingAd ? self.adAnalytics : self.videoAnalytics
         
         if event.indicatedBitrate >= 0 {
             let bitrateValue = NSNumber(value: event.indicatedBitrate / 1000)

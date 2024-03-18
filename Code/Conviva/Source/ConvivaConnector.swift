@@ -26,21 +26,21 @@ public struct ConvivaConnector {
         if let endPoints = self.endPoints {
             self.appEventForwarder = AppEventForwarder(player: player,
                                                   eventProcessor: AppEventConvivaReporter(analytics: endPoints.analytics,
-                                                                                          video: endPoints.videoAnalytics,
-                                                                                          ads: endPoints.adAnalytics,
+                                                                                          videoAnalytics: endPoints.videoAnalytics,
+                                                                                          adAnalytics: endPoints.adAnalytics,
                                                                                           storage: self.storage)
             )
             
             self.basicEventForwarder = BasicEventForwarder(player: player,
                                                       vpfDetector: self.convivaVPFDetector,
-                                                      eventProcessor: BasicEventConvivaReporter(video: endPoints.videoAnalytics,
+                                                      eventProcessor: BasicEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
                                                                                                 storage: self.storage)
             )
             
             self.adEventHandler = AdEventForwarder(player: player,
                                               externalEventDispatcher: externalEventDispatcher,
-                                              eventProcessor: AdEventConvivaReporter(video: endPoints.videoAnalytics,
-                                                                                     ads: endPoints.adAnalytics,
+                                              eventProcessor: AdEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
+                                                                                     adAnalytics: endPoints.adAnalytics,
                                                                                      storage: self.storage,
                                                                                      player: player)
                                               
