@@ -63,6 +63,10 @@ public struct ConvivaConnector {
     public func reportPlaybackFailed(message: String) {
         self.endPoints?.videoAnalytics.reportPlaybackFailed(message, contentInfo: nil)
     }
+    
+    public func reportCustomPlaybackEvent(eventName: String, attributes: [String: Any]) {
+        self.endPoints?.videoAnalytics.reportPlaybackEvent(eventName, withAttributes: attributes)
+    }
         
     public func stopAndStartNewSession(contentInfo: [String: Any]) {
         self.endPoints?.videoAnalytics.reportPlaybackEnded()
