@@ -1,9 +1,6 @@
 //
 //  BasicEventConvivaReporter.swift
 //  
-//
-//  Created by Damiaan Dufaux on 01/09/2022.
-//
 
 import ConvivaSDK
 import THEOplayerSDK
@@ -20,57 +17,57 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     }
     
     /// The endpoint to which all the events are sent
-    let conviva: CISVideoAnalytics
-    let storage: ConvivaConnectorStorage
+    private let videoAnalytics: CISVideoAnalytics
+    private let storage: ConvivaConnectorStorage
     
     var currentSession = Session()
         
-    init(conviva: CISVideoAnalytics, storage: ConvivaConnectorStorage) {
-        self.conviva = conviva
+    init(videoAnalytics: CISVideoAnalytics, storage: ConvivaConnectorStorage) {
+        self.videoAnalytics = videoAnalytics
         self.storage = storage
     }
 
     func play(event: PlayEvent) {
-        guard !currentSession.started else { return }
-        conviva.reportPlaybackRequested(nil)
-        currentSession.started = true
+        guard !self.currentSession.started else { return }
+        self.videoAnalytics.reportPlaybackRequested(nil)
+        self.currentSession.started = true
     }
     
     func playing(event: PlayingEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+        self.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
     }
     
     func timeUpdate(event: TimeUpdateEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: event.currentTimeInMilliseconds)
+        self.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: event.currentTimeInMilliseconds)
     }
     
     func pause(event: PauseEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
+        self.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
     }
     
     func waiting(event: WaitingEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_BUFFERING.rawValue)
+        self.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_BUFFERING.rawValue)
     }
     
     func seeking(event: SeekingEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_STARTED, value: event.currentTimeInMilliseconds)
+        self.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_STARTED, value: event.currentTimeInMilliseconds)
     }
     
     func seeked(event: SeekedEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_ENDED, value: event.currentTimeInMilliseconds)
+        self.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_SEEK_ENDED, value: event.currentTimeInMilliseconds)
     }
     
     func error(event: ErrorEvent) {
-        conviva.reportPlaybackFailed(event.error, contentInfo: nil)
+        self.videoAnalytics.reportPlaybackFailed(event.error, contentInfo: nil)
     }
     
     func networkError(event: NetworkErrorEvent) {
-        conviva.reportPlaybackError(event.error?.message ?? Utilities.defaultStringValue, errorSeverity: .ERROR_WARNING)
+        self.videoAnalytics.reportPlaybackError(event.error?.message ?? Utilities.defaultStringValue, errorSeverity: .ERROR_WARNING)
     }
     
     func sourceChange(event: SourceChangeEvent, selectedSource: String?) {
-        if event.source != currentSession.source?.description, currentSession.source != nil {
-            reportEndedIfPlayed()
+        if event.source != self.currentSession.source?.description, self.currentSession.source != nil {
+            self.reportEndedIfPlayed()
         }
         
         // clear all stored values for the previous source
@@ -88,7 +85,7 @@ class BasicEventConvivaReporter: BasicEventProcessor {
                 CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: false),
                 CIS_SSDK_METADATA_DURATION: NSNumber(value: -1)
             ] as [String: Any]
-            self.conviva.setContentInfo(contentInfo)
+            self.videoAnalytics.setContentInfo(contentInfo)
             self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_ASSET_NAME, value: assetName)
         } else {
             newSource = nil
@@ -96,33 +93,33 @@ class BasicEventConvivaReporter: BasicEventProcessor {
             print("[THEOplayerConnectorConviva] setting unknown source")
             #endif
         }
-        currentSession.source = newSource
+        self.currentSession.source = newSource
     }
     
     func renderedFramerateUpdate(framerate: Float) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: NSNumber(value: Int(framerate.rounded())))
+        self.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: NSNumber(value: Int(framerate.rounded())))
     }
     
     func ended(event: EndedEvent) {
-        conviva.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_STOPPED.rawValue)
-        reportEndedIfPlayed()
+        self.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_STOPPED.rawValue)
+        self.reportEndedIfPlayed()
     }
     
     func reportEndedIfPlayed() {
-        if currentSession.started {
-            conviva.reportPlaybackEnded()
-            currentSession = Session()
+        if self.currentSession.started {
+            self.videoAnalytics.reportPlaybackEnded()
+            self.currentSession = Session()
         }
     }
     
     func durationChange(event: DurationChangeEvent) {
-        if let duration = event.duration, currentSession.source?.url != nil {
+        if let duration = event.duration, self.currentSession.source?.url != nil {
             if duration.isInfinite {
-                conviva.setContentInfo([
+                self.videoAnalytics.setContentInfo([
                     CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: true)
                 ])
             } else {
-                conviva.setContentInfo([
+                self.videoAnalytics.setContentInfo([
                     CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: false),
                     CIS_SSDK_METADATA_DURATION: NSNumber(value: duration)
                 ])
@@ -131,10 +128,10 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     }
     
     func destroy(event: DestroyEvent) {
-        reportEndedIfPlayed()
+        self.reportEndedIfPlayed()
     }
     
     deinit {
-        reportEndedIfPlayed()
+        self.reportEndedIfPlayed()
     }
 }

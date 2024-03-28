@@ -1,9 +1,6 @@
 //
-//  THEOplayerConvivaConfiguration.swift
+//  ConvivaConfiguration+objc.swift
 //  
-//
-//  Created by Damiaan Dufaux on 31/08/2022.
-//
 
 import ConvivaSDK
 

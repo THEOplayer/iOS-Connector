@@ -1,9 +1,6 @@
 //
 //  AdEventForwarder.swift
 //
-//
-//  Created by Damiaan on 07/09/2022.
-//
 
 import THEOplayerSDK
 import THEOplayerConnectorUtilities

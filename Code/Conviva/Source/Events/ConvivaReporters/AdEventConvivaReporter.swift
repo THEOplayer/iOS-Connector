@@ -1,24 +1,21 @@
 //
 //  AdEventConvivaReporter.swift
 //  
-//
-//  Created by Damiaan Dufaux on 07/09/2022.
-//
 
 import ConvivaSDK
 import THEOplayerSDK
 
-public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter {
+class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter {
     static let serializationFormatter: NumberFormatter = createSerializationFormatter()
     
-    public let videoAnalytics: CISVideoAnalytics
-    public let adAnalytics: CISAdAnalytics
-    let storage: ConvivaConnectorStorage
+    var videoAnalytics: CISVideoAnalytics
+    var adAnalytics: CISAdAnalytics
+    private let storage: ConvivaConnectorStorage
     private weak var player: THEOplayer?
         
-    init(video: CISVideoAnalytics, ads: CISAdAnalytics, storage: ConvivaConnectorStorage, player: THEOplayer) {
-        videoAnalytics = video
-        adAnalytics = ads
+    init(videoAnalytics: CISVideoAnalytics, adAnalytics: CISAdAnalytics, storage: ConvivaConnectorStorage, player: THEOplayer) {
+        self.videoAnalytics = videoAnalytics
+        self.adAnalytics = adAnalytics
         self.storage = storage
         self.player = player
     }
@@ -29,7 +26,7 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
     
     public func adBreakBegin(event: AdBreakBeginEvent) {
         guard let adBreak = event.ad else { return }
-        videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: self.calculatedAdType(), adBreakInfo: [
+        self.videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: self.calculatedAdType(), adBreakInfo: [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: adBreak.maxDuration)),
             CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: adBreak.timeOffset)),
             CIS_SSDK_AD_BREAK_POD_POSITION: adBreak.calculateCurrentAdBreakPosition()
@@ -37,7 +34,7 @@ public class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsRe
     }
     
     public func adBreakEnd(event: AdBreakEndEvent) {
-        videoAnalytics.reportAdBreakEnded()
+        self.videoAnalytics.reportAdBreakEnded()
     }
     
     public func adBegin(event: AdBeginWithDurationEvent) {
