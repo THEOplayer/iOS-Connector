@@ -20,5 +20,5 @@ Pod::Spec.new do |s|
   s.static_framework = true
   s.swift_versions = ['5.3', '5.4', '5.5', '5.6', '5.7']
   s.dependency 'ConvivaSDK', '~> 4.0.30'
-  s.dependency 'THEOplayerSDK-core', "~> 6.1"
+  s.dependency 'THEOplayerSDK-core', "~> 7"
 end
