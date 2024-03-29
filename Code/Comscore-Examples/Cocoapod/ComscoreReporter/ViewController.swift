@@ -25,7 +25,7 @@ class ViewController: UIViewController {
 //            preload: AdPreloadType.MIDROLL_AND_POSTROLL,
 //            googleIma: GoogleIMAAdsConfiguration(useNativeIma: false)
 //        )))
-        self.player = THEOplayer(with: nil, configuration: THEOplayerConfiguration(chromeless: true))
+        self.player = THEOplayer(with: nil, configuration: THEOplayerConfigurationBuilder().build())
         #if canImport(THEOplayerGoogleIMAIntegration)
         let imaIntegration = GoogleIMAIntegrationFactory.createIntegration(on: player)
         player.addIntegration(imaIntegration)
