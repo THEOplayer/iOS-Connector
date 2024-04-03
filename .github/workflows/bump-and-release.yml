@@ -92,6 +92,7 @@ jobs:
             if [[ $connector == *Conviva.podspec ]]; then
                 extraFlags+="--synchronous"
             fi
+            pod repo update
             pod $command $connector --verbose --allow-warnings $extraFlags
           done
   Cleanup:
