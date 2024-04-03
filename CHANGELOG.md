@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- Conviva 
+  - Aligned the API to THEOplayer's Android and Web Conviva connectors.
+  - Shield Conviva analytics endpoints. All data reporting now happens via the API.
+  - Removed the 'report' methods for AssetName and ViewerID. These are replaced by using the setcontentInfo method (for viewerId) and by passing metadata to the sources (for AssetName).
+  
+## Added
+
+- Conviva
+  - VPF (Video Playback Failure) detection
+
 ## [6.8.1] - 2024-01-18
 
 ### Fixed

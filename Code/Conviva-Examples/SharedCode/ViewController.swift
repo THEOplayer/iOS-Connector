@@ -11,24 +11,20 @@ import THEOplayerSDK
 import THEOplayerConnectorConviva
 
 class ViewController: UIViewController {
-    let conviva = ConvivaConnector(
-        configuration: convivaConfig,
-        player: THEOplayer(with: nil, configuration: nil)
-    )!
+    let player = THEOplayer(with: nil, configuration: nil)
+    var conviva: ConvivaConnector?
     
     @IBOutlet weak var playerViewContainer: UIView!
-    var player: THEOplayer { conviva.player }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.conviva = ConvivaConnector(configuration: convivaConfig, player: self.player)
         let playerView = PlayerView(player: player)
         playerView.translatesAutoresizingMaskIntoConstraints = true
         playerView.frame = playerViewContainer.bounds
         playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         playerViewContainer.addSubview(playerView)
-        
-        conviva.report(viewerID: "User from CocoaPod example")
     }
 
     override func didReceiveMemoryWarning() {
