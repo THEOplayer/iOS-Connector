@@ -42,7 +42,7 @@ class SubtitlesTransformer {
         return AVAudioSession.sharedInstance().isConnectedToAirplayDevice() ? (DeviceUtil.DEVICE_IP ?? defaultHost) : defaultHost
     }
 
-    func composeTransformationRequest(with subtitlesURL: String, format: THEOplayerSDK.TextTrackFormat, timestamp: SSTextTrackDescription.WebVttTimestamp?) -> URLRequest {
+    func composeTranformationUrl(with subtitlesURL: String, format: THEOplayerSDK.TextTrackFormat, timestamp: SSTextTrackDescription.WebVttTimestamp?) -> String {
         var urlComps = URLComponents(string: "http://\(self.host):\(self.port)/\(SubtitlesTransformer.TRANSFORM_ROUTE)")!
         urlComps.queryItems = [URLQueryItem(name: Parameters.contentUrl.rawValue, value: subtitlesURL)]
         urlComps.queryItems!.append(URLQueryItem(name: Parameters.format.rawValue, value: format._rawValue))
@@ -52,9 +52,8 @@ class SubtitlesTransformer {
             urlComps.queryItems!.append(URLQueryItem(name: Parameters.timestampPts.rawValue, value: pts))
             urlComps.queryItems!.append(URLQueryItem(name: Parameters.timestampLocaltime.rawValue, value: localTime))
         }
-
-        let req = URLRequest(url: urlComps.url!)
-        return req
+        
+        return urlComps.url?.absoluteString ?? subtitlesURL
     }
 
     private func setupServerRoutes() {
