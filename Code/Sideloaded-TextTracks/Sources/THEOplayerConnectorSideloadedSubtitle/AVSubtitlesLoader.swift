@@ -96,7 +96,12 @@ class AVSubtitlesLoader: NSObject {
         let trackDescription: THEOplayerSDK.TextTrackDescription? = self.findTrackDescription(by: originalURL)
         let format: THEOplayerSDK.TextTrackFormat = trackDescription?.format ?? .WebVTT
         let timestamp: SSTextTrackDescription.WebVttTimestamp? = (trackDescription as? SSTextTrackDescription)?.vttTimestamp
-        let subtitlesLocalURL: String = self.transformer.composeTranformationUrl(with: originalURL.absoluteString, format: format, timestamp: timestamp)
+        let subtitlesMediaURL: String
+        if (timestamp?.localTime == nil && timestamp?.pts == nil) {
+            subtitlesMediaURL = originalURL.absoluteString
+        } else {
+            subtitlesMediaURL = self.transformer.composeTranformationUrl(with: originalURL.absoluteString, format: format, timestamp: timestamp)
+        }
         // if the variantTotalDuration is equal to zero then we can use a higher number as AVPlayer is not expecting the EXACT duration but the MAXIMUM duration that the stream can reach
         return """
         #EXTM3U
@@ -105,7 +110,7 @@ class AVSubtitlesLoader: NSObject {
         #EXT-X-PLAYLIST-TYPE:VOD
         #EXT-X-TARGETDURATION:\(self.variantTotalDuration == 0 ? Int.max : Int(self.variantTotalDuration))
         #EXTINF:\(self.variantTotalDuration == 0 ? String(Int.max) : String(format: "%.3f", self.variantTotalDuration))
-        \(subtitlesLocalURL)
+        \(subtitlesMediaURL)
         #EXT-X-ENDLIST
         """
     }
