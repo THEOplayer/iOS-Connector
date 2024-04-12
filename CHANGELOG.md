@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- SideloadedSubtitle
+  - Fixed an issue where playlists that contain urls with percentEncoding got an extra percentEncoding pass resulting in erronneous urls.
+  - Fixed an issue where variant playlists with additional tags between EXTINF and the segment url, where not properly processed.
+
 ## [7.0.0] - 2024-04-03
 
 ### Changed
