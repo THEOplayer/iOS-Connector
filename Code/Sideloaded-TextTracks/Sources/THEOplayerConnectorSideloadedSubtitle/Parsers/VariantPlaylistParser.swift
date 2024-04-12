@@ -48,7 +48,7 @@ class VariantPlaylistParser: PlaylistParser {
         let allLines = manifestString.components(separatedBy: "\n")
         var iterator = allLines.makeIterator()
         
-        while let lineString = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines) {
+        while let lineString = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding {
             let line = HLSLine(lineString: lineString)
             // we need this to force-use the absoluteURL in any URI parameter in a line
             // the reason for this behaviour is that AVPlayer will use the custom Scheme if relativeURL is provided
@@ -61,9 +61,17 @@ class VariantPlaylistParser: PlaylistParser {
                 }
                 self.totalPlayListDuration += duration
                 self.constructedManifestArray.append(line.joinLine())
-                if let nextLine = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines),
-                   let fullURL = self.getFullURL(from: nextLine) {
-                    self.constructedManifestArray.append(fullURL.absoluteString)
+                if let nextLine = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding {
+                    if nextLine.hasPrefix("#EXT-X-BYTERANGE") {
+                        self.constructedManifestArray.append(nextLine)
+                        if let segmentLine = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding {
+                            if let fullURL = self.getFullURL(from: segmentLine) {
+                                self.constructedManifestArray.append(fullURL.absoluteString)
+                            }
+                        }
+                    } else if let fullURL = self.getFullURL(from: nextLine) {
+                        self.constructedManifestArray.append(fullURL.absoluteString)
+                    }
                 }
             default:
                 self.constructedManifestArray.append(line.joinLine())

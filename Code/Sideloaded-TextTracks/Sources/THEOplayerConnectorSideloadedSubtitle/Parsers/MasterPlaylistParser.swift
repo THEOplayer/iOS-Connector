@@ -45,7 +45,7 @@ class MasterPlaylistParser: PlaylistParser {
         }
         let allLines = manifestString.components(separatedBy: "\n")
         var iterator = allLines.makeIterator()
-        while let lineString = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines) {
+        while let lineString = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding {
             let line = HLSLine(lineString: lineString)
             // we need this to force-use the absoluteURL in any URI parameter in a line
             // the reason for this behaviour is that AVPlayer will use the custom Scheme if relativeURL is provided
@@ -68,7 +68,7 @@ class MasterPlaylistParser: PlaylistParser {
             case ManifestTags.ExtXStreamInf.rawValue:
                 line.paramsObject[HLSKeywords.subtitles.rawValue] = "\"\(self.subtitlesGroupId)\""
                 self.constructedManifestArray.append(line.joinLine())
-                if let nextLine = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines) {
+                if let nextLine = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding {
                     let variantURL = self.getVariantURLWithCustomScheme(from: nextLine)
                     self.constructedManifestArray.append(variantURL)
                 }
