@@ -2,7 +2,7 @@
 
 The THEOplayer-Connector-Conviva-VerizonMedia for iOS provides an integration between the THEOplayerSDK and ConvivaSDK. It connects to the Conviva backend and reports events fired from THEOplayer instances (including VerizonMedia ad events).
 
-For example xcode projects with this connector see [Conviva-VerizonMedia-Examples](../Conviva-VerizonMedia-Examples).
+For example xcode projects with this connector see [Conviva-VerizonMedia-Examples](../Conviva-VerizonMedia-Examples/README.md).
 
 ## Installation
 
