@@ -18,7 +18,7 @@ The presented technique is superior to any other similar options as it brings si
 
 ## Usage
 
-Import the `THEOplayerConnectorSideloadedSubtitle ` module
+Import the `THEOplayerConnectorSideloadedSubtitle` module
 
 ```swift
 import THEOplayerConnectorSideloadedSubtitle
