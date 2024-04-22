@@ -54,26 +54,18 @@ class VariantPlaylistParser: PlaylistParser {
             // the reason for this behaviour is that AVPlayer will use the custom Scheme if relativeURL is provided
             self.updateRelativeUri(line: line)
 
-            switch line.tag {
-            case ManifestTags.ExtInf.rawValue:
+            if line.tag == ManifestTags.ExtInf.rawValue {
                 guard let duration = Double(lineString.filter("0123456789.".contains)) else {
                     return
                 }
                 self.totalPlayListDuration += duration
                 self.constructedManifestArray.append(line.joinLine())
-                if let nextLine = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding {
-                    if nextLine.hasPrefix("#EXT-X-BYTERANGE") {
-                        self.constructedManifestArray.append(nextLine)
-                        if let segmentLine = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding {
-                            if let fullURL = self.getFullURL(from: segmentLine) {
-                                self.constructedManifestArray.append(fullURL.absoluteString)
-                            }
-                        }
-                    } else if let fullURL = self.getFullURL(from: nextLine) {
-                        self.constructedManifestArray.append(fullURL.absoluteString)
-                    }
+            } else if !lineString.hasPrefix("#") {
+                // lineString is a segmentUrl
+                if let fullURL = self.getFullURL(from: lineString) {
+                    self.constructedManifestArray.append(fullURL.absoluteString)
                 }
-            default:
+            } else {
                 self.constructedManifestArray.append(line.joinLine())
             }
         }
