@@ -48,7 +48,7 @@ class VariantPlaylistParser: PlaylistParser {
         let allLines = manifestString.components(separatedBy: "\n")
         var iterator = allLines.makeIterator()
         
-        while let lineString = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding {
+        while let lineString = iterator.next()?.trimmingCharacters(in: .whitespacesAndNewlines) {
             let line = HLSLine(lineString: lineString)
             // we need this to force-use the absoluteURL in any URI parameter in a line
             // the reason for this behaviour is that AVPlayer will use the custom Scheme if relativeURL is provided
