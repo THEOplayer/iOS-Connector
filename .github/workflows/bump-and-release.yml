@@ -29,6 +29,12 @@ jobs:
     outputs:
       previousVersion: ${{ steps.store_previous_version.outputs.previousVersion }}
     steps:
+      - name: Log stacks
+        run: |
+          echo "Log macOS version"
+          sw_vers
+          echo "Log Xcode version"
+          xcodebuild -version
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
