@@ -46,12 +46,22 @@ class PlaylistParser {
     }
     
     func getFullURL(from path: String) -> URL? {
-        guard var url = URL(string: path.trimmingCharacters(in: .whitespacesAndNewlines)) else {
+        // Remove any existing percentencoding and add 1 pass of percentEncoding to make sure correct URL can be build up on all iOS version
+        guard let trimmedPath = path.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             return nil
         }
-        if url.scheme == nil {
-            url = self.manifestURL.deletingLastPathComponent().appendingPathComponent(path)
+        var url: URL? = nil
+        if #available(iOS 17.0, *) {
+            url = URL(string: trimmedPath, encodingInvalidCharacters: false) // don't allow an extra percentEncoding pass.
+        } else {
+            url = URL(string: trimmedPath)
         }
+        if let createdUrl = url,
+           createdUrl.scheme == nil,
+           let decodedPath = trimmedPath.removingPercentEncoding { // drop the percentEncoding as this will be reapplied by appendingPathComponent
+            return self.manifestURL.deletingLastPathComponent().appendingPathComponent(decodedPath)
+        }
+        
         return url
     }
     
