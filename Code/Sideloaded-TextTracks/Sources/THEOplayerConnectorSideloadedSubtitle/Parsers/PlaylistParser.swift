@@ -51,7 +51,7 @@ class PlaylistParser {
             return nil
         }
         var url: URL? = nil
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17.0, tvOS 17.0, *) {
             url = URL(string: trimmedPath, encodingInvalidCharacters: false) // don't allow an extra percentEncoding pass.
         } else {
             url = URL(string: trimmedPath)
