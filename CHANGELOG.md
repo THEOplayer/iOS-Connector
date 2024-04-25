@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Fixed
+### [7.2.0] - 2024-04-24
 
 - SideloadedSubtitle
   - Fixed an issue where playlists that contain urls with percentEncoding got an extra percentEncoding pass resulting in erronneous urls.
