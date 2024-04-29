@@ -99,7 +99,6 @@ class THEOComScoreAdapter: NSObject {
         listeners["adBegin"] = player.ads.addEventListener(type: AdsEventTypes.AD_BEGIN, listener: onAdBegin)
         listeners["destroy"] = player.addEventListener(type: PlayerEventTypes.DESTROY, listener: onDestroy)
         listeners["ended"] = player.addEventListener(type: PlayerEventTypes.ENDED, listener: onEnded)
-        if configuration.debug { print("[THEOplayerConnectorComscore] added the ended listener") }
         listeners["error"] = player.addEventListener(type: PlayerEventTypes.ERROR, listener: onError)
         listeners["loadedmetadata"] = player.addEventListener(type: PlayerEventTypes.LOADED_META_DATA, listener: onLoadedMetadata)
         listeners["pause"] = player.addEventListener(type: PlayerEventTypes.PAUSE, listener: onPause)
