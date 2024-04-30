@@ -19,7 +19,7 @@ public class ConvivaConnectorStorage {
         return self.storedValues[key]
     }
     
-    func clear() {
-        self.storedValues.removeAll()
+    func clearValueForKey(_ key: String) {
+        self.storedValues.removeValue(forKey: key)
     }
 }

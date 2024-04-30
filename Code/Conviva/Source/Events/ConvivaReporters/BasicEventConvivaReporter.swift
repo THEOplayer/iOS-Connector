@@ -29,7 +29,8 @@ class BasicEventConvivaReporter: BasicEventProcessor {
 
     func play(event: PlayEvent) {
         guard !self.currentSession.started else { return }
-        self.videoAnalytics.reportPlaybackRequested(nil)
+        let initialContentInfo = Utilities.extendedContentInfo(contentInfo: [:], storage: self.storage)
+        self.videoAnalytics.reportPlaybackRequested(initialContentInfo)
         self.currentSession.started = true
     }
     
@@ -70,8 +71,9 @@ class BasicEventConvivaReporter: BasicEventProcessor {
             self.reportEndedIfPlayed()
         }
         
-        // clear all stored values for the previous source
-        self.storage.clear()
+        // clear all session specific stored values for the previous source
+        self.storage.clearValueForKey(CIS_SSDK_METADATA_ASSET_NAME)         // asset name from the previous source
+        self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE)     // last reported bitrate for previous source
         
         let newSource: Session.Source?
         
@@ -79,7 +81,7 @@ class BasicEventConvivaReporter: BasicEventProcessor {
             newSource = .init(description: source, url: url)
             let assetName = source.metadata?.title ?? Utilities.defaultStringValue;
             let contentInfo = [
-                CIS_SSDK_METADATA_PLAYER_NAME: Utilities.playerFrameworkName,
+                CIS_SSDK_METADATA_PLAYER_NAME: Utilities.playerName,
                 CIS_SSDK_METADATA_STREAM_URL: url,
                 CIS_SSDK_METADATA_ASSET_NAME: assetName,
                 CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: false),
@@ -108,6 +110,7 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     func reportEndedIfPlayed() {
         if self.currentSession.started {
             self.videoAnalytics.reportPlaybackEnded()
+            self.videoAnalytics.cleanup()
             self.currentSession = Session()
         }
     }
