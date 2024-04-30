@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Conviva
+  - Fixed an issue where reported contentInfo was not cleaned up correctly when starting a new viewing session.
+
+## [7.2.0] - 2024-04-24
+
+### Fixed
+
 - SideloadedSubtitle
   - Fixed an issue where playlists that contain urls with percentEncoding got an extra percentEncoding pass resulting in erronneous urls.
   - Fixed an issue where variant playlists with additional tags between EXTINF and the segment url, where not properly processed.
