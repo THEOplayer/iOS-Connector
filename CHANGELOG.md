@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Conviva
+  - Fixed an issue where reported contentInfo was not cleaned up correctly when starting a new viewing session.
   - Fixed an issue where c3.ad.technology was reported as an integer value instead of a string.
 
 ## [7.2.0] - 2024-04-24

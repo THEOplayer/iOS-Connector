@@ -10,16 +10,28 @@ import THEOplayerSDK
 import AVFoundation
 
 enum Utilities {
-    static let playerFrameworkName = "THEOplayer"
+    static let playerName = "THEOplayer"
+    static let playerVersion = THEOplayer.version
     
     static let playerInfo = [
-        CIS_SSDK_PLAYER_FRAMEWORK_NAME: playerFrameworkName,
-        CIS_SSDK_PLAYER_FRAMEWORK_VERSION: THEOplayer.version
-    ]
+            CIS_SSDK_PLAYER_FRAMEWORK_NAME: playerName,
+            CIS_SSDK_PLAYER_FRAMEWORK_VERSION: THEOplayer.version
+        ]
     
     static let defaultStringValue = "NA"
     
     static let en_usLocale = Locale(identifier: "en_US")
+    
+    static func extendedContentInfo(contentInfo: [String: Any], storage: ConvivaConnectorStorage?) -> [String: Any] {
+        var extendedContentInfo = contentInfo
+        if let viewerId = storage?.valueForKey(CIS_SSDK_METADATA_VIEWER_ID) as? String {
+            extendedContentInfo.updateValue(viewerId, forKey: CIS_SSDK_METADATA_VIEWER_ID)
+        }
+        extendedContentInfo.updateValue(Utilities.playerName, forKey: CIS_SSDK_METADATA_PLAYER_NAME)
+        extendedContentInfo.updateValue(Utilities.playerName, forKey: CIS_SSDK_PLAYER_FRAMEWORK_NAME)
+        extendedContentInfo.updateValue(Utilities.playerVersion, forKey: CIS_SSDK_PLAYER_FRAMEWORK_VERSION)
+        return extendedContentInfo
+    }
 }
 
 extension THEOplayer {
