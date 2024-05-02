@@ -98,17 +98,30 @@ class THEOComScoreAdapter: NSObject {
         listeners["adbreakEnd"] = player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_END, listener: onAdbreakEnd)
         listeners["adBegin"] = player.ads.addEventListener(type: AdsEventTypes.AD_BEGIN, listener: onAdBegin)
         listeners["destroy"] = player.addEventListener(type: PlayerEventTypes.DESTROY, listener: onDestroy)
-        listeners["ended"] = player.addEventListener(type: PlayerEventTypes.ENDED, listener: onEnded)
-        if configuration.debug { print("[THEOplayerConnectorComscore] added the ended listener") }
         listeners["error"] = player.addEventListener(type: PlayerEventTypes.ERROR, listener: onError)
-        listeners["loadedmetadata"] = player.addEventListener(type: PlayerEventTypes.LOADED_META_DATA, listener: onLoadedMetadata)
         listeners["pause"] = player.addEventListener(type: PlayerEventTypes.PAUSE, listener: onPause)
         listeners["playbackRateChanged"] = player.addEventListener(type: PlayerEventTypes.RATE_CHANGE, listener: onPlaybackRatechange)
         listeners["playing"] = player.addEventListener(type: PlayerEventTypes.PLAYING, listener: onPlaying)
-        listeners["seeked"] = player.addEventListener(type: PlayerEventTypes.SEEKED, listener: onSeeked)
         listeners["seeking"] = player.addEventListener(type: PlayerEventTypes.SEEKING, listener: onSeeking)
         listeners["sourceChange"] = player.addEventListener(type: PlayerEventTypes.SOURCE_CHANGE, listener: onSourceChange)
         listeners["waiting"] = player.addEventListener(type: PlayerEventTypes.WAITING, listener: onWaiting)
+        
+        // listeners depending on the player instance
+        listeners["loadedmetadata"] = player.addEventListener(type: PlayerEventTypes.LOADED_META_DATA, listener: { [weak self, weak player] event in
+            if let wplayer = player {
+                self?.onLoadedMetadata(event: event, player: wplayer)
+            }
+        })
+        listeners["seeked"] = player.addEventListener(type: PlayerEventTypes.SEEKED, listener: { [weak self, weak player] event in
+            if let wplayer = player {
+                self?.onSeeked(event: event, player: wplayer)
+            }
+        })
+        listeners["ended"] = player.addEventListener(type: PlayerEventTypes.ENDED, listener: { [weak self, weak player] event in
+            if let wplayer = player {
+                self?.onEnded(event: event, player: wplayer)
+            }
+        })
     }
 
     private func removeEventListeners() {
@@ -474,12 +487,12 @@ class THEOComScoreAdapter: NSObject {
         streamingAnalytics.setMediaPlayerVersion(playerVersion)
     }
     
-    private func onLoadedMetadata(event: LoadedMetaDataEvent) {
+    private func onLoadedMetadata(event: LoadedMetaDataEvent, player: THEOplayer) {
         if self.comscoreMetadata.mediaType != .live || self.inAd {
             return
         }
 
-        let seekableRanges: [TimeRange] = self.player.seekable.sorted { $0.start < $1.start }
+        let seekableRanges: [TimeRange] = player.seekable.sorted { $0.start < $1.start }
         if let dvrWindowStart: Double = seekableRanges.first?.start,
            let dvrWindowEnd: Double = seekableRanges.last?.end {
             let dvrWindowLengthInSeconds: Double = dvrWindowEnd - dvrWindowStart
@@ -534,7 +547,7 @@ class THEOComScoreAdapter: NSObject {
         }
     }
     
-    private func onSeeked(event: SeekedEvent) {
+    private func onSeeked(event: SeekedEvent, player: THEOplayer) {
         if configuration.debug { print("[THEOplayerConnectorComscore] SEEKED event") }
         if (comscoreState == .stopped && event.currentTime < 0.5) {
             if configuration.debug { print("[THEOplayerConnectorComscore] step out of seeked handler because we're restarting the same VOD") }
@@ -546,7 +559,7 @@ class THEOComScoreAdapter: NSObject {
         }
         let currentTime: Double = event.currentTime
         if self.comscoreMetadata.mediaType == .live {
-            let seekableRanges = self.player.seekable.sorted { $0.start < $1.start }
+            let seekableRanges = player.seekable.sorted { $0.start < $1.start }
             if let dvrWindowEnd: Double = seekableRanges.last?.end {
                 let newDvrWindowOffsetInSeconds = dvrWindowEnd - currentTime
                 if self.configuration.debug { print("[THEOplayerConnectorComscore] new dvr window offset ", newDvrWindowOffsetInSeconds) }
@@ -583,7 +596,7 @@ class THEOComScoreAdapter: NSObject {
         transitionToStopped()
     }
     
-    private func onEnded(event: EndedEvent) {
+    private func onEnded(event: EndedEvent, player: THEOplayer) {
         if configuration.debug { print("[THEOplayerConnectorComscore] ENDED event") }
         transitionToStopped()
         listeners["firstseekedafterended"] = player.addEventListener(type: PlayerEventTypes.SEEKED, listener: onFirstSeekedAfterEnded)
