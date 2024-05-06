@@ -34,9 +34,8 @@ class SubtitlesSynchronizer {
         self.player = player
 
         _ = theoplayer.textTracks.addEventListener(type: THEOplayerSDK.TextTrackListEventTypes.ADD_TRACK, listener: { [weak self, weak theoplayer] event in
-            let textTrack: THEOplayerSDK.TextTrack = event.track as! THEOplayerSDK.TextTrack
-
-            guard let welf = self,
+            guard let textTrack: THEOplayerSDK.TextTrack = event.track as? THEOplayerSDK.TextTrack,
+                  let welf = self,
                   let textTrackDescriptions: [THEOplayerSDK.TextTrackDescription] = theoplayer?.source?.textTracks,
                   let textTrackDescription: SSTextTrackDescription = textTrackDescriptions.first(where: { $0.label == textTrack.label }) as? SSTextTrackDescription,
                   textTrackDescription.automaticTimestampSyncEnabled else {
@@ -84,9 +83,8 @@ class SubtitlesSynchronizer {
         })
 
         _ = theoplayer.textTracks.addEventListener(type: THEOplayerSDK.TextTrackListEventTypes.CHANGE, listener: { [weak self] event in
-            var textTrack: THEOplayerSDK.TextTrack = event.track as! THEOplayerSDK.TextTrack
-
-            guard let welf = self,
+            guard var textTrack: THEOplayerSDK.TextTrack = event.track as? THEOplayerSDK.TextTrack,
+                  let welf = self,
                   let task: SyncTask = welf.trackSyncMap[textTrack.label],
                   task.status == .resolving else {
                 return
