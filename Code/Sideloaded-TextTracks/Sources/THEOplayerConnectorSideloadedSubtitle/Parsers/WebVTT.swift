@@ -26,7 +26,9 @@ struct WebVTT {
         var currentCueEndTime: TimeInterval?
         var currentCueText = ""
 
+        // Loop over all the lines in the VTT file
         for line in webVttContent.components(separatedBy: .newlines) {
+            // Finds lines where a cue's time values are located and stores the start and end times
             let timePattern: String = #"(\d{2}:\d{2}:\d{2}\.\d{3}) --> (\d{2}:\d{2}:\d{2}\.\d{3})"#
             if let match: NSTextCheckingResult = line.firstMatch(pattern: timePattern),
                let startTimeStr: String = line.substring(with: match.range(at: 1)),
@@ -36,6 +38,9 @@ struct WebVTT {
                 currentCueStartTime = startTime
                 currentCueEndTime = endTime
             } else {
+                // A new line represents the end of a cue in a VTT file.
+                // Checks if text, start time, and end time values are retreived.
+                // If all values are present then add a cue.
                 if line.isEmpty {
                     if let startTime: TimeInterval = currentCueStartTime,
                        let endTime: TimeInterval = currentCueEndTime,
@@ -51,6 +56,9 @@ struct WebVTT {
                     currentCueEndTime = nil
                     currentCueText = ""
                 } else {
+                    // If the line is not empty (not end of cue)
+                    // and if start time is already retreived
+                    // then we are on the content text line. Store the value.
                     if currentCueStartTime != nil {
                         currentCueText += line + "\n"
                     }
@@ -58,8 +66,11 @@ struct WebVTT {
             }
         }
 
+        // In case where the file does not end with an empty line
+        // then we add the final cue if needed (if values are present).
         if let startTime: TimeInterval = currentCueStartTime,
-           let endTime: TimeInterval = currentCueEndTime {
+           let endTime: TimeInterval = currentCueEndTime,
+           !currentCueText.isEmpty {
             let webVttCue: WebVTTCue = .init(
                 startTime: startTime,
                 endTime: endTime,
