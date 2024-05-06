@@ -158,7 +158,7 @@ textTrack.vttTimestamp = .init(pts: "900000", localTime: "00:00:05.000")
 
 In case that the presentation timestamp is not known, or it cannot be obtained, the `automaticTimestampSyncEnabled` property can be enabled to estimate the value of the PTS and automatically set the X-TIMESTAMP-MAP in the WEBVTT file.
 This property is defined on the class `SSTextTrackDescription`.
-Since the value is calculated retrospectively, this will cause a re-toggle of the enabled text track.
+Since the value is calculated retrospectively, it will cause a re-toggle of the enabled text track. This might cause a brief flash when a cue is present while the syncing takes effect.
 
 ## Caching
 
