@@ -154,6 +154,12 @@ textTrack.vttTimestamp = .init(pts: "900000", localTime: "00:00:05.000")
 2. Shifting cues backward is only possible until the timestamp of the first cue (e.g. if your first cue has to be rendered at 10 sec, you should not shift the subtitle with 15 sec).
 3. Shifting forward is possible, but considered as hack, and it is not specification compliant manifest entry. Use it at your own risk!
 
+## Automatic synchronization
+
+In case that the presentation timestamp is not known, or it cannot be obtained, the `automaticTimestampSyncEnabled` property can be enabled to estimate the value of the PTS and automatically set the X-TIMESTAMP-MAP in the WEBVTT file.
+This property is defined on the class `SSTextTrackDescription`.
+Since the value is calculated retrospectively, this will cause a re-toggle of the enabled text track.
+
 ## Caching
 
 The caching feature of this connector allows to download a source alongside a sideloaded subtitle to store it locally on the device and play it offline. To make this happen, the connector provides an API extension.
