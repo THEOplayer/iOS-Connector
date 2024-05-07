@@ -13,9 +13,11 @@ class AVSubtitlesLoader: NSObject {
     private let subtitles: [TextTrackDescription]
     private(set) var variantTotalDuration: Double = 0
     private let transformer = SubtitlesTransformer()
+    private let synchronizer: SubtitlesSynchronizer?
     
-    init(subtitles: [TextTrackDescription]) {
+    init(subtitles: [TextTrackDescription], player: THEOplayer?) {
         self.subtitles = subtitles
+        self.synchronizer = SubtitlesSynchronizer(player: player)
     }
     
     func handleMasterManifestRequest(_ request: AVAssetResourceLoadingRequest) -> Bool {
@@ -216,7 +218,7 @@ extension THEOplayer {
         
         if let source = source {
             if let sideLoadedTextTracks = SourceValidator.getValidTextTracks(source) {
-                let subtitleLoader = AVSubtitlesLoader(subtitles: sideLoadedTextTracks)
+                let subtitleLoader = AVSubtitlesLoader(subtitles: sideLoadedTextTracks, player: self)
                 self.developerSettings?.manifestInterceptor = subtitleLoader
             } else {
                 self.developerSettings?.manifestInterceptor = nil
@@ -239,7 +241,7 @@ extension Cache {
      */
     public func createTaskWithSubtitles(source: SourceDescription, parameters: CachingParameters?) -> CachingTask? {
         if let sideLoadedTextTracks = SourceValidator.getValidTextTracks(source) {
-            let subtitleLoader = AVSubtitlesLoader(subtitles: sideLoadedTextTracks)
+            let subtitleLoader = AVSubtitlesLoader(subtitles: sideLoadedTextTracks, player: nil)
             self.developerSettings?.manifestInterceptor = subtitleLoader
         } else {
             self.developerSettings?.manifestInterceptor = nil
@@ -274,6 +276,14 @@ public class SSTextTrackDescription: TextTrackDescription {
         - If the source already contains a X-TIMESTAMP-MAP tag, the values will not be automatically set. To get the values, use the `extractSourceTimestamp` method.
      */
     public var vttTimestamp: WebVttTimestamp = .init()
+
+    /**
+     When enabled, the player will attempt to synchronize the text track cues with the current playback time by overwriting the presentation timestamp mapping. Defaults to `false`.
+
+     - Remark:
+        - Enabling this might cause a brief flash to the first displayed cue. This can occur when a cue is present while the syncing takes effect.
+     */
+    public var automaticTimestampSyncEnabled: Bool = false
 
     /**
      Method that returns a closure that provides the values of the X-TIMESTAMP-MAP tag specified in the WebVTT source, represented using the `WebVttTimestamp` structure.

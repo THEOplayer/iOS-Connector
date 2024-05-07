@@ -37,5 +37,22 @@ extension String {
         return self.replaceFirst(of: scheme.urlScheme, with: String())
     }
 
+    func firstMatch(pattern: String) -> NSTextCheckingResult? {
+        guard let regex: NSRegularExpression = try? NSRegularExpression(pattern: pattern, options: []) else {
+            return nil
+        }
+        return regex.firstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count))
+    }
+
+    func substring(with range: NSRange) -> String? {
+        guard let swiftRange: Range = .init(range, in: self) else {
+            return nil
+        }
+        return String(self[swiftRange])
+    }
+
+    var withoutCarriageReturns: String {
+        return self.replacingOccurrences(of: "\r\n", with: "\n")
+    }
 }
 
