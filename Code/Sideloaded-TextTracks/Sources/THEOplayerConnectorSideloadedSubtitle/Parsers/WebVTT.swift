@@ -29,7 +29,7 @@ struct WebVTT {
         // Loop over all the lines in the VTT file
         for line in webVttContent.components(separatedBy: .newlines) {
             // Finds lines where a cue's time values are located and stores the start and end times
-            let timePattern: String = #"(\d{2}:\d{2}:\d{2}\.\d{3}) --> (\d{2}:\d{2}:\d{2}\.\d{3})"#
+            let timePattern: String = #"(\d{2}:)?(\d{2}:\d{2}\.\d{3}) --> (\d{2}:)?(\d{2}:\d{2}\.\d{3})"#
             if let match: NSTextCheckingResult = line.firstMatch(pattern: timePattern),
                let startTimeStr: String = line.substring(with: match.range(at: 1)),
                let endTimeStr: String = line.substring(with: match.range(at: 2)),
