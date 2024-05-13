@@ -97,7 +97,7 @@ class AVSubtitlesLoader: NSObject {
         let format: THEOplayerSDK.TextTrackFormat = trackDescription?.format ?? .WebVTT
         let timestamp: SSTextTrackDescription.WebVttTimestamp? = (trackDescription as? SSTextTrackDescription)?.vttTimestamp
         let subtitlesMediaURL: String
-        if (timestamp?.localTime == nil && timestamp?.pts == nil) {
+        if (timestamp?.localTime == nil && timestamp?.pts == nil && format == .WebVTT) {
             subtitlesMediaURL = originalURL.absoluteString
         } else {
             subtitlesMediaURL = self.transformer.composeTranformationUrl(with: originalURL.absoluteString, format: format, timestamp: timestamp)
