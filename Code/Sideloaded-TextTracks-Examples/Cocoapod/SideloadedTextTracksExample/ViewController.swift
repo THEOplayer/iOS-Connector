@@ -22,7 +22,7 @@ class ViewController: UIViewController {
 //            googleIma: GoogleIMAAdsConfiguration(useNativeIma: false)
 //        )))
         let playerConfiguration = THEOplayerConfigurationBuilder()
-        playerConfiguration.license = "<your license>"
+//        playerConfiguration.license = "<your license>"
         self.player = THEOplayer(with: nil, configuration: playerConfiguration.build())
         super.init(coder: coder)
     }
