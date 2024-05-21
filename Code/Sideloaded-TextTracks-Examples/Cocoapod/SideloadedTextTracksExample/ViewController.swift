@@ -45,7 +45,7 @@ class ViewController: UIViewController {
         print("[SideloadedTextTracksExample] Setting source with SRT subtitles")
         player.setSourceWithSubtitles(source: SourceDescription(
             source: TypedSource(src: "https://cdn.theoplayer.com/video/elephants-dream/playlist-no-subtitles.m3u8", type: "application/x-mpegurl"),
-            textTracks: [TextTrackDescription(src: "https://cdn.theoplayer.com/video/elephants-dream/captions.nl.srt", srclang: "en", isDefault: false, kind: .subtitles, label: "English", format: .SRT)]
+            textTracks: [SSTextTrackDescription(src: "https://cdn.theoplayer.com/video/elephants-dream/captions.nl.srt", srclang: "en", isDefault: false, kind: .subtitles, label: "English", format: .SRT)]
         ))
     }
     
@@ -53,7 +53,7 @@ class ViewController: UIViewController {
         print("[SideloadedTextTracksExample] Setting source with VTT subtitles")
         player.setSourceWithSubtitles(source: SourceDescription(
             source: TypedSource(src: "https://cdn.theoplayer.com/video/elephants-dream/playlist-no-subtitles.m3u8", type: "application/x-mpegurl"),
-            textTracks: [TextTrackDescription(src: "https://cdn.theoplayer.com/video/elephants-dream/captions.en.vtt", srclang: "nl", isDefault: false, kind: .subtitles, label: "Nederlands", format: .WebVTT)]
+            textTracks: [SSTextTrackDescription(src: "https://cdn.theoplayer.com/video/elephants-dream/captions.en.vtt", srclang: "nl", isDefault: false, kind: .subtitles, label: "Nederlands", format: .WebVTT)]
         ))
     }
     
