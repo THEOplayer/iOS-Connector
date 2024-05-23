@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- SideloadedSubtitle
+  - Prevent using HTTP redirects on media requests.
+
 ## [7.3.0] - 2024-05-08
 
 ### Added
@@ -13,9 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `automaticTimestampSyncEnabled` API on `SSTextTrackDescription`.
 
 ### Fixed
-
-- SideloadedSubtitle
-  - Prevent using HTTP redirects on media requests.
 
 - Conviva
   - Fixed an issue where reported contentInfo was not cleaned up correctly when starting a new viewing session.
