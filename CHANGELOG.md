@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- SideloadedSubtitle
+  - Prevent using HTTP redirects on media requests.
+
 - Conviva
   - Fixed an issue where reported contentInfo was not cleaned up correctly when starting a new viewing session.
   - Fixed an issue where c3.ad.technology was reported as an integer value instead of a string.
@@ -30,11 +33,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Conviva 
+- Conviva
   - Aligned the API to THEOplayer's Android and Web Conviva connectors.
   - Shield Conviva analytics endpoints. All data reporting now happens via the API.
   - Removed the 'report' methods for AssetName and ViewerID. These are replaced by using the setcontentInfo method (for viewerId) and by passing metadata to the sources (for AssetName).
-  
+
 ## Added
 
 - Conviva
@@ -46,13 +49,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Conviva
   - Updated deprecated name for access log notification to fix broken bitrate reporting.
-  
 - Comscore
   - Prevent Comscore connector crash when reporting ad info for a DAI stream
-  
+
 ### Changed
 
-- Conviva 
+- Conviva
   - Dropped the protocol dependency for the external event dispatcher.
 
 ## [6.1.1] - 2023-10-06
@@ -104,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Conviva
   - Reset stored bitrate value on source changes
-  
+
 ### Added
 
 - Conviva
@@ -151,7 +153,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
   - Report bitrates from iOS in kbps to conviva (a231831a)
   - Do not report empty sessions (4257d803)
-
 
 ## [5.0.4] - 2023-04-21
 
@@ -256,7 +257,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nielsen
   - Use `NielsenAppSDK` and `NielsenTVOSAppSDK` dependencies for cocoapod instead of `NielsenAppSDK-XC` (ded687d0)
 
-
 ## [4.3.1] - 2023-03-17
 
 ### Added
@@ -276,7 +276,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Setup target for SPM (33b5ff6c)
 - Conviva
   - Added tvOS platform to cocoapod (d4ea17dc)
-
 
 ### Changed
 
@@ -303,7 +302,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
   - Automatic reporting of `CIS_SSDK_METADATA_ASSET_NAME` from THEOplayer's `metadata.title` inside the current source's `SourceDescription` (f4c59570)
 
-
 ## [4.1.1] - 2022-10-19
 
 ### Added
@@ -329,4 +327,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [4.3.0]: https://github.com/THEOplayer/iOS-Connector/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/THEOplayer/iOS-Connector/compare/4.1.1...4.2.0
 [4.1.1]: https://github.com/THEOplayer/iOS-Connector/releases/tag/4.1.1
-

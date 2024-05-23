@@ -93,32 +93,17 @@ class AVSubtitlesLoader: NSObject {
         
         return true
     }
-
-    func handleSubtitleContent(_ request: AVAssetResourceLoadingRequest) -> Bool {
-        guard let customSchemeURL = request.request.url else {
-            return false
-        }
-
-        guard let originalURLString = customSchemeURL.absoluteString.byRemovingScheme(scheme: URLScheme.subtitle),
-              let originalURL = URL(string: originalURLString) else {
-            print("[AVSubtitlesLoader] ERROR: Failed to revert subtitle URL!")
-            return false
-        }
-
+    
+    fileprivate func getSubtitleManifest(for originalURL: URL) -> String {
         let trackDescription: THEOplayerSDK.TextTrackDescription? = self.findTrackDescription(by: originalURL)
         let format: THEOplayerSDK.TextTrackFormat = trackDescription?.format ?? .WebVTT
         let timestamp: SSTextTrackDescription.WebVttTimestamp? = (trackDescription as? SSTextTrackDescription)?.vttTimestamp
-        let req: URLRequest? = self.transformer.composeTransformationRequest(with: originalURL.absoluteString, format: format, timestamp: timestamp)
-        let response = HTTPURLResponse(url: originalURL, statusCode: 301, httpVersion: nil, headerFields: nil)
-        request.response = response
-        request.redirect = req
-        request.finishLoading()
-
-        return true
-    }
-    
-    fileprivate func getSubtitleManifest(for originalURL: URL) -> String {
-        let subtitlesURL: String = originalURL.absoluteString.byConcatenatingScheme(scheme: URLScheme.subtitle)
+        let subtitlesMediaURL: String
+        if (timestamp?.localTime == nil && timestamp?.pts == nil && format == .WebVTT) {
+            subtitlesMediaURL = originalURL.absoluteString
+        } else {
+            subtitlesMediaURL = self.transformer.composeTranformationUrl(with: originalURL.absoluteString, format: format, timestamp: timestamp)
+        }
         // if the variantTotalDuration is equal to zero then we can use a higher number as AVPlayer is not expecting the EXACT duration but the MAXIMUM duration that the stream can reach
         return """
         #EXTM3U
@@ -127,7 +112,7 @@ class AVSubtitlesLoader: NSObject {
         #EXT-X-PLAYLIST-TYPE:VOD
         #EXT-X-TARGETDURATION:\(self.variantTotalDuration == 0 ? Int.max : Int(self.variantTotalDuration))
         #EXTINF:\(self.variantTotalDuration == 0 ? String(Int.max) : String(format: "%.3f", self.variantTotalDuration))
-        \(subtitlesURL)
+        \(subtitlesMediaURL)
         #EXT-X-ENDLIST
         """
     }
@@ -195,9 +180,6 @@ extension AVSubtitlesLoader: ManifestInterceptor {
         case URLScheme.subtitlesm3u8.name:
             // intercept the subtitle request to respond with the HLS subtitle
             return self.handleSubtitles(loadingRequest)
-        case URLScheme.subtitle.name:
-            // intercept subtitle content to modify (ie. SRT -> VTT, add time offset, etc.)
-            return self.handleSubtitleContent(loadingRequest)
         default:
             break
         }
