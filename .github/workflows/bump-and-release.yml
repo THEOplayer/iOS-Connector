@@ -58,10 +58,7 @@ jobs:
         run: sh update_changelog.sh -v ${{ inputs.version }}
       - name: Commit and push the changes made to the CHANGELOG.md file
         if: inputs.version != '' && inputs.dryRun == false
-        run: |
-          git add CHANGELOG.md
-          git commit -m "update CHANGELOG.md"
-          git push
+        run: sh commit_changelog.sh
       - name: Add and push new git tag
         if: inputs.version != ''
         run: |
