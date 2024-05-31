@@ -9,6 +9,10 @@ import Foundation
 import AVFoundation
 import THEOplayerSDK
 
+protocol SubtitlesSynchronizerDelegate: AnyObject {
+    func didUpdateTimestamp(timestamp: SSTextTrackDescription.WebVttTimestamp)
+}
+
 class SubtitlesSynchronizer {
     private struct SyncTask {
         enum SyncTaskStatus {
@@ -25,6 +29,7 @@ class SubtitlesSynchronizer {
 
     private weak var player: THEOplayerSDK.THEOplayer?
     private var trackSyncMap: [TrackID: SyncTask] = [:]
+    weak var delegate: SubtitlesSynchronizerDelegate?
 
     init?(player: THEOplayerSDK.THEOplayer?) {
         guard let theoplayer: THEOplayerSDK.THEOplayer = player else {
@@ -74,7 +79,7 @@ class SubtitlesSynchronizer {
 
                 let pts: String = .init(delta * 90000)
                 let localTime: String = textTrackDescription.vttTimestamp.localTime ?? "00:00:00.000"
-                textTrackDescription.vttTimestamp = .init(pts: pts, localTime: localTime)
+                self?.delegate?.didUpdateTimestamp(timestamp: .init(pts: pts, localTime: localTime))
 
                 welf.trackSyncMap[textTrack.label]?.status = .resolving
                 welf.trackSyncMap[textTrack.label]?.mode = mode
@@ -90,10 +95,10 @@ class SubtitlesSynchronizer {
                 return
             }
 
+            welf.trackSyncMap[textTrack.label]?.status = .resolved
             if let mode: THEOplayerSDK.TextTrackMode = task.mode {
                 textTrack.mode = mode
             }
-            welf.trackSyncMap[textTrack.label]?.status = .resolved
         })
     }
 

@@ -18,6 +18,7 @@ class AVSubtitlesLoader: NSObject {
     init(subtitles: [TextTrackDescription], player: THEOplayer?) {
         self.subtitles = subtitles
         self.synchronizer = SubtitlesSynchronizer(player: player)
+        self.synchronizer?.delegate = self.transformer
     }
     
     func handleMasterManifestRequest(_ request: AVAssetResourceLoadingRequest) -> Bool {
