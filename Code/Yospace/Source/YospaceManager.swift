@@ -15,6 +15,7 @@ class YospaceManager {
     private var source: YospaceManagerSource?
     private var id3MetadataHandler: YospaceID3MetadataHandler?
     private var playerEventsHandler: THEOplayerEventsHandler?
+    private var yospaceNotificationsHandler: YospaceNotificationsHandler?
 
     private typealias YospaceManagerSource = (THEOplayerSDK.SourceDescription, THEOplayerSDK.TypedSource)
 
@@ -55,13 +56,13 @@ class YospaceManager {
             self.yospaceSession = session
             self.id3MetadataHandler = YospaceID3MetadataHandler(player: self.player, session: session)
             self.playerEventsHandler = THEOplayerEventsHandler(player: self.player, session: session)
+            self.yospaceNotificationsHandler = YospaceNotificationsHandler(session: session)
             if let source: YospaceManagerSource = self.source {
                 let typedSource: THEOplayerSDK.TypedSource = source.1
                 typedSource.src = playbackUrl
                 let sourceDescription: THEOplayerSDK.SourceDescription = source.0
                 self.player.source = sourceDescription
             }
-//            self.addAnalyticsObservers()
             self.yospaceSession?.setPlaybackPolicyHandler(DefaultPlaybackPolicy(playbackMode: session.playbackMode))
         }
     }
@@ -72,6 +73,7 @@ class YospaceManager {
         self.source = nil
         self.id3MetadataHandler = nil
         self.playerEventsHandler = nil
+        self.yospaceNotificationsHandler = nil
     }
 
     deinit {
