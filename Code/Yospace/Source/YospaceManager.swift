@@ -14,8 +14,7 @@ class YospaceManager {
     private var yospaceSession: YOSession?
     private var source: YospaceManagerSource?
     private var id3MetadataHandler: YospaceID3MetadataHandler?
-    var didCallStart: Bool = false
-    var isWaiting: Bool = false
+    private var playerEventsHandler: THEOplayerEventsHandler?
 
     private typealias YospaceManagerSource = (THEOplayerSDK.SourceDescription, THEOplayerSDK.TypedSource)
 
@@ -55,6 +54,7 @@ class YospaceManager {
            state == .initialised || state == .noAnalytics {
             self.yospaceSession = session
             self.id3MetadataHandler = YospaceID3MetadataHandler(player: self.player, session: session)
+            self.playerEventsHandler = THEOplayerEventsHandler(player: self.player, session: session)
             if let source: YospaceManagerSource = self.source {
                 let typedSource: THEOplayerSDK.TypedSource = source.1
                 typedSource.src = playbackUrl
@@ -66,57 +66,12 @@ class YospaceManager {
         }
     }
 
-    // move this to separate class
-    private func addPlayerListeners(player: THEOplayer) {
-        _ = player.addEventListener(type: PlayerEventTypes.TIME_UPDATE, listener: { event in
-            self.yospaceSession?.playheadDidChange(event.currentTime)
-        })
-
-        _ = player.addEventListener(type: PlayerEventTypes.PLAYING, listener: { event in
-            if self.didCallStart {
-                if self.isWaiting {
-                    self.yospaceSession?.playerEventDidOccur(.playbackContinueEvent, playhead: player.currentTime)
-                    self.isWaiting = false
-                } else {
-                    self.yospaceSession?.playerEventDidOccur(.playbackResumeEvent, playhead: player.currentTime)
-                }
-            } else {
-                self.yospaceSession?.playerEventDidOccur(.playbackStartEvent, playhead: player.currentTime)
-                self.didCallStart = true
-            }
-        })
-
-        _ = player.addEventListener(type: PlayerEventTypes.READY_STATE_CHANGE, listener: { event in
-            if event.readyState == .HAVE_ENOUGH_DATA {
-                self.yospaceSession?.playerEventDidOccur(.playbackReadyEvent, playhead: player.currentTime)
-            }
-        })
-
-        _ = player.addEventListener(type: PlayerEventTypes.PAUSE, listener: { event in
-            self.yospaceSession?.playerEventDidOccur(.playbackPauseEvent, playhead: player.currentTime)
-        })
-
-        _ = player.addEventListener(type: PlayerEventTypes.WAITING, listener: { event in
-            self.yospaceSession?.playerEventDidOccur(.playbackStallEvent, playhead: player.currentTime)
-            self.isWaiting = true
-        })
-
-        _ = player.addEventListener(type: PlayerEventTypes.ENDED, listener: { event in
-            self.yospaceSession?.playerEventDidOccur(.playbackStopEvent, playhead: player.currentTime)
-        })
-
-        _ = player.addEventListener(type: PlayerEventTypes.SOURCE_CHANGE, listener: { event in
-            if event.source == nil {
-                self.yospaceSession?.playerEventDidOccur(.playbackStopEvent, playhead: player.currentTime)
-            }
-        })
-    }
-
     private func reset() {
         self.yospaceSession?.shutdown()
         self.yospaceSession = nil
         self.source = nil
         self.id3MetadataHandler = nil
+        self.playerEventsHandler = nil
     }
 
     deinit {

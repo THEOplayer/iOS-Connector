@@ -1,6 +1,5 @@
 //
 //  YospaceID3MetadataHandler.swift
-//  THEOplayer_iOS_SDK_Sandbox_Swift
 //
 //  Created by Raffi on 30/05/2024.
 //  Copyright © 2024 THEOplayer. All rights reserved.
