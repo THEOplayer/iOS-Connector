@@ -30,13 +30,16 @@ struct WebVTT {
         for line in webVttContent.components(separatedBy: .newlines) {
             // Finds lines where a cue's time values are located and stores the start and end times
             let timePattern: String = #"(\d{2}:)?(\d{2}:\d{2}\.\d{3}) --> (\d{2}:)?(\d{2}:\d{2}\.\d{3})"#
-            if let match: NSTextCheckingResult = line.firstMatch(pattern: timePattern),
-               let startTimeStr: String = line.substring(with: match.range(at: 1)),
-               let endTimeStr: String = line.substring(with: match.range(at: 2)),
-               let startTime: TimeInterval = Self.timeInterval(from: startTimeStr),
-               let endTime: TimeInterval = Self.timeInterval(from: endTimeStr) {
-                currentCueStartTime = startTime
-                currentCueEndTime = endTime
+            if let match: NSTextCheckingResult = line.firstMatch(pattern: timePattern) {
+                let startHour: String = line.substring(with: match.range(at: 1)) ?? ""
+                let endHour: String = line.substring(with: match.range(at: 3)) ?? ""
+                if let startMinutesSeconds: String = line.substring(with: match.range(at: 2)),
+                   let endMinutesSeconds: String = line.substring(with: match.range(at: 4)),
+                   let startTime: TimeInterval = Self.timeInterval(from: startHour + startMinutesSeconds),
+                   let endTime: TimeInterval = Self.timeInterval(from: endHour + endMinutesSeconds) {
+                    currentCueStartTime = startTime
+                    currentCueEndTime = endTime
+                }
             } else {
                 // A new line represents the end of a cue in a VTT file.
                 // Checks if text, start time, and end time values are retreived.
@@ -83,13 +86,17 @@ struct WebVTT {
     }
 
     private static func timeInterval(from string: String) -> TimeInterval? {
-        let components: [String] = string.components(separatedBy: ":")
-        guard components.count >= 3,
-              let hours: Double = .init(components[0]),
-              let minutes: Double = .init(components[1]),
-              let seconds: Double = .init(components[2]) else {
+        let components: [String] = string.components(separatedBy: ":").reversed()
+        let isHMSm: Bool = components.count == 3
+        let isMSm: Bool = components.count == 2
+
+        guard isHMSm || isMSm else {
             return nil
         }
+
+        let seconds: Double = .init(components[0]) ?? 0
+        let minutes: Double = .init(components[1]) ?? 0
+        let hours: Double = isHMSm ? .init(components[2]) ?? 0 : 0
 
         let totalSeconds: Double = (hours * 3600) + (minutes * 60) + seconds
         return totalSeconds
