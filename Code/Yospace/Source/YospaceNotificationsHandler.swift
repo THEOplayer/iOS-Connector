@@ -10,9 +10,13 @@ import YOAdManagement
 
 class YospaceNotificationsHandler {
     private let session: YOSession
+    private let adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController
+    private var adBreaksMap: [YOAdBreak : THEOplayerSDK.AdBreak] = [:]
+    private var adsMap: [YOAdvert : THEOplayerSDK.Ad] = [:]
 
-    init(session: YOSession) {
+    init(session: YOSession, adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController) {
         self.session = session
+        self.adIntegrationController = adIntegrationController
         self.addNotificationObservers(session: session)
     }
 
@@ -60,14 +64,17 @@ class YospaceNotificationsHandler {
 
     @objc private func analyticUpdateDidOccur(notification: NSNotification) {
         print("** Analytic update")
-        for adbreak: YOAdBreak in self.session.adBreaks(.linearType) as! Array<YOAdBreak>  {
-            print("   * Adbreak, Id: \(adbreak.identifier ?? "") duration: \(adbreak.duration)")
+        for adBreak: YOAdBreak in self.session.adBreaks(.linearType) as! Array<YOAdBreak>  {
+            print("   * Adbreak, Id: \(adBreak.identifier ?? "") duration: \(adBreak.duration)")
+            self.processAdBreak(yospaceAdBreak: adBreak)
         }
-        for adbreak: YOAdBreak in self.session.adBreaks(.nonLinearType) as! Array<YOAdBreak> {
-            print("   * Nonlinear Adbreak, Id: \(adbreak.identifier ?? "")")
+        for adBreak: YOAdBreak in self.session.adBreaks(.nonLinearType) as! Array<YOAdBreak> {
+            print("   * Nonlinear Adbreak, Id: \(adBreak.identifier ?? "")")
+            self.processAdBreak(yospaceAdBreak: adBreak)
         }
-        for adbreak: YOAdBreak in self.session.adBreaks(.displayType) as! Array<YOAdBreak> {
-            print("   * Display Adbreak, Id: \(adbreak.identifier ?? "")")
+        for adBreak: YOAdBreak in self.session.adBreaks(.displayType) as! Array<YOAdBreak> {
+            print("   * Display Adbreak, Id: \(adBreak.identifier ?? "")")
+            self.processAdBreak(yospaceAdBreak: adBreak)
         }
     }
 
@@ -113,8 +120,66 @@ class YospaceNotificationsHandler {
         NotificationCenter.default.removeObserver(self, name: .YOTrackingError, object: session)
     }
 
+    private func processAdBreak(yospaceAdBreak: YOAdBreak) {
+        let storedAdBreak: THEOplayerSDK.AdBreak? = self.adBreaksMap[yospaceAdBreak]
+        let isNewEntry: Bool = storedAdBreak == nil
+
+        let adBreak: THEOplayerSDK.AdBreak
+        let adBreakInitParams: THEOplayerSDK.AdBreakInitParams = .init(timeOffset: Int(yospaceAdBreak.start), maxDuration: Int(yospaceAdBreak.duration))
+        if isNewEntry {
+            let newAdBreak: THEOplayerSDK.AdBreak = self.adIntegrationController.createAdBreak(params: adBreakInitParams)
+            self.adBreaksMap[yospaceAdBreak] = newAdBreak
+            adBreak = newAdBreak
+        } else {
+            adBreak = storedAdBreak!
+            self.adIntegrationController.updateAdBreak(adBreak: adBreak, params: adBreakInitParams)
+        }
+
+        for case let advert as YOAdvert in yospaceAdBreak.adverts {
+            print("   * Ad, Type: \(advert.adType) mediaId: \(advert.mediaIdentifier) duration: \(Int(advert.duration))")
+            self.processAd(yospaceAd: advert, yospaceAdBreak: yospaceAdBreak)
+        }
+    }
+
+    private func processAd(yospaceAd: YOAdvert, yospaceAdBreak: YOAdBreak) {
+        let nonLinearCreative: YONonLinearCreative? = (yospaceAd.nonLinearCreatives(.YOStaticResource) as? [YONonLinearCreative])?.first
+        let staticResource: YOResource? = nonLinearCreative?.resources()[YOResourceType.YOStaticResource] as? YOResource
+        var width: Int?
+        var height: Int?
+        if let _width: String = nonLinearCreative?.property("width")?.value {
+            width = Int(_width)
+        }
+        if let _height: String = nonLinearCreative?.property("height")?.value {
+            height = Int(_height)
+        }
+        let duration: Int? = Int(yospaceAd.duration)
+        var type: String = THEOplayerSDK.AdType.unknown
+        if yospaceAdBreak.breakType == .linearType {
+            type = THEOplayerSDK.AdType.linear
+        } else if yospaceAdBreak.breakType == .nonLinearType {
+            type = THEOplayerSDK.AdType.nonlinear
+        }
+        let adInitParams: AdInitParams = .init(type: type, timeOffset: yospaceAd.start, companions: [], id: yospaceAd.mediaIdentifier, skipOffset: Int(yospaceAd.skipOffset), resourceURI: staticResource?.stringData, width: width, height: height, duration: duration)
+
+        let storedAd: THEOplayerSDK.Ad? = self.adsMap[yospaceAd]
+        let isNewEntry: Bool = storedAd == nil
+
+        let ad: THEOplayerSDK.Ad
+        if isNewEntry,
+           let adBreak: THEOplayerSDK.AdBreak = self.adBreaksMap[yospaceAdBreak] {
+            let newAd: THEOplayerSDK.Ad = self.adIntegrationController.createAd(params: adInitParams, adBreak: adBreak)
+            self.adsMap[yospaceAd] = newAd
+            ad = newAd
+        } else {
+            ad = storedAd!
+            self.adIntegrationController.updateAd(ad: ad, params: adInitParams)
+        }
+    }
+
     private func reset() {
         self.removeNotificationObservers(session: self.session)
+        self.adBreaksMap = [:]
+        self.adsMap = [:]
     }
 
     deinit {
