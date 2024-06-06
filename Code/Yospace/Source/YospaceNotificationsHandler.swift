@@ -13,6 +13,8 @@ class YospaceNotificationsHandler {
     private let adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController
     private var adBreaksMap: [YOAdBreak : THEOplayerSDK.AdBreak] = [:]
     private var adsMap: [YOAdvert : THEOplayerSDK.Ad] = [:]
+    private var currentAdBreak: YOAdBreak?
+    private var currentAd: YOAdvert?
 
     init(session: YOSession, adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController) {
         self.session = session
@@ -33,8 +35,10 @@ class YospaceNotificationsHandler {
     }
 
     @objc private func adBreakDidStart(notification: Notification) {
-        let currentAdBreak = notification.userInfo?[YOAdBreakKey] as? YOAdBreak
-        print("** Adbreak start, Id:\(currentAdBreak?.identifier ?? "nil") duration:\(currentAdBreak?.duration ?? 0 ) \((currentAdBreak?.isActive()) == true ? "active": "inactive")")
+        guard let adBreak: YOAdBreak = notification.userInfo?[YOAdBreakKey] as? YOAdBreak else { return }
+        print("** Adbreak start, Id:\(adBreak.identifier ?? "nil") duration:\(adBreak.duration ?? 0 ) \((adBreak.isActive()) == true ? "active": "inactive")")
+        self.currentAdBreak = adBreak
+        self.processAdBreak(yospaceAdBreak: adBreak)
     }
 
     @objc private func adBreakDidEnd(notification: Notification) {
@@ -43,10 +47,14 @@ class YospaceNotificationsHandler {
     }
 
     @objc private func advertDidStart(notification: Notification) {
-        let currentAdvert = notification.userInfo?[YOAdvertKey] as? YOAdvert
-        print("** Advert start \(currentAdvert?.isFiller ?? false ? "(filler)":""), Id:\(currentAdvert?.identifier ?? "") duration:\(currentAdvert?.duration ?? 0) (\(currentAdvert?.isActive ?? false ? "active":"inactive"))")
+        guard let yospaceAd: YOAdvert = notification.userInfo?[YOAdvertKey] as? YOAdvert,
+              let ad: THEOplayerSDK.Ad = self.adsMap[yospaceAd] else { return }
+        print("** Advert start, filler: \(yospaceAd.isFiller), Id: \(yospaceAd.identifier), duration: \(yospaceAd.duration), isActive: (\(yospaceAd.isActive))")
 
-        if currentAdvert?.interactiveCreative != nil  {
+        self.currentAd = yospaceAd
+        self.adIntegrationController.beginAd(ad: ad)
+
+        if yospaceAd.interactiveCreative != nil  {
             // here the Interactive Creative data can be retrieved and passed to the renderer to display over the advert as required
             print ("** Advert is an Interactive media")
         }
@@ -180,6 +188,8 @@ class YospaceNotificationsHandler {
         self.removeNotificationObservers(session: self.session)
         self.adBreaksMap = [:]
         self.adsMap = [:]
+        self.currentAdBreak = nil
+        self.currentAd = nil
     }
 
     deinit {
