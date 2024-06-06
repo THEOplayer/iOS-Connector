@@ -11,14 +11,16 @@ import YOAdManagement
 class YospaceNotificationsHandler {
     private let session: YOSession
     private let adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController
+    private let player: THEOplayerSDK.THEOplayer
     private var adBreaksMap: [YOAdBreak : THEOplayerSDK.AdBreak] = [:]
     private var adsMap: [YOAdvert : THEOplayerSDK.Ad] = [:]
     private var currentAdBreak: YOAdBreak?
     private var currentAd: YOAdvert?
 
-    init(session: YOSession, adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController) {
+    init(session: YOSession, adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController, player: THEOplayerSDK.THEOplayer) {
         self.session = session
         self.adIntegrationController = adIntegrationController
+        self.player = player
         self.addNotificationObservers(session: session)
     }
 
@@ -68,6 +70,14 @@ class YospaceNotificationsHandler {
     @objc private func trackingEventDidOccur(notification: Notification) {
         let name = notification.userInfo?[YOEventNameKey] as! String
         print("** Tracking event: \(name )")
+        let progressEventsList: [String] = ["firstQuartile", "midpoint", "thirdQuartile"]
+        guard let currentAd: YOAdvert = self.currentAd,
+              let ad: THEOplayerSDK.Ad = self.adsMap[currentAd],
+              progressEventsList.contains(name) else { return }
+        let remaining: Double = currentAd.remainingTime(self.player.currentTime)
+        let duration: Double = currentAd.duration
+        let progress: Double = (duration - remaining) / duration
+        self.adIntegrationController.updateAdProgress(ad: ad, progress: progress)
     }
 
     @objc private func analyticUpdateDidOccur(notification: NSNotification) {

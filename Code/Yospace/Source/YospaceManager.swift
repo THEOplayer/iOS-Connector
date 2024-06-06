@@ -57,7 +57,7 @@ class YospaceManager {
             self.id3MetadataHandler = YospaceID3MetadataHandler(player: self.player, session: session)
             self.playerEventsHandler = THEOplayerEventsHandler(player: self.player, session: session)
             if let controller: THEOplayerSDK.ServerSideAdIntegrationController = self.adIntegrationController {
-                self.yospaceNotificationsHandler = YospaceNotificationsHandler(session: session, adIntegrationController: controller)
+                self.yospaceNotificationsHandler = YospaceNotificationsHandler(session: session, adIntegrationController: controller, player: self.player)
             }
             if let source: YospaceManagerSource = self.source {
                 let typedSource: THEOplayerSDK.TypedSource = source.1
