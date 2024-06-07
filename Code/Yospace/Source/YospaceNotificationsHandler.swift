@@ -38,14 +38,19 @@ class YospaceNotificationsHandler {
 
     @objc private func adBreakDidStart(notification: Notification) {
         guard let adBreak: YOAdBreak = notification.userInfo?[YOAdBreakKey] as? YOAdBreak else { return }
-        print("** Adbreak start, Id:\(adBreak.identifier ?? "nil") duration:\(adBreak.duration ?? 0 ) \((adBreak.isActive()) == true ? "active": "inactive")")
+        print("** Adbreak start, Id:\(adBreak.identifier ?? "nil") duration:\(adBreak.duration) \((adBreak.isActive()) == true ? "active": "inactive")")
         self.currentAdBreak = adBreak
         self.processAdBreak(yospaceAdBreak: adBreak)
     }
 
     @objc private func adBreakDidEnd(notification: Notification) {
-        let currentAdBreak = notification.userInfo?[YOAdBreakKey] as? YOAdBreak
-        print("** Adbreak end, Id:\(currentAdBreak?.identifier ?? "nil") duration:\(currentAdBreak?.duration ?? 0 ) \((currentAdBreak?.isActive()) == true ? "active": "inactive")")
+        guard let yospaceAdBreak: YOAdBreak = self.currentAdBreak,
+              let adBreak: THEOplayerSDK.AdBreak = self.adBreaksMap[yospaceAdBreak] else {
+            return
+        }
+        print("** Adbreak end, Id:\(yospaceAdBreak.identifier ?? "nil") duration:\(yospaceAdBreak.duration ) \((yospaceAdBreak.isActive()) == true ? "active": "inactive")")
+        self.adIntegrationController.removeAdBreak(adBreak: adBreak)
+        self.currentAdBreak = nil
     }
 
     @objc private func advertDidStart(notification: Notification) {
@@ -63,8 +68,12 @@ class YospaceNotificationsHandler {
     }
 
     @objc private func advertDidEnd(notification: Notification) {
+        guard let yospaceAd: YOAdvert = self.currentAd,
+              let ad: THEOplayerSDK.Ad = self.adsMap[yospaceAd] else { return }
         let currentAdvert = notification.userInfo?[YOAdvertKey] as? YOAdvert
-        print("** Advert end \(currentAdvert?.isFiller ?? false ? "(filler)" : "")")
+        print("** Advert end \(yospaceAd.mediaIdentifier)")
+        self.adIntegrationController.endAd(ad: ad)
+        self.currentAd = nil
     }
 
     @objc private func trackingEventDidOccur(notification: Notification) {
