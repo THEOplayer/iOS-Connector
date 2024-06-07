@@ -170,7 +170,7 @@ class YospaceNotificationsHandler {
 
     private func processAd(yospaceAd: YOAdvert, yospaceAdBreak: YOAdBreak) {
         let nonLinearCreative: YONonLinearCreative? = (yospaceAd.nonLinearCreatives(.YOStaticResource) as? [YONonLinearCreative])?.first
-        let staticResource: YOResource? = nonLinearCreative?.resources()[YOResourceType.YOStaticResource] as? YOResource
+        let staticResource: YOResource? = nonLinearCreative?.resources()[YOResourceType.YOStaticResource.rawValue] as? YOResource
         var width: Int?
         var height: Int?
         if let _width: String = nonLinearCreative?.property("width")?.value {
