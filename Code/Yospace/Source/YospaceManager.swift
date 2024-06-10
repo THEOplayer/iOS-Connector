@@ -17,6 +17,7 @@ class YospaceManager {
     private var id3MetadataHandler: YospaceID3MetadataHandler?
     private var playerEventsHandler: THEOplayerEventsHandler?
     private var yospaceNotificationsHandler: YospaceNotificationsHandler?
+    private(set) var isSettingSource: Bool = false
 
     private typealias YospaceManagerSource = (THEOplayerSDK.SourceDescription, THEOplayerSDK.TypedSource)
 
@@ -67,7 +68,9 @@ class YospaceManager {
                 let typedSource: THEOplayerSDK.TypedSource = source.1
                 typedSource.src = playbackUrl
                 let sourceDescription: THEOplayerSDK.SourceDescription = source.0
+                self.isSettingSource = true
                 self.player.source = sourceDescription
+                self.isSettingSource = false
             }
             self.yospaceSession?.setPlaybackPolicyHandler(DefaultPlaybackPolicy(playbackMode: session.playbackMode))
         }
@@ -82,8 +85,14 @@ class YospaceManager {
         self.yospaceNotificationsHandler = nil
     }
 
-    deinit {
+    func destroy() {
         self.reset()
+        self.adIntegrationHandler = nil
+        self.adIntegrationController = nil
+    }
+
+    deinit {
+        self.destroy()
     }
 }
 
@@ -111,10 +120,13 @@ class YospaceHandler: THEOplayerSDK.ServerSideAdIntegrationHandler {
     }
 
     func resetSource() {
-        self.manager?.reset()
+        if self.manager?.isSettingSource == false {
+            self.manager?.reset()
+            self.manager?.adIntegrationController?.removeAllAds()
+        }
     }
 
     func destroy() {
-        self.manager?.reset()
+        self.manager?.destroy()
     }
 }
