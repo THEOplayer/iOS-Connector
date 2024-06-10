@@ -184,12 +184,15 @@ class YospaceNotificationsHandler {
         }
         let duration: Int? = Int(yospaceAd.duration)
         var type: String = THEOplayerSDK.AdType.unknown
+        var clickThrough: String?
         if yospaceAdBreak.breakType == .linearType {
             type = THEOplayerSDK.AdType.linear
+            clickThrough = yospaceAd.linearCreative.clickthroughUrl()
         } else if yospaceAdBreak.breakType == .nonLinearType {
             type = THEOplayerSDK.AdType.nonlinear
+            clickThrough = nonLinearCreative?.clickthroughUrl()
         }
-        let adInitParams: AdInitParams = .init(type: type, timeOffset: yospaceAd.start, companions: [], id: yospaceAd.mediaIdentifier, skipOffset: Int(yospaceAd.skipOffset), resourceURI: staticResource?.stringData, width: width, height: height, duration: duration)
+        let adInitParams: AdInitParams = .init(type: type, timeOffset: yospaceAd.start, companions: [], id: yospaceAd.mediaIdentifier, skipOffset: Int(yospaceAd.skipOffset), resourceURI: staticResource?.stringData, width: width, height: height, duration: duration, clickThrough: clickThrough)
 
         let storedAd: THEOplayerSDK.Ad? = self.adsMap[yospaceAd]
         let isNewEntry: Bool = storedAd == nil
