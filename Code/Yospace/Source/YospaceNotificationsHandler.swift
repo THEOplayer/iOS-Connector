@@ -86,7 +86,10 @@ class YospaceNotificationsHandler {
         let remaining: Double = currentAd.remainingTime(self.player.currentTime)
         let duration: Double = currentAd.duration
         let progress: Double = (duration - remaining) / duration
-        self.adIntegrationController.updateAdProgress(ad: ad, progress: progress)
+        // avoid reporting updates when skipping; values should be in the range of [0.25, 0.75]
+        if progress < 1 {
+            self.adIntegrationController.updateAdProgress(ad: ad, progress: progress)
+        }
     }
 
     @objc private func analyticUpdateDidOccur(notification: NSNotification) {

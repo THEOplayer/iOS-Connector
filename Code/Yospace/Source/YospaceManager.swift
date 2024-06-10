@@ -10,7 +10,8 @@ import YOAdManagement
 
 class YospaceManager {
     let player: THEOplayerSDK.THEOplayer
-    private var adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController?
+    private(set) var adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController?
+    private var adIntegrationHandler: THEOplayerSDK.ServerSideAdIntegrationHandler?
     private var yospaceSession: YOSession?
     private var source: YospaceManagerSource?
     private var id3MetadataHandler: YospaceID3MetadataHandler?
@@ -24,7 +25,9 @@ class YospaceManager {
 
         self.player.ads.registerServerSideIntegration(integrationId: "yospace") { controller in
             self.adIntegrationController = controller
-            return Handler()
+            let handler: THEOplayerSDK.ServerSideAdIntegrationHandler = YospaceHandler(player: player, manager: self)
+            self.adIntegrationHandler = handler
+            return handler
         }
 	}
 
@@ -54,6 +57,7 @@ class YospaceManager {
            let playbackUrl: URL = .init(string: playbackUrlStr),
            state == .initialised || state == .noAnalytics {
             self.yospaceSession = session
+            (self.adIntegrationHandler as? YospaceHandler)?.session = session
             self.id3MetadataHandler = YospaceID3MetadataHandler(player: self.player, session: session)
             self.playerEventsHandler = THEOplayerEventsHandler(player: self.player, session: session)
             if let controller: THEOplayerSDK.ServerSideAdIntegrationController = self.adIntegrationController {
@@ -83,9 +87,29 @@ class YospaceManager {
     }
 }
 
-class Handler: ServerSideAdIntegrationHandler {
+class YospaceHandler: THEOplayerSDK.ServerSideAdIntegrationHandler {
+    weak var player: THEOplayerSDK.THEOplayer?
+    weak var manager: YospaceManager?
+    var session: YOSession?
+
+    init(player: THEOplayerSDK.THEOplayer, manager: YospaceManager) {
+        self.player = player
+        self.manager = manager
+    }
+
     func setSource(source: SourceDescription) -> SourceDescription { .init(source: .init(src: .init(), type: .init())) }
-    func skipAd(ad: Ad) {}
+
+    func skipAd(ad: Ad) {
+        guard let becomesSkippableIn: Double = self.session?.canSkip(),
+              becomesSkippableIn > -1 else { return }
+        if let currentAdvert: YOAdvert = self.session?.currentAdvert(),
+           becomesSkippableIn == 0 {
+            // is skippable now
+            self.player?.currentTime = currentAdvert.start + currentAdvert.duration
+            self.manager?.adIntegrationController?.skipAd(ad: ad)
+        }
+    }
+
     func resetSource() {}
     func destroy() {}
 }
