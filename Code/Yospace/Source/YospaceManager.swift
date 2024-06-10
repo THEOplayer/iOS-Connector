@@ -73,7 +73,7 @@ class YospaceManager {
         }
     }
 
-    private func reset() {
+    func reset() {
         self.yospaceSession?.shutdown()
         self.yospaceSession = nil
         self.source = nil
@@ -110,6 +110,11 @@ class YospaceHandler: THEOplayerSDK.ServerSideAdIntegrationHandler {
         }
     }
 
-    func resetSource() {}
-    func destroy() {}
+    func resetSource() {
+        self.manager?.reset()
+    }
+
+    func destroy() {
+        self.manager?.reset()
+    }
 }
