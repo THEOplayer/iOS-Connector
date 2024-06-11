@@ -53,11 +53,36 @@ class YospaceManager {
         }
     }
 
+    func reset() {
+        self.eventDispatcher.clear()
+        self.yospaceSession?.shutdown()
+        self.yospaceSession = nil
+        self.source = nil
+        self.id3MetadataHandler = nil
+        self.playerEventsHandler = nil
+        self.yospaceNotificationsHandler = nil
+    }
+
+    func destroy() {
+        self.reset()
+        self.adIntegrationHandler = nil
+        self.adIntegrationController = nil
+    }
+
     private func onSessionCreate(session: YOSession) {
         let state: YOSessionState = session.sessionState
+        if state == .initialised || state == .noAnalytics {
+            self.setupManager(session: session)
+        } else if state == .failed {
+            let message: String = YOSession.YOSessionResultCode(rawValue: session.resultCode)?.message() ?? "Yospace: Session could not be initialised"
+            let error = YospaceError.error(msg: message)
+            self.adIntegrationController?.fatalError(error: error, code: .AD_ERROR)
+        }
+    }
+
+    private func setupManager(session: YOSession) {
         if let playbackUrlStr: String = session.playbackUrl,
-           let playbackUrl: URL = .init(string: playbackUrlStr),
-           state == .initialised || state == .noAnalytics {
+           let playbackUrl: URL = .init(string: playbackUrlStr) {
             self.yospaceSession = session
             (self.adIntegrationHandler as? YospaceHandler)?.session = session
             self.id3MetadataHandler = YospaceID3MetadataHandler(player: self.player, session: session)
@@ -77,22 +102,6 @@ class YospaceManager {
             let event: SessionAvailableEvent = .init(date: Date())
             self.eventDispatcher.dispatchEvent(event: event)
         }
-    }
-
-    func reset() {
-        self.eventDispatcher.clear()
-        self.yospaceSession?.shutdown()
-        self.yospaceSession = nil
-        self.source = nil
-        self.id3MetadataHandler = nil
-        self.playerEventsHandler = nil
-        self.yospaceNotificationsHandler = nil
-    }
-
-    func destroy() {
-        self.reset()
-        self.adIntegrationHandler = nil
-        self.adIntegrationController = nil
     }
 
     deinit {

@@ -114,15 +114,18 @@ class YospaceNotificationsHandler {
         print("** Session error \(code.intValue)")
 
         if (code == NSNumber(value: YOSessionError.sessionTimeout.rawValue)) {
-            // the session is no longer valid; a production app might recover by starting a new Session.
+            let error = YospaceError.error(msg: YOSessionError.sessionTimeout.errorMessage)
+            self.adIntegrationController.error(error: error)
             self.session.shutdown()
         } else if (code == NSNumber(value: YOSessionError.unresolvedBreak.rawValue)) {
-            // a production app might handle this error by modifying playback policy logic
+            let error = YospaceError.error(msg: YOSessionError.unresolvedBreak.errorMessage)
+            self.adIntegrationController.error(error: error)
         } else if (code == NSNumber(value: YOSessionError.parseError.rawValue)) {
             // a production app might send these to a third party measurement library
             let errors: Array<YOTrackingError> = self.session.parsingErrors() as! Array<YOTrackingError>
             errors.forEach { parsingError in
-                print("Parsing error: \(parsingError.toJsonString())")
+                let error = YospaceError.error(msg: YOSessionError.parseError.errorMessage + "Parsing error: \(parsingError.toJsonString())")
+                self.adIntegrationController.error(error: error)
             }
         }
     }
@@ -134,8 +137,10 @@ class YospaceNotificationsHandler {
 
     @objc private func trackingErrorDidOccur(notification: Notification) {
         let info = notification.userInfo
-        let error: YOTrackingError = info?[YOTrackingErrorKey] as! YOTrackingError
-        print("** Tracking error \(error.toJsonString())")
+        let trackingError: YOTrackingError = info?[YOTrackingErrorKey] as! YOTrackingError
+        print("** Tracking error \(trackingError.toJsonString())")
+        let error = YospaceError.error(msg: "Yospace: Tracking error \(trackingError.toJsonString())")
+        self.adIntegrationController.error(error: error)
     }
 
     private func removeNotificationObservers(session: YOSession) {
