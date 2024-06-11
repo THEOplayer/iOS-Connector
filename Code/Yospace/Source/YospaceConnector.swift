@@ -19,3 +19,13 @@ public class YospaceConnector {
         self.yospaceManager.createYospaceSource(sourceDescription: sourceDescription, sessionProperties: sessionProperties)
     }
 }
+
+extension YospaceConnector: THEOplayerSDK.EventDispatcherProtocol {
+    public func addEventListener<E>(type: THEOplayerSDK.EventType<E>, listener: @escaping (E) -> ()) -> THEOplayerSDK.EventListener where E : THEOplayerSDK.EventProtocol {
+        return self.yospaceManager.eventDispatcher.addEventListener(type: type, listener: listener)
+    }
+
+    public func removeEventListener<E>(type: THEOplayerSDK.EventType<E>, listener: THEOplayerSDK.EventListener) where E : THEOplayerSDK.EventProtocol {
+        self.yospaceManager.eventDispatcher.removeEventListener(type: type, listener: listener)
+    }
+}

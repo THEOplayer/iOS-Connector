@@ -10,6 +10,7 @@ import YOAdManagement
 
 class YospaceManager {
     let player: THEOplayerSDK.THEOplayer
+    let eventDispatcher: EventDispatcher = .init()
     private(set) var adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController?
     private var adIntegrationHandler: THEOplayerSDK.ServerSideAdIntegrationHandler?
     private var yospaceSession: YOSession?
@@ -73,10 +74,13 @@ class YospaceManager {
                 self.isSettingSource = false
             }
             self.yospaceSession?.setPlaybackPolicyHandler(DefaultPlaybackPolicy(playbackMode: session.playbackMode))
+            let event: SessionAvailableEvent = .init(date: Date())
+            self.eventDispatcher.dispatchEvent(event: event)
         }
     }
 
     func reset() {
+        self.eventDispatcher.clear()
         self.yospaceSession?.shutdown()
         self.yospaceSession = nil
         self.source = nil
