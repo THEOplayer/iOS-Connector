@@ -106,27 +106,33 @@ class YospaceHandler: THEOplayerSDK.ServerSideAdIntegrationHandler {
         self.manager = manager
     }
 
-    func setSource(source: SourceDescription) -> SourceDescription { .init(source: .init(src: .init(), type: .init())) }
+    func setSource(source: SourceDescription) -> SourceDescription? { nil }
 
-    func skipAd(ad: Ad) {
+    func skipAd(ad: Ad) -> Bool {
+        let isHandling: Bool = true
         guard let becomesSkippableIn: Double = self.session?.canSkip(),
-              becomesSkippableIn > -1 else { return }
+              becomesSkippableIn > -1 else { return isHandling }
         if let currentAdvert: YOAdvert = self.session?.currentAdvert(),
            becomesSkippableIn == 0 {
             // is skippable now
             self.player?.currentTime = currentAdvert.start + currentAdvert.duration
             self.manager?.adIntegrationController?.skipAd(ad: ad)
         }
+        return isHandling
     }
 
-    func resetSource() {
+    func resetSource() -> Bool {
+        let isHandling: Bool = true
         if self.manager?.isSettingSource == false {
             self.manager?.reset()
             self.manager?.adIntegrationController?.removeAllAds()
         }
+        return isHandling
     }
 
-    func destroy() {
+    func destroy() -> Bool {
+        let isHandling: Bool = true
         self.manager?.destroy()
+        return isHandling
     }
 }
