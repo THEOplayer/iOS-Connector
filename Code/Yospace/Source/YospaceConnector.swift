@@ -8,14 +8,16 @@
 import THEOplayerSDK
 import YOAdManagement
 
-public class YospaceConnector {
+@objc(THEOplayerYospaceConnector)
+public class YospaceConnector: NSObject {
 	let yospaceManager: YospaceManager
 
-	public init(player: THEOplayer) {
+	@objc public init(player: THEOplayer) {
         self.yospaceManager = YospaceManager(player: player)
+        super.init()
     }
 
-    public func setupYospaceSession(sourceDescription: SourceDescription, sessionProperties: YOSessionProperties? = nil) {
+    @objc public func setupYospaceSession(sourceDescription: SourceDescription, sessionProperties: YOSessionProperties? = nil) {
         self.yospaceManager.createYospaceSource(sourceDescription: sourceDescription, sessionProperties: sessionProperties)
     }
 }
@@ -27,5 +29,27 @@ extension YospaceConnector: THEOplayerSDK.EventDispatcherProtocol {
 
     public func removeEventListener<E>(type: THEOplayerSDK.EventType<E>, listener: THEOplayerSDK.EventListener) where E : THEOplayerSDK.EventProtocol {
         self.yospaceManager.eventDispatcher.removeEventListener(type: type, listener: listener)
+    }
+}
+
+@available(swift, obsoleted: 1.0)
+extension YospaceConnector: THEOplayerSDK.EventDispatcherProtocol_Objc {
+    @available(swift, obsoleted: 1.0)
+    @objc public func addEventListener_Objc(type: String, listener: @escaping (THEOplayerSDK.EventProtocol) -> ()) -> THEOplayerSDK.EventListener {
+        switch type {
+        case YospaceEventTypes.SESSION_AVAILABLE.name:
+            return self.addEventListener(type: YospaceEventTypes.SESSION_AVAILABLE, listener: listener)
+        default:
+            fatalError("The EventType \(type) is NOT compatible with the current EventDispatcher, please consider using the `YospaceEventTypes`")
+        }
+    }
+    @available(swift, obsoleted: 1.0)
+    @objc public func removeEventListener_Objc(type: String, listener: THEOplayerSDK.EventListener) {
+        switch type {
+        case YospaceEventTypes.SESSION_AVAILABLE.name:
+            return self.removeEventListener(type: YospaceEventTypes.SESSION_AVAILABLE, listener: listener)
+        default:
+            fatalError("The EventType \(type) is NOT compatible with the current EventDispatcher, please consider using the `YospaceEventTypes`")
+        }
     }
 }

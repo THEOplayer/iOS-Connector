@@ -7,17 +7,20 @@
 
 import THEOplayerSDK
 
-public enum YospaceStreamType {
+@objc(THEOplayerYospaceStreamType)
+public enum YospaceStreamType: Int {
     case live
     case livepause
     case vod
 }
 
-public class YospaceServerSideAdInsertionConfiguration: THEOplayerSDK.ServerSideAdInsertionConfiguration {
-    public var integration: THEOplayerSDK.SSAIIntegrationId = .YospaceSSAIIntegrationID
+@objc(THEOplayerYospaceServerSideAdInsertionConfiguration)
+public class YospaceServerSideAdInsertionConfiguration: NSObject, THEOplayerSDK.ServerSideAdInsertionConfiguration {
+    @objc public var integration: THEOplayerSDK.SSAIIntegrationId = .YospaceSSAIIntegrationID
     var streamType: YospaceStreamType
 
     init(streamType: YospaceStreamType) {
         self.streamType = streamType
+        super.init()
     }
 }
