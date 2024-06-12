@@ -40,6 +40,7 @@ let comscoreConfig = ComScoreConfiguration(
     publisherId: "put your publisher id here",
     applicationName: "put your application name here",
     userConsent: .granted,
+    usagePropertiesAutoUpdateMode: .foregroundOnly,
     adIdProcessor: nil,
     debug: true
 )
