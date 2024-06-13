@@ -7,6 +7,12 @@
 
 import THEOplayerSDK
 
+/**
+ The type of the Yospace stream, represented by a value from the following list:
+    - live: The stream is a live stream.
+    - livepause: The stream is a live stream with a large DVR window.
+    - vod: The stream is a video-on-demand stream.
+ */
 @objc(THEOplayerYospaceStreamType)
 public enum YospaceStreamType: Int {
     case live
@@ -14,12 +20,15 @@ public enum YospaceStreamType: Int {
     case vod
 }
 
+/** Represents a configuration for server-side ad insertion with the Yospace integration.*/
 @objc(THEOplayerYospaceServerSideAdInsertionConfiguration)
 public class YospaceServerSideAdInsertionConfiguration: NSObject, THEOplayerSDK.ServerSideAdInsertionConfiguration {
-    @objc public var integration: THEOplayerSDK.SSAIIntegrationId = .YospaceSSAIIntegrationID
-    var streamType: YospaceStreamType
+    /** The identifier for the Yospace integration.*/
+    @objc public let integration: THEOplayerSDK.SSAIIntegrationId = .YospaceSSAIIntegrationID
+    /** The type of the requested stream.*/
+    public let streamType: YospaceStreamType
 
-    init(streamType: YospaceStreamType) {
+    public init(streamType: YospaceStreamType) {
         self.streamType = streamType
         super.init()
     }

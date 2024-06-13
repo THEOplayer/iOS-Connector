@@ -143,9 +143,7 @@ class YospaceHandler: THEOplayerSDK.ServerSideAdIntegrationHandler {
         return isHandling
     }
 
-    func destroy() -> Bool {
-        let isHandling: Bool = true
+    func destroy() {
         self.manager?.destroy()
-        return isHandling
     }
 }

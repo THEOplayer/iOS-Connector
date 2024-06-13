@@ -17,6 +17,13 @@ public class YospaceConnector: NSObject {
         super.init()
     }
 
+    /**
+     Creates the Yospace session and sets the Yospace source from the session to the player.
+
+     - Parameters:
+        - sourceDescription: the source that will be used to create the Yospace session.
+        - sessionProperties: the properties that will be used set to customize the Yospace session.
+     */
     @objc public func setupYospaceSession(sourceDescription: SourceDescription, sessionProperties: YOSessionProperties? = nil) {
         self.yospaceManager.createYospaceSource(sourceDescription: sourceDescription, sessionProperties: sessionProperties)
     }
