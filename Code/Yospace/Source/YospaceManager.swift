@@ -54,7 +54,6 @@ class YospaceManager {
     }
 
     func reset() {
-        self.eventDispatcher.clear()
         self.yospaceSession?.shutdown()
         self.yospaceSession = nil
         self.source = nil
@@ -67,6 +66,7 @@ class YospaceManager {
         self.reset()
         self.adIntegrationHandler = nil
         self.adIntegrationController = nil
+        self.eventDispatcher.clear()
     }
 
     private func onSessionCreate(session: YOSession) {
@@ -119,7 +119,10 @@ class YospaceHandler: THEOplayerSDK.ServerSideAdIntegrationHandler {
         self.manager = manager
     }
 
-    func setSource(source: SourceDescription) -> SourceDescription? { nil }
+    func setSource(source: SourceDescription) -> Bool {
+        self.manager?.createYospaceSource(sourceDescription: source, sessionProperties: nil)
+        return true
+    }
 
     func skipAd(ad: Ad) -> Bool {
         let isHandling: Bool = true
@@ -135,12 +138,11 @@ class YospaceHandler: THEOplayerSDK.ServerSideAdIntegrationHandler {
     }
 
     func resetSource() -> Bool {
-        let isHandling: Bool = true
         if self.manager?.isSettingSource == false {
             self.manager?.reset()
             self.manager?.adIntegrationController?.removeAllAds()
         }
-        return isHandling
+        return true
     }
 
     func destroy() {
