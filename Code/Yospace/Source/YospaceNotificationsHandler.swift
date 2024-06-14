@@ -38,7 +38,6 @@ class YospaceNotificationsHandler {
 
     @objc private func adBreakDidStart(notification: Notification) {
         guard let adBreak: YOAdBreak = notification.userInfo?[YOAdBreakKey] as? YOAdBreak else { return }
-        print("** Adbreak start, Id:\(adBreak.identifier ?? "nil") duration:\(adBreak.duration) \((adBreak.isActive()) == true ? "active": "inactive")")
         self.currentAdBreak = adBreak
         self.processAdBreak(yospaceAdBreak: adBreak)
     }
@@ -48,7 +47,6 @@ class YospaceNotificationsHandler {
               let adBreak: THEOplayerSDK.AdBreak = self.adBreaksMap[yospaceAdBreak] else {
             return
         }
-        print("** Adbreak end, Id:\(yospaceAdBreak.identifier ?? "nil") duration:\(yospaceAdBreak.duration ) \((yospaceAdBreak.isActive()) == true ? "active": "inactive")")
         self.adIntegrationController.removeAdBreak(adBreak: adBreak)
         self.currentAdBreak = nil
     }
@@ -56,29 +54,19 @@ class YospaceNotificationsHandler {
     @objc private func advertDidStart(notification: Notification) {
         guard let yospaceAd: YOAdvert = notification.userInfo?[YOAdvertKey] as? YOAdvert,
               let ad: THEOplayerSDK.Ad = self.adsMap[yospaceAd] else { return }
-        print("** Advert start, filler: \(yospaceAd.isFiller), Id: \(yospaceAd.identifier), duration: \(yospaceAd.duration), isActive: (\(yospaceAd.isActive))")
-
         self.currentAd = yospaceAd
         self.adIntegrationController.beginAd(ad: ad)
-
-        if yospaceAd.interactiveCreative != nil  {
-            // here the Interactive Creative data can be retrieved and passed to the renderer to display over the advert as required
-            print ("** Advert is an Interactive media")
-        }
     }
 
     @objc private func advertDidEnd(notification: Notification) {
         guard let yospaceAd: YOAdvert = self.currentAd,
               let ad: THEOplayerSDK.Ad = self.adsMap[yospaceAd] else { return }
-        let currentAdvert = notification.userInfo?[YOAdvertKey] as? YOAdvert
-        print("** Advert end \(yospaceAd.mediaIdentifier)")
         self.adIntegrationController.endAd(ad: ad)
         self.currentAd = nil
     }
 
     @objc private func trackingEventDidOccur(notification: Notification) {
         let name = notification.userInfo?[YOEventNameKey] as! String
-        print("** Tracking event: \(name )")
         let progressEventsList: [String] = ["firstQuartile", "midpoint", "thirdQuartile"]
         guard let currentAd: YOAdvert = self.currentAd,
               let ad: THEOplayerSDK.Ad = self.adsMap[currentAd],
@@ -93,35 +81,29 @@ class YospaceNotificationsHandler {
     }
 
     @objc private func analyticUpdateDidOccur(notification: NSNotification) {
-        print("** Analytic update")
         for adBreak: YOAdBreak in self.session.adBreaks(.linearType) as! Array<YOAdBreak>  {
-            print("   * Adbreak, Id: \(adBreak.identifier ?? "") duration: \(adBreak.duration)")
             self.processAdBreak(yospaceAdBreak: adBreak)
         }
         for adBreak: YOAdBreak in self.session.adBreaks(.nonLinearType) as! Array<YOAdBreak> {
-            print("   * Nonlinear Adbreak, Id: \(adBreak.identifier ?? "")")
             self.processAdBreak(yospaceAdBreak: adBreak)
         }
         for adBreak: YOAdBreak in self.session.adBreaks(.displayType) as! Array<YOAdBreak> {
-            print("   * Display Adbreak, Id: \(adBreak.identifier ?? "")")
             self.processAdBreak(yospaceAdBreak: adBreak)
         }
     }
 
     @objc private func sessionErrorDidOccur(notification: Notification) {
         let info = notification.userInfo
-        let code: NSNumber = info?[YOErrorCodeKey] as! NSNumber
-        print("** Session error \(code.intValue)")
+        let code: NSNumber? = info?[YOErrorCodeKey] as? NSNumber
 
-        if (code == NSNumber(value: YOSessionError.sessionTimeout.rawValue)) {
+        if code == NSNumber(value: YOSessionError.sessionTimeout.rawValue) {
             let error = YospaceError.error(msg: YOSessionError.sessionTimeout.errorMessage)
             self.adIntegrationController.error(error: error)
             self.session.shutdown()
-        } else if (code == NSNumber(value: YOSessionError.unresolvedBreak.rawValue)) {
+        } else if code == NSNumber(value: YOSessionError.unresolvedBreak.rawValue) {
             let error = YospaceError.error(msg: YOSessionError.unresolvedBreak.errorMessage)
             self.adIntegrationController.error(error: error)
-        } else if (code == NSNumber(value: YOSessionError.parseError.rawValue)) {
-            // a production app might send these to a third party measurement library
+        } else if code == NSNumber(value: YOSessionError.parseError.rawValue) {
             let errors: Array<YOTrackingError> = self.session.parsingErrors() as! Array<YOTrackingError>
             errors.forEach { parsingError in
                 let error = YospaceError.error(msg: YOSessionError.parseError.errorMessage + "Parsing error: \(parsingError.toJsonString())")
@@ -132,13 +114,17 @@ class YospaceNotificationsHandler {
 
     @objc private func adBreakDidEndEarly(notification: Notification) {
         let currentAdBreak = notification.userInfo?[YOAdBreakKey] as? YOAdBreak
-        print("** Early return, Id:\(currentAdBreak?.identifier ?? "nil")")
+        if let currentAd: YOAdvert = self.currentAd,
+           let ad: THEOplayerSDK.Ad = self.adsMap[currentAd] {
+            self.adIntegrationController.skipAd(ad: ad)
+            self.currentAd = nil
+        }
+        self.adBreakDidEnd(notification: notification)
     }
 
     @objc private func trackingErrorDidOccur(notification: Notification) {
         let info = notification.userInfo
         let trackingError: YOTrackingError = info?[YOTrackingErrorKey] as! YOTrackingError
-        print("** Tracking error \(trackingError.toJsonString())")
         let error = YospaceError.error(msg: "Yospace: Tracking error \(trackingError.toJsonString())")
         self.adIntegrationController.error(error: error)
     }
@@ -171,7 +157,6 @@ class YospaceNotificationsHandler {
         }
 
         for case let advert as YOAdvert in yospaceAdBreak.adverts {
-            print("   * Ad, Type: \(advert.adType) mediaId: \(advert.mediaIdentifier) duration: \(Int(advert.duration))")
             self.processAd(yospaceAd: advert, yospaceAdBreak: yospaceAdBreak)
         }
     }
