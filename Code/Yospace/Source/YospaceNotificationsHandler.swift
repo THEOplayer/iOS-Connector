@@ -216,6 +216,7 @@ fileprivate struct AdInitParams: THEOplayerSDK.AdInit {
     var integration: THEOplayerSDK.AdIntegrationKind
     var type: String
     var companions: [THEOplayerSDK.CompanionAd?]
+    var customIntegration: String?
     var timeOffset: Double?
     var adBreak: THEOplayerSDK.AdBreak?
     var id: String?
@@ -226,17 +227,18 @@ fileprivate struct AdInitParams: THEOplayerSDK.AdInit {
     var duration: Int?
     var clickThrough: String?
 
-    init(integration: THEOplayerSDK.AdIntegrationKind, type: String, companions: [THEOplayerSDK.CompanionAd?], timeOffset: Double? = nil, adBreak: THEOplayerSDK.AdBreak? = nil, id: String? = nil, skipOffset: Int? = nil, resourceURI: String? = nil, width: Int? = nil, height: Int? = nil, duration: Int? = nil, clickThrough: String? = nil) {
+    init(integration: THEOplayerSDK.AdIntegrationKind, type: String, companions: [THEOplayerSDK.CompanionAd?], customIntegration: String? = nil, timeOffset: Double? = nil, adBreak: THEOplayerSDK.AdBreak? = nil, id: String? = nil, skipOffset: Int? = nil, resourceURI: String? = nil, width: Int? = nil, height: Int? = nil, duration: Int? = nil, clickThrough: String? = nil) {
+        self.integration = integration
         self.type = type
+        self.companions = companions
+        self.customIntegration = customIntegration
         self.timeOffset = timeOffset
         self.adBreak = adBreak
-        self.companions = companions
         self.id = id
         self.skipOffset = skipOffset
         self.resourceURI = resourceURI
         self.width = width
         self.height = height
-        self.integration = integration
         self.duration = duration
         self.clickThrough = clickThrough
     }
