@@ -54,7 +54,7 @@ class THEOplayerEventsHandler {
 
         self.readyStateChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.READY_STATE_CHANGE, listener: { [weak self] event in
             guard let welf: THEOplayerEventsHandler = self else { return }
-            if event.readyState == .HAVE_ENOUGH_DATA {
+            if event.readyState == .HAVE_FUTURE_DATA {
                 welf.session.playerEventDidOccur(.playbackReadyEvent, playhead: welf.player.currentTime)
             }
         })
