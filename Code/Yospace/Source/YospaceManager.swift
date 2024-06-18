@@ -50,6 +50,10 @@ class YospaceManager {
             case .vod:
                 YOSessionVOD.create(src, properties: sessionProperties, completionHandler: self.onSessionCreate)
             }
+        } else {
+            let message: String = "Yospace: Could not find a TypedSource with a YospaceServerSideAdInsertionConfiguration."
+            let error = YospaceError.error(msg: message)
+            self.adIntegrationController?.fatalError(error: error, code: .AD_ERROR)
         }
     }
 
@@ -101,6 +105,10 @@ class YospaceManager {
             self.yospaceSession?.setPlaybackPolicyHandler(DefaultPlaybackPolicy(playbackMode: session.playbackMode))
             let event: SessionAvailableEvent = .init(date: Date())
             self.eventDispatcher.dispatchEvent(event: event)
+        } else {
+            let message: String = "Yospace: Could not resolve the playbackUrl of the YOSession."
+            let error = YospaceError.error(msg: message)
+            self.adIntegrationController?.fatalError(error: error, code: .AD_ERROR)
         }
     }
 
