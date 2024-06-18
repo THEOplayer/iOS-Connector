@@ -38,9 +38,6 @@ class YospaceID3MetadataHandler {
            let value: String = event.cue.contentDictionary?["text"] {
             let _value: String = String(value[value.index(after: value.startIndex)..<value.endIndex])
             if key == "YMID" {
-                if !self.metadata.ymid.isEmpty {
-                    self.metadata = YospaceTimedMetadata()
-                }
                 self.metadata.ymid = _value
             } else if key == "YTYP" {
                 self.metadata.ytyp = _value
