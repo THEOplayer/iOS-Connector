@@ -12,7 +12,7 @@ import YOAdManagement
 public class YospaceConnector: NSObject {
 	let yospaceManager: YospaceManager
 
-	@objc public init(player: THEOplayer) {
+    @objc public init(player: THEOplayer) {
         self.yospaceManager = YospaceManager(player: player)
         super.init()
     }
