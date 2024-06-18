@@ -12,7 +12,7 @@ class YospaceID3MetadataHandler {
     private let player: THEOplayerSDK.THEOplayer
     private let session: YOSession
     private var addTrackEventListener: THEOplayerSDK.EventListener?
-    private var addCueEventListener: THEOplayerSDK.EventListener?
+    private var enterCueEventListener: THEOplayerSDK.EventListener?
     private var metadata: YospaceTimedMetadata = .init()
 
     init(player: THEOplayerSDK.THEOplayer, session: YOSession) {
@@ -27,13 +27,13 @@ class YospaceID3MetadataHandler {
         if let textTrack: THEOplayerSDK.TextTrack = event.track as? THEOplayerSDK.TextTrack,
            textTrack.kind == THEOplayerSDK.TextTrackKind.metadata._rawValue,
            textTrack.type == "id3" {
-            self.addCueEventListener = textTrack.addEventListener(type: THEOplayerSDK.TextTrackEventTypes.ADD_CUE) { [weak self] event in
-                self?.addCueEventHandler(event: event)
+            self.enterCueEventListener = textTrack.addEventListener(type: THEOplayerSDK.TextTrackEventTypes.ENTER_CUE) { [weak self] event in
+                self?.enterCueEventHandler(event: event)
             }
         }
     }
 
-    private func addCueEventHandler(event: THEOplayerSDK.AddCueEvent) {
+    private func enterCueEventHandler(event: THEOplayerSDK.EnterCueEvent) {
         if let key: String = event.cue.contentDictionary?["id"],
            let value: String = event.cue.contentDictionary?["text"] {
             let _value: String = String(value[value.index(after: value.startIndex)..<value.endIndex])
@@ -62,16 +62,16 @@ class YospaceID3MetadataHandler {
 
         self.player.textTracks.removeEventListener(type: THEOplayerSDK.TextTrackListEventTypes.ADD_TRACK, listener: addTrackEventListener)
 
-        if let addCueEventListener: THEOplayerSDK.EventListener = self.addCueEventListener,
+        if let enterCueEventListener: THEOplayerSDK.EventListener = self.enterCueEventListener,
            self.player.textTracks.count > 1 {
-            self.player.textTracks[0].removeEventListener(type: THEOplayerSDK.TextTrackEventTypes.ADD_CUE, listener: addCueEventListener)
+            self.player.textTracks[0].removeEventListener(type: THEOplayerSDK.TextTrackEventTypes.ENTER_CUE, listener: enterCueEventListener)
         }
     }
 
     private func reset() {
         self.removeEventListeners()
         self.addTrackEventListener = nil
-        self.addCueEventListener = nil
+        self.enterCueEventListener = nil
         self.metadata = .init()
     }
 
