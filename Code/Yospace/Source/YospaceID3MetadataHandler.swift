@@ -48,7 +48,7 @@ class YospaceID3MetadataHandler {
             }
         }
 
-        if let metadata: YOTimedMetadata = YOTimedMetadata.create(withMediaId: self.metadata.ymid, sequence: self.metadata.yseq, type: self.metadata.ytyp, offset: self.metadata.ydur, playhead: self.player.currentTime),
+        if let metadata: YOTimedMetadata = YOTimedMetadata.create(withMediaId: self.metadata.ymid, sequence: self.metadata.yseq, type: self.metadata.ytyp, offset: self.metadata.ydur, playhead: event.cue.startTime ?? self.player.currentTime),
            self.metadata.isComplete {
             self.session.timedMetadataWasCollected(metadata)
             self.metadata = YospaceTimedMetadata()
