@@ -113,7 +113,6 @@ class YospaceNotificationsHandler {
     }
 
     @objc private func adBreakDidEndEarly(notification: Notification) {
-        let currentAdBreak = notification.userInfo?[YOAdBreakKey] as? YOAdBreak
         if let currentAd: YOAdvert = self.currentAd,
            let ad: THEOplayerSDK.Ad = self.adsMap[currentAd] {
             self.adIntegrationController.skipAd(ad: ad)
@@ -146,7 +145,7 @@ class YospaceNotificationsHandler {
         let isNewEntry: Bool = storedAdBreak == nil
 
         let adBreak: THEOplayerSDK.AdBreak
-        let adBreakInitParams: AdBreakInitParams = .init(timeOffset: Int(yospaceAdBreak.start), maxDuration: Int(yospaceAdBreak.duration))
+        let adBreakInitParams: THEOplayerSDK.AdBreakInit = .init(timeOffset: Int(yospaceAdBreak.start), maxDuration: Int(yospaceAdBreak.duration))
         if isNewEntry {
             let newAdBreak: THEOplayerSDK.AdBreak = self.adIntegrationController.createAdBreak(params: adBreakInitParams)
             self.adBreaksMap[yospaceAdBreak] = newAdBreak
@@ -182,7 +181,7 @@ class YospaceNotificationsHandler {
             type = THEOplayerSDK.AdType.nonlinear
             clickThrough = nonLinearCreative?.clickthroughUrl()
         }
-        let adInitParams: AdInitParams = .init(integration: .defaultKind, type: type, companions: [], timeOffset: yospaceAd.start, adBreak: self.adBreaksMap[yospaceAdBreak], id: yospaceAd.mediaIdentifier, skipOffset: Int(yospaceAd.skipOffset), resourceURI: staticResource?.stringData, width: width, height: height, duration: duration, clickThrough: clickThrough)
+        let adInitParams: THEOplayerSDK.AdInit = .init(type: type, timeOffset: yospaceAd.start, companions: [], id: yospaceAd.mediaIdentifier, skipOffset: Int(yospaceAd.skipOffset), resourceURI: staticResource?.stringData, width: width, height: height, duration: duration, clickThrough: clickThrough)
 
         let storedAd: THEOplayerSDK.Ad? = self.adsMap[yospaceAd]
         let isNewEntry: Bool = storedAd == nil
@@ -209,47 +208,5 @@ class YospaceNotificationsHandler {
 
     deinit {
         self.reset()
-    }
-}
-
-fileprivate struct AdInitParams: THEOplayerSDK.AdInit {
-    var integration: THEOplayerSDK.AdIntegrationKind
-    var type: String
-    var companions: [THEOplayerSDK.CompanionAd?]
-    var customIntegration: String?
-    var timeOffset: Double?
-    var adBreak: THEOplayerSDK.AdBreak?
-    var id: String?
-    var skipOffset: Int?
-    var resourceURI: String?
-    var width: Int?
-    var height: Int?
-    var duration: Int?
-    var clickThrough: String?
-
-    init(integration: THEOplayerSDK.AdIntegrationKind, type: String, companions: [THEOplayerSDK.CompanionAd?], customIntegration: String? = nil, timeOffset: Double? = nil, adBreak: THEOplayerSDK.AdBreak? = nil, id: String? = nil, skipOffset: Int? = nil, resourceURI: String? = nil, width: Int? = nil, height: Int? = nil, duration: Int? = nil, clickThrough: String? = nil) {
-        self.integration = integration
-        self.type = type
-        self.companions = companions
-        self.customIntegration = customIntegration
-        self.timeOffset = timeOffset
-        self.adBreak = adBreak
-        self.id = id
-        self.skipOffset = skipOffset
-        self.resourceURI = resourceURI
-        self.width = width
-        self.height = height
-        self.duration = duration
-        self.clickThrough = clickThrough
-    }
-}
-
-fileprivate struct AdBreakInitParams: THEOplayerSDK.AdBreakInit {
-    var timeOffset: Int
-    var maxDuration: Int?
-
-    init(timeOffset: Int, maxDuration: Int? = nil) {
-        self.timeOffset = timeOffset
-        self.maxDuration = maxDuration
     }
 }
