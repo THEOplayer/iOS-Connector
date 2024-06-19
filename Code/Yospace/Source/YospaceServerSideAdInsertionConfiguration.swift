@@ -22,9 +22,10 @@ public enum YospaceStreamType: Int {
 
 /** Represents a configuration for server-side ad insertion with the Yospace integration.*/
 @objc(THEOplayerYospaceServerSideAdInsertionConfiguration)
-public class YospaceServerSideAdInsertionConfiguration: NSObject, THEOplayerSDK.ServerSideAdInsertionConfiguration {
-    /** The identifier for the custom integration.*/
+public class YospaceServerSideAdInsertionConfiguration: NSObject, THEOplayerSDK.CustomServerSideAdInsertionConfiguration {
     @objc public let integration: THEOplayerSDK.SSAIIntegrationId = .CustomSSAIIntegrationID
+    @objc public let customIntegration: String = "yospace"
+
     /** The type of the requested stream.*/
     public let streamType: YospaceStreamType
 
