@@ -25,7 +25,8 @@ public class YospaceConnector: NSObject {
         - sessionProperties: the properties that will be used set to customize the Yospace session.
      */
     @objc public func setupYospaceSession(sourceDescription: SourceDescription, sessionProperties: YOSessionProperties? = nil) {
-        self.yospaceManager.createYospaceSource(sourceDescription: sourceDescription, sessionProperties: sessionProperties)
+        self.yospaceManager.didSetSourceFromConnector = true
+        _ = self.yospaceManager.createYospaceSource(sourceDescription: sourceDescription, sessionProperties: sessionProperties)
     }
 }
 
