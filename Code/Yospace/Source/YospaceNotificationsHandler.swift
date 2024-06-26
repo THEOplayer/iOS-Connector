@@ -123,7 +123,7 @@ class YospaceNotificationsHandler {
 
     @objc private func trackingErrorDidOccur(notification: Notification) {
         let info = notification.userInfo
-        let trackingError: YOTrackingError = info?[YOTrackingErrorKey] as! YOTrackingError
+        guard let trackingError: YOTrackingError = info?[YOTrackingErrorKey] as? YOTrackingError else { return }
         let error = YospaceError.error(msg: "Yospace: Tracking error \(trackingError.toJsonString())")
         self.adIntegrationController.error(error: error)
     }

@@ -24,7 +24,7 @@ class YospaceManager {
     private typealias YospaceManagerSource = (THEOplayerSDK.SourceDescription, THEOplayerSDK.TypedSource)
 
     init(player: THEOplayerSDK.THEOplayer) {
-		self.player = player
+        self.player = player
 
         self.player.ads.registerServerSideIntegration(integrationId: "yospace") { controller in
             self.adIntegrationController = controller
