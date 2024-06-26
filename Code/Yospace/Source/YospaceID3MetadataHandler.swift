@@ -13,6 +13,7 @@ class YospaceID3MetadataHandler {
     private let session: YOSession
     private var addTrackEventListener: THEOplayerSDK.EventListener?
     private var enterCueEventListener: THEOplayerSDK.EventListener?
+    private var id3Track: THEOplayerSDK.TextTrack?
     private var metadata: YospaceTimedMetadata = .init()
 
     init(player: THEOplayerSDK.THEOplayer, session: YOSession) {
@@ -27,6 +28,7 @@ class YospaceID3MetadataHandler {
         if let textTrack: THEOplayerSDK.TextTrack = event.track as? THEOplayerSDK.TextTrack,
            textTrack.kind == THEOplayerSDK.TextTrackKind.metadata._rawValue,
            textTrack.type == "id3" {
+            self.id3Track = textTrack
             self.enterCueEventListener = textTrack.addEventListener(type: THEOplayerSDK.TextTrackEventTypes.ENTER_CUE) { [weak self] event in
                 self?.enterCueEventHandler(event: event)
             }
@@ -62,9 +64,10 @@ class YospaceID3MetadataHandler {
 
         self.player.textTracks.removeEventListener(type: THEOplayerSDK.TextTrackListEventTypes.ADD_TRACK, listener: addTrackEventListener)
 
-        if let enterCueEventListener: THEOplayerSDK.EventListener = self.enterCueEventListener,
+        if let id3Track: THEOplayerSDK.TextTrack = self.id3Track,
+           let enterCueEventListener: THEOplayerSDK.EventListener = self.enterCueEventListener,
            self.player.textTracks.count > 1 {
-            self.player.textTracks[0].removeEventListener(type: THEOplayerSDK.TextTrackEventTypes.ENTER_CUE, listener: enterCueEventListener)
+            id3Track.removeEventListener(type: THEOplayerSDK.TextTrackEventTypes.ENTER_CUE, listener: enterCueEventListener)
         }
     }
 
@@ -72,6 +75,7 @@ class YospaceID3MetadataHandler {
         self.removeEventListeners()
         self.addTrackEventListener = nil
         self.enterCueEventListener = nil
+        self.id3Track = nil
         self.metadata = .init()
     }
 
