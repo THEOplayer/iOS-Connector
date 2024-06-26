@@ -61,7 +61,7 @@ let typedSource: TypedSource = .init(
 let source: SourceDescription = SourceDescription(source: typedSource)
 ```
 
-Create a `YospaceConenctor` that uses a `THEOplayer` instance:
+Create a `YospaceConnector` that uses a `THEOplayer` instance:
 
 ```swift
 let theoplayer: THEOplayer = .init()
