@@ -16,6 +16,8 @@ let package = Package(
         .library(name: "THEOplayerConnectorUtilities", targets: ["THEOplayerConnectorUtilities"]),
 
         .library(name: "THEOplayerConnectorSideloadedSubtitle", targets: ["THEOplayerConnectorSideloadedSubtitle"]),
+
+        .library(name: "THEOplayerConnectorYospace", targets: ["THEOplayerConnectorYospace"]),
     ],
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.30"),
@@ -75,5 +77,13 @@ let package = Package(
             path: "Code/Sideloaded-TextTracks/Sources/THEOplayerConnectorSideloadedSubtitle" 
         ),
 
+        // Yospace \\
+        .target(
+            name: "THEOplayerConnectorYospace",
+            dependencies: [
+                "THEOplayerSDK",
+            ],
+            path: "Code/Yospace/Source"
+        ),
     ]
 )
