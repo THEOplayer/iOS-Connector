@@ -12,8 +12,15 @@ import YOAdManagement
 public class YospaceConnector: NSObject {
 	let yospaceManager: YospaceManager
 
-    @objc public init(player: THEOplayer) {
-        self.yospaceManager = YospaceManager(player: player)
+    /**
+     Initialises a Yospace connector.
+
+     - Parameters:
+        - player: The THEOplayer instance that the Yospace connector will be registered to.
+        - sessionProperties: The Yospace session properties to configure.
+     */
+    @objc public init(player: THEOplayer, sessionProperties: YOSessionProperties? = nil) {
+        self.yospaceManager = YospaceManager(player: player, sessionProperties: sessionProperties)
         super.init()
     }
 
