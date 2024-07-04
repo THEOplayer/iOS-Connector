@@ -17,10 +17,9 @@ public class YospaceConnector: NSObject {
 
      - Parameters:
         - player: The THEOplayer instance that the Yospace connector will be registered to.
-        - sessionProperties: The Yospace session properties to configure.
      */
-    @objc public init(player: THEOplayer, sessionProperties: YOSessionProperties? = nil) {
-        self.yospaceManager = YospaceManager(player: player, sessionProperties: sessionProperties)
+    @objc public init(player: THEOplayer) {
+        self.yospaceManager = YospaceManager(player: player)
         super.init()
     }
 
@@ -29,11 +28,10 @@ public class YospaceConnector: NSObject {
 
      - Parameters:
         - sourceDescription: the source that will be used to create the Yospace session.
-        - sessionProperties: the properties that will be used set to customize the Yospace session.
      */
-    @objc public func setupYospaceSession(sourceDescription: SourceDescription, sessionProperties: YOSessionProperties? = nil) {
+    @objc public func setupYospaceSession(sourceDescription: SourceDescription) {
         self.yospaceManager.didSetSourceFromConnector = true
-        _ = self.yospaceManager.createYospaceSource(sourceDescription: sourceDescription, sessionProperties: sessionProperties)
+        _ = self.yospaceManager.createYospaceSource(sourceDescription: sourceDescription)
     }
 }
 
