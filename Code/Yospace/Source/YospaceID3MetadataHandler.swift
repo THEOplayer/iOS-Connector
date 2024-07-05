@@ -65,8 +65,7 @@ class YospaceID3MetadataHandler {
         self.player.textTracks.removeEventListener(type: THEOplayerSDK.TextTrackListEventTypes.ADD_TRACK, listener: addTrackEventListener)
 
         if let id3Track: THEOplayerSDK.TextTrack = self.id3Track,
-           let enterCueEventListener: THEOplayerSDK.EventListener = self.enterCueEventListener,
-           self.player.textTracks.count > 1 {
+           let enterCueEventListener: THEOplayerSDK.EventListener = self.enterCueEventListener {
             id3Track.removeEventListener(type: THEOplayerSDK.TextTrackEventTypes.ENTER_CUE, listener: enterCueEventListener)
         }
     }
