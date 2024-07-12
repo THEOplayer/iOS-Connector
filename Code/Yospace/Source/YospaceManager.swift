@@ -11,6 +11,7 @@ import YOAdManagement
 class YospaceManager {
     let player: THEOplayerSDK.THEOplayer
     let eventDispatcher: EventDispatcher = .init()
+    var didSetSourceFromConnector: Bool = false
     private(set) var adIntegrationController: THEOplayerSDK.ServerSideAdIntegrationController?
     private var adIntegrationHandler: THEOplayerSDK.ServerSideAdIntegrationHandler?
     private var yospaceSession: YOSession?
@@ -23,7 +24,7 @@ class YospaceManager {
     private typealias YospaceManagerSource = (THEOplayerSDK.SourceDescription, THEOplayerSDK.TypedSource)
 
     init(player: THEOplayerSDK.THEOplayer) {
-		self.player = player
+        self.player = player
 
         self.player.ads.registerServerSideIntegration(integrationId: "yospace") { controller in
             self.adIntegrationController = controller
@@ -33,7 +34,7 @@ class YospaceManager {
         }
 	}
 
-    func createYospaceSource(sourceDescription: THEOplayerSDK.SourceDescription, sessionProperties: YOSessionProperties?) {
+    func createYospaceSource(sourceDescription: THEOplayerSDK.SourceDescription) -> Bool {
         // copy the passed SourceDescription; we don't want to modify the original
         let source: THEOplayerSDK.SourceDescription = sourceDescription.createCopy()
         let isYospaceSSAI: (TypedSource) -> Bool = { $0.ssai as? YospaceServerSideAdInsertionConfiguration != nil }
@@ -44,16 +45,22 @@ class YospaceManager {
             let src: String = typedSource.src.absoluteString
             switch yospaceConfig.streamType {
             case .live:
-                YOSessionLive.create(src, properties: sessionProperties, completionHandler: self.onSessionCreate)
+                YOSessionLive.create(src, properties: yospaceConfig.sessionProperties, completionHandler: self.onSessionCreate)
             case .livepause:
-                YOSessionDVRLive.create(src, properties: sessionProperties, completionHandler: self.onSessionCreate)
+                YOSessionDVRLive.create(src, properties: yospaceConfig.sessionProperties, completionHandler: self.onSessionCreate)
             case .vod:
-                YOSessionVOD.create(src, properties: sessionProperties, completionHandler: self.onSessionCreate)
+                YOSessionVOD.create(src, properties: yospaceConfig.sessionProperties, completionHandler: self.onSessionCreate)
             }
+            return true
         } else {
-            let message: String = "Yospace: Could not find a TypedSource with a YospaceServerSideAdInsertionConfiguration."
-            let error = YospaceError.error(msg: message)
-            self.adIntegrationController?.fatalError(error: error, code: .AD_ERROR)
+            if self.didSetSourceFromConnector {
+                let message: String = "Yospace: Could not find a TypedSource with a YospaceServerSideAdInsertionConfiguration."
+                let error = YospaceError.error(msg: message)
+                self.adIntegrationController?.fatalError(error: error, code: .AD_ERROR)
+                return true
+            } else {
+                return false
+            }
         }
     }
 
@@ -64,6 +71,7 @@ class YospaceManager {
         self.id3MetadataHandler = nil
         self.playerEventsHandler = nil
         self.yospaceNotificationsHandler = nil
+        self.didSetSourceFromConnector = false
     }
 
     func destroy() {
@@ -128,8 +136,11 @@ class YospaceHandler: THEOplayerSDK.ServerSideAdIntegrationHandler {
     }
 
     func setSource(source: SourceDescription) -> Bool {
-        self.manager?.createYospaceSource(sourceDescription: source, sessionProperties: nil)
-        return true
+        guard let manager: YospaceManager = self.manager else { return false }
+        if manager.didSetSourceFromConnector {
+            return false
+        }
+        return manager.createYospaceSource(sourceDescription: source)
     }
 
     func skipAd(ad: Ad) -> Bool {

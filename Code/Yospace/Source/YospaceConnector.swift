@@ -12,6 +12,12 @@ import YOAdManagement
 public class YospaceConnector: NSObject {
 	let yospaceManager: YospaceManager
 
+    /**
+     Initialises a Yospace connector.
+
+     - Parameters:
+        - player: The THEOplayer instance that the Yospace connector will be registered to.
+     */
     @objc public init(player: THEOplayer) {
         self.yospaceManager = YospaceManager(player: player)
         super.init()
@@ -22,10 +28,10 @@ public class YospaceConnector: NSObject {
 
      - Parameters:
         - sourceDescription: the source that will be used to create the Yospace session.
-        - sessionProperties: the properties that will be used set to customize the Yospace session.
      */
-    @objc public func setupYospaceSession(sourceDescription: SourceDescription, sessionProperties: YOSessionProperties? = nil) {
-        self.yospaceManager.createYospaceSource(sourceDescription: sourceDescription, sessionProperties: sessionProperties)
+    @objc public func setupYospaceSession(sourceDescription: SourceDescription) {
+        self.yospaceManager.didSetSourceFromConnector = true
+        _ = self.yospaceManager.createYospaceSource(sourceDescription: sourceDescription)
     }
 }
 

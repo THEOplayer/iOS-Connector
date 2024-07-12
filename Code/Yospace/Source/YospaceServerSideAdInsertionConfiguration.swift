@@ -6,6 +6,7 @@
 //
 
 import THEOplayerSDK
+import YOAdManagement
 
 /**
  The type of the Yospace stream, represented by a value from the following list:
@@ -28,9 +29,12 @@ public class YospaceServerSideAdInsertionConfiguration: NSObject, THEOplayerSDK.
 
     /** The type of the requested stream.*/
     public let streamType: YospaceStreamType
+    /** The properties that will be used set to customize the Yospace session. */
+    public let sessionProperties: YOSessionProperties?
 
-    public init(streamType: YospaceStreamType) {
+    public init(streamType: YospaceStreamType, sessionProperties: YOSessionProperties? = nil) {
         self.streamType = streamType
+        self.sessionProperties = sessionProperties
         super.init()
     }
 }

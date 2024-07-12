@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Yospace
   - Added Yospace integration with THEOplayer to allow playback of server-side ad inserted streams.
 
+## [7.5.0] - 2024-06-06
+
+### Fixed
+
+- SideloadedSubtitle
+  - Fixed an issue that prevented `automaticTimestampSyncEnabled` to sync cues properly.
+
 ## [7.4.0] - 2024-05-23
 
 ### Fixed

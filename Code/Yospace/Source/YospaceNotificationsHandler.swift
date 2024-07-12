@@ -103,8 +103,8 @@ class YospaceNotificationsHandler {
         } else if code == NSNumber(value: YOSessionError.unresolvedBreak.rawValue) {
             let error = YospaceError.error(msg: YOSessionError.unresolvedBreak.errorMessage)
             self.adIntegrationController.error(error: error)
-        } else if code == NSNumber(value: YOSessionError.parseError.rawValue) {
-            let errors: Array<YOTrackingError> = self.session.parsingErrors() as! Array<YOTrackingError>
+        } else if code == NSNumber(value: YOSessionError.parseError.rawValue),
+                  let errors: Array<YOParsingError> = self.session.parsingErrors() as? Array<YOParsingError> {
             errors.forEach { parsingError in
                 let error = YospaceError.error(msg: YOSessionError.parseError.errorMessage + "Parsing error: \(parsingError.toJsonString())")
                 self.adIntegrationController.error(error: error)
@@ -123,7 +123,7 @@ class YospaceNotificationsHandler {
 
     @objc private func trackingErrorDidOccur(notification: Notification) {
         let info = notification.userInfo
-        let trackingError: YOTrackingError = info?[YOTrackingErrorKey] as! YOTrackingError
+        guard let trackingError: YOTrackingError = info?[YOTrackingErrorKey] as? YOTrackingError else { return }
         let error = YospaceError.error(msg: "Yospace: Tracking error \(trackingError.toJsonString())")
         self.adIntegrationController.error(error: error)
     }

@@ -17,6 +17,7 @@ class SubtitlesTransformer {
     private static let PORT_RANGE: Range<in_port_t> = 8000..<49151
     private var retryAttemptsLeft: Int = 9
     private var port: in_port_t
+    private var parameters: Parameters?
 
     init() {
         self.port = .random(in: Self.PORT_RANGE)
@@ -24,15 +25,10 @@ class SubtitlesTransformer {
         self.startServer()
     }
 
-    enum Parameters: String {
-        case contentUrl
-        case format
-        case timestampPts
-        case timestampLocaltime
-
-        func getValue(from tupleArray: [(String, String)]) -> String? {
-            return tupleArray.first(where: { $0.0 == self.rawValue })?.1
-        }
+    private struct Parameters {
+        let contentUrl: String
+        let format: THEOplayerSDK.TextTrackFormat
+        var timestamp: SSTextTrackDescription.WebVttTimestamp?
     }
 
     // If AirPlay is connected, then use the IP address of the cast device, else use localhost since it's on the same device.
@@ -43,23 +39,15 @@ class SubtitlesTransformer {
     }
 
     func composeTranformationUrl(with subtitlesURL: String, format: THEOplayerSDK.TextTrackFormat, timestamp: SSTextTrackDescription.WebVttTimestamp?) -> String {
-        var urlComps = URLComponents(string: "http://\(self.host):\(self.port)/\(SubtitlesTransformer.TRANSFORM_ROUTE)")!
-        urlComps.queryItems = [URLQueryItem(name: Parameters.contentUrl.rawValue, value: subtitlesURL)]
-        urlComps.queryItems!.append(URLQueryItem(name: Parameters.format.rawValue, value: format._rawValue))
-
-        if let pts: String = timestamp?.pts,
-           let localTime: String = timestamp?.localTime {
-            urlComps.queryItems!.append(URLQueryItem(name: Parameters.timestampPts.rawValue, value: pts))
-            urlComps.queryItems!.append(URLQueryItem(name: Parameters.timestampLocaltime.rawValue, value: localTime))
-        }
-        
+        self.parameters = Parameters(contentUrl: subtitlesURL, format: format, timestamp: timestamp)
+        let urlComps = URLComponents(string: "http://\(self.host):\(self.port)/\(SubtitlesTransformer.TRANSFORM_ROUTE)")!
         return urlComps.url?.absoluteString ?? subtitlesURL
     }
 
     private func setupServerRoutes() {
         let handler: (HttpRequest) -> HttpResponse = { req in
             // Always return with HttpResponse.ok to fail gracefully. Otherwise player will stall.
-            guard let contentURLString: String = Parameters.contentUrl.getValue(from: req.queryParams),
+            guard let contentURLString: String = self.parameters?.contentUrl,
                   let decodedContentUrlString: String = contentURLString.removingPercentEncoding,
                   let contentUrl: URL = URL(string: decodedContentUrlString) else {
                 let errorMessage: String = "Missing subtitle content URL."
@@ -82,7 +70,7 @@ class SubtitlesTransformer {
             var contentString: String = _contentString.replacingOccurrences(of: "\r\n", with: "\n")
 
             // SRT to VTT
-            if Parameters.format.getValue(from: req.queryParams) == THEOplayerSDK.TextTrackFormat.SRT._rawValue {
+            if self.parameters?.format == THEOplayerSDK.TextTrackFormat.SRT {
                 do {
                     let subtitles: Subtitles = try Subtitles.Coder.SRT().decode(contentString)
                     contentString = try Subtitles.Coder.VTT().encode(subtitles: subtitles)
@@ -93,8 +81,8 @@ class SubtitlesTransformer {
             }
 
             // Add/replace VTT timestamp
-            if let timestampPts: String = Parameters.timestampPts.getValue(from: req.queryParams),
-               let timestampLocalTime: String = Parameters.timestampLocaltime.getValue(from: req.queryParams) {
+            if let timestampPts: String = self.parameters?.timestamp?.pts,
+               let timestampLocalTime: String = self.parameters?.timestamp?.localTime {
                 // if timestamp exists replace it, else add
                 if let modifiedString: String = TimestampStringUtils.overrideTimestamp(in: contentString, with: (timestampPts, timestampLocalTime)) {
                     contentString = modifiedString
@@ -129,7 +117,18 @@ class SubtitlesTransformer {
         }
     }
 
+    private func reset() {
+        self.parameters = nil
+    }
+
     deinit {
+        self.reset()
         self.server.stop()
+    }
+}
+
+extension SubtitlesTransformer: SubtitlesSynchronizerDelegate {
+    func didUpdateTimestamp(timestamp: SSTextTrackDescription.WebVttTimestamp) {
+        self.parameters?.timestamp = timestamp
     }
 }
