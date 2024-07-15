@@ -6,7 +6,7 @@ THEOplayer-Connector-Yospace provides an integration between the THEOplayerSDK a
 
 ### [Swift Package Manager](https://swift.org/package-manager/)
 
-1. In Xcode, install the Nielsen connector by navigating to **File > Add Packages**
+1. In Xcode, install the Yospace connector by navigating to **File > Add Packages**
 2. In the prompt that appears, select the iOS-Connector GitHub repository: `https://github.com/THEOplayer/iOS-Connector`
 3. Select the version you want to use.
 4. Choose the Connector libraries you want to include in your app.
