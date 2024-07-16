@@ -6,6 +6,7 @@ A collection of components that connect third party software with THEOplayer for
 -   [THEOplayer-Connector-**Nielsen**](./Code/Nielsen)
 -   [THEOplayer-Connector-**Comscore**](./Code/Comscore)
 -   [THEOplayer-Connector-**SideloadedSubtitle**](./Code/Sideloaded-TextTracks)
+-   [THEOplayer-Connector-**Yospace**](./Code/Yospace)
 
 ## Other platforms
 
