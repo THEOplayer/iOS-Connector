@@ -56,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Shield Conviva analytics endpoints. All data reporting now happens via the API.
   - Removed the 'report' methods for AssetName and ViewerID. These are replaced by using the setcontentInfo method (for viewerId) and by passing metadata to the sources (for AssetName).
 
-## Added
+### Added
 
 - Conviva
   - VPF (Video Playback Failure) detection
