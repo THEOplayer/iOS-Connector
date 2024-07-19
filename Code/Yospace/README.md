@@ -25,6 +25,22 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 1. Create a Podfile if you don't already have one. From the root of your project directory, run the following command: `pod init`
 2. To your Podfile, add the Yospace connector pods that you want to use in your app: `pod 'THEOplayer-Connector-Yospace'`
 3. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
+4. Add the following post-install hook in your Podfile:
+
+```ruby
+post_install do |installer|
+    custom_framework_path = "#{installer.sandbox.root}/YOAdManagement-Release/YOAdManagement.xcframework"
+
+    installer.pods_project.targets.each do |target|
+      if target.name == 'THEOplayer-Connector-Yospace'
+        framework_build_phase = target.frameworks_build_phase
+        file_ref = installer.pods_project.new_file(custom_framework_path)
+
+        framework_build_phase.add_file_reference(file_ref)
+      end
+    end
+end
+```
 
 To support custom feature builds of THEOplayerSDK perform the following steps:
 
