@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Yospace
   - Added Yospace integration with THEOplayer to allow playback of server-side ad inserted streams.
 
+### Fixed
+
+- Comscore
+  - Fixed an issue where converting `Double.infinity` values would crash on some analytics events.
+
 ## [7.5.0] - 2024-06-06
 
 ### Fixed

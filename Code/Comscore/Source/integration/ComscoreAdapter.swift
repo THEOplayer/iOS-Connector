@@ -496,7 +496,8 @@ class THEOComScoreAdapter: NSObject {
         if let dvrWindowStart: Double = seekableRanges.first?.start,
            let dvrWindowEnd: Double = seekableRanges.last?.end {
             let dvrWindowLengthInSeconds: Double = dvrWindowEnd - dvrWindowStart
-            if dvrWindowLengthInSeconds > 0 {
+            if dvrWindowLengthInSeconds > 0,
+               dvrWindowLengthInSeconds.isFinite {
                 if self.configuration.debug { print("[THEOplayerConnectorComscore] set DVR window length of ", dvrWindowLengthInSeconds) }
                 self.streamingAnalytics.setDVRWindowLength(Int(dvrWindowLengthInSeconds * 1000))
             }
@@ -562,8 +563,10 @@ class THEOComScoreAdapter: NSObject {
             let seekableRanges = player.seekable.sorted { $0.start < $1.start }
             if let dvrWindowEnd: Double = seekableRanges.last?.end {
                 let newDvrWindowOffsetInSeconds = dvrWindowEnd - currentTime
-                if self.configuration.debug { print("[THEOplayerConnectorComscore] new dvr window offset ", newDvrWindowOffsetInSeconds) }
-                self.streamingAnalytics.start(fromDvrWindowOffset: Int(newDvrWindowOffsetInSeconds * 1000))
+                if newDvrWindowOffsetInSeconds.isFinite {
+                    if self.configuration.debug { print("[THEOplayerConnectorComscore] new dvr window offset ", newDvrWindowOffsetInSeconds) }
+                    self.streamingAnalytics.start(fromDvrWindowOffset: Int(newDvrWindowOffsetInSeconds * 1000))
+                }
             }
         } else {
             if configuration.debug { print("[THEOplayerConnectorComscore] startFromPosition ", currentTime) }
