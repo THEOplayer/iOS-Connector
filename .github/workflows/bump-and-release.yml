@@ -23,7 +23,6 @@ on:
           - Comscore
           - Conviva
           - SideloadedSubtitle
-          - Yospace
 jobs:
   Bump-And-Release:
     runs-on: macos-14
