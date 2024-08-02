@@ -5,7 +5,7 @@
 import ConvivaSDK
 import THEOplayerSDK
 
-class BasicEventConvivaReporter: BasicEventProcessor {
+class BasicEventConvivaReporter {
     
     struct Session {
         struct Source {

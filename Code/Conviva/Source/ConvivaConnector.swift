@@ -22,7 +22,7 @@ public struct ConvivaConnector {
     
     init(conviva: ConvivaEndpoints, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
         self.endPoints = conviva
-        
+        self.convivaVPFDetector.player = player
         if let endPoints = self.endPoints {
             self.appEventForwarder = AppEventForwarder(player: player,
                                                   eventProcessor: AppEventConvivaReporter(analytics: endPoints.analytics,
@@ -50,6 +50,7 @@ public struct ConvivaConnector {
         
     public func destroy() {
         self.endPoints?.destroy()
+        self.basicEventForwarder?.destroy()
     }
         
     public func setContentInfo(_ contentInfo: [String: Any]) {

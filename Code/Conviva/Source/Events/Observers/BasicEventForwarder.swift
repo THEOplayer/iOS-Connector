@@ -7,12 +7,14 @@ import THEOplayerConnectorUtilities
 import AVFoundation
 
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
-struct BasicEventForwarder {
-    let playerObserver: DispatchObserver
-    let networkObserver: DispatchObserver
+class BasicEventForwarder: VPFDetectordelegate {
+    private let playerObserver: DispatchObserver
+    private let networkObserver: DispatchObserver
+    weak var player: THEOplayer?
+    weak var vpfDetector: ConvivaVPFDetector?
+    weak var eventProcessor: BasicEventConvivaReporter?
     
-    
-    init(player: THEOplayer, vpfDetector: ConvivaVPFDetector, eventProcessor: BasicEventProcessor) {
+    init(player: THEOplayer, vpfDetector: ConvivaVPFDetector, eventProcessor: BasicEventConvivaReporter) {
         playerObserver = .init(
             dispatcher: player,
             eventListeners: Self.forwardEvents(from: player, vpfDetector: vpfDetector, to: eventProcessor)
@@ -26,58 +28,67 @@ struct BasicEventForwarder {
                 )
             ]
         )
+        
+        // store weak references to process detected VPF.
+        self.player = player
+        self.eventProcessor = eventProcessor
+        
+        // set self as delegate for VPF detection
+        vpfDetector.delegate = self
+        self.vpfDetector = vpfDetector
     }
     
-    static func forwardEvents(from player: THEOplayer, vpfDetector: ConvivaVPFDetector, to processor: BasicEventProcessor) -> [RemovableEventListenerProtocol] {
+    func destroy() {
+        self.vpfDetector?.reset()
+    }
+    
+    static func forwardEvents(from player: THEOplayer, vpfDetector: ConvivaVPFDetector, to processor: BasicEventConvivaReporter) -> [RemovableEventListenerProtocol] {
         [
+            player.addRemovableEventListener(type: PlayerEventTypes.PAUSE, listener: processor.pause),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: processor.play),
-            player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: processor.playing),
+            player.addRemovableEventListener(type: PlayerEventTypes.SEEKING, listener: processor.seeking),
+            player.addRemovableEventListener(type: PlayerEventTypes.SEEKED, listener: processor.seeked),
+            player.addRemovableEventListener(type: PlayerEventTypes.DURATION_CHANGE, listener: processor.durationChange),
+            
+            // relating to VPF detection
+            player.addRemovableEventListener(type: PlayerEventTypes.WAITING) {
+                processor.waiting(event: $0)
+                vpfDetector.transitionToWaiting()       // start stall monitoring
+            },
+            player.addRemovableEventListener(type: PlayerEventTypes.PLAYING) {
+                processor.playing(event: $0)
+                vpfDetector.reset()                     // stall resolved
+            },
+            player.addRemovableEventListener(type: PlayerEventTypes.PROGRESS) { _ in
+                vpfDetector.reset()                     // stall resolved
+            },
             player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
                 processor.timeUpdate(event: $0)
                 if let rate = player.renderedFramerate {
                     processor.renderedFramerateUpdate(framerate: rate)
                 }
             },
-            player.addRemovableEventListener(type: PlayerEventTypes.PAUSE) {
-                processor.pause(event: $0)
-                if let log = player.currentItem?.errorLog() {
-                    if vpfDetector.detectsVPFOnPause(log: log, pauseTime: $0.date) {
-                        processor.error(event: ErrorEvent(error: "Network Error", errorObject: nil, date: $0.date))
-                        player.stop()
-                    }
-                }
-            },
-            player.addRemovableEventListener(type: PlayerEventTypes.WAITING) {
-                processor.waiting(event: $0)
-                vpfDetector.transitionToWaiting()
-            },
-            player.addRemovableEventListener(type: PlayerEventTypes.SEEKING, listener: processor.seeking),
-            player.addRemovableEventListener(type: PlayerEventTypes.SEEKED, listener: processor.seeked),
-            player.addRemovableEventListener(type: PlayerEventTypes.ERROR, listener: processor.error),
             player.addRemovableEventListener(type: PlayerEventTypes.SOURCE_CHANGE) {
                 processor.sourceChange(event: $0, selectedSource: player.src)
+                vpfDetector.reset()                     // playback ended
             },
-            player.addRemovableEventListener(type: PlayerEventTypes.ENDED, listener: processor.ended),
-            player.addRemovableEventListener(type: PlayerEventTypes.DURATION_CHANGE, listener: processor.durationChange),
-            player.addRemovableEventListener(type: PlayerEventTypes.DESTROY, listener: processor.destroy),
+            player.addRemovableEventListener(type: PlayerEventTypes.ERROR) {
+                processor.error(event: $0)
+                vpfDetector.reset()                     // playback ended
+            },
+            player.addRemovableEventListener(type: PlayerEventTypes.ENDED) {
+                processor.ended(event: $0)
+                vpfDetector.reset()                     // playback ended
+            },
+            player.addRemovableEventListener(type: PlayerEventTypes.DESTROY) {
+                processor.destroy(event: $0)
+                vpfDetector.reset()                     // playback ended
+            }
         ]
     }
-}
-
-/// An entity that processes basic playback events from a THEOplayer
-protocol BasicEventProcessor {
-    func play(event: PlayEvent)
-    func playing(event: PlayingEvent)
-    func timeUpdate(event: TimeUpdateEvent)
-    func renderedFramerateUpdate(framerate: Float)
-    func pause(event: PauseEvent)
-    func waiting(event: WaitingEvent)
-    func seeking(event: SeekingEvent)
-    func seeked(event: SeekedEvent)
-    func error(event: ErrorEvent)
-    func networkError(event: NetworkErrorEvent)
-    func sourceChange(event: SourceChangeEvent, selectedSource: String?)
-    func ended(event: EndedEvent)
-    func durationChange(event: DurationChangeEvent)
-    func destroy(event: DestroyEvent)
+    
+    func onVPFDetected() {
+        self.eventProcessor?.error(event: ErrorEvent(error: "Network Error", errorObject: nil, date: Date()))
+        self.player?.stop()
+    }
 }

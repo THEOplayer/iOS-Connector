@@ -14,51 +14,93 @@ import THEOplayerSDK
 ///  - `PlayerEventTypes.WAITING` → transitionToWaiting()
 ///  - `PlayerEventTypes.SOURCE_CHANGE` → reset()
 ///  - `PlayerEventTypes.PLAYING` → reset()
+///  - `PlayerEventTypes.PROGRESS` → reset()
+///  - `PlayerEventTypes.ENDED` → reset()
 ///
-/// Then when you receive `PlayerEventTypes.PAUSE` check `isTransitionToPauseFatal` to see if the transition is assumed as fatal.
+/// on transitionToWaiting set out a timer that when fired checks the errorLog for severe events.
+
+
+protocol VPFDetectordelegate: AnyObject {
+    func onVPFDetected()
+}
+
+let VPF_STALL_INTERVAL: TimeInterval = 25.0
+let DEBUG_VPF = false
+
 class ConvivaVPFDetector {
-    private let timeRange = TimeInterval(0) ..< 32
+    weak var player: THEOplayer?
+    weak var delegate: VPFDetectordelegate?
+    private var lastMarkedReset: TimeInterval?
+    private var stallCheckTimer: Timer?
     private let errorCountTreshold = 5
-    private var videoPlaybackFailureCallback: (([String: Any]) -> Void)? = nil
+    private var videoPlaybackFailureCallback: (([String: Any]) -> Void)?
     private let vpfErrorDictionary = [
         "error": [
             "errorCode": String(THEOErrorCode.NETWORK_TIMEOUT.rawValue),
             "errorMessage": "Network Timeout"
         ]
     ]
-
-    private var playerIsWaiting = false
     
     func transitionToWaiting() {
-        playerIsWaiting = true
-        print("VPF Detector transitioned to waiting")
-    }
-
-    func detectsVPFOnPause(log: AVPlayerItemErrorLog, pauseTime: Date) -> Bool {
-        guard playerIsWaiting else { return false }
-        var errorCountWithinDetectionRange = 0
-        for event in log.events {
-            if let date = event.date, event.kind.isSevere, self.timeRange.contains(pauseTime.timeIntervalSince(date)) {
-                errorCountWithinDetectionRange += 1
+        guard self.stallCheckTimer == nil else {
+            // already in a waiting state...
+            self.vpfLog("[VPF-DETECTOR] Already checking the waiting state...")
+            return
+        }
+        
+        self.stallCheckTimer = Timer.scheduledTimer(withTimeInterval: VPF_STALL_INTERVAL, repeats: false, block: { [weak self] timer in
+            if let welf = self,
+               let player = welf.player,
+               let currentItem = player.currentItem,
+               let errorLog = currentItem.errorLog() {
+                welf.checkForVPF(log: errorLog)
+                self?.stallCheckTimer = nil
             }
-        }
-        if errorCountWithinDetectionRange >= self.errorCountTreshold {
-            print("VPF detected. (\(errorCountWithinDetectionRange) errors within error range.")
-            self.videoPlaybackFailureCallback?(self.vpfErrorDictionary)
-            return true
-        } else {
-            print("Pause event not interpreted as caused by network error. (\(errorCountWithinDetectionRange) errors within error range.")
-            return false
-        }
+        })
+        self.vpfLog("[VPF-DETECTOR] Transitioned to waiting.")
     }
     
     func reset() {
-        print("VPF Detector reset")
-        playerIsWaiting = false
+        // Store last VPF reset timestamp
+        self.lastMarkedReset = Date().timeIntervalSince1970
+        
+        if self.stallCheckTimer != nil {
+            self.stallCheckTimer?.invalidate()
+            self.stallCheckTimer = nil;
+            self.vpfLog("[VPF-DETECTOR] Detector is reset.")
+        }
+    }
+
+    func checkForVPF(log: AVPlayerItemErrorLog) {
+        var errorCountWithinDetectionRange = 0
+        for event in log.events {
+            if event.kind.isSevere,
+               let eventTimestamp = event.date?.timeIntervalSince1970,
+               let lastResetTimestamp = self.lastMarkedReset,
+               eventTimestamp > lastResetTimestamp {
+                self.vpfLog("[VPF-DETECTOR] Severe errorLog event found at \((eventTimestamp - lastResetTimestamp)) sec from reset. (\(event.errorComment ?? "no comment"))")
+                errorCountWithinDetectionRange += 1
+            }
+        }
+        let nowT = Date().timeIntervalSince1970
+        let detectionRange = nowT - (self.lastMarkedReset ?? nowT)
+        if errorCountWithinDetectionRange >= self.errorCountTreshold {
+            self.vpfLog("[VPF-DETECTOR] VPF detected. \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
+            self.videoPlaybackFailureCallback?(self.vpfErrorDictionary)
+            self.delegate?.onVPFDetected()
+        } else {
+            self.vpfLog("[VPF-DETECTOR] Stall interpreted as not caused by network error. Only \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
+        }
     }
     
     func setVideoPlaybackFailureCallback(_ videoPlaybackFailureCallback: (([String: Any]) -> Void)? ) {
         self.videoPlaybackFailureCallback = videoPlaybackFailureCallback
+    }
+    
+    private func vpfLog(_ logString: String) {
+        if DEBUG_VPF {
+            print(logString)
+        }
     }
 }
 
