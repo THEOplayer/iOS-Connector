@@ -88,7 +88,11 @@ class BasicEventForwarder: VPFDetectordelegate {
     }
     
     func onVPFDetected() {
-        self.eventProcessor?.error(event: ErrorEvent(error: "Network Error", errorObject: nil, date: Date()))
+        self.reportFatalError(message: "Network Error")
         self.player?.stop()
+    }
+    
+    func reportFatalError(message: String, errorObject: THEOplayerSDK.THEOError? = nil, date: Date = Date()) {
+        self.eventProcessor?.error(event: ErrorEvent(error: message, errorObject: errorObject, date: date))
     }
 }

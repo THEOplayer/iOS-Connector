@@ -63,7 +63,7 @@ public struct ConvivaConnector {
     }
         
     public func reportPlaybackFailed(message: String) {
-        self.endPoints?.videoAnalytics.reportPlaybackFailed(message, contentInfo: nil)
+        self.basicEventForwarder?.reportFatalError(message: message)
     }
     
     public func reportPlaybackEvent(eventType: String, eventDetail: [String: Any]) {
