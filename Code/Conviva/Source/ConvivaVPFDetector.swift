@@ -44,7 +44,7 @@ class ConvivaVPFDetector {
     func transitionToWaiting() {
         guard self.stallCheckTimer == nil else {
             // already in a waiting state...
-            self.vpfLog("[VPF-DETECTOR] Already checking the waiting state...")
+            self.vpfLog("Already checking the waiting state...")
             return
         }
         
@@ -57,7 +57,7 @@ class ConvivaVPFDetector {
                 self?.stallCheckTimer = nil
             }
         })
-        self.vpfLog("[VPF-DETECTOR] Transitioned to waiting.")
+        self.vpfLog("Transitioned to waiting.")
     }
     
     func reset() {
@@ -67,7 +67,7 @@ class ConvivaVPFDetector {
         if self.stallCheckTimer != nil {
             self.stallCheckTimer?.invalidate()
             self.stallCheckTimer = nil;
-            self.vpfLog("[VPF-DETECTOR] Detector is reset.")
+            self.vpfLog("Detector is reset.")
         }
     }
 
@@ -78,18 +78,18 @@ class ConvivaVPFDetector {
                let eventTimestamp = event.date?.timeIntervalSince1970,
                let lastResetTimestamp = self.lastMarkedReset,
                eventTimestamp > lastResetTimestamp {
-                self.vpfLog("[VPF-DETECTOR] Severe errorLog event found at \((eventTimestamp - lastResetTimestamp)) sec from reset. (\(event.errorComment ?? "no comment"))")
+                self.vpfLog("Severe errorLog event found at \((eventTimestamp - lastResetTimestamp)) sec from reset. (\(event.errorComment ?? "no comment"))")
                 errorCountWithinDetectionRange += 1
             }
         }
         let nowT = Date().timeIntervalSince1970
         let detectionRange = nowT - (self.lastMarkedReset ?? nowT)
         if errorCountWithinDetectionRange >= self.errorCountTreshold {
-            self.vpfLog("[VPF-DETECTOR] VPF detected. \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
+            self.vpfLog("VPF detected. \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
             self.videoPlaybackFailureCallback?(self.vpfErrorDictionary)
             self.delegate?.onVPFDetected()
         } else {
-            self.vpfLog("[VPF-DETECTOR] Stall interpreted as not caused by network error. Only \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
+            self.vpfLog("Stall interpreted as not caused by network error. Only \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
         }
     }
     
@@ -99,7 +99,7 @@ class ConvivaVPFDetector {
     
     private func vpfLog(_ logString: String) {
         if DEBUG_VPF {
-            print(logString)
+            print("[DEBUG-VPF]", logString)
         }
     }
 }
