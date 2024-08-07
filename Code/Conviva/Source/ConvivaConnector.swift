@@ -10,10 +10,10 @@ public struct ConvivaConnector {
     private let storage = ConvivaConnectorStorage()
     private let convivaVPFDetector = ConvivaVPFDetector()
     
-    private var endPoints: ConvivaEndpoints?
-    private var appEventForwarder: AppEventForwarder?
-    private var basicEventForwarder: BasicEventForwarder?
-    private var adEventHandler: AdEventForwarder?
+    private var endPoints: ConvivaEndpoints
+    private var appEventForwarder: AppEventForwarder
+    private var basicEventForwarder: BasicEventForwarder
+    private var adEventHandler: AdEventForwarder
     
     public init?(configuration: ConvivaConfiguration, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
         guard let endPoints = ConvivaEndpoints(configuration: configuration) else { return nil }
@@ -22,66 +22,56 @@ public struct ConvivaConnector {
     
     init(conviva: ConvivaEndpoints, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
         self.endPoints = conviva
-        self.convivaVPFDetector.player = player
-        if let endPoints = self.endPoints {
-            self.appEventForwarder = AppEventForwarder(player: player,
-                                                  eventProcessor: AppEventConvivaReporter(analytics: endPoints.analytics,
-                                                                                          videoAnalytics: endPoints.videoAnalytics,
-                                                                                          adAnalytics: endPoints.adAnalytics,
-                                                                                          storage: self.storage)
-            )
-            
-            self.basicEventForwarder = BasicEventForwarder(player: player,
-                                                      vpfDetector: self.convivaVPFDetector,
-                                                      eventProcessor: BasicEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
-                                                                                                storage: self.storage)
-            )
-            
-            self.adEventHandler = AdEventForwarder(player: player,
-                                              externalEventDispatcher: externalEventDispatcher,
-                                              eventProcessor: AdEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
-                                                                                     adAnalytics: endPoints.adAnalytics,
-                                                                                     storage: self.storage,
-                                                                                     player: player)
-                                              
-            )
-        }
+        self.appEventForwarder = AppEventForwarder(player: player,
+                                                   eventProcessor: AppEventConvivaReporter(analytics: endPoints.analytics,
+                                                                                           videoAnalytics: endPoints.videoAnalytics,
+                                                                                           adAnalytics: endPoints.adAnalytics,
+                                                                                           storage: self.storage))
+        self.basicEventForwarder = BasicEventForwarder(player: player,
+                                                       vpfDetector: self.convivaVPFDetector,
+                                                       eventProcessor: BasicEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
+                                                                                                 storage: self.storage))
+        self.adEventHandler = AdEventForwarder(player: player,
+                                               externalEventDispatcher: externalEventDispatcher,
+                                               eventProcessor: AdEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
+                                                                                      adAnalytics: endPoints.adAnalytics,
+                                                                                      storage: self.storage,
+                                                                                      player: player))
     }
-        
+    
     public func destroy() {
-        self.endPoints?.destroy()
-        self.basicEventForwarder?.destroy()
+        self.endPoints.destroy()
     }
-        
+    
     public func setContentInfo(_ contentInfo: [String: Any]) {
-        self.endPoints?.videoAnalytics.setContentInfo(contentInfo)
+        self.endPoints.videoAnalytics.setContentInfo(contentInfo)
         self.storeViewerId(contentInfo)
     }
-        
+    
     public func setAdInfo(_ adInfo: [String: Any]) {
-        self.endPoints?.adAnalytics.setAdInfo(adInfo)
+        self.endPoints.adAnalytics.setAdInfo(adInfo)
     }
-        
+    
     public func reportPlaybackFailed(message: String) {
-        self.basicEventForwarder?.reportFatalError(message: message)
+        self.endPoints.videoAnalytics.reportPlaybackFailed(message, contentInfo: nil)
     }
     
     public func reportPlaybackEvent(eventType: String, eventDetail: [String: Any]) {
-        self.endPoints?.videoAnalytics.reportPlaybackEvent(eventType, withAttributes: eventDetail)
+        self.endPoints.videoAnalytics.reportPlaybackEvent(eventType, withAttributes: eventDetail)
     }
-        
+    
     public func stopAndStartNewSession(contentInfo: [String: Any]) {
         self.storeViewerId(contentInfo)
-        self.endPoints?.videoAnalytics.reportPlaybackEnded()
-        self.endPoints?.videoAnalytics.cleanup()
+        self.endPoints.videoAnalytics.reportPlaybackEnded()
+        self.endPoints.videoAnalytics.cleanup()
         let extendedContentInfo = Utilities.extendedContentInfo(contentInfo: contentInfo, storage: self.storage)
-        self.endPoints?.videoAnalytics.reportPlaybackRequested(extendedContentInfo)
-        self.endPoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+        self.endPoints.videoAnalytics.reportPlaybackRequested(extendedContentInfo)
+        self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
         if let bitrate = self.storage.valueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE) as? NSNumber {
-            self.endPoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrate)
+            self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrate)
         }
     }
-        
+    
     public func setErrorCallback(onNativeError: (([String: Any]) -> Void)? ) {
         self.convivaVPFDetector.setVideoPlaybackFailureCallback(onNativeError)
     }
