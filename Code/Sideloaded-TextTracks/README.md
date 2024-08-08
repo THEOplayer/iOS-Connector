@@ -6,6 +6,8 @@ By using an experimental API from THEOplayer this library aims to achieve sidelo
 
 The presented technique is superior to any other similar options as it brings sideloading support to Airplay, Picture-in-Picture and DRM playback (and their combinations) and is out of the box compatible with the TextTrackStyling API from THEOplayer.
 
+This connector is intended to be used for subtitle text tracks. For metadata text tracks, such as WebVTT thumbnails, starting from v7.10 the core THEOplayerSDK will handle the sideloading without the help of this connector.
+
 ## Installation
 
 ### [Cocoapods](https://guides.cocoapods.org/using/getting-started.html#getting-started)
