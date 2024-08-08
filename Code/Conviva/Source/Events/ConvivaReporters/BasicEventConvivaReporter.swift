@@ -5,7 +5,7 @@
 import ConvivaSDK
 import THEOplayerSDK
 
-class BasicEventConvivaReporter: BasicEventProcessor {
+class BasicEventConvivaReporter {
     
     struct Session {
         struct Source {
@@ -59,7 +59,11 @@ class BasicEventConvivaReporter: BasicEventProcessor {
     }
     
     func error(event: ErrorEvent) {
-        self.videoAnalytics.reportPlaybackFailed(event.error, contentInfo: nil)
+        if self.currentSession.started {
+            self.videoAnalytics.reportPlaybackFailed(event.error, contentInfo: nil)
+            // the reportPlaybackFailed will close the session on the Conviva backend.
+            self.currentSession.started = false
+        }
     }
     
     func networkError(event: NetworkErrorEvent) {

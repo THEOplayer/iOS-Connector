@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- Conviva
+	- Fixed an issue where multiple fatal errors were reported to the Conviva backend, resulting in multiple sessions being created.
+	- Fixed an issue where VPF was not detected for VOD when the player has enough buffered data to get passed the detection interval. 
+
 ## [7.9.0] - 2024-08-01
 
 ### Fixed
