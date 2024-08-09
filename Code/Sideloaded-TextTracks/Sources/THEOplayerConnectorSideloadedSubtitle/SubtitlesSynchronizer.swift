@@ -7,7 +7,7 @@
 
 import Foundation
 import AVFoundation
-import THEOplayerSDK
+@_spi(WebVTT) import THEOplayerSDK
 
 protocol SubtitlesSynchronizerDelegate: AnyObject {
     func didUpdateTimestamp(timestamp: SSTextTrackDescription.WebVttTimestamp)
@@ -21,7 +21,7 @@ class SubtitlesSynchronizer {
             case resolved
         }
 
-        let webVtt: WebVTT
+        let webVtt: THEOplayerSDK.WebVTT
         var status: SyncTaskStatus = .idle
         var mode: THEOplayerSDK.TextTrackMode?
     }
@@ -47,7 +47,7 @@ class SubtitlesSynchronizer {
                 return
             }
 
-            Self.getVttContent(urlString: textTrackDescription.src.absoluteString, completion: { content, error in
+            THEOplayerSDK.WebVTTParser.getVttContent(urlString: textTrackDescription.src.absoluteString, completion: { content, error in
                 let webVtt: WebVTT = .init(webVttContent: content)
                 welf.trackSyncMap[textTrack.label] = SyncTask(webVtt: webVtt)
             })
@@ -60,7 +60,7 @@ class SubtitlesSynchronizer {
                 }
 
                 guard let cueContent: String = event.cue.contentString,
-                      let webVttCue: WebVTT.WebVTTCue = task.webVtt.cues.first(where: { $0.text.contains(cueContent) }) else {
+                      let webVttCue: THEOplayerSDK.WebVTTCue = task.webVtt.cues.first(where: { $0.text.contains(cueContent) }) else {
                     return
                 }
 
@@ -100,30 +100,5 @@ class SubtitlesSynchronizer {
                 textTrack.mode = mode
             }
         })
-    }
-
-    private static func getVttContent(urlString: String, completion: @escaping (_ content: String, _ error: Error?) -> Void) {
-        guard let url: URL = .init(string: urlString) else {
-            enum _Error: Error, CustomStringConvertible {
-                case incorrectUrl
-                public var description: String {
-                    return "The URL provided is incorrect."
-                }
-            }
-            completion(.init(), _Error.incorrectUrl)
-            return
-        }
-
-        let request: URLRequest = .init(url: url)
-        let task = URLSession.shared.dataTask(with: request) { data, res, err in
-            if let _data: Data = data,
-               let contentString = String(data: _data, encoding: .utf8),
-               err == nil {
-                completion(contentString.withoutCarriageReturns, nil)
-            } else {
-                completion(.init(), err)
-            }
-        }
-        task.resume()
     }
 }
