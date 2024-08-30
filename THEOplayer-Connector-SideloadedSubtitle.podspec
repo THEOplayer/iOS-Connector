@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.author           = "THEO technologies"
   s.source           = { :git => 'https://github.com/THEOplayer/iOS-Connector.git', :tag => s.version.to_s }
 
-  s.platforms    = { :ios => "12.0", :tvos => "12.0" }
+  s.platforms    = { :ios => "13.0", :tvos => "13.0" }
 
   s.source_files = 'Code/Sideloaded-TextTracks/Sources/THEOplayerConnectorSideloadedSubtitle/**/*'
       

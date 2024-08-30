@@ -1,4 +1,4 @@
-platform :ios, '12.0'
+platform :ios, '13.0'
 
 target 'SideloadedTextTracksExample' do
   # Use the ComscoreConnector that is locally defined in the parent directory
