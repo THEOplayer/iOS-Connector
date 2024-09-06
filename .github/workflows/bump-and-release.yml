@@ -83,7 +83,7 @@ jobs:
                   continue
                 fi
                 # blacklisted podspecs
-                if [[ $file == *VerizonMedia.podspec || $file == *Nielsen.podspec ]]; then
+                if [[ $file == *VerizonMedia.podspec || $file == *Nielsen.podspec || $file == *Yospace.podspec ]]; then
                   continue
                 fi
                 # Conviva validation depends on Utilities being available, which does not get published in a dry run

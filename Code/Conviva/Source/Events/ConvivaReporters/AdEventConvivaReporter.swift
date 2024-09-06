@@ -153,7 +153,7 @@ extension Ad {
         result["c3.ad.firstCreativeId"] = nonEmpty(googleImaAd?.wrapperCreativeIds.first) ?? nonEmpty(googleImaAd?.creativeId) ?? Utilities.defaultStringValue
         result["c3.ad.firstAdSystem"] = nonEmpty(googleImaAd?.wrapperAdSystems.first) ?? nonEmpty(googleImaAd?.adSystem) ?? Utilities.defaultStringValue
         result["c3.ad.adStitcher"] = Utilities.defaultStringValue
-        result["c3.ad.position"] = self.adBreak?.calculateCurrentAdBreakPosition() ?? "Pre-roll"
+        result["c3.ad.position"] = self.adBreak.calculateCurrentAdBreakPosition()
         // linearAd specific
         if let linearAd = self as? LinearAd,
            let duration = linearAd.duration {

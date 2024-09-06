@@ -20,11 +20,11 @@ public class AdEventReporter: AdEventProcessor {
     }
         
     public func adBegin(event: AdBeginEvent) {
-        guard let ad = event.ad, let adBreak = ad.adBreak, event.ad?.type == THEOplayerSDK.AdType.linear else { return }
+        guard let ad = event.ad, event.ad?.type == THEOplayerSDK.AdType.linear else { return }
         nielsen.stop()
         nielsen.loadMetadata(
             [
-                "type": adBreak.nielsenType,
+                "type": ad.adBreak.nielsenType,
                 "assetid": ad.id
             ]
         )
