@@ -100,12 +100,8 @@ jobs:
           fi
           for connector in ${connectors[*]}
           do
-            extraFlags=""
-            if [[ $connector == *Conviva.podspec ]]; then
-                extraFlags+="--synchronous"
-            fi
             pod repo update
-            pod $command $connector --verbose --allow-warnings $extraFlags
+            pod $command $connector --verbose --allow-warnings --synchronous
           done
   Cleanup:
     needs: Bump-And-Release
