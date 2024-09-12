@@ -8,7 +8,6 @@ import ConvivaSDK
 /// Connects to a THEOplayer instance and reports its events to conviva
 public struct ConvivaConnector {
     private let storage = ConvivaConnectorStorage()
-    private let convivaVPFDetector = ConvivaVPFDetector()
     
     private var endPoints: ConvivaEndpoints
     private var appEventForwarder: AppEventForwarder
@@ -28,7 +27,6 @@ public struct ConvivaConnector {
                                                                                            adAnalytics: endPoints.adAnalytics,
                                                                                            storage: self.storage))
         self.basicEventForwarder = BasicEventForwarder(player: player,
-                                                       vpfDetector: self.convivaVPFDetector,
                                                        eventProcessor: BasicEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
                                                                                                  storage: self.storage))
         self.adEventHandler = AdEventForwarder(player: player,
@@ -73,7 +71,7 @@ public struct ConvivaConnector {
     }
     
     public func setErrorCallback(onNativeError: (([String: Any]) -> Void)? ) {
-        self.convivaVPFDetector.setVideoPlaybackFailureCallback(onNativeError)
+        self.basicEventForwarder.setVideoPlaybackFailureCallback(onNativeError)
     }
     
     private func storeViewerId(_ contentInfo: [String: Any]) {
