@@ -10,11 +10,11 @@ import AVFoundation
 class BasicEventForwarder: VPFDetectordelegate {
     private let playerObserver: DispatchObserver
     private let networkObserver: DispatchObserver
+    private let vpfDetector = ConvivaVPFDetector()
     weak var player: THEOplayer?
-    weak var vpfDetector: ConvivaVPFDetector?
     weak var eventProcessor: BasicEventConvivaReporter?
     
-    init(player: THEOplayer, vpfDetector: ConvivaVPFDetector, eventProcessor: BasicEventConvivaReporter) {
+    init(player: THEOplayer, eventProcessor: BasicEventConvivaReporter) {
         playerObserver = .init(
             dispatcher: player,
             eventListeners: Self.forwardEvents(from: player, vpfDetector: vpfDetector, to: eventProcessor)
@@ -33,13 +33,17 @@ class BasicEventForwarder: VPFDetectordelegate {
         self.player = player
         self.eventProcessor = eventProcessor
         
-        // set self as delegate for VPF detection
+        // set self as delegate for VPF detection and provide player
         vpfDetector.delegate = self
-        self.vpfDetector = vpfDetector
+        vpfDetector.player = player
     }
     
     func destroy() {
-        self.vpfDetector?.reset()
+        self.vpfDetector.reset()
+    }
+    
+    func setVideoPlaybackFailureCallback(_ videoPlaybackFailureCallback: (([String: Any]) -> Void)? ) {
+        self.vpfDetector.setVideoPlaybackFailureCallback(videoPlaybackFailureCallback)
     }
     
     static func forwardEvents(from player: THEOplayer, vpfDetector: ConvivaVPFDetector, to processor: BasicEventConvivaReporter) -> [RemovableEventListenerProtocol] {
