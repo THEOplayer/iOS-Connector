@@ -1,5 +1,6 @@
 import THEOplayerSDK
 import ComScore
+import THEOplayerConnectorUtilities
 
 public struct ComscoreConnector {
     public let streamingAnalytics: ComScoreStreamingAnalytics
@@ -10,5 +11,9 @@ public struct ComscoreConnector {
         ComScoreAnalytics.start(configuration: configuration)
         self.player = player
         self.streamingAnalytics = ComScoreAnalytics.THEOplayerComscoreSDK(player: player, playerVersion: THEOplayer.version, metadata: metadata, configuration: configuration)
+    }
+    
+    public static var version: String {
+        return VersionHelper.version("THEOplayer-Connector-Comscore")
     }
 }

@@ -11,6 +11,7 @@ import NielsenAppApi
 import NielsenTVAppApi
 #endif
 import THEOplayerSDK
+import THEOplayerConnectorUtilities
 
 /// Connects to a THEOplayer instance and reports its events to Nielsen.
 public struct NielsenConnector {
@@ -40,5 +41,9 @@ public struct NielsenConnector {
             player: player,
             eventProcessor: AdEventReporter(nielsen: nielsen)
         )
+    }
+    
+    public static var version: String {
+        return VersionHelper.version("THEOplayer-Connector-Nielsen")
     }
 }

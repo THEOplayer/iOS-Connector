@@ -4,6 +4,7 @@
 
 import THEOplayerSDK
 import ConvivaSDK
+import THEOplayerConnectorUtilities
 
 /// Connects to a THEOplayer instance and reports its events to conviva
 public struct ConvivaConnector {
@@ -13,6 +14,10 @@ public struct ConvivaConnector {
     private var appEventForwarder: AppEventForwarder
     private var basicEventForwarder: BasicEventForwarder
     private var adEventHandler: AdEventForwarder
+    
+    public static var version: String {
+        return VersionHelper.version("THEOplayer-Connector-Conviva")
+    }
     
     public init?(configuration: ConvivaConfiguration, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
         guard let endPoints = ConvivaEndpoints(configuration: configuration) else { return nil }
