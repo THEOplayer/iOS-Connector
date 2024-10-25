@@ -16,6 +16,7 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "13.0", :tvos => "13.0" }
 
   s.source_files = 'Code/Conviva/Source/**/*'
+  s.resource_bundles = {'THEOplayer-Connector-Conviva' => ['version.json']}
       
   s.static_framework = true
   s.swift_versions = ['5.3', '5.4', '5.5', '5.6', '5.7']
