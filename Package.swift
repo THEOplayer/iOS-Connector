@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "THEOplayer-Connector",
-    platforms: [ .iOS(.v12), .tvOS(.v12) ],
+    platforms: [ .iOS(.v13), .tvOS(.v13) ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(name: "THEOplayerConnectorConviva", targets: ["THEOplayerConnectorConviva"]),
@@ -21,7 +21,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.30"),
-        .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-ios", from: "8.0.0"),
+        .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-apple", from: "8.4.0"),
         .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "9.0.0"),
         .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
         .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
