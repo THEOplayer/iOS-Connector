@@ -7,6 +7,9 @@
 import Foundation
 import ComScore
 
+/**
+ ComScoreUserConsent: indicates whether user consent was provided.
+ */
 @frozen
 public enum ComScoreUserConsent: String {
     case denied = "0"
@@ -14,8 +17,30 @@ public enum ComScoreUserConsent: String {
     case unknown = "-1"
 }
 
+
 /**
- ComScoreMediaType associated with the content you have loaded into the THEOPlayer
+ ComscoreUsagePropertiesAutoUpdateMode:  controls if the library will update application usage times at a regular interval when it is in the foreground and/or background.
+ */
+@frozen
+public enum ComscoreUsagePropertiesAutoUpdateMode: String {
+    case foregroundOnly
+    case foregroundAndBackground
+    case disabled
+    
+    func toComscore() -> SCORUsagePropertiesAutoUpdateMode {
+        switch self {
+        case .foregroundOnly:
+            return SCORUsagePropertiesAutoUpdateMode.foregroundOnly
+        case .foregroundAndBackground:
+            return SCORUsagePropertiesAutoUpdateMode.foregroundAndBackground
+        case .disabled:
+            return SCORUsagePropertiesAutoUpdateMode.disabled
+        }
+    }
+}
+
+/**
+ ComScoreMediaType: media type associated with the content you have loaded into the THEOPlayer
  */
 @frozen
 public enum ComScoreMediaType: String {
@@ -31,25 +56,28 @@ public enum ComScoreMediaType: String {
     func toComScore() -> SCORStreamingContentType {
         switch self {
         case .longFormOnDemand:
-            return .longFormOnDemand
+            return SCORStreamingContentType.longFormOnDemand
         case .shortFormOnDemand:
-            return .shortFormOnDemand
+            return SCORStreamingContentType.shortFormOnDemand
         case .live:
-            return .live
+            return SCORStreamingContentType.live
         case .userGeneratedLongFormOnDemand:
-            return .userGeneratedLongFormOnDemand
+            return SCORStreamingContentType.userGeneratedLongFormOnDemand
         case .userGeneratedShortFormOnDemand:
-            return .userGeneratedShortFormOnDemand
+            return SCORStreamingContentType.userGeneratedShortFormOnDemand
         case .userGeneratedLive:
-            return .userGeneratedLive
+            return SCORStreamingContentType.userGeneratedLive
         case .bumper:
-            return .bumper
+            return SCORStreamingContentType.bumper
         case .other:
-            return .other
+            return SCORStreamingContentType.other
         }
     }
 }
 
+/**
+ ComScoreFeedType: the type of feed provided on the live stream. Intended to be used on live streams using the same feed as was used for the live TV broadcast. Currently only used for implementations in the US.
+ */
 @frozen
 public enum ComScoreFeedType: String {
     case eastHD
@@ -60,17 +88,20 @@ public enum ComScoreFeedType: String {
     func toComScore() -> SCORStreamingContentFeedType {
         switch self {
         case .eastHD:
-            return .eastHD
+            return SCORStreamingContentFeedType.eastHD
         case .westHD:
-            return .westHD
+            return SCORStreamingContentFeedType.westHD
         case .eastSD:
-            return .eastSD
+            return SCORStreamingContentFeedType.eastSD
         case .westSD:
-            return .westSD
+            return SCORStreamingContentFeedType.westSD
         }
     }
 }
 
+/**
+ ComScoreDeliveryMode: Identifies the content delivery to be on-demand or linear.
+ */
 @frozen
 public enum ComScoreDeliveryMode: String {
     case linear
@@ -79,13 +110,16 @@ public enum ComScoreDeliveryMode: String {
     func toComScore() -> SCORStreamingContentDeliveryMode {
         switch self {
         case .linear:
-            return .linear
+            return SCORStreamingContentDeliveryMode.linear
         case .ondemand:
-            return .ondemand
+            return SCORStreamingContentDeliveryMode.ondemand
         }
     }
 }
 
+/**
+ ComScoreDeliverySubscriptionType: the type of subscription of the user.
+ */
 @frozen
 public enum ComScoreDeliverySubscriptionType: String {
     case traditionalMvpd    // LIVE
@@ -98,21 +132,24 @@ public enum ComScoreDeliverySubscriptionType: String {
     func toComScore() -> SCORStreamingContentDeliverySubscriptionType {
         switch self {
         case .traditionalMvpd:
-            return .traditionalMvpd
+            return SCORStreamingContentDeliverySubscriptionType.traditionalMvpd
         case .virtualMvpd:
-            return .virtualMvpd
+            return SCORStreamingContentDeliverySubscriptionType.virtualMvpd
         case .subscription:
-            return .subscription
+            return SCORStreamingContentDeliverySubscriptionType.subscription
         case .transactional:
-            return .transactional
+            return SCORStreamingContentDeliverySubscriptionType.transactional
         case .advertising:
-            return .advertising
+            return SCORStreamingContentDeliverySubscriptionType.advertising
         case .premium:
-            return .premium
+            return SCORStreamingContentDeliverySubscriptionType.premium
         }
     }
 }
 
+/**
+ ComScoreDeliveryComposition: whether or not ads are delivered as part of the content stream.
+ */
 @frozen
 public enum ComScoreDeliveryComposition: String {
     case clean
@@ -121,13 +158,15 @@ public enum ComScoreDeliveryComposition: String {
     func toComScore() -> SCORStreamingContentDeliveryComposition {
         switch self {
         case .clean:
-            return .clean
+            return SCORStreamingContentDeliveryComposition.clean
         case .embed:
-            return .embed
+            return SCORStreamingContentDeliveryComposition.embed
         }
     }
 }
-
+/**
+ ComScoreDeliveryAdvertisementCapability: what capability is allowed for advertisement placements.
+ */
 @frozen
 public enum ComScoreDeliveryAdvertisementCapability: String {
     case none
@@ -144,29 +183,32 @@ public enum ComScoreDeliveryAdvertisementCapability: String {
     func toComScore() -> SCORStreamingContentDeliveryAdvertisementCapability {
         switch self {
         case .none:
-            return .none
+            return SCORStreamingContentDeliveryAdvertisementCapability.none
         case .dynamicLoad:
-            return .dynamicLoad
+            return SCORStreamingContentDeliveryAdvertisementCapability.dynamicLoad
         case .dynamicReplacement:
-            return .dynamicReplacement
+            return SCORStreamingContentDeliveryAdvertisementCapability.dynamicReplacement
         case .linear1day:
-            return .linear1day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear1day
         case .linear2day:
-            return .linear2day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear2day
         case .linear3day:
-            return .linear3day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear3day
         case .linear4day:
-            return .linear4day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear4day
         case .linear5day:
-            return .linear5day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear5day
         case .linear6day:
-            return .linear6day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear6day
         case .linear7day:
-            return .linear7day
+            return SCORStreamingContentDeliveryAdvertisementCapability.linear7day
         }
     }
 }
 
+/**
+ComScoreMediaFormat: the type of content media loaded into THEOPlayer.
+ */
 @frozen
 public enum ComScoreMediaFormat: String {
     case fullContentEpisode
@@ -187,37 +229,40 @@ public enum ComScoreMediaFormat: String {
     func toComsScore() -> SCORStreamingContentMediaFormat {
         switch self {
         case .fullContentEpisode:
-            return .fullContentEpisode
+            return SCORStreamingContentMediaFormat.fullContentEpisode
         case .fullContentMovie:
-            return .fullContentMovie
+            return SCORStreamingContentMediaFormat.fullContentMovie
         case .fullContentPodcast:
-            return .fullContentPodcast
+            return SCORStreamingContentMediaFormat.fullContentPodcast
         case .fullContentGeneric:
-            return .fullContentGeneric
+            return SCORStreamingContentMediaFormat.fullContentGeneric
         case .partialContentEpisode:
-            return .partialContentEpisode
+            return SCORStreamingContentMediaFormat.partialContentEpisode
         case .partialContentMovie:
-            return .partialContentMovie
+            return SCORStreamingContentMediaFormat.partialContentMovie
         case .partialContentPodcast:
-            return .partialContentPodcast
+            return SCORStreamingContentMediaFormat.partialContentPodcast
         case .partialContentGeneric:
-            return .partialContentGeneric
+            return SCORStreamingContentMediaFormat.partialContentGeneric
         case .previewEpisode:
-            return .previewEpisode
+            return SCORStreamingContentMediaFormat.previewEpisode
         case .previewMovie:
-            return .previewMovie
+            return SCORStreamingContentMediaFormat.previewMovie
         case .previewGeneric:
-            return .previewGeneric
+            return SCORStreamingContentMediaFormat.previewGeneric
         case .extraEpisode:
-            return .extraEpisode
+            return SCORStreamingContentMediaFormat.extraEpisode
         case .extraMovie:
-            return .extraMovie
+            return SCORStreamingContentMediaFormat.extraMovie
         case .extraGeneric:
-            return .extraGeneric
+            return SCORStreamingContentMediaFormat.extraGeneric
         }
     }
 }
 
+/**
+ ComScoreDistributionModelL  where the content you have loaded into THEOPlayer was distributed.
+ */
 @frozen
 public enum ComScoreDistributionModel: String {
     case tvAndOnline
@@ -226,9 +271,9 @@ public enum ComScoreDistributionModel: String {
     func toComsScore() -> SCORStreamingContentDistributionModel {
         switch self {
         case .tvAndOnline:
-            return .tvAndOnline
+            return SCORStreamingContentDistributionModel.tvAndOnline
         case .exclusivelyOnline:
-            return .exclusivelyOnline
+            return SCORStreamingContentDistributionModel.exclusivelyOnline
         }
     }
 }
