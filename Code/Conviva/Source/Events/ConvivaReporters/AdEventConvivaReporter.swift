@@ -60,9 +60,10 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         guard let ad = event.beginEvent.ad, ad.type == THEOplayerSDK.AdType.linear else { return }
 
         var info = ad.convivaInfo
-        
+
+        var adTechnology = ad.integration == AdIntegrationKindTHEO_ADS ? "Server Guided" : self.AdTechnologyAsString(self.calculatedAdTechnology(ad))
         // set Ad technology
-        info["c3.ad.technology"] = self.AdTechnologyAsString(self.calculatedAdTechnology(ad))
+        info["c3.ad.technology"] = adTechnology
         
         // set Ad contentAssetName
         if let contentAssetName = self.storage.valueForKey(CIS_SSDK_METADATA_ASSET_NAME) {
