@@ -32,7 +32,11 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         }
     }
     
-    private func AdTechnologyAsString(_ adTechnology: AdTechnology) -> String {
+    private func AdTechnologyAsString(ad: Ad) -> String {
+        if ad.integration == AdIntegrationKindTHEO_ADS {
+            return "Server Guided"
+        }
+        var adTechnology = self.calculatedAdTechnology(ad)
         switch adTechnology {
         case .CLIENT_SIDE:
             return "Client Side"
@@ -61,7 +65,7 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
 
         var info = ad.convivaInfo
 
-        var adTechnology = ad.integration == AdIntegrationKindTHEO_ADS ? "Server Guided" : self.AdTechnologyAsString(self.calculatedAdTechnology(ad))
+        var adTechnology = self.AdTechnologyAsString(ad)
         // set Ad technology
         info["c3.ad.technology"] = adTechnology
         
