@@ -48,16 +48,17 @@ class ConvivaVPFDetector {
             return
         }
         
-        self.stallCheckTimer = Timer.scheduledTimer(withTimeInterval: VPF_STALL_INTERVAL, repeats: false, block: { [weak self] timer in
-            if let welf = self,
-               let player = welf.player,
-               let currentItem = player.currentItem,
-               let errorLog = currentItem.errorLog() {
-                welf.checkForVPF(log: errorLog)
-                self?.stallCheckTimer = nil
-            }
-        })
         self.vpfLog("Transitioned to waiting.")
+        self.vpfLog("Early check for VPF...")
+        if !self.checkForVPF() {
+            self.stallCheckTimer = Timer.scheduledTimer(withTimeInterval: VPF_STALL_INTERVAL, repeats: false, block: { [weak self] timer in
+                if let welf = self {
+                    welf.vpfLog("Detection timeout reached. Checking for VPF...")
+                    _ = welf.checkForVPF()
+                    welf.stallCheckTimer = nil
+                }
+            })
+        }
     }
     
     func reset() {
@@ -71,26 +72,32 @@ class ConvivaVPFDetector {
         }
     }
 
-    func checkForVPF(log: AVPlayerItemErrorLog) {
-        var errorCountWithinDetectionRange = 0
-        for event in log.events {
-            if event.kind.isSevere,
-               let eventTimestamp = event.date?.timeIntervalSince1970,
-               let lastResetTimestamp = self.lastMarkedReset,
-               eventTimestamp > lastResetTimestamp {
-                self.vpfLog("Severe errorLog event found at \((eventTimestamp - lastResetTimestamp)) sec from reset. (\(event.errorComment ?? "no comment"))")
-                errorCountWithinDetectionRange += 1
+    func checkForVPF() -> Bool {
+        if let player = self.player,
+           let currentItem = player.currentItem,
+           let log = currentItem.errorLog() {
+            var errorCountWithinDetectionRange = 0
+            for event in log.events {
+                if event.kind.isSevere,
+                   let eventTimestamp = event.date?.timeIntervalSince1970,
+                   let lastResetTimestamp = self.lastMarkedReset,
+                   eventTimestamp > lastResetTimestamp {
+                    self.vpfLog("Severe errorLog event found at \((eventTimestamp - lastResetTimestamp)) sec from reset. (\(event.errorComment ?? "no comment"))")
+                    errorCountWithinDetectionRange += 1
+                }
+            }
+            let nowT = Date().timeIntervalSince1970
+            let detectionRange = nowT - (self.lastMarkedReset ?? nowT)
+            if errorCountWithinDetectionRange >= self.errorCountTreshold {
+                self.vpfLog("VPF detected. \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
+                self.videoPlaybackFailureCallback?(self.vpfErrorDictionary)
+                self.delegate?.onVPFDetected()
+                return true
+            } else {
+                self.vpfLog("Stall interpreted as not caused by network error. Only \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
             }
         }
-        let nowT = Date().timeIntervalSince1970
-        let detectionRange = nowT - (self.lastMarkedReset ?? nowT)
-        if errorCountWithinDetectionRange >= self.errorCountTreshold {
-            self.vpfLog("VPF detected. \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
-            self.videoPlaybackFailureCallback?(self.vpfErrorDictionary)
-            self.delegate?.onVPFDetected()
-        } else {
-            self.vpfLog("Stall interpreted as not caused by network error. Only \(errorCountWithinDetectionRange) severe errors within detection range (last \(detectionRange) sec).")
-        }
+        return false
     }
     
     func setVideoPlaybackFailureCallback(_ videoPlaybackFailureCallback: (([String: Any]) -> Void)? ) {
