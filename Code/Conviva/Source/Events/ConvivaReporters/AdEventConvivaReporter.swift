@@ -22,10 +22,10 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
     
     private func calculatedAdTechnology(adOrAdBreak: Ad | AdBreak) -> AdTechnology {
         switch adOrAdBreak.integration {
-        case AdIntegrationKindTHEO_ADS:
+        case AdIntegrationKind.theoads:
             // TODO THEOads is an SGAI solution which can't be reported to Conviva as such yet
             return .SERVER_SIDE
-        case AdIntegrationKindGOOGLE_IMA:
+        case AdIntegrationKind.google_ima:
             return .CLIENT_SIDE
         default:
             return .SERVER_SIDE
@@ -33,7 +33,7 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
     }
     
     private func AdTechnologyAsString(ad: Ad) -> String {
-        if ad.integration == AdIntegrationKindTHEO_ADS {
+        if ad.integration == AdIntegrationKind.theoads {
             return "Server Guided"
         }
         var adTechnology = self.calculatedAdTechnology(ad)
