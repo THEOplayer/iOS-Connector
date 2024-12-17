@@ -36,7 +36,10 @@ enum Utilities {
 
 extension THEOplayer {
     var currentItem: AVPlayerItem? {
-        ((Mirror(reflecting: self).descendant("theoplayer") as? NSObject).map {Mirror(reflecting: $0).superclassMirror?.descendant("mainContentPlayer", "avPlayer")} as? AVPlayer)?.currentItem
+        let basePlayer = (Mirror(reflecting: self).descendant("theoplayer") as? NSObject).map { Mirror(reflecting: $0).superclassMirror?.descendant("basePlayer") } as? AnyObject
+        let basePlayerMirror = basePlayer.map { Mirror(reflecting: $0) }
+        let avPlayer = basePlayerMirror?.superclassMirror?.superclassMirror?.descendant("player", "avPlayer") as? AVPlayer
+        return avPlayer?.currentItem
     }
     
     var renderedFramerate: Float? {
