@@ -13,10 +13,11 @@ fileprivate let didEnterBackground = UIApplication.didEnterBackgroundNotificatio
 // Both `AVPlayerItem.newAccessLogEntryNotification` and `Notification.Name.AVPlayerItemNewAccessLogEntry` are mapped to `Notification.Name("AVPlayerItemNewAccessLogEntry")`, hence we use that.
 // Once we drop support for older versions (below Xcode 15 and Swift 5.9) we can switch from `Notification.Name("AVPlayerItemNewAccessLogEntry")` to `AVPlayerItem.newAccessLogEntryNotification`.
 fileprivate let newAccessLogEntry = Notification.Name("AVPlayerItemNewAccessLogEntry")
+fileprivate let bitrateChangeEvent = Notification.Name("THEOliveBitrateChangeEvent")
 
 class AppEventForwarder {
     let center = NotificationCenter.default
-    let foregroundObserver, backgroundObserver, accessLogObserver: Any
+    let foregroundObserver, backgroundObserver, accessLogObserver, bitrateChangeObserver: Any
     let player: THEOplayer
     
     init(player: THEOplayer, eventProcessor: AppEventProcessor) {
@@ -46,12 +47,27 @@ class AppEventForwarder {
                 eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: player.ads.playing)
             }
         )
+        // Temporary workaround for THEOlive bitrate change events
+        // TODO: Refactor this with active quality switch event dispatched from THEOplayer. This needs a videoTrack property exposed on THEOlive SDK which is currently missing.
+        // NOTE: accessLogObserver can also be removed once the active quality switch event is implemented.
+        bitrateChangeObserver = center.addObserver(
+            forName: bitrateChangeEvent,
+            object: .none,
+            queue: .none,
+            using: { notification in
+                guard let userInfo = notification.userInfo else { return }
+                guard let bitrate = userInfo["bitrate"] as? Double else { return }
+
+                eventProcessor.appGotBitrateChangeEvent(bitrate: bitrate, isPlayingAd: player.ads.playing)
+            }
+        )
     }
     
     deinit {
         center.removeObserver(foregroundObserver, name: willEnterForeground, object: nil)
         center.removeObserver(backgroundObserver, name: didEnterBackground, object: nil)
         center.removeObserver(accessLogObserver, name: newAccessLogEntry, object: nil)
+        center.removeObserver(accessLogObserver, name: bitrateChangeEvent, object: nil)
     }
 }
 
@@ -59,4 +75,5 @@ protocol AppEventProcessor {
     func appWillEnterForeground(notification: Notification)
     func appDidEnterBackground(notification: Notification)
     func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, isPlayingAd: Bool)
+    func appGotBitrateChangeEvent(bitrate: Double, isPlayingAd: Bool)
 }
