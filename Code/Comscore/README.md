@@ -24,7 +24,7 @@ Import the `THEOplayerConnectorComscore` module
 import THEOplayerConnectorComscore
 ```
 
-Create a ComScoreConfiguration that contains your publisherId (also referred to customer or c2 id), app name, an indication of whether the user has granted his/her consent for tracking, an adIdProcessor (if you want to extract and manipulate ad id's that will be reported to ComScore, by default we use THEOplayerSDK.Ad.id) and a debugging flag (for extra logging) :
+Create a ComScoreConfiguration that contains your publisherId (also referred to as customer or c2 id), app name, an indication of whether the user has granted his/her consent for tracking, an adIdProcessor (if you want to extract and manipulate ad id's that will be reported to ComScore, by default we use THEOplayerSDK.Ad.id) and a debugging flag (for extra logging) :
 
 ```swift
 let configuration = ComScoreConfiguration(
