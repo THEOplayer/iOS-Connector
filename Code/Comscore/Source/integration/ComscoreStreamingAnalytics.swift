@@ -6,6 +6,7 @@
 
 import Foundation
 import THEOplayerSDK
+import ComScore
 
 public class ComScoreStreamingAnalytics {
     let adapter: THEOComScoreAdapter
