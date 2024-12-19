@@ -20,11 +20,23 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         self.player = player
     }
     
-    private func calculatedAdTechnology() -> AdTechnology {
-        return (player?.source?.ads != nil) ? .CLIENT_SIDE : .SERVER_SIDE
+    private func calculatedAdTechnology(_ integrationKind: AdIntegrationKind) -> AdTechnology {
+        switch integrationKind {
+        case AdIntegrationKind.theoads:
+            // TODO THEOads is an SGAI solution which can't be reported to Conviva as such yet
+            return .SERVER_SIDE
+        case AdIntegrationKind.google_ima:
+            return .CLIENT_SIDE
+        default:
+            return .SERVER_SIDE
+        }
     }
     
-    private func AdTechnologyAsString(_ adTechnology: AdTechnology) -> String {
+    private func AdTechnologyAsString(_ ad: Ad) -> String {
+        if ad.integration == AdIntegrationKind.theoads {
+            return "Server Guided"
+        }
+        let adTechnology = self.calculatedAdTechnology(ad.integration)
         switch adTechnology {
         case .CLIENT_SIDE:
             return "Client Side"
@@ -37,7 +49,7 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
     
     public func adBreakBegin(event: AdBreakBeginEvent) {
         guard let adBreak = event.ad else { return }
-        self.videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: self.calculatedAdTechnology(), adBreakInfo: [
+        self.videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: self.calculatedAdTechnology(adBreak.integration), adBreakInfo: [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: adBreak.maxDuration)),
             CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: adBreak.timeOffset)),
             CIS_SSDK_AD_BREAK_POD_POSITION: adBreak.calculateCurrentAdBreakPosition()
@@ -52,9 +64,10 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         guard let ad = event.beginEvent.ad, ad.type == THEOplayerSDK.AdType.linear else { return }
 
         var info = ad.convivaInfo
-        
+
+        let adTechnology = self.AdTechnologyAsString(ad)
         // set Ad technology
-        info["c3.ad.technology"] = self.AdTechnologyAsString(self.calculatedAdTechnology())
+        info["c3.ad.technology"] = adTechnology
         
         // set Ad contentAssetName
         if let contentAssetName = self.storage.valueForKey(CIS_SSDK_METADATA_ASSET_NAME) {
@@ -81,7 +94,7 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
             ))
         }
         
-        if self.calculatedAdTechnology() == .SERVER_SIDE {
+        if self.calculatedAdTechnology(ad.integration) == .SERVER_SIDE {
             adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
         }
     }
