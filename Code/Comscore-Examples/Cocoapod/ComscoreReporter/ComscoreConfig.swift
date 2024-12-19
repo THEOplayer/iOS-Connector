@@ -41,6 +41,7 @@ let comscoreConfig = ComScoreConfiguration(
     applicationName: "put your application name here",
     userConsent: .granted,
     usagePropertiesAutoUpdateMode: .foregroundOnly,
+    usagePropertiesAutoUpdateInterval: 90,
     adIdProcessor: nil,
     debug: true
 )
