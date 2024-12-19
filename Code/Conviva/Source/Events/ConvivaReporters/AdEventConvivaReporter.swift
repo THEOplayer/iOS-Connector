@@ -20,8 +20,8 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         self.player = player
     }
     
-    private func calculatedAdTechnology(adOrAdBreak: Ad | AdBreak) -> AdTechnology {
-        switch adOrAdBreak.integration {
+    private func calculatedAdTechnology(_ integrationKind: AdIntegrationKind) -> AdTechnology {
+        switch integrationKind {
         case AdIntegrationKind.theoads:
             // TODO THEOads is an SGAI solution which can't be reported to Conviva as such yet
             return .SERVER_SIDE
@@ -32,11 +32,11 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         }
     }
     
-    private func AdTechnologyAsString(ad: Ad) -> String {
+    private func AdTechnologyAsString(_ ad: Ad) -> String {
         if ad.integration == AdIntegrationKind.theoads {
             return "Server Guided"
         }
-        var adTechnology = self.calculatedAdTechnology(ad)
+        let adTechnology = self.calculatedAdTechnology(ad.integration)
         switch adTechnology {
         case .CLIENT_SIDE:
             return "Client Side"
@@ -49,7 +49,7 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
     
     public func adBreakBegin(event: AdBreakBeginEvent) {
         guard let adBreak = event.ad else { return }
-        self.videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: self.calculatedAdTechnology(adBreak), adBreakInfo: [
+        self.videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: self.calculatedAdTechnology(adBreak.integration), adBreakInfo: [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: adBreak.maxDuration)),
             CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: adBreak.timeOffset)),
             CIS_SSDK_AD_BREAK_POD_POSITION: adBreak.calculateCurrentAdBreakPosition()
@@ -65,7 +65,7 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
 
         var info = ad.convivaInfo
 
-        var adTechnology = self.AdTechnologyAsString(ad)
+        let adTechnology = self.AdTechnologyAsString(ad)
         // set Ad technology
         info["c3.ad.technology"] = adTechnology
         
@@ -94,7 +94,7 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
             ))
         }
         
-        if self.calculatedAdTechnology(ad) == .SERVER_SIDE {
+        if self.calculatedAdTechnology(ad.integration) == .SERVER_SIDE {
             adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
         }
     }
