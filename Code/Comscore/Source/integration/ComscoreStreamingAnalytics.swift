@@ -64,6 +64,35 @@ public class ComScoreStreamingAnalytics {
         adapter.setPersistentLabels(labels: labels)
     }
     
+    /**
+     Report that your application starts providing the user experience
+     */
+    func notifyUxActive() {
+        SCORAnalytics.notifyUxActive()
+    }
+
+    /**
+     Report that your application stops providing the user experience. E.g. when the application moves to the background and the user turned off
+     a background audio or picture-in-picture capability
+     */
+    func notifyUxInactive() {
+        SCORAnalytics.notifyUxInactive()
+    }
+
+    /**
+     Report that your application moved to the foreground
+     */
+    func notifyEnterForeground() {
+        SCORAnalytics.notifyEnterForeground()
+    }
+
+    /**
+     Report that your application moved to the background
+     */
+    func notifyExitForeground() {
+        SCORAnalytics.notifyExitForeground()
+    }
+    
 //    /**
 //     Enable/disable comscore ad content tracking
 //     - Parameters:
