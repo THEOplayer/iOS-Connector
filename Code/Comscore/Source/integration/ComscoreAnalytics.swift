@@ -26,6 +26,7 @@ final class ComScoreAnalytics {
                 })
                 SCORAnalytics.configuration().addClient(with: publisherConfig)
                 SCORAnalytics.configuration().applicationName = configuration.applicationName
+                SCORAnalytics.configuration().usagePropertiesAutoUpdateInterval = Int32(configuration.usagePropertiesAutoUpdateInterval)
                 SCORAnalytics.configuration().usagePropertiesAutoUpdateMode = configuration.usagePropertiesAutoUpdateMode.toComscore()
                 if (configuration.debug) {
                     SCORAnalytics.configuration().enableImplementationValidationMode()
