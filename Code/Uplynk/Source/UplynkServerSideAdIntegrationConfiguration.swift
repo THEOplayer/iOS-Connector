@@ -8,38 +8,43 @@
 import THEOplayerSDK
 
 public class UplynkServerSideAdIntegrationConfiguration: THEOplayerSDK.CustomServerSideAdInsertionConfiguration {
+    
+    public enum AssetType {
+        /// A Video-on-demand content asset.
+        case asset
+        /// A Live content channel.
+        case channel
+    }
+    
     public let integration: THEOplayerSDK.SSAIIntegrationId = .CustomSSAIIntegrationID
     public let customIntegration: String = UplynkAdIntegration.INTEGRATION_ID
 
     public let prefix: String?
-    public let userId: String?
-    public let assetIds: [String]
-    public let externalIds: [String]
+    public let userID: String?
+    public let assetIDs: [String]
+    public let externalIDs: [String]
     public let preplayParameters: [String: String]
-
-    init(prefix: String?, userId: String?, assetIds: [String], externalIds: [String], preplayParameters: [String: String]) {
+    public let assetType: AssetType
+    public let contentProtected: Bool
+    public let pingConfiguration: UplynkPingConfiguration
+    
+    public init(
+        prefix: String?,
+        userID: String?,
+        assetIDs: [String],
+        externalIDs: [String],
+        preplayParameters: [String: String],
+        assetType: AssetType = .asset,
+        contentProtected: Bool = false,
+        uplynkPingConfiguration: UplynkPingConfiguration = .init()
+    ) {
         self.prefix = prefix
-        self.userId = userId
-        self.assetIds = assetIds
-        self.externalIds = externalIds
+        self.userID = userID
+        self.assetIDs = assetIDs
+        self.externalIDs = externalIDs
         self.preplayParameters = preplayParameters
-    }
-
-    public struct Builder {
-        public var prefix: String?
-        public var userId: String?
-        public var assetIds: [String] = []
-        public var externalIds: [String] = []
-        public var preplayParameters: [String: String] = [:]
-
-        public func build() -> UplynkServerSideAdIntegrationConfiguration {
-            return .init(
-                prefix: self.prefix,
-                userId: self.userId,
-                assetIds: self.assetIds,
-                externalIds: self.externalIds,
-                preplayParameters: self.preplayParameters
-            )
-        }
+        self.assetType = assetType
+        self.contentProtected = contentProtected
+        self.pingConfiguration = uplynkPingConfiguration
     }
 }

@@ -7,6 +7,12 @@
 
 import Foundation
 
+struct PrePlayDRMConfiguration: Codable {
+    let required: Bool
+    let fairplayCertificateURL: String?
+}
+
 struct PreplayResponse: Codable {
     let playURL: String
+    let drm: PrePlayDRMConfiguration?
 }

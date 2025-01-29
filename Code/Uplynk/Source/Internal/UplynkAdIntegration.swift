@@ -11,12 +11,15 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
     static let INTEGRATION_ID: String = "uplynk"
 
     private let player: THEOplayerSDK.THEOplayer
+    private let controller: THEOplayerSDK.ServerSideAdIntegrationController
     private(set) var isSettingSource: Bool = false
 
     private typealias UplynkAdIntegrationSource = (THEOplayerSDK.SourceDescription, THEOplayerSDK.TypedSource)
 
-    init(player: THEOplayerSDK.THEOplayer) {
+    init(player: THEOplayerSDK.THEOplayer,
+         controller: THEOplayerSDK.ServerSideAdIntegrationController) {
         self.player = player
+        self.controller = controller
     }
 
     // Implements ServerSideAdIntegrationHandler.setSource
@@ -29,20 +32,34 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
            let uplynkConfig: UplynkServerSideAdIntegrationConfiguration = typedSource.ssai as? UplynkServerSideAdIntegrationConfiguration else {
             return false
         }
-
-        let preplayUrl: String = UplynkServerSideAdIntegrationConfigurationConverter.buildPreplayUrl(ssaiDescription: uplynkConfig)
-        UplynkApi.requestPreplay(srcURL: preplayUrl) { preplayResponse in
-            guard let response: PreplayResponse = preplayResponse else { return }
-            let source: UplynkAdIntegrationSource = (sourceDescription, typedSource)
-            self.onPreplayResponse(response: response, source: source)
+        let urlBuilder = UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: uplynkConfig)
+        let preplayURL: String = switch uplynkConfig.assetType {
+        case .asset:
+            urlBuilder.buildPreplayVodUrl()
+        case .channel:
+            urlBuilder.buildPreplayLiveUrl()
         }
-
+        
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard let preplayResponse = await UplynkAPI.request(preplaySrcURL: preplayURL) else {
+                // TODO: Handle as an error or log?
+                return
+            }
+            let source: UplynkAdIntegrationSource = (sourceDescription, typedSource)
+            self.onPreplayResponse(response: preplayResponse, source: source)
+        }
         return true
     }
 
     private func onPreplayResponse(response: PreplayResponse, source: UplynkAdIntegrationSource) {
         let typedSource: THEOplayerSDK.TypedSource = source.1
         typedSource.src = URL(string: response.playURL)!
+        if let drm = response.drm, drm.required {
+            typedSource.drm = UplynkDRMConfiguration(keySystemConfigurations:
+                    .init(fairplay: .init(certificateURL: drm.fairplayCertificateURL)))
+        }
+
         let sourceDescription: THEOplayerSDK.SourceDescription = source.0
         self.isSettingSource = true
         self.player.source = sourceDescription

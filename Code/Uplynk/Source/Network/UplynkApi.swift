@@ -1,5 +1,5 @@
 //
-//  UplynkApi.swift
+//  UplynkAPI.swift
 //
 //  Created by Raffi on 09/09/2024.
 //  Copyright © 2024 THEOplayer. All rights reserved.
@@ -7,21 +7,19 @@
 
 import Foundation
 
-class UplynkApi {
-    static func requestPreplay(srcURL: String, completion: @escaping (_ preplayResponse: PreplayResponse?) -> Void) {
-        HttpsConnection.request(type: .get, urlString: srcURL) { content, error in
-            guard let preplayResponseStr: String = content else {
-                completion(nil)
-                return
-            }
-
+class UplynkAPI {
+    
+    static func request(preplaySrcURL: String) async -> PreplayResponse? {
+        do {
+            let data = try await HTTPSConnection.request(type: .get, urlString: preplaySrcURL)
             let decoder: JSONDecoder = .init()
-            guard let preplayResponse: PreplayResponse = try? decoder.decode(PreplayResponse.self, from: Data(preplayResponseStr.utf8)) else {
-                completion(nil)
-                return
+            guard let preplayResponse: PreplayResponse = try? decoder.decode(PreplayResponse.self, from: data) else {
+                return nil
             }
-
-            completion(preplayResponse)
+            return preplayResponse
+        } catch {
+            // TODO: Add logging here?
+            return nil
         }
     }
 }

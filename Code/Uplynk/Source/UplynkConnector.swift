@@ -15,7 +15,7 @@ public class UplynkConnector {
         self.player = player
 
         self.player.ads.registerServerSideIntegration(integrationId: UplynkAdIntegration.INTEGRATION_ID) { controller in
-            let handler: THEOplayerSDK.ServerSideAdIntegrationHandler = UplynkAdIntegration(player: player)
+            let handler: THEOplayerSDK.ServerSideAdIntegrationHandler = UplynkAdIntegration(player: player, controller: controller)
             self.adIntegrationHandler = handler
             return handler
         }
