@@ -11,13 +11,16 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
     static let INTEGRATION_ID: String = "uplynk"
 
     private let player: THEOplayerSDK.THEOplayer
+    private let uplynkAPI: UplynkAPIProtocol.Type
     private let controller: THEOplayerSDK.ServerSideAdIntegrationController
     private(set) var isSettingSource: Bool = false
 
     private typealias UplynkAdIntegrationSource = (THEOplayerSDK.SourceDescription, THEOplayerSDK.TypedSource)
 
-    init(player: THEOplayerSDK.THEOplayer,
+    init(uplynkAPI: UplynkAPIProtocol.Type = UplynkAPI.self,
+         player: THEOplayerSDK.THEOplayer,
          controller: THEOplayerSDK.ServerSideAdIntegrationController) {
+        self.uplynkAPI = uplynkAPI
         self.player = player
         self.controller = controller
     }
@@ -44,9 +47,9 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
             guard let self else { return }
             let requestMethod = switch uplynkConfig.assetType {
             case .asset:
-                UplynkAPI.requestVOD(preplaySrcURL:)
+                self.uplynkAPI.requestVOD(preplaySrcURL:)
             case .channel:
-                UplynkAPI.requestLive(preplaySrcURL:)
+                self.uplynkAPI.requestLive(preplaySrcURL:)
             }
             guard let preplayResponse = await requestMethod(preplayURL) as? PrePlayResponseProtocol else {
                 // TODO: Handle as an error or log?

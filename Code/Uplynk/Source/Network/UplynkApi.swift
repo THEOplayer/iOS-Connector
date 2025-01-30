@@ -7,7 +7,13 @@
 
 import Foundation
 
-class UplynkAPI {
+
+protocol UplynkAPIProtocol {
+    static func requestLive(preplaySrcURL: String) async -> PrePlayLiveResponse?
+    static func requestVOD(preplaySrcURL: String) async -> PrePlayVODResponse?
+}
+
+class UplynkAPI: UplynkAPIProtocol {
     
     static func requestLive(preplaySrcURL: String) async -> PrePlayLiveResponse? {
         do {

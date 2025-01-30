@@ -23,6 +23,8 @@
 		F59A83F22D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59A83F12D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift */; };
 		F59A83F32D4AEF5300C0B7E9 /* THEOplayerConnectorUplynk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F531C5C52D49FC310038E649 /* THEOplayerConnectorUplynk.framework */; };
 		F59A83FA2D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59A83F92D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift */; };
+		F5BACFC72D4B369500B207DB /* UplynkAPIMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BACFC62D4B369500B207DB /* UplynkAPIMock.swift */; };
+		F5BACFC92D4B38A400B207DB /* UplynkAdIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BACFC82D4B38A400B207DB /* UplynkAdIntegrationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +68,8 @@
 		F59A83EF2D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = THEOplayerConnectorUplynkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F59A83F12D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THEOplayerConnectorUplynkTests.swift; sourceTree = "<group>"; };
 		F59A83F92D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UplynkSSAIConfigurationURLBuilderTests.swift; sourceTree = "<group>"; };
+		F5BACFC62D4B369500B207DB /* UplynkAPIMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UplynkAPIMock.swift; sourceTree = "<group>"; };
+		F5BACFC82D4B38A400B207DB /* UplynkAdIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UplynkAdIntegrationTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,10 +165,20 @@
 		F59A83F02D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests */ = {
 			isa = PBXGroup;
 			children = (
+				F5BACFC52D4B367E00B207DB /* Mocks */,
 				F59A83F12D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift */,
 				F59A83F92D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift */,
+				F5BACFC82D4B38A400B207DB /* UplynkAdIntegrationTests.swift */,
 			);
 			path = THEOplayerConnectorUplynkTests;
+			sourceTree = "<group>";
+		};
+		F5BACFC52D4B367E00B207DB /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				F5BACFC62D4B369500B207DB /* UplynkAPIMock.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -295,6 +309,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5BACFC92D4B38A400B207DB /* UplynkAdIntegrationTests.swift in Sources */,
+				F5BACFC72D4B369500B207DB /* UplynkAPIMock.swift in Sources */,
 				F59A83F22D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift in Sources */,
 				F59A83FA2D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift in Sources */,
 			);
