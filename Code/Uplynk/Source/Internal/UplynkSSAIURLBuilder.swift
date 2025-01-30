@@ -29,15 +29,15 @@ class UplynkServerSideAdInjectionURLBuilder {
     lazy private var externalIDs = ssaiConfiguration.externalIDs
     lazy private var userID = ssaiConfiguration.userID
     
-    func buildPreplayVodUrl() -> String {
+    func buildPreplayVODURL() -> String {
         return "\(prefix)/preplay/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)"
     }
 
-    func buildPreplayLiveUrl() -> String {
+    func buildPreplayLiveURL() -> String {
         return "\(prefix)/preplay/\(urlAssetType)/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)"
     }
 
-    func buildAssetInfoUrls(
+    func buildAssetInfoURLs(
         sessionID: String,
         prefix: String
     ) -> [String] {
@@ -62,19 +62,19 @@ class UplynkServerSideAdInjectionURLBuilder {
         }
     }
 
-    func buildSeekedPingUrl(
+    func buildSeekedPingURL(
         prefix: String, sessionID: String, currentTimeSeconds: Int, seekStartTimeSeconds: Int
     ) -> String {
-        return buildPingUrl(prefix: prefix, sessionID: sessionID, currentTimeSeconds: currentTimeSeconds) + "&ev=seek&ft=\(seekStartTimeSeconds)"
+        return buildPingURL(prefix: prefix, sessionID: sessionID, currentTimeSeconds: currentTimeSeconds) + "&ev=seek&ft=\(seekStartTimeSeconds)"
     }
 
-    func buildStartPingUrl(
+    func buildStartPingURL(
         prefix: String, sessionID: String, currentTimeSeconds: Int
     ) -> String {
-        return buildPingUrl(prefix: prefix, sessionID: sessionID, currentTimeSeconds: currentTimeSeconds) + "&ev=start"
+        return buildPingURL(prefix: prefix, sessionID: sessionID, currentTimeSeconds: currentTimeSeconds) + "&ev=start"
     }
 
-    func buildPingUrl(
+    func buildPingURL(
         prefix: String, sessionID: String, currentTimeSeconds: Int
     ) -> String  {
         return "\(prefix)/session/ping/\(sessionID).json?v=3&pt=\(currentTimeSeconds)"

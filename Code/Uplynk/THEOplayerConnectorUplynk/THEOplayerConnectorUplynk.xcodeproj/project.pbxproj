@@ -8,19 +8,32 @@
 
 /* Begin PBXBuildFile section */
 		F531C5DE2D49FC3F0038E649 /* UplynkConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D02D49FC3F0038E649 /* UplynkConnector.swift */; };
-		F531C5DF2D49FC3F0038E649 /* PreplayResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D12D49FC3F0038E649 /* PreplayResponse.swift */; };
+		F531C5DF2D49FC3F0038E649 /* PrePlayResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D12D49FC3F0038E649 /* PrePlayResponse.swift */; };
 		F531C5E02D49FC3F0038E649 /* UplynkAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D32D49FC3F0038E649 /* UplynkAPI.swift */; };
 		F531C5E12D49FC3F0038E649 /* HTTPSConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D42D49FC3F0038E649 /* HTTPSConnection.swift */; };
 		F531C5E22D49FC3F0038E649 /* UplynkAdIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D62D49FC3F0038E649 /* UplynkAdIntegration.swift */; };
-		F531C5E32D49FC3F0038E649 /* UplynkServerSideAdInjectionURLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D72D49FC3F0038E649 /* UplynkServerSideAdInjectionURLBuilder.swift */; };
-		F531C5E42D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D82D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration+Extensions.swift */; };
+		F531C5E32D49FC3F0038E649 /* UplynkSSAIURLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D72D49FC3F0038E649 /* UplynkSSAIURLBuilder.swift */; };
+		F531C5E42D49FC3F0038E649 /* UplynkSSAIConfiguration+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D82D49FC3F0038E649 /* UplynkSSAIConfiguration+Extensions.swift */; };
 		F531C5E52D49FC3F0038E649 /* UplynkPingFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5D92D49FC3F0038E649 /* UplynkPingFeatures.swift */; };
 		F531C5E62D49FC3F0038E649 /* SourceDescription+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5DB2D49FC3F0038E649 /* SourceDescription+Extensions.swift */; };
-		F531C5E72D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5DC2D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration.swift */; };
+		F531C5E72D49FC3F0038E649 /* UplynkSSAIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5DC2D49FC3F0038E649 /* UplynkSSAIConfiguration.swift */; };
 		F531C5E82D49FC3F0038E649 /* UplynkPingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F531C5DD2D49FC3F0038E649 /* UplynkPingConfiguration.swift */; };
 		F531C5EE2D49FCD40038E649 /* THEOplayerSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F531C5ED2D49FCD40038E649 /* THEOplayerSDK.framework */; };
 		F531C5EF2D49FCD40038E649 /* THEOplayerSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F531C5ED2D49FCD40038E649 /* THEOplayerSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F59A83F22D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59A83F12D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift */; };
+		F59A83F32D4AEF5300C0B7E9 /* THEOplayerConnectorUplynk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F531C5C52D49FC310038E649 /* THEOplayerConnectorUplynk.framework */; };
+		F59A83FA2D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59A83F92D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F59A83F42D4AEF5300C0B7E9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F531C5BC2D49FC310038E649 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F531C5C42D49FC310038E649;
+			remoteInfo = THEOplayerConnectorUplynk;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		F531C5F02D49FCD40038E649 /* Embed Frameworks */ = {
@@ -39,17 +52,20 @@
 /* Begin PBXFileReference section */
 		F531C5C52D49FC310038E649 /* THEOplayerConnectorUplynk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = THEOplayerConnectorUplynk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F531C5D02D49FC3F0038E649 /* UplynkConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UplynkConnector.swift; sourceTree = "<group>"; };
-		F531C5D12D49FC3F0038E649 /* PreplayResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreplayResponse.swift; sourceTree = "<group>"; };
+		F531C5D12D49FC3F0038E649 /* PrePlayResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrePlayResponse.swift; sourceTree = "<group>"; };
 		F531C5D32D49FC3F0038E649 /* UplynkAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UplynkAPI.swift; sourceTree = "<group>"; };
 		F531C5D42D49FC3F0038E649 /* HTTPSConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPSConnection.swift; sourceTree = "<group>"; };
 		F531C5D62D49FC3F0038E649 /* UplynkAdIntegration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UplynkAdIntegration.swift; sourceTree = "<group>"; };
-		F531C5D72D49FC3F0038E649 /* UplynkServerSideAdInjectionURLBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UplynkServerSideAdInjectionURLBuilder.swift; sourceTree = "<group>"; };
-		F531C5D82D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UplynkServerSideAdIntegrationConfiguration+Extensions.swift"; sourceTree = "<group>"; };
+		F531C5D72D49FC3F0038E649 /* UplynkSSAIURLBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UplynkSSAIURLBuilder.swift; sourceTree = "<group>"; };
+		F531C5D82D49FC3F0038E649 /* UplynkSSAIConfiguration+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UplynkSSAIConfiguration+Extensions.swift"; sourceTree = "<group>"; };
 		F531C5D92D49FC3F0038E649 /* UplynkPingFeatures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UplynkPingFeatures.swift; sourceTree = "<group>"; };
 		F531C5DB2D49FC3F0038E649 /* SourceDescription+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SourceDescription+Extensions.swift"; sourceTree = "<group>"; };
-		F531C5DC2D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UplynkServerSideAdIntegrationConfiguration.swift; sourceTree = "<group>"; };
+		F531C5DC2D49FC3F0038E649 /* UplynkSSAIConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UplynkSSAIConfiguration.swift; sourceTree = "<group>"; };
 		F531C5DD2D49FC3F0038E649 /* UplynkPingConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UplynkPingConfiguration.swift; sourceTree = "<group>"; };
 		F531C5ED2D49FCD40038E649 /* THEOplayerSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = THEOplayerSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F59A83EF2D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = THEOplayerConnectorUplynkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F59A83F12D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THEOplayerConnectorUplynkTests.swift; sourceTree = "<group>"; };
+		F59A83F92D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UplynkSSAIConfigurationURLBuilderTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +77,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F59A83EC2D4AEF5300C0B7E9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F59A83F32D4AEF5300C0B7E9 /* THEOplayerConnectorUplynk.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -68,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				F531C5CF2D49FC3F0038E649 /* Source */,
+				F59A83F02D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests */,
 				F531C5C62D49FC310038E649 /* Products */,
 				F531C5EC2D49FCD40038E649 /* Frameworks */,
 			);
@@ -77,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				F531C5C52D49FC310038E649 /* THEOplayerConnectorUplynk.framework */,
+				F59A83EF2D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,11 +111,11 @@
 			isa = PBXGroup;
 			children = (
 				F531C5D02D49FC3F0038E649 /* UplynkConnector.swift */,
-				F531C5D12D49FC3F0038E649 /* PreplayResponse.swift */,
+				F531C5D12D49FC3F0038E649 /* PrePlayResponse.swift */,
 				F531C5D22D49FC3F0038E649 /* Network */,
 				F531C5D52D49FC3F0038E649 /* Internal */,
 				F531C5DA2D49FC3F0038E649 /* Utils */,
-				F531C5DC2D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration.swift */,
+				F531C5DC2D49FC3F0038E649 /* UplynkSSAIConfiguration.swift */,
 				F531C5DD2D49FC3F0038E649 /* UplynkPingConfiguration.swift */,
 			);
 			name = Source;
@@ -109,8 +135,8 @@
 			isa = PBXGroup;
 			children = (
 				F531C5D62D49FC3F0038E649 /* UplynkAdIntegration.swift */,
-				F531C5D72D49FC3F0038E649 /* UplynkServerSideAdInjectionURLBuilder.swift */,
-				F531C5D82D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration+Extensions.swift */,
+				F531C5D72D49FC3F0038E649 /* UplynkSSAIURLBuilder.swift */,
+				F531C5D82D49FC3F0038E649 /* UplynkSSAIConfiguration+Extensions.swift */,
 				F531C5D92D49FC3F0038E649 /* UplynkPingFeatures.swift */,
 			);
 			path = Internal;
@@ -130,6 +156,15 @@
 				F531C5ED2D49FCD40038E649 /* THEOplayerSDK.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F59A83F02D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests */ = {
+			isa = PBXGroup;
+			children = (
+				F59A83F12D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift */,
+				F59A83F92D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift */,
+			);
+			path = THEOplayerConnectorUplynkTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,6 +199,24 @@
 			productReference = F531C5C52D49FC310038E649 /* THEOplayerConnectorUplynk.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		F59A83EE2D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F59A83F82D4AEF5300C0B7E9 /* Build configuration list for PBXNativeTarget "THEOplayerConnectorUplynkTests" */;
+			buildPhases = (
+				F59A83EB2D4AEF5300C0B7E9 /* Sources */,
+				F59A83EC2D4AEF5300C0B7E9 /* Frameworks */,
+				F59A83ED2D4AEF5300C0B7E9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F59A83F52D4AEF5300C0B7E9 /* PBXTargetDependency */,
+			);
+			name = THEOplayerConnectorUplynkTests;
+			productName = THEOplayerConnectorUplynkTests;
+			productReference = F59A83EF2D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -171,9 +224,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
+				DefaultBuildSystemTypeForWorkspace = Latest;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					F531C5C42D49FC310038E649 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
+					F59A83EE2D4AEF5300C0B7E9 = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
 				};
@@ -192,12 +250,20 @@
 			projectRoot = "";
 			targets = (
 				F531C5C42D49FC310038E649 /* THEOplayerConnectorUplynk */,
+				F59A83EE2D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		F531C5C32D49FC310038E649 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F59A83ED2D4AEF5300C0B7E9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -211,21 +277,38 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F531C5E42D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration+Extensions.swift in Sources */,
-				F531C5DF2D49FC3F0038E649 /* PreplayResponse.swift in Sources */,
+				F531C5E42D49FC3F0038E649 /* UplynkSSAIConfiguration+Extensions.swift in Sources */,
+				F531C5DF2D49FC3F0038E649 /* PrePlayResponse.swift in Sources */,
 				F531C5DE2D49FC3F0038E649 /* UplynkConnector.swift in Sources */,
 				F531C5E52D49FC3F0038E649 /* UplynkPingFeatures.swift in Sources */,
 				F531C5E02D49FC3F0038E649 /* UplynkAPI.swift in Sources */,
 				F531C5E12D49FC3F0038E649 /* HTTPSConnection.swift in Sources */,
 				F531C5E22D49FC3F0038E649 /* UplynkAdIntegration.swift in Sources */,
 				F531C5E62D49FC3F0038E649 /* SourceDescription+Extensions.swift in Sources */,
-				F531C5E32D49FC3F0038E649 /* UplynkServerSideAdInjectionURLBuilder.swift in Sources */,
+				F531C5E32D49FC3F0038E649 /* UplynkSSAIURLBuilder.swift in Sources */,
 				F531C5E82D49FC3F0038E649 /* UplynkPingConfiguration.swift in Sources */,
-				F531C5E72D49FC3F0038E649 /* UplynkServerSideAdIntegrationConfiguration.swift in Sources */,
+				F531C5E72D49FC3F0038E649 /* UplynkSSAIConfiguration.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F59A83EB2D4AEF5300C0B7E9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F59A83F22D4AEF5300C0B7E9 /* THEOplayerConnectorUplynkTests.swift in Sources */,
+				F59A83FA2D4AEFB600C0B7E9 /* UplynkSSAIConfigurationURLBuilderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F59A83F52D4AEF5300C0B7E9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F531C5C42D49FC310038E649 /* THEOplayerConnectorUplynk */;
+			targetProxy = F59A83F42D4AEF5300C0B7E9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F531C5CA2D49FC310038E649 /* Debug */ = {
@@ -413,6 +496,38 @@
 			};
 			name = Release;
 		};
+		F59A83F62D4AEF5300C0B7E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = theoplayer.THEOplayerConnectorUplynk.THEOplayerConnectorUplynkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F59A83F72D4AEF5300C0B7E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = theoplayer.THEOplayerConnectorUplynk.THEOplayerConnectorUplynkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -430,6 +545,15 @@
 			buildConfigurations = (
 				F531C5CD2D49FC310038E649 /* Debug */,
 				F531C5CE2D49FC310038E649 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F59A83F82D4AEF5300C0B7E9 /* Build configuration list for PBXNativeTarget "THEOplayerConnectorUplynkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F59A83F62D4AEF5300C0B7E9 /* Debug */,
+				F59A83F72D4AEF5300C0B7E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

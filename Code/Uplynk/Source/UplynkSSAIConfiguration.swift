@@ -19,31 +19,32 @@ public class UplynkServerSideAdIntegrationConfiguration: THEOplayerSDK.CustomSer
     public let integration: THEOplayerSDK.SSAIIntegrationId = .CustomSSAIIntegrationID
     public let customIntegration: String = UplynkAdIntegration.INTEGRATION_ID
 
-    public let prefix: String?
-    public let userID: String?
     public let assetIDs: [String]
     public let externalIDs: [String]
+    
+    public let prefix: String?
+    public let userID: String?
     public let preplayParameters: [String: String]
     public let assetType: AssetType
     public let contentProtected: Bool
     public let pingConfiguration: UplynkPingConfiguration
     
     public init(
-        prefix: String?,
-        userID: String?,
         assetIDs: [String],
         externalIDs: [String],
-        preplayParameters: [String: String],
-        assetType: AssetType = .asset,
+        assetType: AssetType,
+        prefix: String? = nil,
+        userID: String? = nil,
+        preplayParameters: [String: String] = .init(),
         contentProtected: Bool = false,
         uplynkPingConfiguration: UplynkPingConfiguration = .init()
     ) {
+        self.externalIDs = externalIDs
+        self.assetIDs = assetIDs
+        self.assetType = assetType
         self.prefix = prefix
         self.userID = userID
-        self.assetIDs = assetIDs
-        self.externalIDs = externalIDs
         self.preplayParameters = preplayParameters
-        self.assetType = assetType
         self.contentProtected = contentProtected
         self.pingConfiguration = uplynkPingConfiguration
     }

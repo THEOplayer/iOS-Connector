@@ -35,14 +35,20 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
         let urlBuilder = UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: uplynkConfig)
         let preplayURL: String = switch uplynkConfig.assetType {
         case .asset:
-            urlBuilder.buildPreplayVodUrl()
+            urlBuilder.buildPreplayVODURL()
         case .channel:
-            urlBuilder.buildPreplayLiveUrl()
+            urlBuilder.buildPreplayLiveURL()
         }
         
         Task { @MainActor [weak self] in
             guard let self else { return }
-            guard let preplayResponse = await UplynkAPI.request(preplaySrcURL: preplayURL) else {
+            let requestMethod = switch uplynkConfig.assetType {
+            case .asset:
+                UplynkAPI.requestVOD(preplaySrcURL:)
+            case .channel:
+                UplynkAPI.requestLive(preplaySrcURL:)
+            }
+            guard let preplayResponse = await requestMethod(preplayURL) as? PrePlayResponseProtocol else {
                 // TODO: Handle as an error or log?
                 return
             }
@@ -52,7 +58,8 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
         return true
     }
 
-    private func onPreplayResponse(response: PreplayResponse, source: UplynkAdIntegrationSource) {
+    
+    private func onPreplayResponse(response: PrePlayResponseProtocol, source: UplynkAdIntegrationSource) {
         let typedSource: THEOplayerSDK.TypedSource = source.1
         typedSource.src = URL(string: response.playURL)!
         if let drm = response.drm, drm.required {

@@ -9,7 +9,7 @@ import Foundation
 
 extension UplynkServerSideAdIntegrationConfiguration {
     var drmParameters: String {
-        contentProtected ? "&manifest=mpd&rmt=wv" : ""
+        contentProtected ? "&manifest=m3u8&rmt=fps" : ""
     }
     
     var urlParameters: String {
@@ -28,7 +28,7 @@ extension UplynkServerSideAdIntegrationConfiguration {
         if feature == .noPing {
             return "&ad.pingc=0"
         } else {
-            return "&ad.pingc=1&ad.pingf=\(feature)"
+            return "&ad.pingc=1&ad.pingf=\(feature.rawValue)"
         }
     }
     
@@ -55,11 +55,11 @@ extension UplynkServerSideAdIntegrationConfiguration {
         }
         
         if externalIDs.count == 1, let first = externalIDs.first {
-            return "\(userId)/\(first).json"
+            return "ext/\(userId)/\(first).json"
         }
         
         if externalIDs.count > 1 {
-            return "\(userId)/\(externalIDs.joined(separator: ","))/multiple.json"
+            return "ext/\(userId)/\(externalIDs.joined(separator: ","))/multiple.json"
         }
         return ""
     }
