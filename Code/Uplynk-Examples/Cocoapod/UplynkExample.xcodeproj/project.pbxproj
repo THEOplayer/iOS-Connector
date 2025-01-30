@@ -1,0 +1,442 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		76FC2F869832418EE2FD9EB5 /* libPods-UplynkExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B7EECC7E474A40423521D0 /* libPods-UplynkExample.a */; };
+		E8CCAD692D4B2B3C0043C405 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCAD682D4B2B3C0043C405 /* AppDelegate.swift */; };
+		E8CCAD6B2D4B2B3C0043C405 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCAD6A2D4B2B3C0043C405 /* SceneDelegate.swift */; };
+		E8CCAD6D2D4B2B3C0043C405 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCAD6C2D4B2B3C0043C405 /* ViewController.swift */; };
+		E8CCAD702D4B2B3C0043C405 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E8CCAD6E2D4B2B3C0043C405 /* Main.storyboard */; };
+		E8CCAD722D4B2B3D0043C405 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8CCAD712D4B2B3D0043C405 /* Assets.xcassets */; };
+		E8CCAD752D4B2B3D0043C405 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E8CCAD732D4B2B3D0043C405 /* LaunchScreen.storyboard */; };
+		E8CCAD7D2D4B2C410043C405 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCAD7C2D4B2C410043C405 /* PlayerView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0CD44B38143B0120B68B2BFF /* Pods-UplynkExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UplynkExample.release.xcconfig"; path = "Target Support Files/Pods-UplynkExample/Pods-UplynkExample.release.xcconfig"; sourceTree = "<group>"; };
+		29B7EECC7E474A40423521D0 /* libPods-UplynkExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-UplynkExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C58B8E8CFB0BEF9DDD3FD03 /* Pods-UplynkExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UplynkExample.debug.xcconfig"; path = "Target Support Files/Pods-UplynkExample/Pods-UplynkExample.debug.xcconfig"; sourceTree = "<group>"; };
+		E8CCAD652D4B2B3C0043C405 /* UplynkExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UplynkExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8CCAD682D4B2B3C0043C405 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E8CCAD6A2D4B2B3C0043C405 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		E8CCAD6C2D4B2B3C0043C405 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E8CCAD6F2D4B2B3C0043C405 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E8CCAD712D4B2B3D0043C405 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E8CCAD742D4B2B3D0043C405 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		E8CCAD762D4B2B3D0043C405 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E8CCAD7C2D4B2C410043C405 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E8CCAD622D4B2B3C0043C405 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76FC2F869832418EE2FD9EB5 /* libPods-UplynkExample.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7A69180C112F23629CEA892D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7C58B8E8CFB0BEF9DDD3FD03 /* Pods-UplynkExample.debug.xcconfig */,
+				0CD44B38143B0120B68B2BFF /* Pods-UplynkExample.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		A16523A2CA3442C9D355E014 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B7EECC7E474A40423521D0 /* libPods-UplynkExample.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E8CCAD5C2D4B2B3C0043C405 = {
+			isa = PBXGroup;
+			children = (
+				E8CCAD672D4B2B3C0043C405 /* UplynkExample */,
+				E8CCAD662D4B2B3C0043C405 /* Products */,
+				7A69180C112F23629CEA892D /* Pods */,
+				A16523A2CA3442C9D355E014 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E8CCAD662D4B2B3C0043C405 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E8CCAD652D4B2B3C0043C405 /* UplynkExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E8CCAD672D4B2B3C0043C405 /* UplynkExample */ = {
+			isa = PBXGroup;
+			children = (
+				E8CCAD682D4B2B3C0043C405 /* AppDelegate.swift */,
+				E8CCAD712D4B2B3D0043C405 /* Assets.xcassets */,
+				E8CCAD762D4B2B3D0043C405 /* Info.plist */,
+				E8CCAD732D4B2B3D0043C405 /* LaunchScreen.storyboard */,
+				E8CCAD6E2D4B2B3C0043C405 /* Main.storyboard */,
+				E8CCAD7C2D4B2C410043C405 /* PlayerView.swift */,
+				E8CCAD6A2D4B2B3C0043C405 /* SceneDelegate.swift */,
+				E8CCAD6C2D4B2B3C0043C405 /* ViewController.swift */,
+			);
+			path = UplynkExample;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E8CCAD642D4B2B3C0043C405 /* UplynkExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E8CCAD792D4B2B3D0043C405 /* Build configuration list for PBXNativeTarget "UplynkExample" */;
+			buildPhases = (
+				FC66AE12823804849506ADE7 /* [CP] Check Pods Manifest.lock */,
+				E8CCAD612D4B2B3C0043C405 /* Sources */,
+				E8CCAD622D4B2B3C0043C405 /* Frameworks */,
+				E8CCAD632D4B2B3C0043C405 /* Resources */,
+				A817484CBF1C9ED08CE05204 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UplynkExample;
+			productName = UplynkExample;
+			productReference = E8CCAD652D4B2B3C0043C405 /* UplynkExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E8CCAD5D2D4B2B3C0043C405 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					E8CCAD642D4B2B3C0043C405 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
+				};
+			};
+			buildConfigurationList = E8CCAD602D4B2B3C0043C405 /* Build configuration list for PBXProject "UplynkExample" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E8CCAD5C2D4B2B3C0043C405;
+			productRefGroup = E8CCAD662D4B2B3C0043C405 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E8CCAD642D4B2B3C0043C405 /* UplynkExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E8CCAD632D4B2B3C0043C405 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8CCAD752D4B2B3D0043C405 /* LaunchScreen.storyboard in Resources */,
+				E8CCAD722D4B2B3D0043C405 /* Assets.xcassets in Resources */,
+				E8CCAD702D4B2B3C0043C405 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A817484CBF1C9ED08CE05204 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UplynkExample/Pods-UplynkExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UplynkExample/Pods-UplynkExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UplynkExample/Pods-UplynkExample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FC66AE12823804849506ADE7 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-UplynkExample-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E8CCAD612D4B2B3C0043C405 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8CCAD6D2D4B2B3C0043C405 /* ViewController.swift in Sources */,
+				E8CCAD692D4B2B3C0043C405 /* AppDelegate.swift in Sources */,
+				E8CCAD6B2D4B2B3C0043C405 /* SceneDelegate.swift in Sources */,
+				E8CCAD7D2D4B2C410043C405 /* PlayerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E8CCAD6E2D4B2B3C0043C405 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E8CCAD6F2D4B2B3C0043C405 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		E8CCAD732D4B2B3D0043C405 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E8CCAD742D4B2B3D0043C405 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E8CCAD772D4B2B3D0043C405 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E8CCAD782D4B2B3D0043C405 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E8CCAD7A2D4B2B3D0043C405 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7C58B8E8CFB0BEF9DDD3FD03 /* Pods-UplynkExample.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UplynkExample/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theotechnologies.samples.UplynkExample.UplynkExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E8CCAD7B2D4B2B3D0043C405 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0CD44B38143B0120B68B2BFF /* Pods-UplynkExample.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UplynkExample/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theotechnologies.samples.UplynkExample.UplynkExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E8CCAD602D4B2B3C0043C405 /* Build configuration list for PBXProject "UplynkExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8CCAD772D4B2B3D0043C405 /* Debug */,
+				E8CCAD782D4B2B3D0043C405 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E8CCAD792D4B2B3D0043C405 /* Build configuration list for PBXNativeTarget "UplynkExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8CCAD7A2D4B2B3D0043C405 /* Debug */,
+				E8CCAD7B2D4B2B3D0043C405 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E8CCAD5D2D4B2B3C0043C405 /* Project object */;
+}
