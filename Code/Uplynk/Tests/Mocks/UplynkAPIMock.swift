@@ -21,7 +21,15 @@ class UplynkAPIMock: UplynkAPIProtocol {
     static var institutionalURL: String = ""
     static var vODAds: UplynkAds = .init(breaks: [], breakOffsets: [], placeholderOffsets: [])
     
-    static func requestLive(preplaySrcURL: String) async -> THEOplayerConnectorUplynk.PrePlayLiveResponse? {
+    enum Event: Equatable {
+        case requestLive(preplaySrcURL: String)
+        case requestVOD(preplaySrcURL: String)
+        case requestPing(url: String)
+    }
+    
+    private(set) var events: [Event] = []
+    
+    static func requestLive(preplaySrcURL: String) async -> PrePlayLiveResponse? {
         let drm: PrePlayDRMConfiguration? = requireDRM ? .init(required: true, fairplayCertificateURL: "https://x-drm.uplynk.com/fairplay/public_key/662d0a3da2244ca5b6757a7dd077e538.cer") : nil
         return PrePlayLiveResponse(
             playURL: playURL,
@@ -31,7 +39,7 @@ class UplynkAPIMock: UplynkAPIProtocol {
             drm: drm)
     }
     
-    static func requestVOD(preplaySrcURL: String) async -> THEOplayerConnectorUplynk.PrePlayVODResponse? {
+    static func requestVOD(preplaySrcURL: String) async -> PrePlayVODResponse? {
         let drm: PrePlayDRMConfiguration? = requireDRM ? .init(required: true, fairplayCertificateURL: "https://x-drm.uplynk.com/fairplay/public_key/662d0a3da2244ca5b6757a7dd077e538.cer") : nil
         return PrePlayVODResponse(
             playURL: playURL,
@@ -40,5 +48,10 @@ class UplynkAPIMock: UplynkAPIProtocol {
             ads: vODAds,
             drm: drm, 
             interstitialURL: institutionalURL)
+    }
+    
+    static var pingResponseToReturn: PingResponse?
+    static func requestPing(url: String) async -> PingResponse? {
+        pingResponseToReturn ?? .pingResponseWithAdsAndValidNextTime
     }
 }

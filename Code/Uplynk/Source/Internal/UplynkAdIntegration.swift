@@ -17,16 +17,44 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
 
     private typealias UplynkAdIntegrationSource = (SourceDescription, TypedSource)
 
+    private var pingScheduler: PingScheduler?
+
+    // MARK: Private event listener's
+    
+    private var timeUpdateEventListener: EventListener?
+    private var seekingEventListener: EventListener?
+    private var seekedEventListener: EventListener?
+    private var playEventListener: EventListener?
+
     init(uplynkAPI: UplynkAPIProtocol.Type = UplynkAPI.self,
          player: THEOplayer,
          controller: ServerSideAdIntegrationController) {
         self.uplynkAPI = uplynkAPI
         self.player = player
         self.controller = controller
+        
+        // Setup event listner's to schedule ping
+        timeUpdateEventListener = player.addEventListener(type: PlayerEventTypes.TIME_UPDATE) { [weak self] event in
+            self?.pingScheduler?.onTimeUpdate(time: event.currentTime)
+        }
+        
+        seekingEventListener = player.addEventListener(type: PlayerEventTypes.SEEKING) { [weak self] event in
+            self?.pingScheduler?.onSeeking(time: event.currentTime)
+        }
+        
+        seekedEventListener = player.addEventListener(type: PlayerEventTypes.SEEKED) { [weak self] event in
+            self?.pingScheduler?.onSeeked(time: event.currentTime)
+        }
+        
+        playEventListener = player.addEventListener(type: PlayerEventTypes.PLAY) {  [weak self] event in
+            self?.pingScheduler?.onStart(time: event.currentTime)
+        }
     }
 
     // Implements ServerSideAdIntegrationHandler.setSource
     func setSource(source: SourceDescription) -> Bool {
+        pingScheduler = nil
+
         // copy the passed SourceDescription; we don't want to modify the original
         let sourceDescription: SourceDescription = source.createCopy()
         let isUplynkSSAI: (TypedSource) -> Bool = { $0.ssai as? UplynkSSAIConfiguration != nil }
@@ -57,8 +85,26 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
             }
             let source: UplynkAdIntegrationSource = (sourceDescription, typedSource)
             self.onPreplayResponse(response: preplayResponse, source: source)
+            
+            if uplynkConfig.pingFeature != .noPing {
+                pingScheduler = PingScheduler(urlBuilder: urlBuilder, 
+                                              prefix: preplayResponse.prefix,
+                                              sessionId: preplayResponse.sid)
+            } else {
+                pingScheduler = nil
+            }
         }
+        
         return true
+    }
+    
+    func resetSource() -> Bool {
+        pingScheduler = nil
+        return true
+    }
+    
+    func destroy() {
+        pingScheduler = nil
     }
 
     
