@@ -9,7 +9,10 @@
 import Foundation
 
 public protocol UplynkEventListener: AnyObject {
-    func onResponse(preplayLive: PrePlayLiveResponse)
-    func onResponse(preplayVOD: PrePlayVODResponse)
-    func onError(uplynkError: UplynkError)
+    func onPreplayLiveResponse(_ response: PrePlayLiveResponse)
+    func onPreplayVODResponse(_ response: PrePlayVODResponse)
+    
+    func onPingResponse(_ response: PingResponse)
+    
+    func onError(_ error: UplynkError)
 }

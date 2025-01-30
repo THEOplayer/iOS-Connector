@@ -24,12 +24,16 @@ extension UplynkSSAIConfiguration {
         return "&\(joinedParameters)"
     }
     
+    var pingFeature: UplynkPingFeature {
+        UplynkPingFeature(ssaiConfiguration: self)
+    }
+    
     var pingParameters: String {
-        let feature = UplynkPingFeatures(ssaiConfiguration: self)
-        if feature == .noPing {
+        let pingFeature = pingFeature
+        if pingFeature == .noPing {
             return "&ad.pingc=0"
         } else {
-            return "&ad.pingc=1&ad.pingf=\(feature.rawValue)"
+            return "&ad.pingc=1&ad.pingf=\(pingFeature.rawValue)"
         }
     }
     

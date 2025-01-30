@@ -13,6 +13,7 @@ enum MockError: Error {
 }
 
 class UplynkAPIMock: UplynkAPIProtocol {
+    
     static var basePrefix: String = "https://content-aapm1.uplynk.com" {
         didSet {
             playURL = "\(basePrefix)/preplay2/e70a708265b94a3fa6716666994d877d/f82dae632c127bb6ceb89bb2fd3e4cbc/4apk0GKq2jrzRWih388o9I7VbFoySPOnwfENiuwWUzQB.m3u8?pbs=86e17e502c6b496a882878f03747714bk"
@@ -27,11 +28,19 @@ class UplynkAPIMock: UplynkAPIProtocol {
     static var willFailRequestLive: Bool = false
     static var willFailRequestVOD: Bool = false
     
+    enum Event: Equatable {
+        case requestLive(preplaySrcURL: String)
+        case requestVOD(preplaySrcURL: String)
+        case requestPing(url: String)
+    }
+    
+    private(set) var events: [Event] = []
+    
     static func requestLive(preplaySrcURL: String) async throws -> PrePlayLiveResponse {
         if willFailRequestLive {
             throw MockError.mock("Failing Live response")
         }
-        
+
         let drm: PrePlayDRMConfiguration? = requireDRM ? .init(required: true, fairplayCertificateURL: "https://x-drm.uplynk.com/fairplay/public_key/662d0a3da2244ca5b6757a7dd077e538.cer") : nil
         return PrePlayLiveResponse(
             playURL: playURL,
@@ -45,7 +54,6 @@ class UplynkAPIMock: UplynkAPIProtocol {
         if willFailRequestVOD {
             throw MockError.mock("Failing VOD response")
         }
-        
         let drm: PrePlayDRMConfiguration? = requireDRM ? .init(required: true, fairplayCertificateURL: "https://x-drm.uplynk.com/fairplay/public_key/662d0a3da2244ca5b6757a7dd077e538.cer") : nil
         return PrePlayVODResponse(
             playURL: playURL,
@@ -65,5 +73,11 @@ class UplynkAPIMock: UplynkAPIProtocol {
         vODAds = .init(breaks: [], breakOffsets: [], placeholderOffsets: [])
         willFailRequestLive = false
         willFailRequestVOD = false
+        pingResponseToReturn = nil
+    }
+    
+    static var pingResponseToReturn: PingResponse?
+    static func requestPing(url: String) async throws -> PingResponse {
+        pingResponseToReturn ?? .pingResponseWithAdsAndValidNextTime
     }
 }

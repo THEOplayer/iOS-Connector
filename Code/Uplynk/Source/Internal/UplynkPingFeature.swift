@@ -1,5 +1,5 @@
 //
-//  UplynkPingFeatures.swift
+//  UplynkPingFeature.swift
 //  THEOplayer-Connector-Uplynk
 //
 //  Created by Khalid, Yousif on 28/1/2025.
@@ -8,13 +8,12 @@
 
 import Foundation
 
-enum UplynkPingFeatures: Int {
+enum UplynkPingFeature: Int {
     case noPing
     case adImpressions
     case fwVideoViews
     case adImpressionsAndFwVideoViews
     case linearAdData
-
     
     init(ssaiConfiguration: UplynkSSAIConfiguration) {
         let isVod = ssaiConfiguration.assetType == .asset
@@ -29,7 +28,7 @@ enum UplynkPingFeatures: Int {
             self = .adImpressions
         case (true, false, true, _):
             self = .fwVideoViews
-        case (false, _, _, true):
+        case (false, false, false, true):
             self = .linearAdData
         default:
             self = .noPing

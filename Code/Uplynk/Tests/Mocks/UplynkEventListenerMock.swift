@@ -9,21 +9,38 @@ import Foundation
 @testable import THEOplayerConnectorUplynk
 
 class UplynkEventListenerMock: UplynkEventListener {
-    func onResponse(preplayLive: THEOplayerConnectorUplynk.PrePlayLiveResponse) {
-        preplayLiveResponseCallback?(preplayLive)
+
+    enum Event: Equatable {
+        case onPreplayLiveResponse(PrePlayLiveResponse)
+        case onPreplayVODResponse(PrePlayVODResponse)
+        case onPingResponse(PingResponse)
+        case onError(UplynkError)
     }
     
-    func onResponse(preplayVOD: THEOplayerConnectorUplynk.PrePlayVODResponse) {
-        preplayVODResponseCallback?(preplayVOD)
-    }
-    
-    func onError(uplynkError: UplynkError) {
-        preplayErrorCallback?(uplynkError)
-    }
-    
+    private(set) var events: [Event] = []
+
     var preplayLiveResponseCallback: ((PrePlayLiveResponse) -> Void)? = nil
     var preplayVODResponseCallback: ((PrePlayVODResponse) -> Void)? = nil
     var preplayErrorCallback: ((UplynkError) -> Void)? = nil
+    var pingResponseCallback: ((PingResponse) -> Void)? = nil
+
+    func onPreplayLiveResponse(_ response: PrePlayLiveResponse) {
+        events.append(.onPreplayLiveResponse(response))
+        preplayLiveResponseCallback?(response)
+    }
     
+    func onPreplayVODResponse(_ response: PrePlayVODResponse) {
+        events.append(.onPreplayVODResponse(response))
+        preplayVODResponseCallback?(response)
+    }
+        
+    func onPingResponse(_ response: PingResponse) {
+        events.append(.onPingResponse(response))
+        pingResponseCallback?(response)
+    }
     
+    func onError(_ error: UplynkError) {
+        events.append(.onError(error))
+        preplayErrorCallback?(error)
+    }
 }

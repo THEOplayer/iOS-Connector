@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct UplynkAd: Codable {
+public struct UplynkAd: Codable, Equatable {
     /// Indicates the API Framework for the ad (e.g., VPAID).
     public let apiFramework: String?
     
@@ -22,26 +22,34 @@ public struct UplynkAd: Codable {
     /// Video Ad (VPAID): Indicates the URL to the VPAID JS or SWF.
     public let creative: String?
     
-    //TODO: Implement events
-    
+    /// Object containing all of the events for this ad.
+    /// Each event type contains an array of URLs.
+    public let events: [String: [String]]?
+
     /// If applicable, indicates the width of the creative. This parameter will report "0" for the width/height of video ads.
     public let width: Float
+
     /// If applicable, indicates the height of the creative.
     public let height: Float
+    
     /// Indicates the duration, in seconds, of an ad's encoded video.
     public let duration: Float
     
-    //TODO: Implement extensions
+    /// VAST Only
+    ///
+    /// Contains the custom set of VAST extensions returned by the ad server.
+    /// Each custom extension is an `xml` content
+    ///
+    /// You could build deserialization logic if needed depending on the expected structure of this field
+    ///
+    /// Check more info in [documentation](https://docs.edgecast.com/video/#AdIntegration/VAST-VPAID.htm#CustomVASTExt)
+    public let extensions: [String]?
     
     /// If the ad response provided by FreeWheel contains creative parameters, they will be reported as name-value pairs within this object.
-    public let fw_parameters: Dictionary<String, String>?
+    public let fwParameters: Dictionary<String, String>?
 }
 
-public struct UplynkAdBreak: Codable {
-    /// Contains events for the ad break.
-    //TODO: Implement this
-    //let events:
-    
+public struct UplynkAdBreak: Codable, Equatable {
     /// A list of ad objects associated with this ad break.
     public let ads: [UplynkAd]
     /// Indicates the ad break type. Valid values are: linear | nonlinear
@@ -52,16 +60,19 @@ public struct UplynkAdBreak: Codable {
     public let timeOffset: Float
     /// Indicates the duration of the ad break.
     public let duration: Float
-    
+    /// Object containing all of the events for this ad.
+    /// Each event type contains an array of URLs.
+    public let events: [String: [String]]?
 }
-public struct UplynkAdBreakOffset: Codable {
+
+public struct UplynkAdBreakOffset: Codable, Equatable {
     /// the ad break's timeOffset
     public let timeOffset: Float
     /// the index for the ads.breaks object.
     public let index: Int
 }
 
-public struct UplynkPlaceHolderOffset: Codable {
+public struct UplynkPlaceHolderOffset: Codable, Equatable {
     /// Indicates the starting time of the placeholder ad. This value is in player time for the entire m3u8 timeline.
     public let startTime: Float
     /// Indicates the ending time of the placeholder ad.
@@ -72,7 +83,7 @@ public struct UplynkPlaceHolderOffset: Codable {
     public let adsIndex: Int
 }
 
-public struct UplynkAds: Codable {
+public struct UplynkAds: Codable, Equatable {
     /// A list of objects for every ad break in the ad response. This includes both linear and non-linear ads. For more information on the difference between linear and non-linear ads, see the VAST 3 specification document.
     public let breaks: [UplynkAdBreak]
     /// A list of objects that contain the ad break's timeOffset and the index for the ads.breaks object.

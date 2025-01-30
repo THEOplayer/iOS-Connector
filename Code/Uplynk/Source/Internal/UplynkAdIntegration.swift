@@ -18,6 +18,15 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
 
     private typealias UplynkAdIntegrationSource = (SourceDescription, TypedSource)
 
+    private var pingScheduler: PingScheduler?
+
+    // MARK: Private event listener's
+    
+    private var timeUpdateEventListener: EventListener?
+    private var seekingEventListener: EventListener?
+    private var seekedEventListener: EventListener?
+    private var playEventListener: EventListener?
+
     init(uplynkAPI: UplynkAPIProtocol.Type = UplynkAPI.self,
          player: THEOplayer,
          controller: ServerSideAdIntegrationController,
@@ -26,10 +35,29 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         self.uplynkAPI = uplynkAPI
         self.player = player
         self.controller = controller
+        
+        // Setup event listner's to schedule ping
+        timeUpdateEventListener = player.addEventListener(type: PlayerEventTypes.TIME_UPDATE) { [weak self] event in
+            self?.pingScheduler?.onTimeUpdate(time: event.currentTime)
+        }
+        
+        seekingEventListener = player.addEventListener(type: PlayerEventTypes.SEEKING) { [weak self] event in
+            self?.pingScheduler?.onSeeking(time: event.currentTime)
+        }
+        
+        seekedEventListener = player.addEventListener(type: PlayerEventTypes.SEEKED) { [weak self] event in
+            self?.pingScheduler?.onSeeked(time: event.currentTime)
+        }
+        
+        playEventListener = player.addEventListener(type: PlayerEventTypes.PLAY) {  [weak self] event in
+            self?.pingScheduler?.onStart(time: event.currentTime)
+        }
     }
 
     // Implements ServerSideAdIntegrationHandler.setSource
     func setSource(source: SourceDescription) -> Bool {
+        pingScheduler = nil
+
         // copy the passed SourceDescription; we don't want to modify the original
         let sourceDescription: SourceDescription = source.createCopy()
         let isUplynkSSAI: (TypedSource) -> Bool = { $0.ssai as? UplynkSSAIConfiguration != nil }
@@ -52,17 +80,35 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                 let source: UplynkAdIntegrationSource = (sourceDescription, typedSource)
                 let preplayResponse = try await self.onPrePlayRequest(preplaySrcUrl: preplayURL, assetType: uplynkConfig.assetType)
                 self.onPrePlayResponse(response: preplayResponse, source: source)
+                
+                if uplynkConfig.pingFeature != .noPing {
+                    pingScheduler = PingScheduler(urlBuilder: urlBuilder,
+                                                  prefix: preplayResponse.prefix,
+                                                  sessionId: preplayResponse.sid, 
+                                                  listener: eventListener)
+                } else {
+                    pingScheduler = nil
+                }
             } catch {
                 let uplynkError = UplynkError(
                     url: preplayURL,
                     description: error.localizedDescription,
                     code: .UPLYNK_ERROR_CODE_PREPLAY_REQUEST_FAILED)
-                eventListener?.onError(uplynkError: uplynkError)
+                eventListener?.onError(uplynkError)
                 controller.error(error: uplynkError)
             }
         }
         
         return true
+    }
+    
+    func resetSource() -> Bool {
+        pingScheduler = nil
+        return true
+    }
+    
+    func destroy() {
+        pingScheduler = nil
     }
 
     private func onPrePlayRequest(preplaySrcUrl: String, assetType: UplynkSSAIConfiguration.AssetType) async throws -> PrePlayResponseProtocol {
@@ -85,9 +131,9 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         self.player.source = sourceDescription
         
         if let liveResponse = response as? PrePlayLiveResponse {
-            eventListener?.onResponse(preplayLive: liveResponse)
+            eventListener?.onPreplayLiveResponse(liveResponse)
         } else if let vodResponse = response as? PrePlayVODResponse {
-            eventListener?.onResponse(preplayVOD: vodResponse)
+            eventListener?.onPreplayVODResponse(vodResponse)
         }
     }
 }
