@@ -87,5 +87,14 @@ let package = Package(
             ],
             path: "Code/Yospace/Source"
         ),
+        
+        // Uplynk \\
+        .target(
+            name: "THEOplayerConnectorUplynk",
+            dependencies: [
+                "THEOplayerSDK",
+            ],
+            path: "Code/Uplynk/Source"
+        ),
     ]
 )
