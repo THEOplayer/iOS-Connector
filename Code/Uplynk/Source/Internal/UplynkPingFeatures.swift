@@ -3,6 +3,7 @@
 //  THEOplayer-Connector-Uplynk
 //
 //  Created by Khalid, Yousif on 28/1/2025.
+//  Copyright © 2025 THEOplayer. All rights reserved.
 //
 
 import Foundation
@@ -15,7 +16,7 @@ enum UplynkPingFeatures: Int {
     case linearAdData
 
     
-    init(ssaiConfiguration: UplynkServerSideAdIntegrationConfiguration) {
+    init(ssaiConfiguration: UplynkSSAIConfiguration) {
         let isVod = ssaiConfiguration.assetType == .asset
         let pingConfiguration = ssaiConfiguration.pingConfiguration
         switch (isVod,
@@ -24,7 +25,7 @@ enum UplynkPingFeatures: Int {
                 pingConfiguration.linearAdData) {
         case (true, true, true, _):
             self = .adImpressionsAndFwVideoViews
-        case (true, true, _, _):
+        case (true, true, false, _):
             self = .adImpressions
         case (true, false, true, _):
             self = .fwVideoViews

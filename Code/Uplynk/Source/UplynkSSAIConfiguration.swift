@@ -1,5 +1,5 @@
 //
-//  UplynkServerSideAdIntegrationConfiguration.swift
+//  UplynkSSAIConfiguration.swift
 //
 //  Created by Raffi on 09/09/2024.
 //  Copyright © 2024 THEOplayer. All rights reserved.
@@ -7,7 +7,7 @@
 
 import THEOplayerSDK
 
-public class UplynkServerSideAdIntegrationConfiguration: THEOplayerSDK.CustomServerSideAdInsertionConfiguration {
+public class UplynkSSAIConfiguration: CustomServerSideAdInsertionConfiguration {
     
     public enum AssetType {
         /// A Video-on-demand content asset.
@@ -16,7 +16,7 @@ public class UplynkServerSideAdIntegrationConfiguration: THEOplayerSDK.CustomSer
         case channel
     }
     
-    public let integration: THEOplayerSDK.SSAIIntegrationId = .CustomSSAIIntegrationID
+    public let integration: SSAIIntegrationId = .CustomSSAIIntegrationID
     public let customIntegration: String = UplynkAdIntegration.INTEGRATION_ID
 
     public let assetIDs: [String]

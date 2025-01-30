@@ -8,14 +8,14 @@
 import THEOplayerSDK
 
 public class UplynkConnector {
-    private let player: THEOplayerSDK.THEOplayer
-    private var adIntegrationHandler: THEOplayerSDK.ServerSideAdIntegrationHandler?
+    private let player: THEOplayer
+    private var adIntegrationHandler: ServerSideAdIntegrationHandler?
 
-    public init(player: THEOplayerSDK.THEOplayer) {
+    public init(player: THEOplayer) {
         self.player = player
 
         self.player.ads.registerServerSideIntegration(integrationId: UplynkAdIntegration.INTEGRATION_ID) { controller in
-            let handler: THEOplayerSDK.ServerSideAdIntegrationHandler = UplynkAdIntegration(player: player, controller: controller)
+            let handler: ServerSideAdIntegrationHandler = UplynkAdIntegration(player: player, controller: controller)
             self.adIntegrationHandler = handler
             return handler
         }

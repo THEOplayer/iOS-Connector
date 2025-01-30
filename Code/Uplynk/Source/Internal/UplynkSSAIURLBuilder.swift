@@ -1,5 +1,5 @@
 //
-//  UplynkServerSideAdInjectionURLBuilder.swift
+//  UplynkSSAIURLBuilder.swift
 //
 //  Created by Raffi on 09/09/2024.
 //  Copyright © 2024 THEOplayer. All rights reserved.
@@ -7,17 +7,17 @@
 
 import Foundation
 
-class UplynkServerSideAdInjectionURLBuilder {
+class UplynkSSAIURLBuilder {
     private static let DEFAULT_PREFIX: String = "https://content.uplynk.com"
     
-    private let ssaiConfiguration: UplynkServerSideAdIntegrationConfiguration
+    private let ssaiConfiguration: UplynkSSAIConfiguration
     
-    init(ssaiConfiguration: UplynkServerSideAdIntegrationConfiguration) {
+    init(ssaiConfiguration: UplynkSSAIConfiguration) {
         self.ssaiConfiguration = ssaiConfiguration
     }
     
     private var prefix: String {
-        ssaiConfiguration.prefix ?? UplynkServerSideAdInjectionURLBuilder.DEFAULT_PREFIX
+        ssaiConfiguration.prefix ?? UplynkSSAIURLBuilder.DEFAULT_PREFIX
     }
     
     lazy private var urlAssetType = ssaiConfiguration.urlAssetType

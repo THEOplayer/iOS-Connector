@@ -1,5 +1,5 @@
 //
-//  UplynkServerSideAdIntegrationConfigurationURLBuilderTests.swift
+//  UplynkSSAIConfigurationURLBuilderTests.swift
 //  THEOplayerConnectorUplynkTests
 //
 //  Created by Khalid, Yousif on 30/1/2025.
@@ -7,9 +7,8 @@
 
 import XCTest
 @testable import THEOplayerConnectorUplynk
-import RegexBuilder
 
-final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCase {
+final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -19,7 +18,7 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func preplayURLIsCorrectWithNoQueryParameters(assetType: UplynkServerSideAdIntegrationConfiguration.AssetType) {
+    func preplayURLIsCorrectWithNoQueryParameters(assetType: UplynkSSAIConfiguration.AssetType) {
         let prefix = "https://content.uplynk.com"
         let assetID = "a123"
         let externalID = "e123"
@@ -27,14 +26,14 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
         let validLiveWithAssetIDURL = "\(prefix)/preplay\(assetType  == .channel ? "/channel" : "")/\(assetID).json"
         let validLiveWithExternalIDURL = "\(prefix)/preplay\(assetType  == .channel ? "/channel" : "")/ext/\(userID)/\(externalID).json"
         
-        let configurationWithAssetID = UplynkServerSideAdIntegrationConfiguration(
+        let configurationWithAssetID = UplynkSSAIConfiguration(
             assetIDs: [assetID],
             externalIDs: [],
             assetType: assetType,
             prefix: prefix
         )
         
-        let configurationWithExternalID = UplynkServerSideAdIntegrationConfiguration(
+        let configurationWithExternalID = UplynkSSAIConfiguration(
             assetIDs: [],
             externalIDs: [externalID],
             assetType: assetType,
@@ -44,11 +43,11 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
         
         let (builtURLWithAssetID, builtURLWithExternalID) = switch assetType {
         case .asset:
-            (UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL(),
-             UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithExternalID).buildPreplayVODURL())
+            (UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL(),
+             UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithExternalID).buildPreplayVODURL())
         case .channel:
-            (UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayLiveURL(),
-             UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithExternalID).buildPreplayLiveURL())
+            (UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayLiveURL(),
+             UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithExternalID).buildPreplayLiveURL())
         }
         XCTAssertTrue(builtURLWithAssetID.starts(with:validLiveWithAssetIDURL))
         XCTAssertTrue(builtURLWithExternalID.starts(with:validLiveWithExternalIDURL))
@@ -62,7 +61,7 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
         preplayURLIsCorrectWithNoQueryParameters(assetType: .asset)
     }
     
-    func prePlayURLPingQueryParameter(pingFeature: UplynkPingFeatures, assetType: UplynkServerSideAdIntegrationConfiguration.AssetType) {
+    func prePlayURLPingQueryParameter(pingFeature: UplynkPingFeatures, assetType: UplynkSSAIConfiguration.AssetType) {
         
         let prefix = "https://content.uplynk.com"
         let assetID = "a123"
@@ -83,7 +82,7 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
             UplynkPingConfiguration(linearAdData: true)
         }
         
-        let configurationWithAssetID = UplynkServerSideAdIntegrationConfiguration(
+        let configurationWithAssetID = UplynkSSAIConfiguration(
             assetIDs: [assetID],
             externalIDs: [],
             assetType: assetType,
@@ -91,7 +90,7 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
             uplynkPingConfiguration: pingConfiguration
         )
         
-        let builtPreplayURL = UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
+        let builtPreplayURL = UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
         switch (pingFeature) {
         case .noPing:
             XCTAssertTrue(builtPreplayURL.contains(validNoPingQueryParameter))
@@ -117,14 +116,14 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
         
         let validDRMParameters = "manifest=m3u8&rmt=fps"
         
-        let configurationWithAssetID = UplynkServerSideAdIntegrationConfiguration(
+        let configurationWithAssetID = UplynkSSAIConfiguration(
             assetIDs: [assetID],
             externalIDs: [],
             assetType: .asset,
             prefix: prefix,
             contentProtected: true
         )
-        let builtPreplayURL = UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
+        let builtPreplayURL = UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
         XCTAssertTrue(builtPreplayURL.contains(validDRMParameters))
     }
     
@@ -134,14 +133,14 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
         
         let validPrePlayParameters = "key1=value1&key2=value2"
         
-        let configurationWithAssetID = UplynkServerSideAdIntegrationConfiguration(
+        let configurationWithAssetID = UplynkSSAIConfiguration(
             assetIDs: [assetID],
             externalIDs: [],
             assetType: .asset,
             prefix: prefix,
             preplayParameters: [ "key1" : "value1", "key2" : "value2" ]
         )
-        let builtPreplayURL = UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
+        let builtPreplayURL = UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
         XCTAssertTrue(builtPreplayURL.contains(validPrePlayParameters))
     }
 }

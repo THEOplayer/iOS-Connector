@@ -7,19 +7,19 @@
 
 import THEOplayerSDK
 
-class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
+class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     static let INTEGRATION_ID: String = "uplynk"
 
-    private let player: THEOplayerSDK.THEOplayer
+    private let player: THEOplayer
     private let uplynkAPI: UplynkAPIProtocol.Type
-    private let controller: THEOplayerSDK.ServerSideAdIntegrationController
+    private let controller: ServerSideAdIntegrationController
     private(set) var isSettingSource: Bool = false
 
-    private typealias UplynkAdIntegrationSource = (THEOplayerSDK.SourceDescription, THEOplayerSDK.TypedSource)
+    private typealias UplynkAdIntegrationSource = (SourceDescription, TypedSource)
 
     init(uplynkAPI: UplynkAPIProtocol.Type = UplynkAPI.self,
-         player: THEOplayerSDK.THEOplayer,
-         controller: THEOplayerSDK.ServerSideAdIntegrationController) {
+         player: THEOplayer,
+         controller: ServerSideAdIntegrationController) {
         self.uplynkAPI = uplynkAPI
         self.player = player
         self.controller = controller
@@ -28,14 +28,14 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
     // Implements ServerSideAdIntegrationHandler.setSource
     func setSource(source: SourceDescription) -> Bool {
         // copy the passed SourceDescription; we don't want to modify the original
-        let sourceDescription: THEOplayerSDK.SourceDescription = source.createCopy()
-        let isUplynkSSAI: (TypedSource) -> Bool = { $0.ssai as? UplynkServerSideAdIntegrationConfiguration != nil }
+        let sourceDescription: SourceDescription = source.createCopy()
+        let isUplynkSSAI: (TypedSource) -> Bool = { $0.ssai as? UplynkSSAIConfiguration != nil }
 
-        guard let typedSource: THEOplayerSDK.TypedSource = sourceDescription.sources.first(where: isUplynkSSAI),
-           let uplynkConfig: UplynkServerSideAdIntegrationConfiguration = typedSource.ssai as? UplynkServerSideAdIntegrationConfiguration else {
+        guard let typedSource: TypedSource = sourceDescription.sources.first(where: isUplynkSSAI),
+           let uplynkConfig: UplynkSSAIConfiguration = typedSource.ssai as? UplynkSSAIConfiguration else {
             return false
         }
-        let urlBuilder = UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: uplynkConfig)
+        let urlBuilder = UplynkSSAIURLBuilder(ssaiConfiguration: uplynkConfig)
         let preplayURL: String = switch uplynkConfig.assetType {
         case .asset:
             urlBuilder.buildPreplayVODURL()
@@ -63,7 +63,7 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
 
     
     private func onPreplayResponse(response: PrePlayResponseProtocol, source: UplynkAdIntegrationSource) {
-        let typedSource: THEOplayerSDK.TypedSource = source.1
+        let typedSource: TypedSource = source.1
         typedSource.src = URL(string: response.playURL)!
         if let drm = response.drm, drm.required {
             // TODO: This will need cleanup when we figure out the DRM bit.
@@ -71,8 +71,7 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
                     .init(fairplay: .init(certificateURL: drm.fairplayCertificateURL)))
         }
 
-        let sourceDescription: THEOplayerSDK.SourceDescription = source.0
-        self.isSettingSource = true
+        let sourceDescription: SourceDescription = source.0
         self.player.source = sourceDescription
         self.isSettingSource = false
     }
