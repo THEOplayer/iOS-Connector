@@ -58,16 +58,14 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
         preplayURLIsCorrectWithNoQueryParameters(assetType: .channel)
     }
     
-    func testVodURLIsCorrectWithNoQueryParameters() throws {
+    func testVODURLIsCorrectWithNoQueryParameters() throws {
         preplayURLIsCorrectWithNoQueryParameters(assetType: .asset)
     }
     
-    func preplayURLPingQueryParameter(pingFeature: UplynkPingFeatures) {
+    func prePlayURLPingQueryParameter(pingFeature: UplynkPingFeatures, assetType: UplynkServerSideAdIntegrationConfiguration.AssetType) {
         
         let prefix = "https://content.uplynk.com"
         let assetID = "a123"
-        let externalID = "e123"
-        let userID = "u123"
         
         let validNoPingQueryParameter = "ad.pingc=0"
         let validPingQueryParameter = "ad.pingc=1&ad.pingf=\(pingFeature.rawValue)"
@@ -88,7 +86,7 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
         let configurationWithAssetID = UplynkServerSideAdIntegrationConfiguration(
             assetIDs: [assetID],
             externalIDs: [],
-            assetType: .asset,
+            assetType: assetType,
             prefix: prefix,
             uplynkPingConfiguration: pingConfiguration
         )
@@ -96,21 +94,56 @@ final class UplynkServerSideAdIntegrationConfigurationURLBuilderTests: XCTestCas
         let builtPreplayURL = UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
         switch (pingFeature) {
         case .noPing:
-            XCTAssertTrue(builtPreplayURL.hasSuffix(validNoPingQueryParameter))
+            XCTAssertTrue(builtPreplayURL.contains(validNoPingQueryParameter))
         default:
-            XCTAssertTrue(builtPreplayURL.hasSuffix(validPingQueryParameter))
+            XCTAssertTrue(builtPreplayURL.contains(validPingQueryParameter))
             
         }
     }
     
-    func testPreplayURLPingQueryParameter() throws {
-        preplayURLPingQueryParameter(pingFeature: .noPing)
-        preplayURLPingQueryParameter(pingFeature: .adImpressions)
-        preplayURLPingQueryParameter(pingFeature: .fwVideoViews)
-        preplayURLPingQueryParameter(pingFeature: .adImpressionsAndFwVideoViews)
-        preplayURLPingQueryParameter(pingFeature: .linearAdData)
+    func testPrePlayURLPingQueryParameter() throws {
+        prePlayURLPingQueryParameter(pingFeature: .noPing, assetType: .asset)
+        prePlayURLPingQueryParameter(pingFeature: .adImpressions, assetType: .asset)
+        prePlayURLPingQueryParameter(pingFeature: .fwVideoViews, assetType: .asset)
+        prePlayURLPingQueryParameter(pingFeature: .adImpressionsAndFwVideoViews, assetType: .asset)
+        // Linear Ad data only works for channel type assets.
+        prePlayURLPingQueryParameter(pingFeature: .linearAdData, assetType: .channel)
     }
     
+    
+    func testPrePlayURLContentProtectionParameters() throws {
+        let prefix = "https://content.uplynk.com"
+        let assetID = "a123"
+        
+        let validDRMParameters = "manifest=m3u8&rmt=fps"
+        
+        let configurationWithAssetID = UplynkServerSideAdIntegrationConfiguration(
+            assetIDs: [assetID],
+            externalIDs: [],
+            assetType: .asset,
+            prefix: prefix,
+            contentProtected: true
+        )
+        let builtPreplayURL = UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
+        XCTAssertTrue(builtPreplayURL.contains(validDRMParameters))
+    }
+    
+    func testPrePlayURLPrePlayParameters() throws {
+        let prefix = "https://content.uplynk.com"
+        let assetID = "a123"
+        
+        let validPrePlayParameters = "key1=value1&key2=value2"
+        
+        let configurationWithAssetID = UplynkServerSideAdIntegrationConfiguration(
+            assetIDs: [assetID],
+            externalIDs: [],
+            assetType: .asset,
+            prefix: prefix,
+            preplayParameters: [ "key1" : "value1", "key2" : "value2" ]
+        )
+        let builtPreplayURL = UplynkServerSideAdInjectionURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
+        XCTAssertTrue(builtPreplayURL.contains(validPrePlayParameters))
+    }
     
     func testPerformanceExample() throws {
         // This is an example of a performance test case.

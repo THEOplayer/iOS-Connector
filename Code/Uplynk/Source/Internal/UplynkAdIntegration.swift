@@ -63,6 +63,7 @@ class UplynkAdIntegration: THEOplayerSDK.ServerSideAdIntegrationHandler {
         let typedSource: THEOplayerSDK.TypedSource = source.1
         typedSource.src = URL(string: response.playURL)!
         if let drm = response.drm, drm.required {
+            // TODO: This will need cleanup when we figure out the DRM bit.
             typedSource.drm = UplynkDRMConfiguration(keySystemConfigurations:
                     .init(fairplay: .init(certificateURL: drm.fairplayCertificateURL)))
         }
