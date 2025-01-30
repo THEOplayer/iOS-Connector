@@ -92,9 +92,16 @@ let package = Package(
         .target(
             name: "THEOplayerConnectorUplynk",
             dependencies: [
-                "THEOplayerSDK",
+                "THEOplayerSDK"
             ],
             path: "Code/Uplynk/Source"
         ),
+        .testTarget(
+            name: "THEOplayerConnectorUplynkTests",
+            dependencies: [
+                "THEOplayerConnectorUplynk"
+            ],
+            path: "Code/Uplynk/Tests"
+        )
     ]
 )
