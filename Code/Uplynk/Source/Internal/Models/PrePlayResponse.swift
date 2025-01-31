@@ -24,7 +24,7 @@ struct UplynkLiveAd: Codable {
     /// Indicates the start time, in Unix time, of an ad break.
     let ts: Float
     /// If the ad response provided by FreeWheel contains creative parameters, they will be reported as name-value pairs within this object.
-    let fw_parameters: Dictionary<String, String>
+    let fw_parameters: Dictionary<String, String>?
     //TODO: Add extensions
 }
 

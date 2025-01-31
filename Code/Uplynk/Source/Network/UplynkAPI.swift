@@ -19,9 +19,7 @@ class UplynkAPI: UplynkAPIProtocol {
         do {
             let data = try await HTTPSConnection.request(type: .get, urlString: preplaySrcURL)
             let decoder: JSONDecoder = .init()
-            guard let preplayResponse: PrePlayLiveResponse = try? decoder.decode(PrePlayLiveResponse.self, from: data) else {
-                return nil
-            }
+            let preplayResponse: PrePlayLiveResponse = try decoder.decode(PrePlayLiveResponse.self, from: data)
             return preplayResponse
         } catch {
             // TODO: Add logging here?
@@ -33,9 +31,7 @@ class UplynkAPI: UplynkAPIProtocol {
         do {
             let data = try await HTTPSConnection.request(type: .get, urlString: preplaySrcURL)
             let decoder: JSONDecoder = .init()
-            guard let preplayResponse: PrePlayVODResponse = try? decoder.decode(PrePlayVODResponse.self, from: data) else {
-                return nil
-            }
+            let preplayResponse: PrePlayVODResponse = try decoder.decode(PrePlayVODResponse.self, from: data)
             return preplayResponse
         } catch {
             // TODO: Add logging here?

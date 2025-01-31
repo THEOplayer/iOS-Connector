@@ -9,7 +9,7 @@ import Foundation
 
 struct UplynkAd: Codable {
     /// Indicates the API Framework for the ad (e.g., VPAID).
-    let apiFramework: String
+    let apiFramework: String?
     
     /// List of companion ads that go with the ad. Companion ads are also ad objects.
     let companions: [UplynkAd]
@@ -20,7 +20,7 @@ struct UplynkAd: Codable {
     /// If applicable, indicates the creative to display.
     /// Video Ad (CMS): Indicates the asset ID for the video ad pushed from the CMS.
     /// Video Ad (VPAID): Indicates the URL to the VPAID JS or SWF.
-    let creative: String
+    let creative: String?
     
     //TODO: Implement events
     
@@ -34,7 +34,7 @@ struct UplynkAd: Codable {
     //TODO: Implement extensions
     
     /// If the ad response provided by FreeWheel contains creative parameters, they will be reported as name-value pairs within this object.
-    let fw_parameters: Dictionary<String, String>
+    let fw_parameters: Dictionary<String, String>?
 }
 
 struct UplynkAdBreak: Codable {

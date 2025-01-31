@@ -92,7 +92,7 @@ private extension ViewController {
                                 prefix: "https://content.uplynk.com",
                                 userID: nil,
                                 preplayParameters: [
-                                    "ad": "",
+                                    "ad": "adtest",
                                     "ad.lib": "15_sec_spots"
                                 ])
     }
