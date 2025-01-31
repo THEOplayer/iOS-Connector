@@ -18,6 +18,8 @@ let package = Package(
         .library(name: "THEOplayerConnectorSideloadedSubtitle", targets: ["THEOplayerConnectorSideloadedSubtitle"]),
 
         .library(name: "THEOplayerConnectorYospace", targets: ["THEOplayerConnectorYospace"]),
+
+        .library(name: "THEOplayerConnectorUplynk", targets: ["THEOplayerConnectorUplynk"]),
     ],
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", from: "4.0.30"),
@@ -85,5 +87,21 @@ let package = Package(
             ],
             path: "Code/Yospace/Source"
         ),
+        
+        // Uplynk \\
+        .target(
+            name: "THEOplayerConnectorUplynk",
+            dependencies: [
+                "THEOplayerSDK"
+            ],
+            path: "Code/Uplynk/Source"
+        ),
+        .testTarget(
+            name: "THEOplayerConnectorUplynkTests",
+            dependencies: [
+                "THEOplayerConnectorUplynk"
+            ],
+            path: "Code/Uplynk/Tests"
+        )
     ]
 )
