@@ -8,6 +8,10 @@
 import Foundation
 @testable import THEOplayerConnectorUplynk
 
+enum MockError: Error {
+    case mock(String)
+}
+
 class UplynkAPIMock: UplynkAPIProtocol {
     static var basePrefix: String = "https://content-aapm1.uplynk.com" {
         didSet {
@@ -20,8 +24,14 @@ class UplynkAPIMock: UplynkAPIProtocol {
     static var liveAds: [UplynkLiveAd] = []
     static var institutionalURL: String = ""
     static var vODAds: UplynkAds = .init(breaks: [], breakOffsets: [], placeholderOffsets: [])
+    static var willFailRequestLive: Bool = false
+    static var willFailRequestVOD: Bool = false
     
-    static func requestLive(preplaySrcURL: String) async -> THEOplayerConnectorUplynk.PrePlayLiveResponse? {
+    static func requestLive(preplaySrcURL: String) async throws -> PrePlayLiveResponse {
+        if willFailRequestLive {
+            throw MockError.mock("Failing Live response")
+        }
+        
         let drm: PrePlayDRMConfiguration? = requireDRM ? .init(required: true, fairplayCertificateURL: "https://x-drm.uplynk.com/fairplay/public_key/662d0a3da2244ca5b6757a7dd077e538.cer") : nil
         return PrePlayLiveResponse(
             playURL: playURL,
@@ -31,7 +41,11 @@ class UplynkAPIMock: UplynkAPIProtocol {
             drm: drm)
     }
     
-    static func requestVOD(preplaySrcURL: String) async -> THEOplayerConnectorUplynk.PrePlayVODResponse? {
+    static func requestVOD(preplaySrcURL: String) async throws -> PrePlayVODResponse {
+        if willFailRequestVOD {
+            throw MockError.mock("Failing VOD response")
+        }
+        
         let drm: PrePlayDRMConfiguration? = requireDRM ? .init(required: true, fairplayCertificateURL: "https://x-drm.uplynk.com/fairplay/public_key/662d0a3da2244ca5b6757a7dd077e538.cer") : nil
         return PrePlayVODResponse(
             playURL: playURL,

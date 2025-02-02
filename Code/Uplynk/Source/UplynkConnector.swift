@@ -7,15 +7,36 @@
 
 import THEOplayerSDK
 
+
+// Internal protocol for dependency injecting a controller for testing.
+protocol ServerSideAdIntegrationControllerProxyProtocol: ServerSideAdIntegrationController {
+    func setPlayerController(controller: ServerSideAdIntegrationController)
+}
+
 public class UplynkConnector {
     private let player: THEOplayer
     private var adIntegrationHandler: ServerSideAdIntegrationHandler?
-
-    public init(player: THEOplayer) {
+    private weak var eventListener: UplynkEventListener?
+    public init(player: THEOplayer, eventListener: UplynkEventListener? = nil) {
         self.player = player
-
+        self.eventListener = eventListener
         self.player.ads.registerServerSideIntegration(integrationId: UplynkAdIntegration.INTEGRATION_ID) { controller in
-            let handler: ServerSideAdIntegrationHandler = UplynkAdIntegration(player: player, controller: controller)
+            let handler: ServerSideAdIntegrationHandler = UplynkAdIntegration(player: player, controller: controller, eventListener: eventListener)
+            self.adIntegrationHandler = handler
+            return handler
+        }
+    }
+    
+    // Initializer for testing.
+    init(player: THEOplayer,
+         proxyController: ServerSideAdIntegrationControllerProxyProtocol,
+         uplynkAPI: UplynkAPIProtocol.Type,
+         eventListener: UplynkEventListener? = nil) {
+        self.player = player
+        self.eventListener = eventListener
+        self.player.ads.registerServerSideIntegration(integrationId: UplynkAdIntegration.INTEGRATION_ID) { controller in
+            proxyController.setPlayerController(controller: controller)
+            let handler: ServerSideAdIntegrationHandler = UplynkAdIntegration(uplynkAPI: uplynkAPI, player: player, controller: proxyController, eventListener: eventListener)
             self.adIntegrationHandler = handler
             return handler
         }

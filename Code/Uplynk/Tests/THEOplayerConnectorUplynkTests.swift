@@ -6,30 +6,79 @@
 //
 
 import XCTest
+import THEOplayerSDK
+@testable import THEOplayerConnectorUplynk
 
 final class THEOplayerConnectorUplynkTests: XCTestCase {
-
+    var mockEventListener: UplynkEventListenerMock!
+    var proxySSAIController: ServerSideAdIntegrationControllerProxy!
+    var uplynkAPI: UplynkAPIMock.Type = UplynkAPIMock.self
+    var source: TypedSource!
+    var connector: UplynkConnector!
+    var theoplayer: THEOplayer!
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        mockEventListener = UplynkEventListenerMock()
+        proxySSAIController = ServerSideAdIntegrationControllerProxy()
+        theoplayer = THEOplayer(with: nil, configuration: nil)
+        source = TypedSource(
+            src: "whatever",
+            type: "application/x-mpegurl"
+        )
+        executionTimeAllowance = 1 // 1 minute?
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        mockEventListener = nil
+        connector = nil
+        proxySSAIController = nil
+        source = nil
+        theoplayer = nil
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
+    func setSourceSendsValidPrePlayResponseEvent(type: UplynkSSAIConfiguration.AssetType) async {
+        let expectation = XCTestExpectation(description: "Valid PrePlay Response is sent")
+        connector = UplynkConnector(player: theoplayer, proxyController: proxySSAIController!, uplynkAPI: uplynkAPI, eventListener: mockEventListener)
+        
+        switch type {
+        case .asset:
+            mockEventListener.preplayVODResponseCallback = { _ in
+                expectation.fulfill()
+            }
+        case .channel:
+            mockEventListener.preplayLiveResponseCallback = { _ in
+                expectation.fulfill()
+            }
         }
+        
+        source.ssai = UplynkSSAIConfiguration(
+            assetIDs: ["123"], externalIDs: [], assetType: type)
+        
+        theoplayer.source = SourceDescription(source: source)
+        await fulfillment(of: [expectation])
     }
-
+    
+    func testSetSourceSendsValidPrePlayVODResponseEvent() async throws {
+        await setSourceSendsValidPrePlayResponseEvent(type: .asset)
+    }
+    
+    func testSetSourceSendsValidPrePlayLiveResponseEvent() async throws {
+        await setSourceSendsValidPrePlayResponseEvent(type: .channel)
+    }
+    
+    func testSetSourceSendsErrorOnNetworkError() async throws {
+        let expectation = XCTestExpectation(description: "Error response is sent")
+        uplynkAPI.willFailRequestVOD = true
+        connector = UplynkConnector(player: theoplayer, proxyController: proxySSAIController!, uplynkAPI: uplynkAPI, eventListener: mockEventListener)
+        
+        mockEventListener.preplayErrorCallback = { error in
+            XCTAssertTrue(error.url.contains("preplay"))
+            expectation.fulfill()
+        }
+        
+        source.ssai = UplynkSSAIConfiguration(
+            assetIDs: ["123"], externalIDs: [], assetType: .asset)
+        
+        theoplayer.source = SourceDescription(source: source)
+        await fulfillment(of: [expectation])
+    }
 }

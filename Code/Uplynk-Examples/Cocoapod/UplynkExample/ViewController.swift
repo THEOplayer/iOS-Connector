@@ -106,9 +106,9 @@ private extension ViewController {
                                 preplayParameters: [
                                     "ad": "cleardashnew",
                                 ],
-                                uplynkPingConfiguration: .init(adImpressions: false,
-                                                               freeWheelVideoViews: false,
-                                                               linearAdData: true))
+                                contentProtected: true, uplynkPingConfiguration: .init(adImpressions: false,
+                                                                                       freeWheelVideoViews: false,
+                                                                                       linearAdData: true))
     }
     
     var uplynkDRM: UplynkSSAIConfiguration {

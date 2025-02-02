@@ -11,6 +11,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     static let INTEGRATION_ID: String = "uplynk"
 
     private let player: THEOplayer
+    private weak var eventListener: UplynkEventListener?
     private let uplynkAPI: UplynkAPIProtocol.Type
     private let controller: ServerSideAdIntegrationController
     private(set) var isSettingSource: Bool = false
@@ -19,7 +20,9 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
 
     init(uplynkAPI: UplynkAPIProtocol.Type = UplynkAPI.self,
          player: THEOplayer,
-         controller: ServerSideAdIntegrationController) {
+         controller: ServerSideAdIntegrationController,
+         eventListener: UplynkEventListener? = nil) {
+        self.eventListener = eventListener
         self.uplynkAPI = uplynkAPI
         self.player = player
         self.controller = controller
@@ -45,34 +48,40 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let requestMethod = switch uplynkConfig.assetType {
-            case .asset:
-                self.uplynkAPI.requestVOD(preplaySrcURL:)
-            case .channel:
-                self.uplynkAPI.requestLive(preplaySrcURL:)
+            do {
+                let source: UplynkAdIntegrationSource = (sourceDescription, typedSource)
+                let preplayResponse = try await self.onPrePlayRequest(preplaySrcUrl: preplayURL, assetType: uplynkConfig.assetType)
+                self.onPrePlayResponse(response: preplayResponse, source: source)
+            } catch {
+                eventListener?.onResponseError(uplynkError: UplynkError(url: preplayURL, description: error.localizedDescription))
             }
-            guard let preplayResponse = await requestMethod(preplayURL) as? PrePlayResponseProtocol else {
-                // TODO: Handle as an error or log?
-                return
-            }
-            let source: UplynkAdIntegrationSource = (sourceDescription, typedSource)
-            self.onPreplayResponse(response: preplayResponse, source: source)
         }
         return true
     }
 
+    private func onPrePlayRequest(preplaySrcUrl: String, assetType: UplynkSSAIConfiguration.AssetType) async throws -> PrePlayResponseProtocol {
+        switch assetType {
+        case .asset:
+            return try await uplynkAPI.requestVOD(preplaySrcURL: preplaySrcUrl)
+        case .channel:
+            return try await uplynkAPI.requestLive(preplaySrcURL: preplaySrcUrl)
+        }
+    }
     
-    private func onPreplayResponse(response: PrePlayResponseProtocol, source: UplynkAdIntegrationSource) {
+    private func onPrePlayResponse(response: PrePlayResponseProtocol, source: UplynkAdIntegrationSource) {
         let typedSource: TypedSource = source.1
         typedSource.src = URL(string: response.playURL)!
         if let drm = response.drm, drm.required {
             // TODO: This will need cleanup when we figure out the DRM bit.
-            typedSource.drm = UplynkDRMConfiguration(keySystemConfigurations:
-                    .init(fairplay: .init(certificateURL: drm.fairplayCertificateURL)))
+            typedSource.drm = FairPlayDRMConfiguration(customIntegrationId: UplynkAdIntegration.INTEGRATION_ID, licenseAcquisitionURL: "", certificateURL: drm.fairplayCertificateURL)
         }
-
         let sourceDescription: SourceDescription = source.0
         self.player.source = sourceDescription
-        self.isSettingSource = false
+        
+        if let liveResponse = response as? PrePlayLiveResponse {
+            eventListener?.onResponse(preplayLive: liveResponse)
+        } else if let vodResponse = response as? PrePlayVODResponse {
+            eventListener?.onResponse(preplayVOD: vodResponse)
+        }
     }
 }
