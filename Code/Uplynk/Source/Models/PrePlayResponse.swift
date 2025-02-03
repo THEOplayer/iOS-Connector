@@ -18,7 +18,7 @@ public protocol PrePlayResponseProtocol {
     var drm: PrePlayDRMConfiguration? {get}
 }
 
-public struct UplynkLiveAd: Codable {
+public struct UplynkLiveAd: Codable, Equatable {
     /// Indicates the duration, in seconds, of an ad break.
     public let duration: Float
     /// Indicates the start time, in Unix time, of an ad break.
@@ -28,14 +28,14 @@ public struct UplynkLiveAd: Codable {
     //TODO: Add extensions
 }
 
-public struct PrePlayDRMConfiguration: Codable {
+public struct PrePlayDRMConfiguration: Codable, Equatable {
     /// Indicates whether Studio DRM is required for playback.
     public let required: Bool
     /// Indicates the URL to a hosted instance of your public FPS certificate.
     public let fairplayCertificateURL: String
 }
 
-public struct PrePlayLiveResponse: PrePlayResponseProtocol, Codable {
+public struct PrePlayLiveResponse: PrePlayResponseProtocol, Codable, Equatable {
     /// Indicates the playback URL sent to the player.
     public let playURL: String
     /// Indicates the playback session ID.
@@ -49,7 +49,7 @@ public struct PrePlayLiveResponse: PrePlayResponseProtocol, Codable {
     
 }
 
-public struct PrePlayVODResponse: PrePlayResponseProtocol, Codable {
+public struct PrePlayVODResponse: PrePlayResponseProtocol, Codable, Equatable {
     /// Indicates the playback URL sent to the player.
     public let playURL: String
     /// Indicates the playback session ID.

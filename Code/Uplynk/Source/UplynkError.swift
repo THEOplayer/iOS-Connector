@@ -16,13 +16,13 @@ public enum UplynkErrorCode: Int {
 }
 
 /// Uplynk Error type.
-public struct UplynkError: Error {
+public struct UplynkError: Error, Equatable {
     /// The Uplynk URL which the error refers to. Empty if irrelevant.
     public let url: String
     /// The error code
     public let code: UplynkErrorCode
     
-    private let description: String
+    public let description: String
     
     init(url: String, description: String, code: UplynkErrorCode) {
         self.url = url
@@ -30,7 +30,7 @@ public struct UplynkError: Error {
         self.code = code
     }
     
-    var localizedDescription: String {
+    public var localizedDescription: String {
         description
     }
 }

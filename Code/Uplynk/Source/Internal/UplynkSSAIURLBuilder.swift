@@ -62,21 +62,24 @@ class UplynkSSAIURLBuilder {
         }
     }
 
+    func buildStartPingURL(prefix: String, sessionID: String, currentTimeSeconds: Int) -> String {
+        makePingURL(prefix: prefix, sessionID: sessionID, currentTimeSeconds: currentTimeSeconds) + "&ev=start"
+    }
+    
+    func buildPingURL(prefix: String, sessionID: String, currentTimeSeconds: Int) -> String  {
+        makePingURL(prefix: prefix, sessionID: sessionID, currentTimeSeconds: currentTimeSeconds)
+    }
+    
     func buildSeekedPingURL(
-        prefix: String, sessionID: String, currentTimeSeconds: Int, seekStartTimeSeconds: Int
+        prefix: String,
+        sessionID: String,
+        currentTimeSeconds: Int,
+        seekStartTimeSeconds: Int
     ) -> String {
-        return buildPingURL(prefix: prefix, sessionID: sessionID, currentTimeSeconds: currentTimeSeconds) + "&ev=seek&ft=\(seekStartTimeSeconds)"
+        makePingURL(prefix: prefix, sessionID: sessionID, currentTimeSeconds: currentTimeSeconds) + "&ev=seek&ft=\(seekStartTimeSeconds)"
     }
-
-    func buildStartPingURL(
-        prefix: String, sessionID: String, currentTimeSeconds: Int
-    ) -> String {
-        return buildPingURL(prefix: prefix, sessionID: sessionID, currentTimeSeconds: currentTimeSeconds) + "&ev=start"
-    }
-
-    func buildPingURL(
-        prefix: String, sessionID: String, currentTimeSeconds: Int
-    ) -> String  {
-        return "\(prefix)/session/ping/\(sessionID).json?v=3&pt=\(currentTimeSeconds)"
+    
+    private func makePingURL(prefix: String, sessionID: String, currentTimeSeconds: Int) -> String {
+        "\(prefix)/session/ping/\(sessionID).json?v=3&pt=\(currentTimeSeconds)"
     }
 }

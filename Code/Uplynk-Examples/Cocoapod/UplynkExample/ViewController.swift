@@ -72,8 +72,20 @@ class ViewController: UIViewController {
         }
     }
 
-    @IBAction func seekForward(_ sender: Any) {
+    @IBAction func seekForward10(_ sender: Any) {
         self.player.setCurrentTime(self.player.currentTime + 10)
+    }
+    
+    @IBAction func seekForward120(_ sender: Any) {
+        self.player.setCurrentTime(self.player.currentTime + 120)
+    }
+    
+    @IBAction func seekBack10(_ sender: Any) {
+        self.player.setCurrentTime(self.player.currentTime - 10)
+    }
+    
+    @IBAction func seekBack120(_ sender: Any) {
+        self.player.setCurrentTime(self.player.currentTime - 120)
     }
 }
 
@@ -94,7 +106,10 @@ private extension ViewController {
                                 preplayParameters: [
                                     "ad": "adtest",
                                     "ad.lib": "15_sec_spots"
-                                ])
+                                ],
+                                uplynkPingConfiguration: .init(adImpressions: true,
+                                                               freeWheelVideoViews: true,
+                                                               linearAdData: false))
     }
     
     var uplynkLive: UplynkSSAIConfiguration {
@@ -106,9 +121,10 @@ private extension ViewController {
                                 preplayParameters: [
                                     "ad": "cleardashnew",
                                 ],
-                                contentProtected: true, uplynkPingConfiguration: .init(adImpressions: false,
-                                                                                       freeWheelVideoViews: false,
-                                                                                       linearAdData: true))
+                                contentProtected: true,
+                                uplynkPingConfiguration: .init(adImpressions: false,
+                                                               freeWheelVideoViews: false,
+                                                               linearAdData: true))
     }
     
     var uplynkDRM: UplynkSSAIConfiguration {

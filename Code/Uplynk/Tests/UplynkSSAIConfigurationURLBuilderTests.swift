@@ -61,7 +61,7 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         preplayURLIsCorrectWithNoQueryParameters(assetType: .asset)
     }
     
-    func prePlayURLPingQueryParameter(pingFeature: UplynkPingFeatures, assetType: UplynkSSAIConfiguration.AssetType) {
+    func prePlayURLPingQueryParameter(pingFeature: UplynkPingFeature, assetType: UplynkSSAIConfiguration.AssetType) {
         
         let prefix = "https://content.uplynk.com"
         let assetID = "a123"

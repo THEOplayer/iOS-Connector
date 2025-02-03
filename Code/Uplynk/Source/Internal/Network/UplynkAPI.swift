@@ -7,10 +7,10 @@
 
 import Foundation
 
-
 protocol UplynkAPIProtocol {
     static func requestLive(preplaySrcURL: String) async throws -> PrePlayLiveResponse
     static func requestVOD(preplaySrcURL: String) async throws -> PrePlayVODResponse
+    static func requestPing(url: String) async throws -> PingResponse
 }
 
 class UplynkAPI: UplynkAPIProtocol {
@@ -25,7 +25,15 @@ class UplynkAPI: UplynkAPIProtocol {
     static func requestVOD(preplaySrcURL: String) async throws -> PrePlayVODResponse {
         let data = try await HTTPSConnection.request(type: .get, urlString: preplaySrcURL)
         let decoder: JSONDecoder = .init()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let preplayResponse: PrePlayVODResponse = try decoder.decode(PrePlayVODResponse.self, from: data)
         return preplayResponse
+    }
+    
+    static func requestPing(url: String) async throws -> PingResponse {
+        let data = try await HTTPSConnection.request(type: .get, urlString: url)
+        let decoder: JSONDecoder = .init()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode(PingResponse.self, from: data)
     }
 }
