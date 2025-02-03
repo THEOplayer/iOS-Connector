@@ -20,6 +20,8 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
 
     private var pingScheduler: PingScheduler?
 
+    private var adScheduler: AdScheduler?
+    
     // MARK: Private event listener's
     
     private var timeUpdateEventListener: EventListener?
@@ -80,16 +82,18 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                 let source: UplynkAdIntegrationSource = (sourceDescription, typedSource)
                 let preplayResponse = try await self.onPrePlayRequest(preplaySrcUrl: preplayURL, assetType: uplynkConfig.assetType)
                 self.onPrePlayResponse(response: preplayResponse, source: source)
-                
+                let adScheduler = self.createAdScheduler(preplayResponse: preplayResponse)
                 if uplynkConfig.pingFeature != .noPing {
                     pingScheduler = PingScheduler(urlBuilder: urlBuilder,
                                                   prefix: preplayResponse.prefix,
                                                   sessionId: preplayResponse.sid, 
-                                                  listener: eventListener, 
-                                                  controller: self.controller)
+                                                  listener: eventListener,
+                                                  controller: self.controller,
+                                                  adScheduler: adScheduler)
                 } else {
                     pingScheduler = nil
                 }
+                self.adScheduler = adScheduler
             } catch {
                 let uplynkError = UplynkError(
                     url: preplayURL,
@@ -112,6 +116,11 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         pingScheduler = nil
     }
 
+    private func createAdScheduler(preplayResponse: PrePlayResponseProtocol) -> AdScheduler {
+        let adBreaks: [UplynkAdBreak] = (preplayResponse as? PrePlayVODResponse)?.ads.breaks ?? []
+        return AdScheduler(adBreaks: adBreaks)
+    }
+    
     private func onPrePlayRequest(preplaySrcUrl: String, assetType: UplynkSSAIConfiguration.AssetType) async throws -> PrePlayResponseProtocol {
         switch assetType {
         case .asset:
