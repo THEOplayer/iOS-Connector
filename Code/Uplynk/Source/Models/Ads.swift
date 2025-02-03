@@ -33,7 +33,7 @@ public struct UplynkAd: Codable, Equatable, Hashable {
     public let height: Float
     
     /// Indicates the duration, in seconds, of an ad's encoded video.
-    public let duration: Float
+    public let duration: Double
     
     /// VAST Only
     ///
@@ -57,9 +57,9 @@ public struct UplynkAdBreak: Codable, Equatable {
     /// Indicates the position of the ad break. Valid values are: preroll | midroll | postroll | pause | overlay
     public let position: String
     /// Indicates the start time of the ad break in the player timeline.
-    public let timeOffset: Float
+    public let timeOffset: Double
     /// Indicates the duration of the ad break.
-    public let duration: Float
+    public let duration: Double
     /// Object containing all of the events for this ad.
     /// Each event type contains an array of URLs.
     public let events: [String: [String]]?
@@ -67,16 +67,16 @@ public struct UplynkAdBreak: Codable, Equatable {
 
 public struct UplynkAdBreakOffset: Codable, Equatable {
     /// the ad break's timeOffset
-    public let timeOffset: Float
+    public let timeOffset: Double
     /// the index for the ads.breaks object.
     public let index: Int
 }
 
 public struct UplynkPlaceHolderOffset: Codable, Equatable {
     /// Indicates the starting time of the placeholder ad. This value is in player time for the entire m3u8 timeline.
-    public let startTime: Float
+    public let startTime: Double
     /// Indicates the ending time of the placeholder ad.
-    public let endTime: Float
+    public let endTime: Double
     /// Indicates the index in the ads.breaks array that contains the VPAID ad that was replaced.
     public let breakIndex: Int
     /// Indicates the index in the ads.breaks.ads array that identifies the location for VPAID ad information.

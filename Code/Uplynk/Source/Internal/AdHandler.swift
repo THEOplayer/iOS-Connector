@@ -55,10 +55,9 @@ final class AdHandler {
             .reduce(0, { $0 + $1.duration })
         
         let startTime = adBreak.timeOffset + playedDuration
-        // FIX: Change the type to double instead in the models??
-        let progress = ((time - Double(startTime)) / Double(currentAd.ad.duration))
+        let progress = ((time - startTime) / currentAd.ad.duration)
             .clamped(to: 0...1)
-        controller.updateAdProgress(ad: ad, progress: Double(progress))
+        controller.updateAdProgress(ad: ad, progress: progress)
     }
 }
 
