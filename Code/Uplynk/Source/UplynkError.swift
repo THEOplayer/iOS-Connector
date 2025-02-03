@@ -18,9 +18,9 @@ public enum UplynkErrorCode: Int {
 /// Uplynk Error type.
 public struct UplynkError: Error {
     /// The Uplynk URL which the error refers to. Empty if irrelevant.
-    let url: String
+    public let url: String
     /// The error code
-    let code: UplynkErrorCode
+    public let code: UplynkErrorCode
     
     private let description: String
     

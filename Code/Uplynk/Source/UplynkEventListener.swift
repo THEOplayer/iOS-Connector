@@ -11,5 +11,5 @@ import Foundation
 public protocol UplynkEventListener: AnyObject {
     func onResponse(preplayLive: PrePlayLiveResponse)
     func onResponse(preplayVOD: PrePlayVODResponse)
-    func onResponseError(uplynkError: UplynkError)
+    func onError(uplynkError: UplynkError)
 }

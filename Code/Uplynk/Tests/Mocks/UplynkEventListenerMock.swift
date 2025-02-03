@@ -17,7 +17,7 @@ class UplynkEventListenerMock: UplynkEventListener {
         preplayVODResponseCallback?(preplayVOD)
     }
     
-    func onResponseError(uplynkError: UplynkError) {
+    func onError(uplynkError: UplynkError) {
         preplayErrorCallback?(uplynkError)
     }
     

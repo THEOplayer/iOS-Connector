@@ -57,7 +57,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                     url: preplayURL,
                     description: error.localizedDescription,
                     code: .UPLYNK_ERROR_CODE_PREPLAY_REQUEST_FAILED)
-                eventListener?.onResponseError(uplynkError: uplynkError)
+                eventListener?.onError(uplynkError: uplynkError)
                 controller.error(error: uplynkError)
             }
         }
