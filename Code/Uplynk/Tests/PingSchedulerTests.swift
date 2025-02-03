@@ -22,15 +22,16 @@ final class PingSchedulerTests: XCTestCase {
     
     override func setUpWithError() throws {
         try super.setUpWithError()
-        adScheduler = AdScheduler(adBreaks: [])
+        mockServerSideAdIntegrationController = MockServerSideAdIntegrationController()
+        adScheduler = AdScheduler(adBreaks: [],
+                                  adHandler: AdHandler(controller: mockServerSideAdIntegrationController))
         mockUrlBuilder = MockUplynkSSAIURLBuilder(ssaiConfiguration: .vodConfig)
         mockEventListener = UplynkEventListenerMock()
-        mockServerSideAdIntegrationController = MockServerSideAdIntegrationController()
         pingScheduler = PingScheduler(urlBuilder: mockUrlBuilder,
                                       prefix: mockPrefix,
                                       sessionId: mockSessionId,
+                                      listener: mockEventListener, 
                                       controller: mockServerSideAdIntegrationController,
-                                      listener: mockEventListener,
                                       adScheduler: adScheduler,
                                       uplynkApiType: mockUplynkApiType)
     }
