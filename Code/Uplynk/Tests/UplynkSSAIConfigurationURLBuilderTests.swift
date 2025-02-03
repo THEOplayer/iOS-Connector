@@ -132,6 +132,7 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let assetID = "a123"
         
         let validPrePlayParameters = "key1=value1&key2=value2"
+        let anotherValidPrePlayParameters = "key2=value2&key1=value1"
         
         let configurationWithAssetID = UplynkSSAIConfiguration(
             assetIDs: [assetID],
@@ -141,6 +142,7 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
             preplayParameters: [ "key1" : "value1", "key2" : "value2" ]
         )
         let builtPreplayURL = UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
-        XCTAssertTrue(builtPreplayURL.contains(validPrePlayParameters))
+        XCTAssertTrue(builtPreplayURL.contains(validPrePlayParameters) ||
+                      builtPreplayURL.contains(anotherValidPrePlayParameters))
     }
 }
