@@ -41,6 +41,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         // Setup event listner's to schedule ping
         timeUpdateEventListener = player.addEventListener(type: PlayerEventTypes.TIME_UPDATE) { [weak self] event in
             self?.pingScheduler?.onTimeUpdate(time: event.currentTime)
+            self?.adScheduler?.onTimeUpdate(time: event.currentTime)
         }
         
         seekingEventListener = player.addEventListener(type: PlayerEventTypes.SEEKING) { [weak self] event in
@@ -109,6 +110,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     
     func resetSource() -> Bool {
         pingScheduler = nil
+        adScheduler = nil
         return true
     }
     
@@ -118,7 +120,8 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
 
     private func createAdScheduler(preplayResponse: PrePlayResponseProtocol) -> AdScheduler {
         let adBreaks: [UplynkAdBreak] = (preplayResponse as? PrePlayVODResponse)?.ads.breaks ?? []
-        return AdScheduler(adBreaks: adBreaks)
+        let adHandler = AdHandler(controller: controller)
+        return AdScheduler(adBreaks: adBreaks, adHandler: adHandler)
     }
     
     private func onPrePlayRequest(preplaySrcUrl: String, assetType: UplynkSSAIConfiguration.AssetType) async throws -> PrePlayResponseProtocol {

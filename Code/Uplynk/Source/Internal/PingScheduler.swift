@@ -3,6 +3,7 @@
 //
 //
 //  Created by Raveendran, Aravind on 30/1/2025.
+//  Copyright © 2025 THEOplayer. All rights reserved.
 //
 
 import Foundation
@@ -85,7 +86,10 @@ final class PingScheduler {
                 let pingResponse = try await self.uplynkApiType.requestPing(url: url)
                 self.nextRequestTime = pingResponse.nextTime
                 self.listener?.onPingResponse(pingResponse)
-                // TODO: Add Ad's to Ad scheduler
+                guard let ads = pingResponse.ads else {
+                    return
+                }
+                self.adScheduler.add(ads: ads)
             } catch {
                 let uplynkError = UplynkError(
                     url: url,
