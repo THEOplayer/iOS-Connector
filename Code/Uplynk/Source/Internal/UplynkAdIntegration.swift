@@ -53,9 +53,15 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                 let preplayResponse = try await self.onPrePlayRequest(preplaySrcUrl: preplayURL, assetType: uplynkConfig.assetType)
                 self.onPrePlayResponse(response: preplayResponse, source: source)
             } catch {
-                eventListener?.onResponseError(uplynkError: UplynkError(url: preplayURL, description: error.localizedDescription))
+                let uplynkError = UplynkError(
+                    url: preplayURL,
+                    description: error.localizedDescription,
+                    code: .UPLYNK_ERROR_CODE_PREPLAY_REQUEST_FAILED)
+                eventListener?.onResponseError(uplynkError: uplynkError)
+                controller.error(error: uplynkError)
             }
         }
+        
         return true
     }
 

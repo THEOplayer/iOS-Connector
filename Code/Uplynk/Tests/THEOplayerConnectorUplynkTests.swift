@@ -72,6 +72,7 @@ final class THEOplayerConnectorUplynkTests: XCTestCase {
         
         mockEventListener.preplayErrorCallback = { error in
             XCTAssertTrue(error.url.contains("preplay"))
+            XCTAssertEqual(error.code, .UPLYNK_ERROR_CODE_PREPLAY_REQUEST_FAILED)
             expectation.fulfill()
         }
         

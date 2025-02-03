@@ -8,8 +8,29 @@
 
 import Foundation
 
+/// Possible Error Codes for the Uplynk connector
+public enum UplynkErrorCode: Int {
+    case UPLYNK_ERROR_CODE_UNKNOWN = 0
+    case UPLYNK_ERROR_CODE_PREPLAY_REQUEST_FAILED
+    case UPLYNK_ERROR_CODE_PING_REQUEST_FAILED
+}
 
-public struct UplynkError {
+/// Uplynk Error type.
+public struct UplynkError: Error {
+    /// The Uplynk URL which the error refers to. Empty if irrelevant.
     let url: String
-    let description: String
+    /// The error code
+    let code: UplynkErrorCode
+    
+    private let description: String
+    
+    init(url: String, description: String, code: UplynkErrorCode) {
+        self.url = url
+        self.description = description
+        self.code = code
+    }
+    
+    var localizedDescription: String {
+        description
+    }
 }
