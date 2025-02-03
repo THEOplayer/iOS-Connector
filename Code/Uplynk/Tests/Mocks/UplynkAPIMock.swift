@@ -55,4 +55,15 @@ class UplynkAPIMock: UplynkAPIProtocol {
             drm: drm, 
             interstitialURL: institutionalURL)
     }
+    
+    static func reset() {
+        playURL = "https://content-aapm1.uplynk.com/preplay2/e70a708265b94a3fa6716666994d877d/f82dae632c127bb6ceb89bb2fd3e4cbc/4apk0GKq2jrzRWih388o9I7VbFoySPOnwfENiuwWUzQB.m3u8?pbs=86e17e502c6b496a882878f03747714bk"
+        basePrefix = "https://content-aapm1.uplynk.com"
+        requireDRM = false
+        liveAds = []
+        institutionalURL = ""
+        vODAds = .init(breaks: [], breakOffsets: [], placeholderOffsets: [])
+        willFailRequestLive = false
+        willFailRequestVOD = false
+    }
 }

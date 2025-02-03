@@ -12,11 +12,12 @@ import THEOplayerSDK
 final class THEOplayerConnectorUplynkTests: XCTestCase {
     var mockEventListener: UplynkEventListenerMock!
     var proxySSAIController: ServerSideAdIntegrationControllerProxy!
-    var uplynkAPI: UplynkAPIMock.Type = UplynkAPIMock.self
+    var uplynkAPI: UplynkAPIMock.Type!
     var source: TypedSource!
     var connector: UplynkConnector!
     var theoplayer: THEOplayer!
     override func setUpWithError() throws {
+        uplynkAPI = UplynkAPIMock.self
         mockEventListener = UplynkEventListenerMock()
         proxySSAIController = ServerSideAdIntegrationControllerProxy()
         theoplayer = THEOplayer(with: nil, configuration: nil)
@@ -28,6 +29,7 @@ final class THEOplayerConnectorUplynkTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        uplynkAPI.reset()
         mockEventListener = nil
         connector = nil
         proxySSAIController = nil
