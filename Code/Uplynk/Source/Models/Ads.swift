@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct UplynkAd: Codable, Equatable {
+public struct UplynkAd: Codable, Equatable, Hashable {
     /// Indicates the API Framework for the ad (e.g., VPAID).
     public let apiFramework: String?
     
