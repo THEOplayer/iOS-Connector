@@ -21,7 +21,7 @@ class UplynkEventListenerMock: UplynkEventListener {
 
     var preplayLiveResponseCallback: ((PrePlayLiveResponse) -> Void)? = nil
     var preplayVODResponseCallback: ((PrePlayVODResponse) -> Void)? = nil
-    var preplayErrorCallback: ((UplynkError) -> Void)? = nil
+    var errorCallback: ((UplynkError) -> Void)? = nil
     var pingResponseCallback: ((PingResponse) -> Void)? = nil
 
     func onPreplayLiveResponse(_ response: PrePlayLiveResponse) {
@@ -41,6 +41,6 @@ class UplynkEventListenerMock: UplynkEventListener {
     
     func onError(_ error: UplynkError) {
         events.append(.onError(error))
-        preplayErrorCallback?(error)
+        errorCallback?(error)
     }
 }

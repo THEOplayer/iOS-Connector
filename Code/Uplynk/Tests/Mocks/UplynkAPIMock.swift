@@ -27,7 +27,8 @@ class UplynkAPIMock: UplynkAPIProtocol {
     static var vODAds: UplynkAds = .init(breaks: [], breakOffsets: [], placeholderOffsets: [])
     static var willFailRequestLive: Bool = false
     static var willFailRequestVOD: Bool = false
-    
+    static var willFailRequestPing: Bool = false
+
     enum Event: Equatable {
         case requestLive(preplaySrcURL: String)
         case requestVOD(preplaySrcURL: String)
@@ -73,11 +74,15 @@ class UplynkAPIMock: UplynkAPIProtocol {
         vODAds = .init(breaks: [], breakOffsets: [], placeholderOffsets: [])
         willFailRequestLive = false
         willFailRequestVOD = false
+        willFailRequestPing = false
         pingResponseToReturn = nil
     }
     
     static var pingResponseToReturn: PingResponse?
     static func requestPing(url: String) async throws -> PingResponse {
-        pingResponseToReturn ?? .pingResponseWithAdsAndValidNextTime
+        if willFailRequestPing {
+            throw MockError.mock("Failing ping response")
+        }
+        return pingResponseToReturn ?? .pingResponseWithAdsAndValidNextTime
     }
 }

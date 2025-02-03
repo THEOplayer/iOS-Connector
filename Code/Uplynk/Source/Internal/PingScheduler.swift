@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import THEOplayerSDK
 
 final class PingScheduler {
 
@@ -13,6 +14,7 @@ final class PingScheduler {
     private let urlBuilder: UplynkSSAIURLBuilder
     private let prefix: String
     private let sessionId: String
+    private let controller: ServerSideAdIntegrationController
 
     private var nextRequestTime: Double?
     private var seekStart: Double?
@@ -25,6 +27,7 @@ final class PingScheduler {
         prefix: String,
         sessionId: String,
         listener: UplynkEventListener?,
+        controller: ServerSideAdIntegrationController,
         uplynkApiType: UplynkAPIProtocol.Type = UplynkAPI.self
     ) {
         self.uplynkApiType = uplynkApiType
@@ -32,6 +35,7 @@ final class PingScheduler {
         self.prefix = prefix
         self.sessionId = sessionId
         self.listener = listener
+        self.controller = controller
     }
     
     func onTimeUpdate(time: Double) {
@@ -86,6 +90,7 @@ final class PingScheduler {
                     description: error.localizedDescription,
                     code: .UPLYNK_ERROR_CODE_PING_REQUEST_FAILED)
                 self.listener?.onError(uplynkError)
+                self.controller.error(error: uplynkError)
             }
         }
     }

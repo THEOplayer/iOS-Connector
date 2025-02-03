@@ -15,6 +15,7 @@ final class PingSchedulerTests: XCTestCase {
     private let mockSessionId: String = "5633bc226a084e34a69ac6e154d03171"
     private var mockUrlBuilder: MockUplynkSSAIURLBuilder!
     private var mockEventListener: UplynkEventListenerMock!
+    private var mockServerSideAdIntegrationController: MockServerSideAdIntegrationController!
 
     private var pingScheduler: PingScheduler!
     
@@ -22,18 +23,21 @@ final class PingSchedulerTests: XCTestCase {
         try super.setUpWithError()
         mockUrlBuilder = MockUplynkSSAIURLBuilder(ssaiConfiguration: .vodConfig)
         mockEventListener = UplynkEventListenerMock()
+        mockServerSideAdIntegrationController = MockServerSideAdIntegrationController()
         pingScheduler = PingScheduler(urlBuilder: mockUrlBuilder,
                                       prefix: mockPrefix,
                                       sessionId: mockSessionId,
-                                      listener: mockEventListener,
+                                      listener: mockEventListener, 
+                                      controller: mockServerSideAdIntegrationController,
                                       uplynkApiType: mockUplynkApiType)
     }
     
     override func tearDownWithError() throws {
         try super.tearDownWithError()
         pingScheduler = nil
-        mockUplynkApiType.reset()
         mockEventListener = nil
+        mockServerSideAdIntegrationController = nil
+        mockUplynkApiType.reset()
     }
     
     func testOnTimeUpdateWhenNextRequestTimeIsNil() {
@@ -51,7 +55,7 @@ final class PingSchedulerTests: XCTestCase {
             onStartExpectation.fulfill()
         }
         pingScheduler.onStart(time: 0.0)
-        wait(for: [onStartExpectation])
+        wait(for: [onStartExpectation], timeout: 5.0)
         
         // When
         pingScheduler.onTimeUpdate(time: 120.0)
@@ -72,7 +76,7 @@ final class PingSchedulerTests: XCTestCase {
             onStartExpectation.fulfill()
         }
         pingScheduler.onStart(time: 0.0)
-        wait(for: [onStartExpectation])
+        wait(for: [onStartExpectation], timeout: 5.0)
 
         // When
         pingScheduler.onTimeUpdate(time: 120.0)
@@ -94,7 +98,7 @@ final class PingSchedulerTests: XCTestCase {
         }
 
         pingScheduler.onStart(time: 0.0)
-        wait(for: [onStartExpectation])
+        wait(for: [onStartExpectation], timeout: 5.0)
 
         // When
         let onTimeUpdateExpectation = expectation(description: "Received ping response on time update")
@@ -106,7 +110,7 @@ final class PingSchedulerTests: XCTestCase {
         }
 
         pingScheduler.onTimeUpdate(time: 431.0)
-        wait(for: [onTimeUpdateExpectation])
+        wait(for: [onTimeUpdateExpectation], timeout: 5.0)
 
         // Then
         XCTAssertEqual(mockUrlBuilder.events, [
@@ -120,8 +124,18 @@ final class PingSchedulerTests: XCTestCase {
     }
     
     func testOnStart() {
+        // Given
+        let onStartExpectation = expectation(description: "Received ping response on start")
+        mockEventListener.pingResponseCallback = {
+            XCTAssertEqual($0, .pingResponseWithAdsAndValidNextTime)
+            onStartExpectation.fulfill()
+        }
+
+        // When
         pingScheduler.onStart(time: 0.0)
-        
+        wait(for: [onStartExpectation], timeout: 5.0)
+
+        // Then
         XCTAssertEqual(mockUrlBuilder.events, [
             .buildStartPingURL(prefix: "https://content-aaps1.uplynk.com",
                                 sessionID: "5633bc226a084e34a69ac6e154d03171",
@@ -139,7 +153,7 @@ final class PingSchedulerTests: XCTestCase {
         }
 
         pingScheduler.onStart(time: 0.0)
-        wait(for: [onStartExpectation])
+        wait(for: [onStartExpectation], timeout: 5.0)
         
         pingScheduler.onSeeking(time: 200)
         
@@ -164,7 +178,7 @@ final class PingSchedulerTests: XCTestCase {
         }
 
         pingScheduler.onStart(time: 0.0)
-        wait(for: [onStartExpectation])
+        wait(for: [onStartExpectation], timeout: 5.0)
         
         // When
         pingScheduler.onSeeked(time: 400)
@@ -177,7 +191,7 @@ final class PingSchedulerTests: XCTestCase {
         ])
     }
     
-    func testOnSeekedWhenThereIsSeekInProgress() throws {
+    func testOnSeekedWhenThereIsSeekInProgress() {
         // Given
         let onStartExpectation = expectation(description: "Received ping response on start")
         mockUplynkApiType.pingResponseToReturn = .pingResponseWithAdsAndValidNextTime
@@ -187,7 +201,7 @@ final class PingSchedulerTests: XCTestCase {
         }
 
         pingScheduler.onStart(time: 0.0)
-        wait(for: [onStartExpectation])
+        wait(for: [onStartExpectation], timeout: 5.0)
         pingScheduler.onSeeking(time: 200)
 
         // When
@@ -201,7 +215,7 @@ final class PingSchedulerTests: XCTestCase {
         pingScheduler.onSeeked(time: 400)
         
         // Then
-        wait(for: [onSeekedExpectation])
+        wait(for: [onSeekedExpectation], timeout: 5.0)
         XCTAssertEqual(mockUrlBuilder.events, [
             .buildStartPingURL(prefix: "https://content-aaps1.uplynk.com",
                                sessionID: "5633bc226a084e34a69ac6e154d03171",
@@ -211,5 +225,37 @@ final class PingSchedulerTests: XCTestCase {
                                 currentTimeSeconds: 400,
                                 seekStartTimeSeconds: 200)
         ])
+    }
+    
+    func testOnStartForPingError() {
+        // Given
+        let onStartFailExpectation = expectation(description: "Received failure on start")
+        mockUplynkApiType.willFailRequestPing = true
+        mockEventListener.pingResponseCallback = { _ in
+            XCTFail("Should receive error response on ping")
+        }
+
+        mockEventListener.errorCallback = { error in
+            XCTAssertEqual(error.code, .UPLYNK_ERROR_CODE_PING_REQUEST_FAILED)
+            onStartFailExpectation.fulfill()
+        }
+        
+        // When
+        pingScheduler.onStart(time: 0.0)
+        wait(for: [onStartFailExpectation], timeout: 5.0)
+
+        // Then
+        XCTAssertEqual(mockUrlBuilder.events, [
+            .buildStartPingURL(prefix: "https://content-aaps1.uplynk.com",
+                                sessionID: "5633bc226a084e34a69ac6e154d03171",
+                                currentTimeSeconds: 0)
+        ])
+        
+        switch mockServerSideAdIntegrationController.events.first {
+        case .error(error: MockError.mock("mock error")):
+            break
+        default:
+            XCTFail("Unexpected event")
+        }
     }
 }

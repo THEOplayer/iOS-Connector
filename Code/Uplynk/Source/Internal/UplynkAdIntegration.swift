@@ -85,7 +85,8 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                     pingScheduler = PingScheduler(urlBuilder: urlBuilder,
                                                   prefix: preplayResponse.prefix,
                                                   sessionId: preplayResponse.sid, 
-                                                  listener: eventListener)
+                                                  listener: eventListener, 
+                                                  controller: self.controller)
                 } else {
                     pingScheduler = nil
                 }

@@ -72,7 +72,7 @@ final class THEOplayerConnectorUplynkTests: XCTestCase {
         uplynkAPI.willFailRequestVOD = true
         connector = UplynkConnector(player: theoplayer, proxyController: proxySSAIController!, uplynkAPI: uplynkAPI, eventListener: mockEventListener)
         
-        mockEventListener.preplayErrorCallback = { error in
+        mockEventListener.errorCallback = { error in
             XCTAssertTrue(error.url.contains("preplay"))
             XCTAssertEqual(error.code, .UPLYNK_ERROR_CODE_PREPLAY_REQUEST_FAILED)
             expectation.fulfill()
