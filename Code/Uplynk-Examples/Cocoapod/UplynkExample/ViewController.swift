@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     private var player: THEOplayer!
     private var uplynkConnector: UplynkConnector!
     
+    private var eventHandler: [EventListener] = []
     @IBOutlet weak var playerViewContainer: UIView!
     
     override func viewDidLoad() {
@@ -26,6 +27,38 @@ class ViewController: UIViewController {
         playerView.translatesAutoresizingMaskIntoConstraints = true
         playerView.frame = playerViewContainer.bounds
         playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.ADD_AD_BREAK) {
+                print("--> Add Ad Break Event occured: \($0)")
+            })
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.ADD_AD) {
+                print("--> Add Ad Event occured: \($0)")
+            })
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_BEGIN) {
+                print("--> Ad Begin Event occured: \($0)")
+            })
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_END) {
+                print("--> Ad End Event occured: \($0)")
+            })
+        eventHandler.append(
+            
+            player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_BEGIN) {
+                print("--> Ad Break Begin Event occured: \($0)")
+            })
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_CHANGE) {
+                print("--> Ad Break Change Event occured: \($0)")
+            })
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_END) {
+                print("--> Ad Break End Event occured: \($0)")
+            })
         playerViewContainer.addSubview(playerView)
     }
 
