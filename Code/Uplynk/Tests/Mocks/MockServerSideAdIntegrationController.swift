@@ -8,30 +8,6 @@
 import Foundation
 import THEOplayerSDK
 
-struct MockAdBreak: AdBreak {
-    var ads: [Ad] = []
-    var maxDuration: Int = 0
-    var maxRemainingDuration: Double = 0
-    var timeOffset: Int = 0
-    var integration: AdIntegrationKind = .theoads
-    var customIntegration: String?
-}
-
-struct MockAd: Ad {
-    var adBreak: AdBreak = MockAdBreak()
-    var companions: [CompanionAd] = []
-    var type: String = ""
-    var id: String?
-    var skipOffset: Int?
-    var resourceURI: String?
-    var width: Int?
-    var height: Int?
-    var integration: AdIntegrationKind = .theoads
-    var duration: Int?
-    var clickThrough: String?
-    var customIntegration: String?
-}
-
 final class MockServerSideAdIntegrationController: ServerSideAdIntegrationController {
     var integration: String = "MockServerSideAdIntegrationController"
     var ads: [Ad] = []
@@ -54,9 +30,10 @@ final class MockServerSideAdIntegrationController: ServerSideAdIntegrationContro
     }
     private(set) var events: [Event] = []
     
+    var adToReturn: MockAd?
     func createAd(params: AdInit, adBreak: (AdBreak)?) -> Ad {
         events.append(.createAd(params: params, adBreak: adBreak))
-        return MockAd()
+        return adToReturn ?? MockAd()
     }
     
     func updateAd(ad: Ad, params: AdInit) {
@@ -83,9 +60,10 @@ final class MockServerSideAdIntegrationController: ServerSideAdIntegrationContro
         events.append(.removeAd(ad: ad))
     }
     
+    var adBreakToReturn: MockAdBreak?
     func createAdBreak(params: AdBreakInit) -> AdBreak {
         events.append(.createAdBreak(params: params))
-        return MockAdBreak()
+        return adBreakToReturn ?? MockAdBreak()
     }
     
     func updateAdBreak(adBreak: AdBreak, params: AdBreakInit) {
