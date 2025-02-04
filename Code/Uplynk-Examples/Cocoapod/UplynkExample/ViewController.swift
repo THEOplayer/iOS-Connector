@@ -27,7 +27,12 @@ class ViewController: UIViewController {
         playerView.translatesAutoresizingMaskIntoConstraints = true
         playerView.frame = playerViewContainer.bounds
         playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        playerViewContainer.addSubview(playerView)
         
+        addEventListeners()
+    }
+    
+    func addEventListeners() {
         eventHandler.append(
             player.ads.addEventListener(type: AdsEventTypes.ADD_AD_BREAK) { [weak self] in
                 print("--------------------------------------->")
@@ -71,8 +76,18 @@ class ViewController: UIViewController {
         eventHandler.append(
             player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_CHANGE) { [weak self] in
                 print("--------------------------------------->")
-                print("--> Ad break change event occured: \($0)")
+                print("--> Ad break change Event occured: \($0)")
                 print("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.UPDATE_AD_BREAK) { [weak self] in
+                print("--------------------------------------->")
+                print("--> Ad Break Update Event occured: \($0)")
+                print("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
+                print("--> current ads \(String(describing: self?.player.ads.currentAds))")
                 print("--------------------------------------->")
             }
         )
@@ -94,6 +109,38 @@ class ViewController: UIViewController {
         )
         
         eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.UPDATE_AD) {
+                print("--------------------------------------->")
+                print("--> Ad Update Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_FIRST_QUARTILE) {
+                print("--------------------------------------->")
+                print("--> Ad First Quartile Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_MIDPOINT) {
+                print("--------------------------------------->")
+                print("--> Ad Mid Point Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_THIRD_QUARTILE) {
+                print("--------------------------------------->")
+                print("--> Ad Third Quartile Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
             player.ads.addEventListener(type: AdsEventTypes.AD_END) {
                 print("--------------------------------------->")
                 print("--> Ad End Event occured: \($0)")
@@ -101,7 +148,53 @@ class ViewController: UIViewController {
             }
         )
         
-        playerViewContainer.addSubview(playerView)
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_LOADED) {
+                print("--------------------------------------->")
+                print("--> Ad Loaded Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_IMPRESSION) {
+                print("--------------------------------------->")
+                print("--> Ad Impresssion Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_ERROR) {
+                print("--------------------------------------->")
+                print("--> Ad Error Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_SKIP) {
+                print("--------------------------------------->")
+                print("--> Ad Skip Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_TAPPED) {
+                print("--------------------------------------->")
+                print("--> Ad Tapped Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_CLICKED) {
+                print("--------------------------------------->")
+                print("--> Ad Clicked Event occured: \($0)")
+                print("--------------------------------------->")
+            }
+        )
     }
 
     override func didReceiveMemoryWarning() {
