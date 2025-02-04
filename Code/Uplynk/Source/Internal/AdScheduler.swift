@@ -8,11 +8,11 @@
 
 import Foundation
 
-class AdScheduler {
-    var adBreaks: [UplynkAdBreakState] = []
-    let adHandler: AdHandler
+final class AdScheduler {
+    private(set) var adBreaks: [UplynkAdBreakState] = []
+    private let adHandler: AdHandlerProtocol
     
-    init(adBreaks: [UplynkAdBreak], adHandler: AdHandler) {
+    init(adBreaks: [UplynkAdBreak], adHandler: AdHandlerProtocol) {
         self.adHandler = adHandler
         adBreaks.forEach {
             self.createAdBreak($0)
@@ -20,7 +20,6 @@ class AdScheduler {
     }
     
     func onTimeUpdate(time: Double) {
-        
         guard let currentAdBreak = adBreaks.first(where: {
             ($0.adBreak.timeOffset...($0.adBreak.timeOffset + $0.adBreak.duration)).contains(time)
         }) else {
@@ -31,7 +30,6 @@ class AdScheduler {
         endAllStartedAds(adBreakState: currentAdBreak, currentAd: currentAd)
         beginCurrentAd(adBreakState: currentAdBreak, currentAd: currentAd, time: time)
         endAllAdBreaksExcept(adBreakState: currentAdBreak)
-        
     }
     
     func add(ads: UplynkAds) {
@@ -102,9 +100,7 @@ private extension AdScheduler {
         }
         return nil
     }
-    
-
-    
+        
     func endAllStartedAds(adBreakState: UplynkAdBreakState,
                           currentAd: UplynkAdState? = nil) {
         adBreakState.ads

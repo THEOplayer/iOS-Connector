@@ -9,7 +9,14 @@
 import Foundation
 import THEOplayerSDK
 
-final class AdHandler {
+protocol AdHandlerProtocol: AnyObject {
+    func createAdBreak(adBreak: UplynkAdBreak)
+    func onAdBegin(uplynkAd: UplynkAd)
+    func onAdEnd(uplynkAd: UplynkAd)
+    func onAdProgressUpdate(currentAd: UplynkAdState, adBreak: UplynkAdBreak, time: Double)
+}
+
+final class AdHandler: AdHandlerProtocol {
     private let controller: ServerSideAdIntegrationController
     
     private var scheduledAds: [UplynkAd: Ad] = [:]

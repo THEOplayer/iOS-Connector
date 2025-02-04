@@ -31,19 +31,18 @@ class UplynkAdState {
 
 class UplynkAdBreakState {
     let adBreak: UplynkAdBreak
+    let ads: [UplynkAdState]
     var state: AdBreakState
-    var ads: [UplynkAdState] {
-        adBreak.ads.map { UplynkAdState(ad: $0, state: AdState.notPlayed) }
-    }
     init(adBreak: UplynkAdBreak, state: AdBreakState) {
         self.state = state
         self.adBreak = adBreak
+        self.ads = adBreak.ads.map { UplynkAdState(ad: $0, state: AdState.notPlayed) }
     }
 }
 
 extension UplynkAdBreakState: Equatable {
     static func == (lhs: UplynkAdBreakState, rhs: UplynkAdBreakState) -> Bool {
-        return lhs.state == rhs.state && lhs.adBreak == rhs.adBreak
+        return lhs.state == rhs.state && lhs.adBreak == rhs.adBreak && lhs.ads == rhs.ads
     }
 }
 
