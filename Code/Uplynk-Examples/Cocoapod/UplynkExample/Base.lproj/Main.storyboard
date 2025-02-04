@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="c9c-f5-llT">
-                                <rect key="frame" x="16" y="59.000000000000028" width="361" height="415.66666666666674"/>
+                                <rect key="frame" x="16" y="59.000000000000028" width="361" height="453.66666666666674"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LCX-HK-Hgl">
                                         <rect key="frame" x="0.0" y="0.0" width="361" height="225.66666666666666"/>
@@ -64,7 +64,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Ehp-eV-xjD">
-                                        <rect key="frame" x="0.0" y="309.66666666666669" width="176" height="106"/>
+                                        <rect key="frame" x="0.0" y="309.66666666666669" width="176" height="144"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Actions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FLQ-if-GJb">
                                                 <rect key="frame" x="0.0" y="0.0" width="57" height="30"/>
@@ -79,8 +79,15 @@
                                                     <action selector="togglePlayPause:" destination="y7s-zw-jXu" eventType="touchUpInside" id="k3i-Ty-6S7"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LzU-Y6-5vS">
+                                                <rect key="frame" x="0.0" y="76" width="46" height="30"/>
+                                                <state key="normal" title="skipAd"/>
+                                                <connections>
+                                                    <action selector="skipAd:" destination="y7s-zw-jXu" eventType="touchUpInside" id="nTq-Gk-vQS"/>
+                                                </connections>
+                                            </button>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Mca-Ho-Hyr">
-                                                <rect key="frame" x="0.0" y="76" width="176" height="30"/>
+                                                <rect key="frame" x="0.0" y="114" width="176" height="30"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DDX-W4-5ZU">
                                                         <rect key="frame" x="0.0" y="0.0" width="40" height="30"/>

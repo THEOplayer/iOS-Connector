@@ -29,36 +29,78 @@ class ViewController: UIViewController {
         playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         
         eventHandler.append(
-            player.ads.addEventListener(type: AdsEventTypes.ADD_AD_BREAK) {
+            player.ads.addEventListener(type: AdsEventTypes.ADD_AD_BREAK) { [weak self] in
+                print("--------------------------------------->")
                 print("--> Add Ad Break Event occured: \($0)")
-            })
+                print("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
+                print("--> scheduled ad breaks are \(String(describing: self?.player.ads.scheduledAdBreaks))")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.REMOVE_AD_BREAK) { [weak self] in
+                print("--------------------------------------->")
+                print("--> Remove Ad Break Event occured: \($0)")
+                print("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
+                print("--> scheduled ad breaks are \(String(describing: self?.player.ads.scheduledAdBreaks))")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_BEGIN) { [weak self] in
+                print("--------------------------------------->")
+                print("--> Ad break begin Event occured: \($0)")
+                print("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
+                print("--> current ads \(String(describing: self?.player.ads.currentAds))")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_END) { [weak self] in
+                print("--------------------------------------->")
+                print("--> Ad break end Event occured: \($0)")
+                print("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
+                print("--> current ads \(String(describing: self?.player.ads.currentAds))")
+                print("--------------------------------------->")
+            }
+        )
+        
+        eventHandler.append(
+            player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_CHANGE) { [weak self] in
+                print("--------------------------------------->")
+                print("--> Ad break change event occured: \($0)")
+                print("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
+                print("--------------------------------------->")
+            }
+        )
         
         eventHandler.append(
             player.ads.addEventListener(type: AdsEventTypes.ADD_AD) {
+                print("--------------------------------------->")
                 print("--> Add Ad Event occured: \($0)")
-            })
+                print("--------------------------------------->")
+            }
+        )
         
         eventHandler.append(
             player.ads.addEventListener(type: AdsEventTypes.AD_BEGIN) {
+                print("--------------------------------------->")
                 print("--> Ad Begin Event occured: \($0)")
-            })
+                print("--------------------------------------->")
+            }
+        )
+        
         eventHandler.append(
             player.ads.addEventListener(type: AdsEventTypes.AD_END) {
+                print("--------------------------------------->")
                 print("--> Ad End Event occured: \($0)")
-            })
-        eventHandler.append(
-            
-            player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_BEGIN) {
-                print("--> Ad Break Begin Event occured: \($0)")
-            })
-        eventHandler.append(
-            player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_CHANGE) {
-                print("--> Ad Break Change Event occured: \($0)")
-            })
-        eventHandler.append(
-            player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_END) {
-                print("--> Ad Break End Event occured: \($0)")
-            })
+                print("--------------------------------------->")
+            }
+        )
+        
         playerViewContainer.addSubview(playerView)
     }
 
@@ -119,6 +161,10 @@ class ViewController: UIViewController {
     
     @IBAction func seekBack120(_ sender: Any) {
         self.player.setCurrentTime(self.player.currentTime - 120)
+    }
+    
+    @IBAction func skipAd(_ sender: Any) {
+        self.player.ads.skip()
     }
 }
 
