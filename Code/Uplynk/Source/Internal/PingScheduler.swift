@@ -62,7 +62,7 @@ final class PingScheduler {
     }
     
     func onSeeking(time: Double) {
-        guard seekStart == nil, nextRequestTime != PingScheduler.STOP_PING else { return }
+        guard seekStart == nil else { return }
         seekStart = time
     }
     

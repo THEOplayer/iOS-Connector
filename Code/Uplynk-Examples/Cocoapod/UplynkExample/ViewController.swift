@@ -15,13 +15,42 @@ class ViewController: UIViewController {
     
     private var eventHandler: [EventListener] = []
     @IBOutlet weak var playerViewContainer: UIView!
-    
+    @IBOutlet weak var stepper: UIStepper!
+    @IBOutlet weak var segmentControl: UISegmentedControl!
+    @IBOutlet weak var skipOffsetValue: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        skipOffsetValue.text = "\(Int(stepper.value))"
+        initialisePlayer()
+    }
+    
+    private var selectedSkipStrategy: SkippedAdStrategy {
+        switch segmentControl.selectedSegmentIndex {
+        case 1:
+            return .playAll
+        case 2:
+            return .playLast
+        default:
+            return .playNone
+        }
+    }
+    
+    private var selectedSkipOffsetValue: Int {
+        skipOffsetValue.text.map { Int($0) ?? -1 } ?? -1
+    }
+    
+    func initialisePlayer() {
+        playerViewContainer.subviews.forEach {
+            $0.removeFromSuperview()
+        }
         let configBuilder = THEOplayerConfigurationBuilder()
         configBuilder.license = "your licence"
-        player = THEOplayer(with: nil, configuration: configBuilder.build())
-        uplynkConnector = UplynkConnector(player: player)
+        player = THEOplayer(with: nil, 
+                            configuration: configBuilder.build())
+        uplynkConnector = UplynkConnector(player: player, 
+                                          configuration: .init(defaultSkipOffset: selectedSkipOffsetValue,
+                                                               skippedAdStrategy: selectedSkipStrategy))
 
         let playerView = PlayerView(player: player)
         playerView.translatesAutoresizingMaskIntoConstraints = true
@@ -230,6 +259,15 @@ class ViewController: UIViewController {
                 ssai: uplynkDRM
             )
         )
+    }
+    
+    @IBAction func onChangeSkipOffset(_ sender: Any) {
+        skipOffsetValue.text = "\(Int(stepper.value))"
+        initialisePlayer()
+    }
+    
+    @IBAction func onChangeSkipStrategySelection(_ sender: Any) {
+        initialisePlayer()
     }
 
     @IBAction func togglePlayPause(_ sender: UIButton) {
