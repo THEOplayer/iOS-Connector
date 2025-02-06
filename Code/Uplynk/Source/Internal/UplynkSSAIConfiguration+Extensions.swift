@@ -37,6 +37,16 @@ extension UplynkSSAIConfiguration {
         }
     }
     
+    var playbackURLParametersString: String {
+        guard !playbackURLParameters.isEmpty else {
+            return ""
+        }
+        let joinedParameters = playbackURLParameters.map {
+            "\($0.key)=\($0.value)"
+        }.joined(separator: "&")
+        return "&\(joinedParameters)"
+    }
+    
     var urlAssetType: String {
         switch assetType {
         case .asset:

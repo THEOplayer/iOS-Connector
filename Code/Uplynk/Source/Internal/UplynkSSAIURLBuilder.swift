@@ -20,21 +20,22 @@ class UplynkSSAIURLBuilder {
         ssaiConfiguration.prefix ?? UplynkSSAIURLBuilder.DEFAULT_PREFIX
     }
     
-    lazy private var urlAssetType = ssaiConfiguration.urlAssetType
-    lazy private var urlAssetID = ssaiConfiguration.urlAssetID
-    lazy private var drmParameters = ssaiConfiguration.drmParameters
-    lazy private var pingParameters = ssaiConfiguration.pingParameters
-    lazy private var urlParameters = ssaiConfiguration.urlParameters
-    lazy private var assetIDs = ssaiConfiguration.assetIDs
-    lazy private var externalIDs = ssaiConfiguration.externalIDs
-    lazy private var userID = ssaiConfiguration.userID
-    
+    private var urlAssetType: String { ssaiConfiguration.urlAssetType }
+    private var urlAssetID: String { ssaiConfiguration.urlAssetID }
+    private var drmParameters: String { ssaiConfiguration.drmParameters }
+    private var pingParameters: String { ssaiConfiguration.pingParameters }
+    private var urlParameters: String { ssaiConfiguration.urlParameters }
+    private var assetIDs: [String] { ssaiConfiguration.assetIDs }
+    private var externalIDs: [String] { ssaiConfiguration.externalIDs }
+    private var userID: String? { ssaiConfiguration.userID }
+    private var playbackURLParametersString: String { ssaiConfiguration.playbackURLParametersString }
+
     func buildPreplayVODURL() -> String {
-        return "\(prefix)/preplay/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)"
+        return "\(prefix)/preplay/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)\(playbackURLParametersString)"
     }
 
     func buildPreplayLiveURL() -> String {
-        return "\(prefix)/preplay/\(urlAssetType)/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)"
+        return "\(prefix)/preplay/\(urlAssetType)/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)\(playbackURLParametersString)"
     }
 
     func buildAssetInfoURLs(
