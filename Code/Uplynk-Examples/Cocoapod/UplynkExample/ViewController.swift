@@ -16,17 +16,26 @@ class ViewController: UIViewController {
     private var eventHandler: [EventListener] = []
     @IBOutlet weak var playerViewContainer: UIView!
     @IBOutlet weak var stepper: UIStepper!
-    @IBOutlet weak var segmentControl: UISegmentedControl!
+    @IBOutlet weak var sourceSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var skipStrategySegmentedControl: UISegmentedControl!
+    @IBOutlet weak var adsConfigurationStackView: UIStackView!
     @IBOutlet weak var skipOffsetValue: UILabel!
+    @IBOutlet weak var seekSecondsTextField: UITextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        skipOffsetValue.text = "\(Int(stepper.value))"
+        resetState()
         initialisePlayer()
     }
     
+    func resetState() {
+        skipOffsetValue.text = "\(Int(stepper.value))"
+        skipStrategySegmentedControl.selectedSegmentIndex = 0
+        adsConfigurationStackView.isHidden = sourceSegmentedControl.selectedSegmentIndex != 1
+    }
+    
     private var selectedSkipStrategy: SkippedAdStrategy {
-        switch segmentControl.selectedSegmentIndex {
+        switch skipStrategySegmentedControl.selectedSegmentIndex {
         case 1:
             return .playAll
         case 2:
@@ -37,18 +46,20 @@ class ViewController: UIViewController {
     }
     
     private var selectedSkipOffsetValue: Int {
-        skipOffsetValue.text.map { Int($0) ?? -1 } ?? -1
+        Int(stepper.value)
     }
     
     func initialisePlayer() {
         playerViewContainer.subviews.forEach {
             $0.removeFromSuperview()
         }
+        
         let configBuilder = THEOplayerConfigurationBuilder()
         configBuilder.license = "your licence"
         player = THEOplayer(with: nil, 
                             configuration: configBuilder.build())
-        uplynkConnector = UplynkConnector(player: player, 
+        
+        uplynkConnector = UplynkConnector(player: player,
                                           configuration: .init(defaultSkipOffset: selectedSkipOffsetValue,
                                                                skippedAdStrategy: selectedSkipStrategy))
 
@@ -59,6 +70,36 @@ class ViewController: UIViewController {
         playerViewContainer.addSubview(playerView)
         
         addEventListeners()
+        
+        switch sourceSegmentedControl.selectedSegmentIndex {
+        case 0:
+            player.source = SourceDescription(
+                source: TypedSource(
+                    src: bigBuckBunnyURL,
+                    type: "application/x-mpegurl",
+                    ssai: uplynkLive
+                )
+            )
+        case 1:
+            player.source = SourceDescription(
+                source: TypedSource(
+                    src: bigBuckBunnyURL,
+                    type: "application/x-mpegurl",
+                    ssai: uplynkAds
+                )
+            )
+        case 2:
+            player.source = SourceDescription(
+                source: TypedSource(
+                    src: bigBuckBunnyURL,
+                    type: "application/x-mpegurl",
+                    ssai: uplynkDRM
+                )
+            )
+        default:
+            // No-op
+            break
+        }
     }
     
     func addEventListeners() {
@@ -226,47 +267,20 @@ class ViewController: UIViewController {
         )
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @IBAction func onChangeSource(_ sender: Any) {
+        stop()
+        resetState()
+        initialisePlayer()
     }
-    
-    @IBAction func adsButtonClicked(_ sender: UIButton) {
-        player.source = SourceDescription(
-            source: TypedSource(
-                src: bigBuckBunnyURL,
-                type: "application/x-mpegurl",
-                ssai: uplynkAds
-            )
-        )
-    }
-    
-    @IBAction func liveButtonClicked(_ sender: UIButton) {
-        player.source = SourceDescription(
-            source: TypedSource(
-                src: bigBuckBunnyURL,
-                type: "application/x-mpegurl",
-                ssai: uplynkLive
-            )
-        )
-    }
-    
-    @IBAction func drmButtonClicked(_ sender: UIButton) {
-        player.source = SourceDescription(
-            source: TypedSource(
-                src: bigBuckBunnyURL,
-                type: "application/x-mpegurl",
-                ssai: uplynkDRM
-            )
-        )
-    }
-    
+
     @IBAction func onChangeSkipOffset(_ sender: Any) {
+        stop()
         skipOffsetValue.text = "\(Int(stepper.value))"
         initialisePlayer()
     }
     
     @IBAction func onChangeSkipStrategySelection(_ sender: Any) {
+        stop()
         initialisePlayer()
     }
 
@@ -278,24 +292,27 @@ class ViewController: UIViewController {
         }
     }
 
-    @IBAction func seekForward10(_ sender: Any) {
-        self.player.setCurrentTime(self.player.currentTime + 10)
+    @IBAction func seekForward30(_ sender: Any) {
+        self.player.setCurrentTime(self.player.currentTime + 30)
     }
     
-    @IBAction func seekForward120(_ sender: Any) {
-        self.player.setCurrentTime(self.player.currentTime + 120)
+    @IBAction func seekBack30(_ sender: Any) {
+        self.player.setCurrentTime(self.player.currentTime - 30)
     }
     
-    @IBAction func seekBack10(_ sender: Any) {
-        self.player.setCurrentTime(self.player.currentTime - 10)
+    @IBAction func seekToSeconds(_ sender: Any) {
+        guard let seconds = Double(seekSecondsTextField.text ?? "") else {
+            return
+        }
+        self.player.setCurrentTime(seconds)
     }
-    
-    @IBAction func seekBack120(_ sender: Any) {
-        self.player.setCurrentTime(self.player.currentTime - 120)
-    }
-    
+        
     @IBAction func skipAd(_ sender: Any) {
         self.player.ads.skip()
+    }
+    
+    func stop() {
+        player.stop()
     }
 }
 
