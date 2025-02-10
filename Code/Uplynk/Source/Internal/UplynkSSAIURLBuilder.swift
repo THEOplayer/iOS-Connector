@@ -28,14 +28,13 @@ class UplynkSSAIURLBuilder {
     private var assetIDs: [String] { ssaiConfiguration.assetIDs }
     private var externalIDs: [String] { ssaiConfiguration.externalIDs }
     private var userID: String? { ssaiConfiguration.userID }
-    private var playbackURLParametersString: String { ssaiConfiguration.playbackURLParametersString }
 
     func buildPreplayVODURL() -> String {
-        return "\(prefix)/preplay/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)\(playbackURLParametersString)"
+        return "\(prefix)/preplay/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)"
     }
 
     func buildPreplayLiveURL() -> String {
-        return "\(prefix)/preplay/\(urlAssetType)/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)\(playbackURLParametersString)"
+        return "\(prefix)/preplay/\(urlAssetType)/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)"
     }
 
     func buildAssetInfoURLs(

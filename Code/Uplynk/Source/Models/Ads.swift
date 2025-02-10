@@ -87,7 +87,7 @@ public struct UplynkAds: Codable, Equatable {
     /// A list of objects for every ad break in the ad response. This includes both linear and non-linear ads. For more information on the difference between linear and non-linear ads, see the VAST 3 specification document.
     public let breaks: [UplynkAdBreak]
     /// A list of objects that contain the ad break's timeOffset and the index for the ads.breaks object.
-    public let breakOffsets: [UplynkAdBreakOffset]
+    public let breakOffsets: [UplynkAdBreakOffset]?
     /// A list of objects with start and end times for every non-video ad that has been replaced with a short blank video (i.e., placeholder ad).
-    public let placeholderOffsets: [UplynkPlaceHolderOffset]
+    public let placeholderOffsets: [UplynkPlaceHolderOffset]?
 }

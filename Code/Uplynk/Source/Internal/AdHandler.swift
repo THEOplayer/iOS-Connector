@@ -33,7 +33,6 @@ final class AdHandler: AdHandlerProtocol {
         let currentAdBreak = controller.createAdBreak(params: adBreakInit)
         adBreak.ads.forEach {
             let adInit = AdInit(type: adBreak.type,
-                                skipOffset: defaultSkipOffset,
                                 duration: Int($0.duration))
             scheduledAds[$0] = controller.createAd(params: adInit,
                                                    adBreak: currentAdBreak)

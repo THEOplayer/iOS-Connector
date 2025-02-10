@@ -149,7 +149,9 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
             do {
                 let source: UplynkAdIntegrationSource = (sourceDescription, typedSource)
                 let preplayResponse = try await self.onPrePlayRequest(preplaySrcUrl: preplayURL, assetType: uplynkConfig.assetType)
-                self.onPrePlayResponse(response: preplayResponse, source: source)
+                self.onPrePlayResponse(response: preplayResponse,
+                                       source: source,
+                                       ssaiConfiguration: uplynkConfig)
                 let adScheduler = self.createAdScheduler(preplayResponse: preplayResponse)
                 if uplynkConfig.pingFeature != .noPing {
                     pingScheduler = PingScheduler(urlBuilder: urlBuilder,
@@ -207,9 +209,16 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         }
     }
     
-    private func onPrePlayResponse(response: PrePlayResponseProtocol, source: UplynkAdIntegrationSource) {
+    private func onPrePlayResponse(response: PrePlayResponseProtocol,
+                                   source: UplynkAdIntegrationSource,
+                                   ssaiConfiguration: UplynkSSAIConfiguration) {
         let typedSource: TypedSource = source.1
-        typedSource.src = URL(string: response.playURL)!
+        let playURL = if ssaiConfiguration.playbackURLParametersString.isEmpty == false {
+            "\(response.playURL)?\(ssaiConfiguration.playbackURLParametersString)"
+        } else {
+            response.playURL
+        }
+        typedSource.src = URL(string: playURL)!
         if let drm = response.drm, drm.required {
             // TODO: This will need cleanup when we figure out the DRM bit.
             typedSource.drm = FairPlayDRMConfiguration(customIntegrationId: UplynkAdIntegration.INTEGRATION_ID, licenseAcquisitionURL: "", certificateURL: drm.fairplayCertificateURL)
