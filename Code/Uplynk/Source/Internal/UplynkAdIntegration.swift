@@ -11,6 +11,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     
     enum State: Equatable {
         case playingContent
+        case seekingToAdStart
         case playingSeekedOverAdBreak(seekedTime: Double)
     }
     
@@ -58,6 +59,10 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                 self.adScheduler?.isPlayingAd == false,
                 self.configuration.skippedAdStrategy != .playNone {
                 
+                guard self.state != .seekingToAdStart else {
+                    return
+                }
+                
                 switch self.configuration.skippedAdStrategy {
                 case .playAll:
                     // Check is there is a followup ad in the list to play?
@@ -65,15 +70,24 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                         // Play next ad
                         self.seek(to: adBreakOffset)
                     } else {
-                        // Reset the state and seek to original seek time
-                        self.state = .playingContent
-                        self.seek(to: seekedTime)
+                        self.seek(to: seekedTime) { [weak self] _, error in
+                            guard error == nil else {
+                                // TODO: Add Logging
+                                return
+                            }
+                            self?.state = .playingContent
+                        }
                     }
                 case .playLast:
                     // We have already played the last ad from on `seeked` function
                     // Reset the state and seek to original seek time
-                    self.state = .playingContent
-                    self.seek(to: seekedTime)
+                    self.seek(to: seekedTime) { [weak self] _, error in
+                        guard error == nil else {
+                            // TODO: Add Logging
+                            return
+                        }
+                        self?.state = .playingContent
+                    }
                 default:
                     break
                 }
@@ -90,7 +104,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         }
         
         seekedEventListener = player.addEventListener(type: PlayerEventTypes.SEEKED) { [weak self] event in
-            guard let self else { return }
+            guard let self, self.state != .seekingToAdStart else { return }
             
             if self.state == .playingContent {
                 self.pingScheduler?.onSeeked(time: event.currentTime)
@@ -98,8 +112,14 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
             
             if self.state == .playingContent, self.configuration.skippedAdStrategy != .playNone {
                 let playSeekedOverAdBreak = { (seekedTime: Double, adBreakOffset: Double) in
-                    self.state = .playingSeekedOverAdBreak(seekedTime: seekedTime)
-                    self.seek(to: adBreakOffset)
+                    self.state = .seekingToAdStart
+                    self.seek(to: adBreakOffset) { [weak self] _, error in
+                        guard error == nil else {
+                            // TODO: Add Logging
+                            return
+                        }
+                        self?.state = .playingSeekedOverAdBreak(seekedTime: seekedTime)
+                    }
                 }
                 switch self.configuration.skippedAdStrategy {
                 case .playAll:
@@ -178,6 +198,12 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     }
     
     func skipAd(ad: Ad) -> Bool {
+        guard configuration.defaultSkipOffset != -1,
+              let adStartTime = adScheduler?.getCurrentAdBreakStartTime(),
+              adStartTime + Double(configuration.defaultSkipOffset) <= player.currentTime else {
+            return true
+        }
+        
         if let seekToTime = adScheduler?.getCurrentAdBreakEndTime() {
             seek(to: seekToTime)
         }
@@ -196,7 +222,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
 
     private func createAdScheduler(preplayResponse: PrePlayResponseProtocol) -> AdScheduler {
         let adBreaks: [UplynkAdBreak] = (preplayResponse as? PrePlayVODResponse)?.ads.breaks ?? []
-        let adHandler = AdHandler(controller: controller, defaultSkipOffset: configuration.defaultSkipOffset)
+        let adHandler = AdHandler(controller: controller)
         return AdScheduler(adBreaks: adBreaks, adHandler: adHandler)
     }
     
@@ -233,7 +259,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         }
     }
     
-    private func seek(to offset: Double) {
-        player.currentTime = offset
+    private func seek(to offset: Double, completionHandler: ((Any?, Error?) -> Void)? = nil) {
+        player.setCurrentTime(offset, completionHandler: completionHandler)
     }
 }

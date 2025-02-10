@@ -75,12 +75,12 @@ class ViewController: UIViewController {
         case 0:
             player.source = .live
         case 1:
-            // player.source = .ads
-            Task { @MainActor in
-                if let source = await SourceDescription.source(for: .source1) {
-                    player.source = source
-                }
-            }
+            player.source = .ads
+//            Task { @MainActor in
+//                if let source = await SourceDescription.source(for: .source1) {
+//                    player.source = source
+//                }
+//            }
         case 2:
             player.source = .multiDRM
         default:

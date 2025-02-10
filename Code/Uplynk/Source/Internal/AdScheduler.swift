@@ -31,7 +31,7 @@ final class AdScheduler {
             return
         }
         startCurrentAdBreak(adBreakState: currentAdBreak, time: time)
-        let currentAd = findCurrentUnplayedAd(adBreakState: currentAdBreak, time: time)
+        let currentAd = findCurrentAd(adBreakState: currentAdBreak, time: time)
         completeAllStartedAds(adBreakState: currentAdBreak, except: currentAd)
         if let currentAd {
             startCurrentAd(adBreakState: currentAdBreak, currentAd: currentAd, time: time)
@@ -75,6 +75,13 @@ final class AdScheduler {
             return nil
         }
         return currentAdBreak.adBreak.timeOffset + currentAdBreak.adBreak.duration
+    }
+    
+    func getCurrentAdBreakStartTime() -> Double? {
+        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }) else {
+            return nil
+        }
+        return currentAdBreak.adBreak.timeOffset
     }
 }
 
@@ -125,9 +132,9 @@ private extension AdScheduler {
         }
     }
     
-    func findCurrentUnplayedAd(adBreakState: UplynkAdBreakState, time: Double) -> UplynkAdState? {
+    func findCurrentAd(adBreakState: UplynkAdBreakState, time: Double) -> UplynkAdState? {
         var adStart = adBreakState.adBreak.timeOffset
-        for ad in adBreakState.ads.filter({ $0.state == .notPlayed }) {
+        for ad in adBreakState.ads {
             let adEnd = adStart + ad.ad.duration
             if (adStart...adEnd).contains(time) {
                 return ad

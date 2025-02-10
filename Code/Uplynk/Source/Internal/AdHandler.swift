@@ -18,13 +18,10 @@ protocol AdHandlerProtocol: AnyObject {
 
 final class AdHandler: AdHandlerProtocol {
     private let controller: ServerSideAdIntegrationController
-    private let defaultSkipOffset: Int
-
     private var scheduledAds: [UplynkAd: Ad] = [:]
 
-    init(controller: ServerSideAdIntegrationController, defaultSkipOffset: Int) {
+    init(controller: ServerSideAdIntegrationController) {
         self.controller = controller
-        self.defaultSkipOffset = defaultSkipOffset
     }
     
     func createAdBreak(adBreak: UplynkAdBreak) {
