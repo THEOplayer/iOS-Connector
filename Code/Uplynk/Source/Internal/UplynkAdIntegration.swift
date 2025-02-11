@@ -6,6 +6,7 @@
 //
 
 import THEOplayerSDK
+import OSLog
 
 class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     
@@ -23,9 +24,6 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     private let controller: ServerSideAdIntegrationController
     private let configuration: UplynkConfiguration
     private(set) var isSettingSource: Bool = false
-
-    private typealias UplynkAdIntegrationSource = (SourceDescription, TypedSource)
-
     private var pingScheduler: PingScheduler?
 
     private var adScheduler: AdScheduler?
@@ -51,6 +49,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         
         // Setup event listner's to schedule ping
         timeUpdateEventListener = player.addEventListener(type: PlayerEventTypes.TIME_UPDATE) { [weak self] event in
+            os_log(.debug, log: .adIntegration, "Time update event: %f", event.currentTime)
             guard let self else { return }
             self.pingScheduler?.onTimeUpdate(time: event.currentTime)
             self.adScheduler?.onTimeUpdate(time: event.currentTime)
@@ -66,24 +65,30 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                 switch self.configuration.skippedAdStrategy {
                 case .playAll:
                     // Check is there is a followup ad in the list to play?
-                    if let adBreakOffset = self.adScheduler?.firstUnwatchedAdBreakOffset(before: event.currentTime) {
+                    if let adBreakOffset = self.adScheduler?.firstUnwatchedAdBreakOffset(before: seekedTime) {
                         // Play next ad
+                        os_log(.debug,log: .adIntegration, "TIME_UPDATE: Seek to next ad: %f", adBreakOffset)
                         self.seek(to: adBreakOffset)
                     } else {
+                        os_log(.debug,log: .adIntegration, "TIME_UPDATE: No more ads to watch for `play all` strategy")
+                        os_log(.debug,log: .adIntegration, "TIME_UPDATE: Seek to point: %f", seekedTime)
                         self.seek(to: seekedTime) { [weak self] _, error in
                             guard error == nil else {
-                                // TODO: Add Logging
+                                os_log(.debug,log: .adIntegration, "TIME_UPDATE: Failed to seek with error: %@", error?.localizedDescription ?? "N/A")
                                 return
                             }
                             self?.state = .playingContent
+                            os_log(.debug,log: .adIntegration, "TIME_UPDATE: Reset state to playing content")
                         }
                     }
                 case .playLast:
                     // We have already played the last ad from on `seeked` function
                     // Reset the state and seek to original seek time
+                    os_log(.debug,log: .adIntegration, "TIME_UPDATE: No more ads to watch for `play last` strategy")
+                    os_log(.debug,log: .adIntegration, "TIME_UPDATE: Seek to point: %f", seekedTime)
                     self.seek(to: seekedTime) { [weak self] _, error in
                         guard error == nil else {
-                            // TODO: Add Logging
+                            os_log(.debug,log: .adIntegration, "TIME_UPDATE: Failed to seek with error: %@", error?.localizedDescription ?? "N/A")
                             return
                         }
                         self?.state = .playingContent
@@ -95,19 +100,23 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
             
             // Seek to end time of adbreak if its already watched
             if let adBreakEndTime = self.adScheduler?.adBreakEndTimeIfPlayingAlreadyWatchedAdBreak(for: event.currentTime) {
+                os_log(.debug,log: .adIntegration, "TIME_UPDATE: Already watched adbreak, seek to: %f", adBreakEndTime)
                 self.seek(to: adBreakEndTime)
             }
         }
         
         seekingEventListener = player.addEventListener(type: PlayerEventTypes.SEEKING) { [weak self] event in
             self?.pingScheduler?.onSeeking(time: event.currentTime)
+            os_log(.debug,log: .adIntegration, "SEEKING: Received seeking event: %f", event.currentTime)
         }
         
         seekedEventListener = player.addEventListener(type: PlayerEventTypes.SEEKED) { [weak self] event in
             guard let self, self.state != .seekingToAdStart else { return }
-            
+            os_log(.debug,log: .adIntegration, "SEEKED: Received seeked event: %f", event.currentTime)
+
             if self.state == .playingContent {
                 self.pingScheduler?.onSeeked(time: event.currentTime)
+                os_log(.debug,log: .adIntegration, "SEEKED: Delegating seeked time to ping scheduler %f", event.currentTime)
             }
             
             if self.state == .playingContent, self.configuration.skippedAdStrategy != .playNone {
@@ -115,10 +124,11 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                     self.state = .seekingToAdStart
                     self.seek(to: adBreakOffset) { [weak self] _, error in
                         guard error == nil else {
-                            // TODO: Add Logging
+                            os_log(.debug,log: .adIntegration, "SEEKED: Failed to seek with error: %@", error?.localizedDescription ?? "N/A")
                             return
                         }
                         self?.state = .playingSeekedOverAdBreak(seekedTime: seekedTime)
+                        os_log(.debug,log: .adIntegration, "SEEKED: Setting state to playing seeked over adbreak with stored seek time %f", seekedTime)
                     }
                 }
                 switch self.configuration.skippedAdStrategy {
@@ -126,11 +136,13 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                     guard let adBreakOffset = self.adScheduler?.firstUnwatchedAdBreakOffset(before: event.currentTime) else {
                         return
                     }
+                    os_log(.debug,log: .adIntegration, "SEEKED: Playing first unwatched ad break at: %f", adBreakOffset)
                     playSeekedOverAdBreak(event.currentTime, adBreakOffset)
                 case .playLast:
                     guard let adBreakOffset = self.adScheduler?.lastUnwatchedAdBreakOffset(before: event.currentTime) else {
                         return
                     }
+                    os_log(.debug,log: .adIntegration, "SEEKED: Playing last unwatched ad break at: %f", adBreakOffset)
                     playSeekedOverAdBreak(event.currentTime, adBreakOffset)
                 default:
                     // No-op
@@ -141,6 +153,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         
         playEventListener = player.addEventListener(type: PlayerEventTypes.PLAY) {  [weak self] event in
             self?.pingScheduler?.onStart(time: event.currentTime)
+            os_log(.debug,log: .adIntegration, "PLAY: Received play event at: %f", event.currentTime)
         }
     }
 
@@ -167,13 +180,14 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
-                let source: UplynkAdIntegrationSource = (sourceDescription, typedSource)
                 let preplayResponse = try await self.onPrePlayRequest(preplaySrcUrl: preplayURL, assetType: uplynkConfig.assetType)
                 self.onPrePlayResponse(response: preplayResponse,
-                                       source: source,
+                                       sourceDescription: sourceDescription,
+                                       typedSource: typedSource,
                                        ssaiConfiguration: uplynkConfig)
                 let adScheduler = self.createAdScheduler(preplayResponse: preplayResponse)
                 if uplynkConfig.pingFeature != .noPing {
+                    os_log(.debug,log: .adIntegration, "Scheduling ping")
                     pingScheduler = PingScheduler(urlBuilder: urlBuilder,
                                                   prefix: preplayResponse.prefix,
                                                   sessionId: preplayResponse.sid, 
@@ -198,13 +212,16 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     }
     
     func skipAd(ad: Ad) -> Bool {
+        os_log(.debug,log: .adIntegration, "Handling skip ad")
         guard configuration.defaultSkipOffset != -1,
               let adStartTime = adScheduler?.getCurrentAdBreakStartTime(),
               adStartTime + Double(configuration.defaultSkipOffset) <= player.currentTime else {
+            os_log(.debug,log: .adIntegration, "Exiting skip ad")
             return true
         }
         
         if let seekToTime = adScheduler?.getCurrentAdBreakEndTime() {
+            os_log(.debug,log: .adIntegration, "Skipping the current adbreak %f", seekToTime)
             seek(to: seekToTime)
         }
         return true
@@ -218,6 +235,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     
     func destroy() {
         pingScheduler = nil
+        adScheduler = nil
     }
 
     private func createAdScheduler(preplayResponse: PrePlayResponseProtocol) -> AdScheduler {
@@ -236,20 +254,22 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     }
     
     private func onPrePlayResponse(response: PrePlayResponseProtocol,
-                                   source: UplynkAdIntegrationSource,
+                                   sourceDescription: SourceDescription,
+                                   typedSource: TypedSource,
                                    ssaiConfiguration: UplynkSSAIConfiguration) {
-        let typedSource: TypedSource = source.1
+        os_log(.debug,log: .adIntegration, "Received preplay response")
         let playURL = if ssaiConfiguration.playbackURLParametersString.isEmpty == false {
             "\(response.playURL)?\(ssaiConfiguration.playbackURLParametersString)"
         } else {
             response.playURL
         }
+        os_log(.debug,log: .adIntegration, "Play url: %@", playURL)
         typedSource.src = URL(string: playURL)!
         if let drm = response.drm, drm.required {
-            // TODO: This will need cleanup when we figure out the DRM bit.
-            typedSource.drm = FairPlayDRMConfiguration(customIntegrationId: UplynkAdIntegration.INTEGRATION_ID, licenseAcquisitionURL: "", certificateURL: drm.fairplayCertificateURL)
+            typedSource.drm = FairPlayDRMConfiguration(customIntegrationId: UplynkAdIntegration.INTEGRATION_ID, 
+                                                       licenseAcquisitionURL: "",
+                                                       certificateURL: drm.fairplayCertificateURL)
         }
-        let sourceDescription: SourceDescription = source.0
         self.player.source = sourceDescription
         
         if let liveResponse = response as? PrePlayLiveResponse {

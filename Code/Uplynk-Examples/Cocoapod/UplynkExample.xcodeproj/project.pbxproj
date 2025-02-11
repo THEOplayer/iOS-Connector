@@ -17,6 +17,10 @@
 		E8CCAD722D4B2B3D0043C405 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8CCAD712D4B2B3D0043C405 /* Assets.xcassets */; };
 		E8CCAD752D4B2B3D0043C405 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E8CCAD732D4B2B3D0043C405 /* LaunchScreen.storyboard */; };
 		E8CCAD7D2D4B2C410043C405 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCAD7C2D4B2C410043C405 /* PlayerView.swift */; };
+		E8DECFCB2D5AD435008BD10F /* THEOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DECFC82D5AD435008BD10F /* THEOComponent.swift */; };
+		E8DECFCC2D5AD435008BD10F /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DECFC92D5AD435008BD10F /* Theme.swift */; };
+		E8DECFCE2D5AD770008BD10F /* ViewController+AdEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DECFCD2D5AD770008BD10F /* ViewController+AdEvents.swift */; };
+		E8DECFD22D5ADAAE008BD10F /* PlayerInterfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DECFD12D5ADAAE008BD10F /* PlayerInterfaceView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +38,10 @@
 		E8CCAD742D4B2B3D0043C405 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E8CCAD762D4B2B3D0043C405 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E8CCAD7C2D4B2C410043C405 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		E8DECFC82D5AD435008BD10F /* THEOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = THEOComponent.swift; sourceTree = "<group>"; };
+		E8DECFC92D5AD435008BD10F /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		E8DECFCD2D5AD770008BD10F /* ViewController+AdEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+AdEvents.swift"; sourceTree = "<group>"; };
+		E8DECFD12D5ADAAE008BD10F /* PlayerInterfaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerInterfaceView.swift; path = "../../../../../../samples-ios-sdk/Shared/PlayerInterfaceView.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,13 +99,33 @@
 				E8CCAD762D4B2B3D0043C405 /* Info.plist */,
 				E8CCAD732D4B2B3D0043C405 /* LaunchScreen.storyboard */,
 				E8CCAD6E2D4B2B3C0043C405 /* Main.storyboard */,
-				E8CCAD7C2D4B2C410043C405 /* PlayerView.swift */,
+				E8DECFCF2D5ADA6B008BD10F /* PlayerInterfaceView */,
 				E8CCAD6A2D4B2B3C0043C405 /* SceneDelegate.swift */,
+				E8DECFD02D5ADA8C008BD10F /* Sources */,
 				E8CCAD6C2D4B2B3C0043C405 /* ViewController.swift */,
+				E8DECFCD2D5AD770008BD10F /* ViewController+AdEvents.swift */,
+			);
+			path = UplynkExample;
+			sourceTree = "<group>";
+		};
+		E8DECFCF2D5ADA6B008BD10F /* PlayerInterfaceView */ = {
+			isa = PBXGroup;
+			children = (
+				E8DECFD12D5ADAAE008BD10F /* PlayerInterfaceView.swift */,
+				E8CCAD7C2D4B2C410043C405 /* PlayerView.swift */,
+				E8DECFC92D5AD435008BD10F /* Theme.swift */,
+				E8DECFC82D5AD435008BD10F /* THEOComponent.swift */,
+			);
+			path = PlayerInterfaceView;
+			sourceTree = "<group>";
+		};
+		E8DECFD02D5ADA8C008BD10F /* Sources */ = {
+			isa = PBXGroup;
+			children = (
 				E82885582D557C6100323261 /* TestSources.swift */,
 				E828855A2D55835800323261 /* FIFASources.swift */,
 			);
-			path = UplynkExample;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -217,10 +245,14 @@
 			files = (
 				E8CCAD6D2D4B2B3C0043C405 /* ViewController.swift in Sources */,
 				E828855B2D55835800323261 /* FIFASources.swift in Sources */,
+				E8DECFCE2D5AD770008BD10F /* ViewController+AdEvents.swift in Sources */,
 				E8CCAD692D4B2B3C0043C405 /* AppDelegate.swift in Sources */,
 				E8CCAD6B2D4B2B3C0043C405 /* SceneDelegate.swift in Sources */,
+				E8DECFD22D5ADAAE008BD10F /* PlayerInterfaceView.swift in Sources */,
 				E82885592D557C6100323261 /* TestSources.swift in Sources */,
 				E8CCAD7D2D4B2C410043C405 /* PlayerView.swift in Sources */,
+				E8DECFCC2D5AD435008BD10F /* Theme.swift in Sources */,
+				E8DECFCB2D5AD435008BD10F /* THEOComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

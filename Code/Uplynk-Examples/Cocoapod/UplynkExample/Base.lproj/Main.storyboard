@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="c9c-f5-llT">
-                                <rect key="frame" x="16" y="59" width="361" height="583"/>
+                                <rect key="frame" x="16" y="59" width="361" height="529"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LCX-HK-Hgl">
                                         <rect key="frame" x="0.0" y="0.0" width="361" height="225.66666666666666"/>
@@ -115,59 +115,28 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Ehp-eV-xjD">
-                                        <rect key="frame" x="0.0" y="423" width="305" height="160"/>
+                                        <rect key="frame" x="0.0" y="423" width="74" height="106"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Actions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FLQ-if-GJb">
-                                                <rect key="frame" x="0.0" y="0.0" width="57" height="34"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="57" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HPQ-NT-zoA">
-                                                <rect key="frame" x="0.0" y="42" width="74" height="34"/>
+                                                <rect key="frame" x="0.0" y="38" width="74" height="30"/>
                                                 <state key="normal" title="play/pause"/>
                                                 <connections>
                                                     <action selector="togglePlayPause:" destination="y7s-zw-jXu" eventType="touchUpInside" id="k3i-Ty-6S7"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LzU-Y6-5vS">
-                                                <rect key="frame" x="0.0" y="84" width="46" height="34"/>
+                                                <rect key="frame" x="0.0" y="76" width="46" height="30"/>
                                                 <state key="normal" title="skipAd"/>
                                                 <connections>
                                                     <action selector="skipAd:" destination="y7s-zw-jXu" eventType="touchUpInside" id="nTq-Gk-vQS"/>
                                                 </connections>
                                             </button>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Mca-Ho-Hyr">
-                                                <rect key="frame" x="0.0" y="126" width="305" height="34"/>
-                                                <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q5Q-IE-wP6">
-                                                        <rect key="frame" x="0.0" y="0.0" width="33" height="34"/>
-                                                        <state key="normal" title="-30s"/>
-                                                        <connections>
-                                                            <action selector="seekBack10:" destination="y7s-zw-jXu" eventType="touchUpInside" id="HdV-OW-8Go"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KR8-Kh-7g2">
-                                                        <rect key="frame" x="43" y="0.0" width="36" height="34"/>
-                                                        <state key="normal" title="+30s"/>
-                                                        <connections>
-                                                            <action selector="seekForward10:" destination="y7s-zw-jXu" eventType="touchUpInside" id="r3a-KM-Kuk"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ueH-Od-EIO">
-                                                        <rect key="frame" x="89" y="0.0" width="148" height="34"/>
-                                                        <state key="normal" title="Seek To (in seconds):"/>
-                                                        <connections>
-                                                            <action selector="seekToSeconds:" destination="y7s-zw-jXu" eventType="touchUpInside" id="JgP-cY-adg"/>
-                                                        </connections>
-                                                    </button>
-                                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="100" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="F6L-WN-YL2">
-                                                        <rect key="frame" x="247" y="0.0" width="58" height="34"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                        <textInputTraits key="textInputTraits"/>
-                                                    </textField>
-                                                </subviews>
-                                            </stackView>
                                         </subviews>
                                     </stackView>
                                 </subviews>
@@ -217,7 +186,6 @@
                         <outlet property="adsConfigurationStackView" destination="9hu-mb-bep" id="vDE-qF-pJR"/>
                         <outlet property="playerStackView" destination="c9c-f5-llT" id="FK2-0c-nlO"/>
                         <outlet property="playerViewContainer" destination="LCX-HK-Hgl" id="fjT-sG-9WB"/>
-                        <outlet property="seekSecondsTextField" destination="F6L-WN-YL2" id="o3O-Dl-pXA"/>
                         <outlet property="skipOffsetValue" destination="OPq-Pq-qH3" id="09J-QB-nUC"/>
                         <outlet property="skipStrategySegmentedControl" destination="nJW-8P-GN0" id="s3H-K9-TMP"/>
                         <outlet property="sourceSegmentedControl" destination="Vj3-vS-5LI" id="dHH-rM-tsg"/>
