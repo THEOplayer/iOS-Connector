@@ -39,7 +39,7 @@ final class THEOplayerConnectorUplynkTests: XCTestCase {
 
     func setSourceSendsValidPrePlayResponseEvent(type: UplynkSSAIConfiguration.AssetType) async {
         let expectation = XCTestExpectation(description: "Valid PrePlay Response is sent")
-        connector = UplynkConnector(player: theoplayer, proxyController: proxySSAIController!, uplynkAPI: uplynkAPI, eventListener: mockEventListener)
+        connector = UplynkConnector(player: theoplayer, proxyController: proxySSAIController!, uplynkAPI: uplynkAPI, configuration: .init(), eventListener: mockEventListener)
         
         switch type {
         case .asset:
@@ -70,7 +70,7 @@ final class THEOplayerConnectorUplynkTests: XCTestCase {
     func testSetSourceSendsErrorOnNetworkError() async throws {
         let expectation = XCTestExpectation(description: "Error response is sent")
         uplynkAPI.willFailRequestVOD = true
-        connector = UplynkConnector(player: theoplayer, proxyController: proxySSAIController!, uplynkAPI: uplynkAPI, eventListener: mockEventListener)
+        connector = UplynkConnector(player: theoplayer, proxyController: proxySSAIController!, uplynkAPI: uplynkAPI, configuration: .init(), eventListener: mockEventListener)
         
         mockEventListener.errorCallback = { error in
             XCTAssertTrue(error.url.contains("preplay"))

@@ -91,7 +91,8 @@ class ViewController: UIViewController {
     private func configureUplynkConnector() {
         uplynkConnector = UplynkConnector(player: player,
                                           configuration: .init(defaultSkipOffset: selectedSkipOffsetValue,
-                                                               skippedAdStrategy: selectedSkipStrategy))
+                                                               skippedAdStrategy: selectedSkipStrategy),
+                                          eventListener: self)
         setupSource()
     }
     
@@ -272,14 +273,6 @@ class ViewController: UIViewController {
         stop()
         setupPlayerView()
     }
-
-    @IBAction func togglePlayPause(_ sender: UIButton) {
-        if self.player.paused {
-            self.player.play()
-        } else {
-            self.player.pause()
-        }
-    }
         
     @IBAction func skipAd(_ sender: Any) {
         self.player.ads.skip()
@@ -338,5 +331,28 @@ extension ViewController: PlayerInterfaceViewDelegate {
         // Set current time will trigger waiting event
         player.currentTime = Double(timeInSeconds)
         self.playerInterfaceView.currentTime = timeInSeconds
+    }
+}
+
+
+extension ViewController: UplynkEventListener {
+    func onPreplayLiveResponse(_ response: THEOplayerConnectorUplynk.PrePlayLiveResponse) {
+        // no-op
+    }
+    
+    func onPreplayVODResponse(_ response: THEOplayerConnectorUplynk.PrePlayVODResponse) {
+        // no-op
+    }
+    
+    func onAssetInfoResponse(_ response: THEOplayerConnectorUplynk.AssetInfoResponse) {
+        print("Asset Info: \(String(describing: response))")
+    }
+    
+    func onPingResponse(_ response: THEOplayerConnectorUplynk.PingResponse) {
+        // no-op
+    }
+    
+    func onError(_ error: THEOplayerConnectorUplynk.UplynkError) {
+        print("Error Occured: { url: \(error.url), description: \(error.localizedDescription)")
     }
 }

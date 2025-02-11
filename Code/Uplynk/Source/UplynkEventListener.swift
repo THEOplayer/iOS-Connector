@@ -12,6 +12,8 @@ public protocol UplynkEventListener: AnyObject {
     func onPreplayLiveResponse(_ response: PrePlayLiveResponse)
     func onPreplayVODResponse(_ response: PrePlayVODResponse)
     
+    func onAssetInfoResponse(_ response: AssetInfoResponse)
+    
     func onPingResponse(_ response: PingResponse)
     
     func onError(_ error: UplynkError)

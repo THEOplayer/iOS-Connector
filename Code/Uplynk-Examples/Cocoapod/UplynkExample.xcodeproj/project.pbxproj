@@ -20,7 +20,7 @@
 		E8DECFCB2D5AD435008BD10F /* THEOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DECFC82D5AD435008BD10F /* THEOComponent.swift */; };
 		E8DECFCC2D5AD435008BD10F /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DECFC92D5AD435008BD10F /* Theme.swift */; };
 		E8DECFCE2D5AD770008BD10F /* ViewController+AdEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DECFCD2D5AD770008BD10F /* ViewController+AdEvents.swift */; };
-		E8DECFD22D5ADAAE008BD10F /* PlayerInterfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DECFD12D5ADAAE008BD10F /* PlayerInterfaceView.swift */; };
+		F54AF8572D5B1A750013F253 /* PlayerInterfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54AF8562D5B1A750013F253 /* PlayerInterfaceView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,7 +41,7 @@
 		E8DECFC82D5AD435008BD10F /* THEOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = THEOComponent.swift; sourceTree = "<group>"; };
 		E8DECFC92D5AD435008BD10F /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		E8DECFCD2D5AD770008BD10F /* ViewController+AdEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+AdEvents.swift"; sourceTree = "<group>"; };
-		E8DECFD12D5ADAAE008BD10F /* PlayerInterfaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerInterfaceView.swift; path = "../../../../../../samples-ios-sdk/Shared/PlayerInterfaceView.swift"; sourceTree = "<group>"; };
+		F54AF8562D5B1A750013F253 /* PlayerInterfaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerInterfaceView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,7 +111,7 @@
 		E8DECFCF2D5ADA6B008BD10F /* PlayerInterfaceView */ = {
 			isa = PBXGroup;
 			children = (
-				E8DECFD12D5ADAAE008BD10F /* PlayerInterfaceView.swift */,
+				F54AF8562D5B1A750013F253 /* PlayerInterfaceView.swift */,
 				E8CCAD7C2D4B2C410043C405 /* PlayerView.swift */,
 				E8DECFC92D5AD435008BD10F /* Theme.swift */,
 				E8DECFC82D5AD435008BD10F /* THEOComponent.swift */,
@@ -248,7 +248,7 @@
 				E8DECFCE2D5AD770008BD10F /* ViewController+AdEvents.swift in Sources */,
 				E8CCAD692D4B2B3C0043C405 /* AppDelegate.swift in Sources */,
 				E8CCAD6B2D4B2B3C0043C405 /* SceneDelegate.swift in Sources */,
-				E8DECFD22D5ADAAE008BD10F /* PlayerInterfaceView.swift in Sources */,
+				F54AF8572D5B1A750013F253 /* PlayerInterfaceView.swift in Sources */,
 				E82885592D557C6100323261 /* TestSources.swift in Sources */,
 				E8CCAD7D2D4B2C410043C405 /* PlayerView.swift in Sources */,
 				E8DECFCC2D5AD435008BD10F /* Theme.swift in Sources */,

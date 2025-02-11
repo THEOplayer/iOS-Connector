@@ -43,18 +43,7 @@ class PlayerInterfaceView: UIView {
     private var slider: UISlider!
     private var progressLabel: UILabel!
 
-    // Auto hide timer variable and interval constant
-    private var autoHideTimer: Timer? = nil
-    private let autoHideTimeInSeconds: Double = 5.0
-
     // Boolean flag to show/hide the interface
-    private var showInterface: Bool = true {
-        didSet {
-            // Start / stop auto hide timer and show / hide interface accordingly
-            showInterface ? startAutoHideTimer() : stopAutoHideTimer()
-            containerView.isHidden = !showInterface
-        }
-    }
     private var isInterfaceShowing: Bool {
         return state == .initialise || !containerView.isHidden
     }
@@ -73,7 +62,6 @@ class PlayerInterfaceView: UIView {
     // Display corresponding UI components based on the view state
     var state: PlayerInterfaceViewState! {
         didSet {
-            stopAutoHideTimer()
             activityIndicatorView.stopAnimating()
             playButton.isHidden = true
             pauseButton.isHidden = true
@@ -94,7 +82,6 @@ class PlayerInterfaceView: UIView {
                 skipForwardButton.isHidden = false
                 footerView.isHidden = false
             case .playing:
-                startAutoHideTimer()
                 pauseButton.isHidden = false
                 skipBackwardButton.isHidden = false
                 skipForwardButton.isHidden = false
@@ -105,7 +92,6 @@ class PlayerInterfaceView: UIView {
                 skipForwardButton.isHidden = false
                 footerView.isHidden = false
             case .adplaying:
-                startAutoHideTimer()
                 pauseButton.isHidden = false
                 footerView.isHidden = false
                 slider.isEnabled = false
@@ -171,15 +157,10 @@ class PlayerInterfaceView: UIView {
 
     private func setupView() {
         self.translatesAutoresizingMaskIntoConstraints = false
-
-        let tapGestureReconizer = UITapGestureRecognizer(target: self, action: #selector(onTapped))
-        tapGestureReconizer.delegate = self
-        self.addGestureRecognizer(tapGestureReconizer)
     }
 
     private func setupContainerView() {
         containerView = THEOComponent.view()
-        
 
         self.addSubview(containerView)
         containerView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
@@ -298,24 +279,6 @@ class PlayerInterfaceView: UIView {
         }
     }
 
-    // MARK: - Start/stop auto hide timer
-
-    private func stopAutoHideTimer() {
-        guard autoHideTimer != nil else { return }
-        autoHideTimer?.invalidate()
-        autoHideTimer = nil
-    }
-
-    private func startAutoHideTimer() {
-        // Always terminate previous timer
-        stopAutoHideTimer()
-        // Create new timer
-        autoHideTimer =  Timer.scheduledTimer(withTimeInterval: autoHideTimeInSeconds, repeats: false) { [weak self] _ in
-            guard let self = self else { return }
-            self.showInterface = false
-        }
-    }
-
     // MARK: - Gesture callback
 
     @objc private func onTapped(sender: UITapGestureRecognizer) {
@@ -325,22 +288,18 @@ class PlayerInterfaceView: UIView {
     // MARK: - Button callbacks
 
     @objc private func onSkipBackward() {
-        showInterface = true
         delegate?.skip(isForward: false)
     }
 
     @objc private func onPlay() {
-        showInterface = true
         delegate?.play()
     }
 
     @objc private func onPause() {
-        showInterface = true
         delegate?.pause()
     }
 
     @objc private func onSkipForward() {
-        showInterface = true
         delegate?.skip(isForward: true)
     }
 
@@ -356,7 +315,6 @@ class PlayerInterfaceView: UIView {
             tappedValue = Float((xOffset * CGFloat(slider.maximumValue) / slider.frame.size.width))
         }
 
-        showInterface = true
         slider.setValue(tappedValue, animated: true)
         delegate?.seek(timeInSeconds: tappedValue)
     }
@@ -366,9 +324,6 @@ class PlayerInterfaceView: UIView {
             switch touch.phase {
             case .began:
                 isDraggingSlider = true
-                showInterface = true
-                // Stop timer to prevent auto hide during dragging
-                stopAutoHideTimer()
             case .moved:
                 // Update time label to reflect the dragged time
                 currentTimeString = convertTimeString(time: slider.value)
@@ -379,31 +334,5 @@ class PlayerInterfaceView: UIView {
                 break
             }
         }
-    }
-}
-
-// MARK: - UIGestureRecognizerDelegate
-
-extension PlayerInterfaceView: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        /* UIStackView is non-drawing view and controllerStackView
-            covers big part of the screen which can be tapped by user
-            easily. Since touch event for items on controllerStackView
-            will be handled with their own handler; tapping
-            controllerStackView will be considered as tapping the
-            controller interface view
-         */
-        let isControlViewTapped = (touch.view == containerView || touch.view == controllerStackView)
-        // Toggle to show/hide interface is only needed in the playing state. The interface stays on for other states
-        if state == .playing || state == .adplaying {
-            if isInterfaceShowing && isControlViewTapped {
-                // If interface is currently showing and user tapped on empty area, hide interface and stop auto hide timer
-                showInterface = false
-            } else {
-                // Else show interface and set auto hide timer
-                showInterface = true
-            }
-        }
-        return isControlViewTapped
     }
 }

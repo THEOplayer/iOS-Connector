@@ -25,7 +25,15 @@ public struct UplynkLiveAd: Codable, Equatable {
     public let ts: Float
     /// If the ad response provided by FreeWheel contains creative parameters, they will be reported as name-value pairs within this object.
     public let fw_parameters: Dictionary<String, String>?
-    //TODO: Add extensions
+    /// VAST Only
+    ///
+    /// Contains the custom set of VAST extensions returned by the ad server.
+    /// Each custom extension is an `xml` content
+    ///
+    /// You could build deserialization logic if needed depending on the expected structure of this field
+    ///
+    /// Check more info in [documentation](https://docs.edgecast.com/video/#AdIntegration/VAST-VPAID.htm#CustomVASTExt)
+    public let extensions: [String]?
 }
 
 public struct PrePlayDRMConfiguration: Codable, Equatable {

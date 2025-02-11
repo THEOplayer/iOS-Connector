@@ -189,7 +189,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
-                let preplayResponse = try await self.onPrePlayRequest(preplaySrcUrl: preplayURL, assetType: uplynkConfig.assetType)
+                let preplayResponse = try await self.onPrePlayRequest(preplaySrcURL: preplayURL, assetType: uplynkConfig.assetType)
                 self.onPrePlayResponse(response: preplayResponse,
                                        sourceDescription: sourceDescription,
                                        typedSource: typedSource,
@@ -253,13 +253,44 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         return AdScheduler(adBreaks: adBreaks, adHandler: adHandler)
     }
     
-    private func onPrePlayRequest(preplaySrcUrl: String, assetType: UplynkSSAIConfiguration.AssetType) async throws -> PrePlayResponseProtocol {
+    private func onPrePlayRequest(preplaySrcURL: String, assetType: UplynkSSAIConfiguration.AssetType) async throws -> PrePlayResponseProtocol {
         switch assetType {
         case .asset:
-            return try await uplynkAPI.requestVOD(preplaySrcURL: preplaySrcUrl)
+            return try await uplynkAPI.requestVOD(preplaySrcURL: preplaySrcURL)
         case .channel:
-            return try await uplynkAPI.requestLive(preplaySrcURL: preplaySrcUrl)
+            return try await uplynkAPI.requestLive(preplaySrcURL: preplaySrcURL)
         }
+    }
+    
+    private func onAssetInfoRequest(assetInfoURL: String) async throws -> AssetInfoResponse {
+        return try await uplynkAPI.requestAssetInfo(url: assetInfoURL)
+    }
+    
+    private func performAssetInfoRequests(ssaiConfiguration: UplynkSSAIConfiguration, preplayResponse: PrePlayResponseProtocol) async {
+        await withTaskGroup(of: Void.self) { taskGroup in
+            let assetInfoURLs = UplynkSSAIURLBuilder(ssaiConfiguration: ssaiConfiguration)
+                .buildAssetInfoURLs(sessionID: preplayResponse.sid, prefix: preplayResponse.prefix)
+            assetInfoURLs.forEach { url in
+                taskGroup.addTask { @MainActor in
+                    do {
+                        let assetInfoResponse = try await self.onAssetInfoRequest(assetInfoURL: url)
+                        self.onAssetInfoResponse(assetInfoResponse)
+                    } catch {
+                        let uplynkError = UplynkError(
+                            url: url,
+                            description: error.localizedDescription,
+                            code: .UPLYNK_ERROR_CODE_ASSET_INFO_REQUEST_FAILED)
+                        self.eventListener?.onError(uplynkError)
+                        self.controller.error(error: uplynkError)
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    private func onAssetInfoResponse(_ response: AssetInfoResponse) {
+        eventListener?.onAssetInfoResponse(response)
     }
     
     private func onPrePlayResponse(response: PrePlayResponseProtocol,
@@ -275,7 +306,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         os_log(.debug,log: .adIntegration, "Play url: %@", playURL)
         typedSource.src = URL(string: playURL)!
         if let drm = response.drm, drm.required {
-            typedSource.drm = FairPlayDRMConfiguration(customIntegrationId: UplynkAdIntegration.INTEGRATION_ID, 
+            typedSource.drm = FairPlayDRMConfiguration(customIntegrationId: UplynkAdIntegration.INTEGRATION_ID,
                                                        licenseAcquisitionURL: "",
                                                        certificateURL: drm.fairplayCertificateURL)
         }
@@ -285,6 +316,13 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
             eventListener?.onPreplayLiveResponse(liveResponse)
         } else if let vodResponse = response as? PrePlayVODResponse {
             eventListener?.onPreplayVODResponse(vodResponse)
+        }
+        // Perform AssetInfo requests
+        if (ssaiConfiguration.assetInfo) {
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                await self.performAssetInfoRequests(ssaiConfiguration: ssaiConfiguration, preplayResponse: response)
+            }
         }
     }
     

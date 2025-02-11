@@ -85,4 +85,8 @@ class UplynkAPIMock: UplynkAPIProtocol {
         }
         return pingResponseToReturn ?? .pingResponseWithAdsAndValidNextTime
     }
+    
+    static func requestAssetInfo(url: String) async throws -> THEOplayerConnectorUplynk.AssetInfoResponse {
+        fatalError("Not implemented")
+    }
 }

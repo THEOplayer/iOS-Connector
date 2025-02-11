@@ -63,6 +63,7 @@ private extension UplynkSSAIConfiguration {
                                     "ad": "adtest",
                                     "ad.lib": "15_sec_spots"
                                 ],
+                                assetInfo: true,
                                 uplynkPingConfiguration: .init(adImpressions: true,
                                                                freeWheelVideoViews: true,
                                                                linearAdData: false))
@@ -78,6 +79,7 @@ private extension UplynkSSAIConfiguration {
                                     "ad": "cleardashnew",
                                 ],
                                 contentProtected: true,
+                                assetInfo: true,
                                 uplynkPingConfiguration: .init(adImpressions: false,
                                                                freeWheelVideoViews: false,
                                                                linearAdData: true))
@@ -91,7 +93,8 @@ private extension UplynkSSAIConfiguration {
                                 prefix: "https://content.uplynk.com",
                                 userID: nil,
                                 preplayParameters: [:],
-                                contentProtected: true)
+                                contentProtected: true,
+                                assetInfo: true)
     }
     
     static func source(for fifaSource: FIFASource, useExternalID: Bool) async -> UplynkSSAIConfiguration? {
@@ -130,6 +133,7 @@ private extension UplynkSSAIConfiguration {
                                            prefix: "https://content.uplynk.com",
                                            userID: fifaSource.userID,
                                            contentProtected: false,
+                                           assetInfo: true,
                                            playbackURLParameters: playbackURLComponents)
         } else {
             return UplynkSSAIConfiguration(assetIDs: [fifaSource.assetID],
@@ -138,6 +142,7 @@ private extension UplynkSSAIConfiguration {
                                            prefix: "https://content.uplynk.com",
                                            userID: nil,
                                            contentProtected: false,
+                                           assetInfo: true,
                                            playbackURLParameters: playbackURLComponents)
         }
     }

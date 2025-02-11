@@ -11,6 +11,7 @@ protocol UplynkAPIProtocol {
     static func requestLive(preplaySrcURL: String) async throws -> PrePlayLiveResponse
     static func requestVOD(preplaySrcURL: String) async throws -> PrePlayVODResponse
     static func requestPing(url: String) async throws -> PingResponse
+    static func requestAssetInfo(url: String) async throws -> AssetInfoResponse
 }
 
 class UplynkAPI: UplynkAPIProtocol {
@@ -35,5 +36,12 @@ class UplynkAPI: UplynkAPIProtocol {
         let decoder: JSONDecoder = .init()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try decoder.decode(PingResponse.self, from: data)
+    }
+    
+    static func requestAssetInfo(url: String) async throws -> AssetInfoResponse {
+        let data = try await HTTPSConnection.request(type: .get, urlString: url)
+        let decoder: JSONDecoder = .init()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode(AssetInfoResponse.self, from: data)
     }
 }
