@@ -42,7 +42,7 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="344" height="32"/>
                                                         <segments>
                                                             <segment title="Live"/>
-                                                            <segment title="Ads"/>
+                                                            <segment title="VOD"/>
                                                             <segment title="MultiAssetDRM"/>
                                                         </segments>
                                                         <connections>
@@ -163,7 +163,6 @@
                                                     </button>
                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="100" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="F6L-WN-YL2">
                                                         <rect key="frame" x="247" y="0.0" width="58" height="34"/>
-                                                        <nil key="textColor"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                         <textInputTraits key="textInputTraits"/>
                                                     </textField>
@@ -188,10 +187,15 @@
                                     </mask>
                                 </variation>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="XMh-1G-IJd">
+                                <rect key="frame" x="178" y="407.66666666666669" width="37" height="37"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="JDO-Op-WcM"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="XMh-1G-IJd" firstAttribute="centerX" secondItem="bJC-6J-enq" secondAttribute="centerX" id="3FI-b4-EpN"/>
+                            <constraint firstItem="XMh-1G-IJd" firstAttribute="centerY" secondItem="bJC-6J-enq" secondAttribute="centerY" id="JEz-g6-5nn"/>
                             <constraint firstItem="c9c-f5-llT" firstAttribute="leading" secondItem="bJC-6J-enq" secondAttribute="leadingMargin" id="Pnk-in-Jxc"/>
                             <constraint firstItem="JDO-Op-WcM" firstAttribute="bottom" secondItem="c9c-f5-llT" secondAttribute="bottom" id="VUZ-II-dh8"/>
                             <constraint firstItem="c9c-f5-llT" firstAttribute="trailing" secondItem="bJC-6J-enq" secondAttribute="trailingMargin" id="aqU-Uo-ccx"/>
@@ -209,7 +213,9 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="XMh-1G-IJd" id="Qd8-xq-llj"/>
                         <outlet property="adsConfigurationStackView" destination="9hu-mb-bep" id="vDE-qF-pJR"/>
+                        <outlet property="playerStackView" destination="c9c-f5-llT" id="FK2-0c-nlO"/>
                         <outlet property="playerViewContainer" destination="LCX-HK-Hgl" id="fjT-sG-9WB"/>
                         <outlet property="seekSecondsTextField" destination="F6L-WN-YL2" id="o3O-Dl-pXA"/>
                         <outlet property="skipOffsetValue" destination="OPq-Pq-qH3" id="09J-QB-nUC"/>

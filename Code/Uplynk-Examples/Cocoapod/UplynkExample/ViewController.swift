@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     private var uplynkConnector: UplynkConnector!
     
     private var eventHandler: [EventListener] = []
+    @IBOutlet weak var playerStackView: UIStackView!
     @IBOutlet weak var playerViewContainer: UIView!
     @IBOutlet weak var stepper: UIStepper!
     @IBOutlet weak var sourceSegmentedControl: UISegmentedControl!
@@ -21,6 +22,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var adsConfigurationStackView: UIStackView!
     @IBOutlet weak var skipOffsetValue: UILabel!
     @IBOutlet weak var seekSecondsTextField: UITextField!
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,12 +77,8 @@ class ViewController: UIViewController {
         case 0:
             player.source = .live
         case 1:
-            player.source = .ads
-//            Task { @MainActor in
-//                if let source = await SourceDescription.source(for: .source1) {
-//                    player.source = source
-//                }
-//            }
+//            player.source = .ads
+            loadFIFASourceAndSetToPlayer()
         case 2:
             player.source = .multiDRM
         default:
@@ -298,7 +296,29 @@ class ViewController: UIViewController {
         self.player.ads.skip()
     }
     
-    func stop() {
+    private func stop() {
         player.stop()
+    }
+    
+    private func startLoading() {
+        activityIndicatorView.startAnimating()
+        view.isUserInteractionEnabled = false
+    }
+    
+    private func stopLoading() {
+        activityIndicatorView.stopAnimating()
+        view.isUserInteractionEnabled = true
+    }
+    
+    private func loadFIFASourceAndSetToPlayer() {
+        startLoading()
+        playerStackView.alpha = 0.5
+        Task { @MainActor in
+            if let source = await SourceDescription.source(for: .source5, useExternalID: false) {
+                player.source = source
+            }
+            stopLoading()
+            playerStackView.alpha = 1.0
+        }
     }
 }
