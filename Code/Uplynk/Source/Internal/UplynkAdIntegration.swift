@@ -13,7 +13,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     enum State: Equatable {
         case playingContent
         case seekingToAdStart
-        case playingSeekedOverAdBreak(seekedTime: Double)
+        case playingSeekedOverAdBreak(seekedTime: Double, hasSeekedOnToAd: Bool)
     }
     
     static let INTEGRATION_ID: String = "uplynk"
@@ -54,7 +54,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
             self.pingScheduler?.onTimeUpdate(time: event.currentTime)
             self.adScheduler?.onTimeUpdate(time: event.currentTime)
             
-            if case let .playingSeekedOverAdBreak(seekedTime: seekedTime) = self.state,
+            if case let .playingSeekedOverAdBreak(seekedTime: seekedTime, hasSeekedOnToAd: hasSeekedOnToAd) = self.state,
                 self.adScheduler?.isPlayingAd == false,
                 self.configuration.skippedAdStrategy != .playNone {
                 
@@ -71,6 +71,27 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                         self.seek(to: adBreakOffset)
                     } else {
                         os_log(.debug,log: .adIntegration, "TIME_UPDATE: No more ads to watch for `play all` strategy")
+                        if hasSeekedOnToAd {
+                            os_log(.debug,log: .adIntegration, "TIME_UPDATE: Skip seeking as the user has seeked on to an ad")
+                        } else {
+                            os_log(.debug,log: .adIntegration, "TIME_UPDATE: Seek to point: %f", seekedTime)
+                            self.seek(to: seekedTime) { [weak self] _, error in
+                                guard error == nil else {
+                                    os_log(.debug,log: .adIntegration, "TIME_UPDATE: Failed to seek with error: %@", error?.localizedDescription ?? "N/A")
+                                    return
+                                }
+                                self?.state = .playingContent
+                                os_log(.debug,log: .adIntegration, "TIME_UPDATE: Reset state to playing content")
+                            }
+                        }
+                    }
+                case .playLast:
+                    // We have already played the last ad from on `seeked` function
+                    // Reset the state and seek to original seek time
+                    os_log(.debug,log: .adIntegration, "TIME_UPDATE: No more ads to watch for `play last` strategy")
+                    if hasSeekedOnToAd {
+                        os_log(.debug,log: .adIntegration, "TIME_UPDATE: Skip seeking as the user has seeked on to an ad")
+                    } else {
                         os_log(.debug,log: .adIntegration, "TIME_UPDATE: Seek to point: %f", seekedTime)
                         self.seek(to: seekedTime) { [weak self] _, error in
                             guard error == nil else {
@@ -78,20 +99,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                                 return
                             }
                             self?.state = .playingContent
-                            os_log(.debug,log: .adIntegration, "TIME_UPDATE: Reset state to playing content")
                         }
-                    }
-                case .playLast:
-                    // We have already played the last ad from on `seeked` function
-                    // Reset the state and seek to original seek time
-                    os_log(.debug,log: .adIntegration, "TIME_UPDATE: No more ads to watch for `play last` strategy")
-                    os_log(.debug,log: .adIntegration, "TIME_UPDATE: Seek to point: %f", seekedTime)
-                    self.seek(to: seekedTime) { [weak self] _, error in
-                        guard error == nil else {
-                            os_log(.debug,log: .adIntegration, "TIME_UPDATE: Failed to seek with error: %@", error?.localizedDescription ?? "N/A")
-                            return
-                        }
-                        self?.state = .playingContent
                     }
                 default:
                     break
@@ -127,7 +135,8 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                             os_log(.debug,log: .adIntegration, "SEEKED: Failed to seek with error: %@", error?.localizedDescription ?? "N/A")
                             return
                         }
-                        self?.state = .playingSeekedOverAdBreak(seekedTime: seekedTime)
+                        self?.state = .playingSeekedOverAdBreak(seekedTime: seekedTime,
+                                                                hasSeekedOnToAd: self?.adScheduler?.checkIfThereIsAnAdBreak(on: seekedTime) == true)
                         os_log(.debug,log: .adIntegration, "SEEKED: Setting state to playing seeked over adbreak with stored seek time %f", seekedTime)
                     }
                 }

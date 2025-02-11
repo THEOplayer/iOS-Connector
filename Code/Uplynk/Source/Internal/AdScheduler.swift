@@ -55,6 +55,12 @@ final class AdScheduler {
         return currentAdBreak.adBreak.timeOffset + currentAdBreak.adBreak.duration
     }
     
+    func checkIfThereIsAnAdBreak(on time: Double) -> Bool {
+        adBreaks.contains(where: {
+            ($0.adBreak.timeOffset...($0.adBreak.timeOffset + $0.adBreak.duration)).contains(time)
+        })
+    }
+    
     func firstUnwatchedAdBreakOffset(before time: Double) -> Double? {
         adBreaks
             .first { $0.state == .notPlayed && $0.adBreak.timeOffset <= time }?
