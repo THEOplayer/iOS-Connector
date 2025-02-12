@@ -16,7 +16,7 @@ final class AdHandlerTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         mockController = MockServerSideAdIntegrationController()
-        adHandler = AdHandler(controller: mockController)
+        adHandler = AdHandler(controller: mockController, skipOffset: -1)
     }
     
     override func tearDownWithError() throws {
@@ -56,7 +56,7 @@ final class AdHandlerTests: XCTestCase {
         adHandler.createAdBreak(adBreak: adBreak)
 
         // When
-        adHandler.onAdBegin(uplynkAd: adBreak.ads[0])
+        adHandler.onAdBegin(uplynkAd: adBreak.ads[0], in: adBreak)
         
         // Then
         XCTAssertEqual(mockController.events.count, 3)
@@ -78,7 +78,7 @@ final class AdHandlerTests: XCTestCase {
         adHandler.createAdBreak(adBreak: adBreak)
         
         // When
-        adHandler.onAdEnd(uplynkAd: adBreak.ads[0])
+        adHandler.onAdEnd(uplynkAd: adBreak.ads[0], in: adBreak)
         
         // Then
         XCTAssertEqual(mockController.events.count, 3)

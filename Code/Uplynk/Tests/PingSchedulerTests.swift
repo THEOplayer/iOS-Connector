@@ -24,7 +24,8 @@ final class PingSchedulerTests: XCTestCase {
         try super.setUpWithError()
         mockServerSideAdIntegrationController = MockServerSideAdIntegrationController()
         adScheduler = AdScheduler(adBreaks: [],
-                                  adHandler: AdHandler(controller: mockServerSideAdIntegrationController))
+                                  adHandler: AdHandler(controller: mockServerSideAdIntegrationController, 
+                                                       skipOffset: -1))
         mockUrlBuilder = MockUplynkSSAIURLBuilder(ssaiConfiguration: .vodConfig)
         mockEventListener = UplynkEventListenerMock()
         pingScheduler = PingScheduler(urlBuilder: mockUrlBuilder,

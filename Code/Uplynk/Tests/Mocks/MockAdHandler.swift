@@ -20,11 +20,11 @@ final class MockAdHandler: AdHandlerProtocol {
         events.append(.createAdBreak(adBreak: adBreak))
     }
     
-    func onAdBegin(uplynkAd: UplynkAd) {
+    func onAdBegin(uplynkAd: UplynkAd, in adBreak: UplynkAdBreak) {
         events.append(.onAdBegin(uplynkAd: uplynkAd))
     }
     
-    func onAdEnd(uplynkAd: UplynkAd) {
+    func onAdEnd(uplynkAd: UplynkAd, in adBreak: UplynkAdBreak) {
         events.append(.onAdEnd(uplynkAd: uplynkAd))
     }
     

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		76FC2F869832418EE2FD9EB5 /* libPods-UplynkExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B7EECC7E474A40423521D0 /* libPods-UplynkExample.a */; };
 		E82885592D557C6100323261 /* TestSources.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82885582D557C6100323261 /* TestSources.swift */; };
-		E828855B2D55835800323261 /* FIFASources.swift in Sources */ = {isa = PBXBuildFile; fileRef = E828855A2D55835800323261 /* FIFASources.swift */; };
+		E828855B2D55835800323261 /* WebSources.swift in Sources */ = {isa = PBXBuildFile; fileRef = E828855A2D55835800323261 /* WebSources.swift */; };
 		E8CCAD692D4B2B3C0043C405 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCAD682D4B2B3C0043C405 /* AppDelegate.swift */; };
 		E8CCAD6B2D4B2B3C0043C405 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCAD6A2D4B2B3C0043C405 /* SceneDelegate.swift */; };
 		E8CCAD6D2D4B2B3C0043C405 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCAD6C2D4B2B3C0043C405 /* ViewController.swift */; };
@@ -28,7 +28,7 @@
 		29B7EECC7E474A40423521D0 /* libPods-UplynkExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-UplynkExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C58B8E8CFB0BEF9DDD3FD03 /* Pods-UplynkExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UplynkExample.debug.xcconfig"; path = "Target Support Files/Pods-UplynkExample/Pods-UplynkExample.debug.xcconfig"; sourceTree = "<group>"; };
 		E82885582D557C6100323261 /* TestSources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSources.swift; sourceTree = "<group>"; };
-		E828855A2D55835800323261 /* FIFASources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FIFASources.swift; sourceTree = "<group>"; };
+		E828855A2D55835800323261 /* WebSources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSources.swift; sourceTree = "<group>"; };
 		E8CCAD652D4B2B3C0043C405 /* UplynkExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UplynkExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8CCAD682D4B2B3C0043C405 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E8CCAD6A2D4B2B3C0043C405 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -123,7 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				E82885582D557C6100323261 /* TestSources.swift */,
-				E828855A2D55835800323261 /* FIFASources.swift */,
+				E828855A2D55835800323261 /* WebSources.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -244,7 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8CCAD6D2D4B2B3C0043C405 /* ViewController.swift in Sources */,
-				E828855B2D55835800323261 /* FIFASources.swift in Sources */,
+				E828855B2D55835800323261 /* WebSources.swift in Sources */,
 				E8DECFCE2D5AD770008BD10F /* ViewController+AdEvents.swift in Sources */,
 				E8CCAD692D4B2B3C0043C405 /* AppDelegate.swift in Sources */,
 				E8CCAD6B2D4B2B3C0043C405 /* SceneDelegate.swift in Sources */,

@@ -34,8 +34,8 @@ extension SourceDescription {
         return SourceDescription(source: typedSource)
     }
     
-    static func source(for fifaSource: FIFASource, useExternalID: Bool) async -> SourceDescription? {
-        guard let ssai = await UplynkSSAIConfiguration.source(for: fifaSource, useExternalID: useExternalID) else {
+    static func source(for webSource: WebSource, useExternalID: Bool) async -> SourceDescription? {
+        guard let ssai = await UplynkSSAIConfiguration.source(for: webSource, useExternalID: useExternalID) else {
             return nil
         }
         let typedSource = TypedSource(src: Self.bigBuckBunnyURL,
@@ -97,10 +97,10 @@ private extension UplynkSSAIConfiguration {
                                 assetInfo: true)
     }
     
-    static func source(for fifaSource: FIFASource, useExternalID: Bool) async -> UplynkSSAIConfiguration? {
+    static func source(for webSource: WebSource, useExternalID: Bool) async -> UplynkSSAIConfiguration? {
         var playbackURLComponents: [(String, String)] = []
-        if fifaSource.tokenRequired {
-            let request = URLRequest(url: fifaSource.url)
+        if webSource.tokenRequired {
+            let request = URLRequest(url: webSource.url)
             do {
                 let (data, _) = try await URLSession.shared.data(for: request)
                 let responseString = String(data: data, encoding: .utf8)
@@ -128,15 +128,15 @@ private extension UplynkSSAIConfiguration {
         
         if useExternalID {
             return UplynkSSAIConfiguration(assetIDs: [],
-                                           externalIDs: fifaSource.externalID.map { [$0] } ?? [],
+                                           externalIDs: webSource.externalID.map { [$0] } ?? [],
                                            assetType: .asset,
                                            prefix: "https://content.uplynk.com",
-                                           userID: fifaSource.userID,
+                                           userID: webSource.userID,
                                            contentProtected: false,
                                            assetInfo: true,
                                            playbackURLParameters: playbackURLComponents)
         } else {
-            return UplynkSSAIConfiguration(assetIDs: [fifaSource.assetID],
+            return UplynkSSAIConfiguration(assetIDs: [webSource.assetID],
                                            externalIDs: [],
                                            assetType: .asset,
                                            prefix: "https://content.uplynk.com",

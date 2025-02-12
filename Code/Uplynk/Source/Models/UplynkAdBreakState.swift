@@ -8,13 +8,13 @@
 
 import Foundation
 
-enum AdState: Equatable {
+enum AdState: String, Equatable {
     case notPlayed
     case started
     case completed
 }
 
-enum AdBreakState: Equatable {
+enum AdBreakState: String, Equatable {
     case notPlayed
     case started
     case completed

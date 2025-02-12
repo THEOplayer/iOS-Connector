@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 final class AdScheduler {
     private(set) var adBreaks: [UplynkAdBreakState] = []
@@ -45,42 +46,49 @@ final class AdScheduler {
         }
     }
     
-    func adBreakEndTimeIfPlayingAlreadyWatchedAdBreak(for time: Double) -> Double? {
-        guard let currentAdBreak = adBreaks.first(where: {
-            ($0.adBreak.timeOffset...($0.adBreak.timeOffset + $0.adBreak.duration)).contains(time)
-        }), currentAdBreak.state == .completed else {
-            return nil
-        }
-        
-        return currentAdBreak.adBreak.timeOffset + currentAdBreak.adBreak.duration
-    }
-    
     func checkIfThereIsAnAdBreak(on time: Double) -> Bool {
         adBreaks.contains(where: {
             ($0.adBreak.timeOffset...($0.adBreak.timeOffset + $0.adBreak.duration)).contains(time)
         })
     }
     
-    func firstUnwatchedAdBreakOffset(before time: Double) -> Double? {
-        adBreaks
-            .first { $0.state == .notPlayed && $0.adBreak.timeOffset <= time }?
-            .adBreak.timeOffset
-    }
-    
-    func lastUnwatchedAdBreakOffset(before time: Double) -> Double? {
-        guard let lastAdBreakBeforeTheSeekedTimed = adBreaks.last (where: { $0.adBreak.timeOffset <= time }),
-              lastAdBreakBeforeTheSeekedTimed.state == .notPlayed else {
+    func adBreakOffsetIfAdBreakContains(time: Double) -> Double? {
+        guard let adBreakContainingTheTime = adBreaks.first (where: {
+            if $0.adBreak.timeOffset <= time {
+                let adBreakStartTime = $0.adBreak.timeOffset
+                let adBreakEndTime = $0.adBreak.timeOffset + $0.adBreak.duration
+
+                return (adBreakStartTime...adBreakEndTime).contains(time)
+            } else {
+                return false
+            }
+        }) else {
             return nil
         }
         
-        // We landed on the last ad break that is not played, we play it regardless.
-        let lastAdStart = lastAdBreakBeforeTheSeekedTimed.adBreak.timeOffset
-        let lastAdEnd = lastAdStart + lastAdBreakBeforeTheSeekedTimed.adBreak.duration
-        print("--> last ad start \(lastAdStart) end \(lastAdEnd) time \(time)")
-        if (lastAdStart...lastAdEnd).contains(time) {
-            return lastAdStart
+        return adBreakContainingTheTime.adBreak.timeOffset
+    }
+    
+    func firstUnwatchedAdBreakOffset(before time: Double) -> Double? {
+        // If we have an unplayed adbreak before the passed in time, play the adbreak from the beginning
+        guard let firstUnplayedAdBreak = adBreaks
+            .first (where: { $0.state == .notPlayed && $0.adBreak.timeOffset <= time })?
+            .adBreak
+        else {
+            return nil
         }
-        
+        return firstUnplayedAdBreak.timeOffset
+    }
+    
+    func lastUnwatchedAdBreakOffset(before time: Double) -> Double? {
+        // Get the last adbreak before the passed in time
+        guard 
+            let lastAdBreakBeforeTheSeekedTimed = adBreaks.last (where: { $0.adBreak.timeOffset <= time }),
+            lastAdBreakBeforeTheSeekedTimed.state == .notPlayed
+        else {
+            return nil
+        }
+
         // If there is an ad break after the current candidate ad break that is already completed,
         // we won't play the candidate ad break
         if adBreaks.first(where: { $0.adBreak.timeOffset > time && $0.state == .completed }) != nil {
@@ -120,7 +128,7 @@ final class AdScheduler {
 
 private extension AdScheduler {
     func startCurrentAdBreak(adBreakState: UplynkAdBreakState, time: Double) {
-        if (adBreakState.state != .started && adBreakState.state == .notPlayed) {
+        if (adBreakState.state != .started) {
             moveAdBreakToState(adBreakState: adBreakState, state: .started)
         }
     }
@@ -129,13 +137,10 @@ private extension AdScheduler {
                         currentAd: UplynkAdState,
                         time: Double) {
         switch currentAd.state {
-        case .notPlayed:
-            moveAdToState(adState: currentAd, state: .started)
+        case .notPlayed, .completed:
+            moveAdToState(adState: currentAd, state: .started, in: adBreakState.adBreak)
         case .started:
             adHandler.onAdProgressUpdate(currentAd: currentAd, adBreak: adBreakState.adBreak, time: time)
-        case .completed:
-            // No-op
-            break
         }
     }
     
@@ -143,22 +148,30 @@ private extension AdScheduler {
         guard adBreakState.state != state else {
             return
         }
+        let previousState = adBreakState.state
         adBreakState.state = state
+        os_log(.debug,log: .adHandler, "MoveAdBreakToState: adbreak with offset %f changed from %@ to state %@", adBreakState.adBreak.timeOffset, previousState.rawValue, state.rawValue)
         if adBreakState.state == .completed {
             completeAllStartedAds(adBreakState: adBreakState)
         }
     }
     
-    func moveAdToState(adState: UplynkAdState, state: AdState) {
+    func moveAdToState(adState: UplynkAdState, state: AdState, in adBreak: UplynkAdBreak) {
         guard adState.state != state else {
             return
         }
+        let previousState = adState.state
         adState.state = state
+
+        let indexOfAd = adBreak.ads.firstIndex(of: adState.ad).map { $0 + 1 } ?? -1
+        let count = adBreak.ads.count
+        os_log(.debug,log: .adHandler, "MoveAdToState: Ad `%d of %d` in adbreak with offset %f changed from %@ to %@", indexOfAd, count, adBreak.timeOffset, previousState.rawValue, state.rawValue)
+
         switch adState.state {
         case .started:
-            adHandler.onAdBegin(uplynkAd: adState.ad)
+            adHandler.onAdBegin(uplynkAd: adState.ad, in: adBreak)
         case .completed:
-            adHandler.onAdEnd(uplynkAd: adState.ad)
+            adHandler.onAdEnd(uplynkAd: adState.ad, in: adBreak)
         default:
             // no-op
             break
@@ -178,11 +191,11 @@ private extension AdScheduler {
     }
         
     func completeAllStartedAds(adBreakState: UplynkAdBreakState,
-                          except currentAd: UplynkAdState? = nil) {
+                               except currentAd: UplynkAdState? = nil) {
         adBreakState.ads
             .filter { $0.state == .started && $0 != currentAd }
             .forEach {
-                moveAdToState(adState: $0, state: .completed)
+                moveAdToState(adState: $0, state: .completed, in: adBreakState.adBreak)
             }
     }
     

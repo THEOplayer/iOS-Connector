@@ -124,7 +124,7 @@ class ViewController: UIViewController {
             player.source = .live
         case 1:
              player.source = .ads
-//            loadFIFASourceAndSetToPlayer()
+//            loadWebSourceAndSetToPlayer()
         case 2:
             player.source = .multiDRM
         default:
@@ -292,7 +292,7 @@ class ViewController: UIViewController {
         view.isUserInteractionEnabled = true
     }
     
-    private func loadFIFASourceAndSetToPlayer() {
+    private func loadWebSourceAndSetToPlayer() {
         startLoading()
         playerStackView.alpha = 0.5
         Task { @MainActor in

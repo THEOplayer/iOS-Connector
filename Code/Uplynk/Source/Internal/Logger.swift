@@ -13,4 +13,14 @@ extension OSLog {
         subsystem: String(describing: UplynkConnector.self),
         category: String(describing: UplynkAdIntegration.self)
     )
+    
+    static let adHandler = OSLog(
+        subsystem: String(describing: AdHandler.self),
+        category: String(describing: UplynkAdIntegration.self)
+    )
+    
+    static let adScheduler = OSLog(
+        subsystem: String(describing: AdScheduler.self),
+        category: String(describing: UplynkAdIntegration.self)
+    )
 }
