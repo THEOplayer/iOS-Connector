@@ -73,21 +73,48 @@ final class AdScheduler {
             return nil
         }
         
+        // We landed on the last ad break that is not played, we play it regardless.
+        let lastAdStart = lastAdBreakBeforeTheSeekedTimed.adBreak.timeOffset
+        let lastAdEnd = lastAdStart + lastAdBreakBeforeTheSeekedTimed.adBreak.duration
+        print("--> last ad start \(lastAdStart) end \(lastAdEnd) time \(time)")
+        if (lastAdStart...lastAdEnd).contains(time) {
+            return lastAdStart
+        }
+        
+        // If there is an ad break after the current candidate ad break that is already completed,
+        // we won't play the candidate ad break
+        if adBreaks.first(where: { $0.adBreak.timeOffset > time && $0.state == .completed }) != nil {
+            return nil
+        }
+
         return lastAdBreakBeforeTheSeekedTimed.adBreak.timeOffset
     }
     
-    func getCurrentAdBreakEndTime() -> Double? {
-        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }) else {
+    func getCurrentAdEndTime() -> Double? {
+        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }),
+              let currentAd = currentAdBreak.ads.first(where: { $0.state == .started }) else {
             return nil
         }
-        return currentAdBreak.adBreak.timeOffset + currentAdBreak.adBreak.duration
+        let currentAdOffset = currentAdBreak.ads
+            .prefix(while: { $0.state != .started })
+            .reduce(currentAdBreak.adBreak.timeOffset) {
+                $0 + $1.ad.duration
+            }
+        
+        return currentAdOffset + currentAd.ad.duration
     }
     
-    func getCurrentAdBreakStartTime() -> Double? {
+    func getCurrentAdStartTime() -> Double? {
         guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }) else {
             return nil
         }
-        return currentAdBreak.adBreak.timeOffset
+        let currentAdOffset = currentAdBreak.ads
+            .prefix(while: { $0.state != .started })
+            .reduce(currentAdBreak.adBreak.timeOffset) {
+                $0 + $1.ad.duration
+            }
+        
+        return currentAdOffset
     }
 }
 

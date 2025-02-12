@@ -19,9 +19,11 @@ protocol AdHandlerProtocol: AnyObject {
 final class AdHandler: AdHandlerProtocol {
     private let controller: ServerSideAdIntegrationController
     private var scheduledAds: [UplynkAd: Ad] = [:]
-
-    init(controller: ServerSideAdIntegrationController) {
+    private let skipOffset: Int
+    
+    init(controller: ServerSideAdIntegrationController, skipOffset: Int) {
         self.controller = controller
+        self.skipOffset = skipOffset
     }
     
     func createAdBreak(adBreak: UplynkAdBreak) {
@@ -30,6 +32,7 @@ final class AdHandler: AdHandlerProtocol {
         let currentAdBreak = controller.createAdBreak(params: adBreakInit)
         adBreak.ads.forEach {
             let adInit = AdInit(type: adBreak.type,
+                                skipOffset: skipOffset,
                                 duration: Int($0.duration))
             scheduledAds[$0] = controller.createAd(params: adInit,
                                                    adBreak: currentAdBreak)

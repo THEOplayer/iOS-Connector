@@ -222,14 +222,14 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     
     func skipAd(ad: Ad) -> Bool {
         os_log(.debug,log: .adIntegration, "Handling skip ad")
-        guard configuration.defaultSkipOffset != -1,
-              let adStartTime = adScheduler?.getCurrentAdBreakStartTime(),
+        guard isSkippable(ad: ad),
+              let adStartTime = adScheduler?.getCurrentAdStartTime(),
               adStartTime + Double(configuration.defaultSkipOffset) <= player.currentTime else {
             os_log(.debug,log: .adIntegration, "Exiting skip ad")
             return true
         }
         
-        if let seekToTime = adScheduler?.getCurrentAdBreakEndTime() {
+        if let seekToTime = adScheduler?.getCurrentAdEndTime() {
             os_log(.debug,log: .adIntegration, "Skipping the current adbreak %f", seekToTime)
             seek(to: seekToTime)
         }
@@ -249,7 +249,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
 
     private func createAdScheduler(preplayResponse: PrePlayResponseProtocol) -> AdScheduler {
         let adBreaks: [UplynkAdBreak] = (preplayResponse as? PrePlayVODResponse)?.ads.breaks ?? []
-        let adHandler = AdHandler(controller: controller)
+        let adHandler = AdHandler(controller: controller, skipOffset: configuration.defaultSkipOffset)
         return AdScheduler(adBreaks: adBreaks, adHandler: adHandler)
     }
     
@@ -328,5 +328,9 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     
     private func seek(to offset: Double, completionHandler: ((Any?, Error?) -> Void)? = nil) {
         player.setCurrentTime(offset, completionHandler: completionHandler)
+    }
+    
+    private func isSkippable(ad: Ad) -> Bool {
+        ad.skipOffset != -1
     }
 }
