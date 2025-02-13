@@ -49,7 +49,8 @@ final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
         os_log(.debug, log: .adScheduler, "TIME_UPDATE: Handling time update %f",time)
         guard let currentAdBreak = adBreaks.first(where: {
             let rangeToCheck = ($0.adBreak.timeOffset...($0.adBreak.timeOffset + $0.adBreak.duration))
-            let containsAd = rangeToCheck.contains(time)
+            let containsAd = rangeToCheck.containsWithAccuracy(time)
+            
             os_log(.debug, log: .adScheduler, "TIME_UPDATE: Checking range %f-%f contains %f - returns %d", rangeToCheck.lowerBound, rangeToCheck.upperBound, time, containsAd)
             return containsAd
         }) else {
@@ -83,7 +84,7 @@ final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
                 let adBreakStartTime = $0.adBreak.timeOffset
                 let adBreakEndTime = $0.adBreak.timeOffset + $0.adBreak.duration
 
-                return (adBreakStartTime...adBreakEndTime).contains(time)
+                return (adBreakStartTime...adBreakEndTime).containsWithAccuracy(time)
             } else {
                 return false
             }
@@ -216,7 +217,7 @@ private extension AdScheduler {
         var adStart = adBreakState.adBreak.timeOffset
         for ad in adBreakState.ads {
             let adEnd = adStart + ad.ad.duration
-            if (adStart...adEnd).contains(time) {
+            if (adStart...adEnd).containsWithAccuracy(time) {
                 return ad
             }
             adStart = adEnd
@@ -252,5 +253,11 @@ private extension AdScheduler {
     func createAdBreak(_ adBreak: UplynkAdBreak) {
         adHandler.createAdBreak(adBreak: adBreak)
         adBreaks.append(UplynkAdBreakState(adBreak: adBreak, state: .notPlayed))
+    }
+}
+
+private extension ClosedRange where Bound == Double {
+    func containsWithAccuracy(_ value: Double, accuracy: Double = 0.000001) -> Bool {
+        return (value - lowerBound) > -accuracy && (upperBound - value) > -accuracy
     }
 }
