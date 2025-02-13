@@ -57,9 +57,7 @@ class ViewController: UIViewController {
     }
     
     private var adPlaying: Bool {
-        let integrations: [Integration] = player.getAllIntegrations()
-        if (integrations.first { $0.type == .ADS }) != nil,
-           player.ads.playing {
+        if player.ads.playing {
             return true
         }
         return false
@@ -168,7 +166,11 @@ class ViewController: UIViewController {
 
     private func onPlaying(event: PlayingEvent) {
         os_log("PLAYING event, currentTime: %f", event.currentTime)
-        self.playerInterfaceView.state = .playing
+        if self.adPlaying {
+            self.playerInterfaceView.state = .adplaying
+        } else {
+            self.playerInterfaceView.state = .playing
+        }
     }
 
     private func onPause(event: PauseEvent) {
@@ -199,10 +201,6 @@ class ViewController: UIViewController {
 
     private func onReadyStateChange(event: ReadyStateChangeEvent) {
         os_log("READY_STATE_CHANGE event, state: %d", event.readyState.rawValue)
-        // Restore the appropriate UI state if there is enough data
-        if event.readyState == .HAVE_ENOUGH_DATA {
-            self.playerInterfaceView.state = player.paused ? .paused : .playing
-        }
     }
 
     private func onWaiting(event: WaitingEvent) {
@@ -255,6 +253,7 @@ class ViewController: UIViewController {
 
     private func onAdBreakEnd(event: AdBreakEndEvent) {
         os_log("AD_BREAK_END event")
+        self.playerInterfaceView.state = .playing
     }
 
     @IBAction func onChangeSource(_ sender: Any) {

@@ -20,7 +20,7 @@ final class PingScheduler {
     private var nextRequestTime: Double?
     private var seekStart: Double?
     private weak var listener: UplynkEventListener?
-    private var adScheduler: AdScheduler
+    private var adScheduler: AdSchedulerProtocol
     private static let STOP_PING: Double = -1
 
     init(
@@ -29,7 +29,7 @@ final class PingScheduler {
         sessionId: String,
         listener: UplynkEventListener?,
         controller: ServerSideAdIntegrationController,
-        adScheduler: AdScheduler,
+        adScheduler: AdSchedulerProtocol,
         uplynkApiType: UplynkAPIProtocol.Type = UplynkAPI.self
     ) {
         self.urlBuilder = urlBuilder

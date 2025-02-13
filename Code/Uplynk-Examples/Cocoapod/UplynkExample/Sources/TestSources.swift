@@ -11,24 +11,22 @@ import THEOplayerConnectorUplynk
 import THEOplayerSDK
 
 extension SourceDescription {
-    private static var bigBuckBunnyURL: String { "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8" }
-
     static var live: SourceDescription {
-        let typedSource = TypedSource(src: Self.bigBuckBunnyURL,
+        let typedSource = TypedSource(src: "",
                                       type: "application/x-mpegurl",
                                       ssai: UplynkSSAIConfiguration.uplynkLive)
         return SourceDescription(source: typedSource)
     }
     
     static var ads: SourceDescription {
-        let typedSource = TypedSource(src: Self.bigBuckBunnyURL,
+        let typedSource = TypedSource(src: "",
                                       type: "application/x-mpegurl",
                                       ssai: UplynkSSAIConfiguration.uplynkAds)
         return SourceDescription(source: typedSource)
     }
     
     static var multiDRM: SourceDescription {
-        let typedSource = TypedSource(src: Self.bigBuckBunnyURL,
+        let typedSource = TypedSource(src: "",
                                       type: "application/x-mpegurl",
                                       ssai: UplynkSSAIConfiguration.uplynkDRM)
         return SourceDescription(source: typedSource)
@@ -38,7 +36,7 @@ extension SourceDescription {
         guard let ssai = await UplynkSSAIConfiguration.source(for: webSource, useExternalID: useExternalID) else {
             return nil
         }
-        let typedSource = TypedSource(src: Self.bigBuckBunnyURL,
+        let typedSource = TypedSource(src: "",
                                       type: "application/x-mpegurl",
                                       ssai: ssai)
         return SourceDescription(source: typedSource)

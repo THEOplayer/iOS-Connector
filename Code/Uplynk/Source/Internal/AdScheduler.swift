@@ -9,9 +9,30 @@
 import Foundation
 import OSLog
 
-final class AdScheduler {
+protocol AdSchedulerFactory {
+    static func makeAdScheduler(adBreaks: [UplynkAdBreak], adHandler: AdHandlerProtocol) -> AdSchedulerProtocol
+}
+
+protocol AdSchedulerProtocol: AnyObject {
+    var isPlayingAd: Bool { get }
+    
+    func onTimeUpdate(time: Double)
+    func add(ads: UplynkAds)
+    func adBreakOffsetIfAdBreakContains(time: Double) -> Double?
+    func firstUnwatchedAdBreakOffset(before time: Double) -> Double?
+    func lastUnwatchedAdBreakOffset(before time: Double) -> Double?
+    func getCurrentAdStartTime() -> Double?
+    func getCurrentAdEndTime() -> Double?
+    func isPlayingLastAdInAdBreak() -> Bool
+}
+
+final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
     private(set) var adBreaks: [UplynkAdBreakState] = []
     private let adHandler: AdHandlerProtocol
+    
+    static func makeAdScheduler(adBreaks: [UplynkAdBreak], adHandler: AdHandlerProtocol) -> AdSchedulerProtocol {
+        AdScheduler(adBreaks: adBreaks, adHandler: adHandler)
+    }
     
     init(adBreaks: [UplynkAdBreak], adHandler: AdHandlerProtocol) {
         self.adHandler = adHandler
@@ -25,11 +46,21 @@ final class AdScheduler {
     }
     
     func onTimeUpdate(time: Double) {
+        os_log(.debug, log: .adScheduler, "TIME_UPDATE: Handling time update %f",time)
         guard let currentAdBreak = adBreaks.first(where: {
-            ($0.adBreak.timeOffset...($0.adBreak.timeOffset + $0.adBreak.duration)).contains(time)
+            let rangeToCheck = ($0.adBreak.timeOffset...($0.adBreak.timeOffset + $0.adBreak.duration))
+            let containsAd = rangeToCheck.contains(time)
+            os_log(.debug, log: .adScheduler, "TIME_UPDATE: Checking range %f-%f contains %f - returns %d", rangeToCheck.lowerBound, rangeToCheck.upperBound, time, containsAd)
+            return containsAd
         }) else {
+            os_log(.debug, log: .adScheduler, "TIME_UPDATE: No adbreak found for %f", time)
             completeAllStartedAdBreaks()
             return
+        }
+        if currentAdBreak.state == .completed || currentAdBreak.state == .notPlayed {
+            os_log(.debug, log: .adScheduler, "TIME_UPDATE: starting ad break with offset %f", currentAdBreak.adBreak.timeOffset)
+        } else {
+            os_log(.debug, log: .adScheduler, "TIME_UPDATE: Handling progress for ad break with offset %f", currentAdBreak.adBreak.timeOffset)
         }
         startCurrentAdBreak(adBreakState: currentAdBreak, time: time)
         let currentAd = findCurrentAd(adBreakState: currentAdBreak, time: time)
@@ -44,12 +75,6 @@ final class AdScheduler {
         ads.breaks.forEach {
             createAdBreak($0)
         }
-    }
-    
-    func checkIfThereIsAnAdBreak(on time: Double) -> Bool {
-        adBreaks.contains(where: {
-            ($0.adBreak.timeOffset...($0.adBreak.timeOffset + $0.adBreak.duration)).contains(time)
-        })
     }
     
     func adBreakOffsetIfAdBreakContains(time: Double) -> Double? {
@@ -98,6 +123,19 @@ final class AdScheduler {
         return lastAdBreakBeforeTheSeekedTimed.adBreak.timeOffset
     }
     
+    func getCurrentAdStartTime() -> Double? {
+        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }) else {
+            return nil
+        }
+        let currentAdOffset = currentAdBreak.ads
+            .prefix(while: { $0.state != .started })
+            .reduce(currentAdBreak.adBreak.timeOffset) {
+                $0 + $1.ad.duration
+            }
+        
+        return currentAdOffset
+    }
+    
     func getCurrentAdEndTime() -> Double? {
         guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }),
               let currentAd = currentAdBreak.ads.first(where: { $0.state == .started }) else {
@@ -112,17 +150,13 @@ final class AdScheduler {
         return currentAdOffset + currentAd.ad.duration
     }
     
-    func getCurrentAdStartTime() -> Double? {
-        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }) else {
-            return nil
+    func isPlayingLastAdInAdBreak() -> Bool {
+        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }),
+              let currentAd = currentAdBreak.ads.first(where: { $0.state == .started }) else {
+            return false
         }
-        let currentAdOffset = currentAdBreak.ads
-            .prefix(while: { $0.state != .started })
-            .reduce(currentAdBreak.adBreak.timeOffset) {
-                $0 + $1.ad.duration
-            }
         
-        return currentAdOffset
+        return currentAdBreak.ads.last == currentAd
     }
 }
 
