@@ -42,7 +42,7 @@ final class AdHandler: AdHandlerProtocol, AdHandlerFactory {
         let adBreakInit = AdBreakInit(timeOffset: Int(adBreak.timeOffset), 
                                       maxDuration: Int(adBreak.duration))
         let currentAdBreak = controller.createAdBreak(params: adBreakInit)
-        os_log(.debug,log: .adHandler, "CreateAdBreak: created ad break time offset %f", currentAdBreak.timeOffset)
+        os_log(.debug,log: .adHandler, "CreateAdBreak: created ad break time offset %f", adBreak.timeOffset)
         adBreak.ads.forEach {
             let adInit = AdInit(type: adBreak.type,
                                 skipOffset: skipOffset,

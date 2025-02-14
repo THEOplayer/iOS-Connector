@@ -124,7 +124,7 @@ final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
         if let currentAd {
             startCurrentAd(adBreakState: currentAdBreak, currentAd: currentAd, time: time)
         }
-        completeAllAdBreaks(except: currentAdBreak)
+        completeAllStartedAdBreaks(except: currentAdBreak)
     }
     
     func add(ads: UplynkAds) {
@@ -221,7 +221,7 @@ private extension AdScheduler {
         }
         let previousState = adBreakState.state
         adBreakState.state = state
-        os_log(.debug,log: .adHandler, "MoveAdBreakToState: adbreak with offset %f changed from %@ to state %@", adBreakState.adBreak.timeOffset, previousState.rawValue, state.rawValue)
+        os_log(.debug,log: .adScheduler, "MoveAdBreakToState: adbreak with offset %f changed from %@ to state %@", adBreakState.adBreak.timeOffset, previousState.rawValue, state.rawValue)
         if adBreakState.state == .completed {
             completeAllStartedAds(adBreakState: adBreakState)
         }
@@ -236,7 +236,7 @@ private extension AdScheduler {
 
         let indexOfAd = adBreak.ads.firstIndex(of: adState.ad).map { $0 + 1 } ?? -1
         let count = adBreak.ads.count
-        os_log(.debug,log: .adHandler, "MoveAdToState: Ad `%d of %d` in adbreak with offset %f changed from %@ to %@", indexOfAd, count, adBreak.timeOffset, previousState.rawValue, state.rawValue)
+        os_log(.debug,log: .adScheduler, "MoveAdToState: Ad `%d of %d` in adbreak with offset %f changed from %@ to %@", indexOfAd, count, adBreak.timeOffset, previousState.rawValue, state.rawValue)
 
         switch adState.state {
         case .started:
@@ -278,7 +278,7 @@ private extension AdScheduler {
             }
     }
     
-    func completeAllAdBreaks(except adBreakState: UplynkAdBreakState) {
+    func completeAllStartedAdBreaks(except adBreakState: UplynkAdBreakState) {
         adBreaks
             .filter { $0.state == .started && $0 != adBreakState }
             .forEach {
