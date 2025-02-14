@@ -75,7 +75,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
             if case let .playingSeekedOverAdBreak(seekedTime: seekedTime, hasSeekedOnToThePlayingAdBreak: hasSeekedOnToThePlayingAdBreak) = self.state,
                 self.adScheduler?.isPlayingAd == false,
                 self.configuration.skippedAdStrategy != .playNone {
-                os_log(.debug, log: .adIntegration, "TIME_UPDATE: Handling finished playing seeked over ad", event.currentTime)
+                os_log(.debug, log: .adIntegration, "TIME_UPDATE: Finished playing seeked over ad", event.currentTime)
                 self.handleCurrentAdBreakCompletionWhenPlayingSeekedOverAdBreak(seekedTime, hasUserSeekedOnToTheLastPlayedAdBreak: hasSeekedOnToThePlayingAdBreak)
             }
         }
@@ -125,12 +125,30 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                     playSeekedOverAdBreak(event.currentTime, adBreakOffset)
                     return
                 }
-            default:
-                // No-op
-                break
+            case .playNone:
+                // When seeked on to an AdBreak and skip ad strategy is `play none` - seek to the end
+                if let adBreakEndTime = self.adScheduler?.adBreakEndTimeIfAdBreakContains(time: event.currentTime) {
+                    os_log(.debug,log: .adIntegration, "SEEKED: Seek to end of adbreak(strategy play none): %f", adBreakEndTime)
+                    self.state = .internallyInitiatedSeekInProgress
+                    self.seek(to: adBreakEndTime) { [weak self] _, error in
+                        guard error == nil else {
+                            os_log(.debug,log: .adIntegration, "SEEKED: Failed to seek to end of adbreak with error: %@", error?.localizedDescription ?? "N/A")
+                            self?.state = .playingContent
+                            return
+                        }
+                        self?.state = .playingContent
+                        os_log(.debug,log: .adIntegration, "SEEKED: Reset state to playing content")
+                    }
+                    return
+                }
             }
             
             // When seeked on to an AdBreak (even if it is already watched); Play Adbreak from beginning
+            // This scenario applies only to `play all` or `play last` strategies
+            // This also captures scenario where the user seeked onto an unwatched `AdBreak` and by the time seeked
+            // event arrives, the `AdBreak` is already set to state `started`. Here `firstUnwatchedAdBreakOffset` or
+            // `lastUnwatchedAdBreakOffset` will be returned `false` for playAll and playNone strategy.
+            // However the below check ensures the AdBreak is still played from the beginning.
             if let adBreakStartTime = self.adScheduler?.adBreakOffsetIfAdBreakContains(time: event.currentTime) {
                 os_log(.debug,log: .adIntegration, "SEEKED: Seek to start of adbreak: %f", adBreakStartTime)
                 self.state = .internallyInitiatedSeekInProgress
@@ -207,19 +225,49 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         return true
     }
     
+    private static let SKIP_ADBREAK = false
     func skipAd(ad: Ad) -> Bool {
+        if Self.SKIP_ADBREAK {
+            os_log(.debug,log: .adIntegration, "SKIP_AD: Handling skip adbreak")
+            guard isSkippableAdBreak(),
+                  let adBreakStartTime = adScheduler?.currentAdBreakStartTime,
+                  player.currentTime >= adBreakStartTime + Double(configuration.defaultSkipOffset)
+            else {
+                return true
+            }
+
+            if case let .playingSeekedOverAdBreak(seekedTime: seekedTime, hasSeekedOnToThePlayingAdBreak: hasSeekedOnToThePlayingAdBreak) = state,
+                configuration.skippedAdStrategy != .playNone {
+                handleCurrentAdBreakCompletionWhenPlayingSeekedOverAdBreak(seekedTime, hasUserSeekedOnToTheLastPlayedAdBreak: hasSeekedOnToThePlayingAdBreak)
+            } else if let seekToTime = adScheduler?.currentAdBreakEndTime {
+                os_log(.debug,log: .adIntegration, "SKIP_AD: Skipping on to the next ad %f", seekToTime)
+                let stateBeforeSkippingAd = state
+                state = .internallyInitiatedSeekInProgress
+                seek(to: seekToTime) { [weak self] _, error in
+                    guard error == nil else {
+                        os_log(.debug,log: .adIntegration, "SKIP_AD: Failed to seek(skipAd) with error: %@", error?.localizedDescription ?? "N/A")
+                        self?.state = .playingContent
+                        return
+                    }
+                    self?.state = stateBeforeSkippingAd
+                    os_log(.debug,log: .adIntegration, "SKIP_AD: Reset state to playing content")
+                }
+            }
+            return true
+        }
+        
         os_log(.debug,log: .adIntegration, "SKIP_AD: Handling skip ad")
         guard isSkippable(ad: ad),
-              let adStartTime = adScheduler?.getCurrentAdStartTime(),
-              adStartTime + Double(configuration.defaultSkipOffset) <= player.currentTime else {
+              let adStartTime = adScheduler?.currentAdStartTime,
+              player.currentTime >= adStartTime + Double(configuration.defaultSkipOffset) else {
             os_log(.debug,log: .adIntegration, "SKIP_AD: Exiting skip ad")
             return true
         }
         
         if case let .playingSeekedOverAdBreak(seekedTime: seekedTime, hasSeekedOnToThePlayingAdBreak: hasSeekedOnToThePlayingAdBreak) = state,
-            configuration.skippedAdStrategy != .playNone, adScheduler?.isPlayingLastAdInAdBreak() == true {
+            configuration.skippedAdStrategy != .playNone, adScheduler?.isPlayingLastAdInAdBreak == true {
             handleCurrentAdBreakCompletionWhenPlayingSeekedOverAdBreak(seekedTime, hasUserSeekedOnToTheLastPlayedAdBreak: hasSeekedOnToThePlayingAdBreak)
-        } else if let seekToTime = adScheduler?.getCurrentAdEndTime() {
+        } else if let seekToTime = adScheduler?.currentAdEndTime {
             os_log(.debug,log: .adIntegration, "SKIP_AD: Skipping on to the next ad %f", seekToTime)
             let stateBeforeSkippingAd = state
             state = .internallyInitiatedSeekInProgress
@@ -332,6 +380,10 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     
     private func isSkippable(ad: Ad) -> Bool {
         ad.skipOffset != -1
+    }
+    
+    private func isSkippableAdBreak() -> Bool {
+        configuration.defaultSkipOffset != -1
     }
     
     private func handleCurrentAdBreakCompletionWhenPlayingSeekedOverAdBreak(_ seekedTime: Double, hasUserSeekedOnToTheLastPlayedAdBreak: Bool) {

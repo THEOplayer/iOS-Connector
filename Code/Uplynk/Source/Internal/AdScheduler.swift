@@ -15,15 +15,18 @@ protocol AdSchedulerFactory {
 
 protocol AdSchedulerProtocol: AnyObject {
     var isPlayingAd: Bool { get }
-    
+    var isPlayingLastAdInAdBreak: Bool { get }
+    var currentAdStartTime: Double? { get }
+    var currentAdEndTime: Double? { get }
+    var currentAdBreakStartTime: Double? { get }
+    var currentAdBreakEndTime: Double? { get }
+
     func onTimeUpdate(time: Double)
     func add(ads: UplynkAds)
     func adBreakOffsetIfAdBreakContains(time: Double) -> Double?
+    func adBreakEndTimeIfAdBreakContains(time: Double) -> Double?
     func firstUnwatchedAdBreakOffset(before time: Double) -> Double?
     func lastUnwatchedAdBreakOffset(before time: Double) -> Double?
-    func getCurrentAdStartTime() -> Double?
-    func getCurrentAdEndTime() -> Double?
-    func isPlayingLastAdInAdBreak() -> Bool
 }
 
 final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
@@ -43,6 +46,58 @@ final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
     
     var isPlayingAd: Bool {
         adBreaks.contains { $0.state == .started }
+    }
+    
+    var isPlayingLastAdInAdBreak: Bool {
+        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }),
+              let currentAd = currentAdBreak.ads.first(where: { $0.state == .started }) else {
+            return false
+        }
+        
+        return currentAdBreak.ads.last == currentAd
+    }
+    
+    var currentAdStartTime: Double? {
+        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }) else {
+            return nil
+        }
+        let currentAdOffset = currentAdBreak.ads
+            .prefix(while: { $0.state != .started })
+            .reduce(currentAdBreak.adBreak.timeOffset) {
+                $0 + $1.ad.duration
+            }
+        
+        return currentAdOffset
+    }
+    
+    var currentAdEndTime: Double? {
+        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }),
+              let currentAd = currentAdBreak.ads.first(where: { $0.state == .started }) else {
+            return nil
+        }
+        let currentAdOffset = currentAdBreak.ads
+            .prefix(while: { $0.state != .started })
+            .reduce(currentAdBreak.adBreak.timeOffset) {
+                $0 + $1.ad.duration
+            }
+        
+        return currentAdOffset + currentAd.ad.duration
+    }
+    
+    var currentAdBreakStartTime: Double? {
+        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }) else {
+            return nil
+        }
+        
+        return currentAdBreak.adBreak.timeOffset
+    }
+    
+    var currentAdBreakEndTime: Double? {
+        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }) else {
+            return nil
+        }
+        
+        return currentAdBreak.adBreak.timeOffset + currentAdBreak.adBreak.duration
     }
     
     func onTimeUpdate(time: Double) {
@@ -95,6 +150,23 @@ final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
         return adBreakContainingTheTime.adBreak.timeOffset
     }
     
+    func adBreakEndTimeIfAdBreakContains(time: Double) -> Double? {
+        guard let adBreakContainingTheTime = adBreaks.first (where: {
+            if $0.adBreak.timeOffset <= time {
+                let adBreakStartTime = $0.adBreak.timeOffset
+                let adBreakEndTime = $0.adBreak.timeOffset + $0.adBreak.duration
+
+                return (adBreakStartTime...adBreakEndTime).containsWithAccuracy(time)
+            } else {
+                return false
+            }
+        }) else {
+            return nil
+        }
+        
+        return adBreakContainingTheTime.adBreak.timeOffset + adBreakContainingTheTime.adBreak.duration
+    }
+    
     func firstUnwatchedAdBreakOffset(before time: Double) -> Double? {
         // If we have an unplayed adbreak before the passed in time, play the adbreak from the beginning
         guard let firstUnplayedAdBreak = adBreaks
@@ -122,42 +194,6 @@ final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
         }
 
         return lastAdBreakBeforeTheSeekedTimed.adBreak.timeOffset
-    }
-    
-    func getCurrentAdStartTime() -> Double? {
-        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }) else {
-            return nil
-        }
-        let currentAdOffset = currentAdBreak.ads
-            .prefix(while: { $0.state != .started })
-            .reduce(currentAdBreak.adBreak.timeOffset) {
-                $0 + $1.ad.duration
-            }
-        
-        return currentAdOffset
-    }
-    
-    func getCurrentAdEndTime() -> Double? {
-        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }),
-              let currentAd = currentAdBreak.ads.first(where: { $0.state == .started }) else {
-            return nil
-        }
-        let currentAdOffset = currentAdBreak.ads
-            .prefix(while: { $0.state != .started })
-            .reduce(currentAdBreak.adBreak.timeOffset) {
-                $0 + $1.ad.duration
-            }
-        
-        return currentAdOffset + currentAd.ad.duration
-    }
-    
-    func isPlayingLastAdInAdBreak() -> Bool {
-        guard let currentAdBreak = adBreaks.first(where: { $0.state == .started }),
-              let currentAd = currentAdBreak.ads.first(where: { $0.state == .started }) else {
-            return false
-        }
-        
-        return currentAdBreak.ads.last == currentAd
     }
 }
 
