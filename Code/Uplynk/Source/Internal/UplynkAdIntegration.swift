@@ -173,8 +173,6 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
 
     // Implements ServerSideAdIntegrationHandler.setSource
     func setSource(source: SourceDescription) -> Bool {
-        pingScheduler = nil
-
         // copy the passed SourceDescription; we don't want to modify the original
         let sourceDescription: SourceDescription = source.createCopy()
         let isUplynkSSAI: (TypedSource) -> Bool = { $0.ssai as? UplynkSSAIConfiguration != nil }
@@ -208,8 +206,6 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                                                   listener: eventListener,
                                                   controller: self.controller,
                                                   adScheduler: adScheduler)
-                } else {
-                    pingScheduler = nil
                 }
                 self.adScheduler = adScheduler
             } catch {
