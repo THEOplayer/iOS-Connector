@@ -526,7 +526,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
         ])
     }
     
-    func testSkipAdBreakWhenPlayingAdBreakInANormalFlowWhereSkipOffsetHasReached() async {
+    func testSkipAdWhenPlayingAdBreakInANormalFlowWhereSkipOffsetHasReached() async {
         mockUplynkConfiguration = UplynkConfiguration(defaultSkipOffset: 2, skippedAdStrategy: .playNone)
         mockPlayer = MockPlayer()
         integration = UplynkAdIntegration(uplynkAPI: mockUplynkAPI,
@@ -548,8 +548,8 @@ final class UplynkAdIntegrationTests: XCTestCase {
             expectation.fulfill()
         }
         await fulfillment(of: [expectation])
-        mockAdScheduler.currentAdBreakStartTime = 10.0
-        mockAdScheduler.currentAdBreakEndTime = 15.0
+        mockAdScheduler.currentAdStartTime = 10.0
+        mockAdScheduler.currentAdEndTime = 15.0
         mockPlayer.currentTime = 12.0
         
         // When
@@ -567,7 +567,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
         ])
     }
     
-    func testSkipAdBreakWhenPlayingSeekedOverAdBreakWithStrategyPlayAll() async {
+    func testSkipAdWhenPlayingSeekedOverAdBreakWithStrategyPlayAll() async {
         mockUplynkConfiguration = UplynkConfiguration(defaultSkipOffset: 2, skippedAdStrategy: .playAll)
         mockPlayer = MockPlayer()
         integration = UplynkAdIntegration(uplynkAPI: mockUplynkAPI,
@@ -597,8 +597,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
         mockPlayer.seekedListener?(seekEvent)
         XCTAssertEqual(mockPlayer.currentTime, 5.0)
         
-        mockAdScheduler.currentAdBreakStartTime = 5.0
-        mockAdScheduler.currentAdBreakEndTime = 15.0
+        mockAdScheduler.currentAdStartTime = 5.0
+        mockAdScheduler.currentAdEndTime = 15.0
+        mockAdScheduler.isPlayingLastAdInAdBreak = true
         mockPlayer.currentTime = 8.0
         mockAdScheduler.firstUnwatchedAdBreakOffsetToReturn = nil
 
@@ -617,7 +618,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
         ])
     }
     
-    func testSkipAdBreakWhenPlayingSeekedOnAdBreakWithStrategyPlayAll() async {
+    func testSkipAdWhenPlayingSeekedOnAdBreakWithStrategyPlayAll() async {
         mockUplynkConfiguration = UplynkConfiguration(defaultSkipOffset: 2, skippedAdStrategy: .playAll)
         mockPlayer = MockPlayer()
         integration = UplynkAdIntegration(uplynkAPI: mockUplynkAPI,
@@ -648,8 +649,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
         mockPlayer.seekedListener?(seekEvent)
         XCTAssertEqual(mockPlayer.currentTime, 5.0)
         
-        mockAdScheduler.currentAdBreakStartTime = 5.0
+        mockAdScheduler.currentAdStartTime = 5.0
         mockAdScheduler.currentAdBreakEndTime = 15.0
+        mockAdScheduler.isPlayingLastAdInAdBreak = true
         mockPlayer.currentTime = 8.0
         mockAdScheduler.firstUnwatchedAdBreakOffsetToReturn = nil
 
@@ -668,7 +670,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
         ])
     }
     
-    func testSkipAdBreakWhenPlayingSeekedOverAdBreakWithStrategyPlayLast() async {
+    func testSkipAdWhenPlayingSeekedOverAdBreakWithStrategyPlayLast() async {
         mockUplynkConfiguration = UplynkConfiguration(defaultSkipOffset: 2, skippedAdStrategy: .playLast)
         mockPlayer = MockPlayer()
         integration = UplynkAdIntegration(uplynkAPI: mockUplynkAPI,
@@ -698,8 +700,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
         mockPlayer.seekedListener?(seekEvent)
         XCTAssertEqual(mockPlayer.currentTime, 5.0)
         
-        mockAdScheduler.currentAdBreakStartTime = 5.0
+        mockAdScheduler.currentAdStartTime = 5.0
         mockAdScheduler.currentAdBreakEndTime = 15.0
+        mockAdScheduler.isPlayingLastAdInAdBreak = true
         mockPlayer.currentTime = 8.0
         mockAdScheduler.lastUnwatchedAdBreakOffsetToReturn = nil
 
@@ -749,8 +752,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
         mockPlayer.seekedListener?(seekEvent)
         XCTAssertEqual(mockPlayer.currentTime, 5.0)
         
-        mockAdScheduler.currentAdBreakStartTime = 5.0
+        mockAdScheduler.currentAdStartTime = 5.0
         mockAdScheduler.currentAdBreakEndTime = 15.0
+        mockAdScheduler.isPlayingLastAdInAdBreak = true
         mockPlayer.currentTime = 8.0
         mockAdScheduler.lastUnwatchedAdBreakOffsetToReturn = nil
 

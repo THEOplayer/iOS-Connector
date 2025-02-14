@@ -41,6 +41,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     private var adSchedulerFactory: AdSchedulerFactory.Type
     private var adScheduler: AdSchedulerProtocol?
     private var state: State = .playingContent
+    private var isSeekingInProgress: Bool = false
 
     // MARK: Private event listener's
     
@@ -69,7 +70,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         timeUpdateEventListener = player.addEventListener(type: PlayerEventTypes.TIME_UPDATE) { [weak self] event in
             os_log(.debug, log: .adIntegration, "TIME_UPDATE: Received event at %f", event.currentTime)
             
-            guard let self else { return }
+            guard let self, self.isSeekingInProgress == false else { return }
             self.pingScheduler?.onTimeUpdate(time: event.currentTime)
             self.adScheduler?.onTimeUpdate(time: event.currentTime)
             
@@ -85,15 +86,25 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         }
         
         seekingEventListener = player.addEventListener(type: PlayerEventTypes.SEEKING) { [weak self] event in
-            self?.pingScheduler?.onSeeking(time: event.currentTime)
+            guard let self else { return }
+
+            self.pingScheduler?.onSeeking(time: event.currentTime)
             os_log(.debug,log: .adIntegration, "SEEKING: Received seeking event: %f", event.currentTime)
+            if self.state != .internallyInitiatedSeekInProgress {
+                os_log(.debug,log: .adIntegration, "SEEKING: Setting user initiated seeking in progress: %f", event.currentTime)
+                self.isSeekingInProgress = true
+            }
         }
         
         seekedEventListener = player.addEventListener(type: PlayerEventTypes.SEEKED) { [weak self] event in
             guard let self else { return }
             self.pingScheduler?.onSeeked(time: event.currentTime)
             os_log(.debug,log: .adIntegration, "SEEKED: Pass seeked time to ping scheduler %f", event.currentTime)
-            
+            if self.isSeekingInProgress {
+                os_log(.debug,log: .adIntegration, "SEEKED: Reset user initiated seeking state: %f", event.currentTime)
+                self.isSeekingInProgress = false
+            }
+
             guard self.state != .internallyInitiatedSeekInProgress else {
                 os_log(.debug,log: .adIntegration, "SEEKED: Returning a seek initiated internally")
                 return
@@ -226,7 +237,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     }
     
     // TODO: Check whether the adbreak or the current ad need to be skipped, when `skipAd` is called and remove the unused code
-    private static let SKIP_ADBREAK = true
+    private static let SKIP_ADBREAK = false
     func skipAd(ad: Ad) -> Bool {
         if Self.SKIP_ADBREAK {
             os_log(.debug,log: .adIntegration, "SKIP_AD: Handling skip adbreak")
