@@ -13,7 +13,7 @@ protocol AdSchedulerFactory {
     static func makeAdScheduler(adBreaks: [UplynkAdBreak], adHandler: AdHandlerProtocol) -> AdSchedulerProtocol
 }
 
-protocol AdSchedulerProtocol: AnyObject {
+protocol AdSchedulerProtocol {
     var isPlayingAd: Bool { get }
     var isPlayingLastAdInAdBreak: Bool { get }
     var currentAdStartTime: Double? { get }

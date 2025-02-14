@@ -10,12 +10,12 @@ import Foundation
 import OSLog
 import THEOplayerSDK
 
-protocol AdHandlerFactory: AnyObject {
+protocol AdHandlerFactory {
     static func makeAdHandler(controller: ServerSideAdIntegrationController,
                               skipOffset: Int) -> AdHandlerProtocol
 }
 
-protocol AdHandlerProtocol: AnyObject {
+protocol AdHandlerProtocol {
     func createAdBreak(adBreak: UplynkAdBreak)
     func onAdBegin(uplynkAd: UplynkAd, in adBreak: UplynkAdBreak)
     func onAdEnd(uplynkAd: UplynkAd, in adBreak: UplynkAdBreak)
