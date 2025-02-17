@@ -9,7 +9,26 @@
 import Foundation
 import THEOplayerSDK
 
-final class PingScheduler {
+protocol PingSchedulerFactory {
+    static func make(
+        urlBuilder: UplynkSSAIURLBuilder,
+        prefix: String,
+        sessionId: String,
+        listener: UplynkEventListener?,
+        controller: ServerSideAdIntegrationController,
+        adScheduler: AdSchedulerProtocol,
+        uplynkApiType: UplynkAPIProtocol.Type
+    ) -> PingSchedulerProtocol
+}
+
+protocol PingSchedulerProtocol {
+    func onTimeUpdate(time: Double)
+    func onStart(time: Double)
+    func onSeeking(time: Double)
+    func onSeeked(time: Double)
+}
+
+final class PingScheduler: PingSchedulerProtocol, PingSchedulerFactory {
 
     private let uplynkApiType: UplynkAPIProtocol.Type
     private let urlBuilder: UplynkSSAIURLBuilder
@@ -23,6 +42,24 @@ final class PingScheduler {
     private var adScheduler: AdSchedulerProtocol
     private static let STOP_PING: Double = -1
 
+    static func make(
+        urlBuilder: UplynkSSAIURLBuilder,
+        prefix: String,
+        sessionId: String,
+        listener: UplynkEventListener?,
+        controller: ServerSideAdIntegrationController,
+        adScheduler: AdSchedulerProtocol,
+        uplynkApiType: UplynkAPIProtocol.Type
+    ) -> PingSchedulerProtocol {
+        Self.init(urlBuilder: urlBuilder,
+                  prefix: prefix,
+                  sessionId: sessionId,
+                  listener: listener,
+                  controller: controller,
+                  adScheduler: adScheduler,
+                  uplynkApiType: uplynkApiType)
+    }
+    
     init(
         urlBuilder: UplynkSSAIURLBuilder,
         prefix: String,
@@ -30,7 +67,7 @@ final class PingScheduler {
         listener: UplynkEventListener?,
         controller: ServerSideAdIntegrationController,
         adScheduler: AdSchedulerProtocol,
-        uplynkApiType: UplynkAPIProtocol.Type = UplynkAPI.self
+        uplynkApiType: UplynkAPIProtocol.Type
     ) {
         self.urlBuilder = urlBuilder
         self.prefix = prefix
@@ -43,7 +80,7 @@ final class PingScheduler {
     
     func onTimeUpdate(time: Double) {
         guard let nextRequestTime,
-              nextRequestTime != PingScheduler.STOP_PING,
+              nextRequestTime != Self.STOP_PING,
               time > nextRequestTime
         else {
             return
@@ -67,7 +104,7 @@ final class PingScheduler {
     }
     
     func onSeeked(time: Double) {
-        guard let seekStart, nextRequestTime != PingScheduler.STOP_PING else { return }
+        guard let seekStart, nextRequestTime != Self.STOP_PING else { return }
         let url = urlBuilder.buildSeekedPingURL(prefix: prefix,
                                                 sessionID: sessionId,
                                                 currentTimeSeconds: Int(time),

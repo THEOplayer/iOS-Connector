@@ -21,6 +21,8 @@ final class UplynkAdIntegrationTests: XCTestCase {
     var mockAdHandlerFactory: MockAdHandlerFactory.Type!
     var mockAdScheduler: MockAdScheduler!
     var mockAdSchedulerFactory: MockAdSchedulerFactory.Type!
+    var mockPingScheduler: MockPingScheduler!
+    var mockPingSchedulerFactory: MockPingSchedulerFactory.Type!
 
     var integration: UplynkAdIntegration!
 
@@ -37,10 +39,13 @@ final class UplynkAdIntegrationTests: XCTestCase {
         mockUplynkConfiguration = UplynkConfiguration()
         mockAdHandler = MockAdHandler()
         mockAdScheduler = MockAdScheduler()
+        mockPingScheduler = MockPingScheduler()
         mockAdHandlerFactory = MockAdHandlerFactory.self
         mockAdHandlerFactory.mockAdHandler = mockAdHandler
         mockAdSchedulerFactory = MockAdSchedulerFactory.self
         mockAdSchedulerFactory.mockAdScheduler = mockAdScheduler
+        mockPingSchedulerFactory = MockPingSchedulerFactory.self
+        mockPingSchedulerFactory.mockPingScheduler = mockPingScheduler
 
         integration = UplynkAdIntegration(uplynkAPI: mockUplynkAPI,
                                           player: mockPlayer,
@@ -48,7 +53,8 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           configuration: mockUplynkConfiguration,
                                           eventListener: mockEventListener,
                                           adSchedulerFactory: mockAdSchedulerFactory,
-                                          adHandlerFactory: mockAdHandlerFactory)
+                                          adHandlerFactory: mockAdHandlerFactory,
+                                          pingSchedulerFactory: mockPingSchedulerFactory)
     }
 
     override func tearDownWithError() throws {
@@ -61,8 +67,10 @@ final class UplynkAdIntegrationTests: XCTestCase {
         mockUplynkConfiguration = nil
         mockAdHandler = nil
         mockAdScheduler = nil
+        mockPingScheduler = nil
         mockAdHandlerFactory.reset()
         mockAdSchedulerFactory.reset()
+        mockPingSchedulerFactory.reset()
 
         integration = nil
     }
@@ -770,6 +778,90 @@ final class UplynkAdIntegrationTests: XCTestCase {
             .setSource(sourceDescription.sources),
             .setCurrentTime(5.0),
             .setCurrentTime(15.0)
+        ])
+    }
+    
+    func testPingSchedulerAPICallsOnTimeUpdate() async {
+        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
+                                                  externalIDs: [],
+                                                  assetType: .asset,
+                                                  uplynkPingConfiguration: .init(adImpressions: true))
+        let sourceDescription = SourceDescription(source: mockSource)
+        let result = integration.setSource(source: sourceDescription)
+        XCTAssertTrue(result)
+        let expectation = XCTestExpectation(description: "Receive PrePlay Response")
+        mockEventListener.preplayVODResponseCallback = { _ in
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation])
+        let timeUpdateEvent = TimeUpdateEvent(currentTime: 30, currentProgramDateTime: Date(), date: Date())
+        mockPlayer.timeUpdateListener?(timeUpdateEvent)
+
+        XCTAssertEqual(mockPingScheduler.events, [
+            .onTimeUpdate(30)
+        ])
+    }
+    
+    func testPingSchedulerAPICallsOnSeeking() async {
+        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
+                                                  externalIDs: [],
+                                                  assetType: .asset,
+                                                  uplynkPingConfiguration: .init(adImpressions: true))
+        let sourceDescription = SourceDescription(source: mockSource)
+        let result = integration.setSource(source: sourceDescription)
+        XCTAssertTrue(result)
+        let expectation = XCTestExpectation(description: "Receive PrePlay Response")
+        mockEventListener.preplayVODResponseCallback = { _ in
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation])
+        let seekingEvent = SeekingEvent(currentTime: 30, date: Date())
+        mockPlayer.seekingListener?(seekingEvent)
+
+        XCTAssertEqual(mockPingScheduler.events, [
+            .onSeeking(30)
+        ])
+    }
+    
+    func testPingSchedulerAPICallsOnSeeked() async {
+        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
+                                                  externalIDs: [],
+                                                  assetType: .asset,
+                                                  uplynkPingConfiguration: .init(adImpressions: true))
+        let sourceDescription = SourceDescription(source: mockSource)
+        let result = integration.setSource(source: sourceDescription)
+        XCTAssertTrue(result)
+        let expectation = XCTestExpectation(description: "Receive PrePlay Response")
+        mockEventListener.preplayVODResponseCallback = { _ in
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation])
+        let seekedEvent = SeekedEvent(currentTime: 30, date: Date())
+        mockPlayer.seekedListener?(seekedEvent)
+
+        XCTAssertEqual(mockPingScheduler.events, [
+            .onSeeked(30)
+        ])
+    }
+    
+    func testPingSchedulerAPICallsOnPlay() async {
+        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
+                                                  externalIDs: [],
+                                                  assetType: .asset,
+                                                  uplynkPingConfiguration: .init(adImpressions: true))
+        let sourceDescription = SourceDescription(source: mockSource)
+        let result = integration.setSource(source: sourceDescription)
+        XCTAssertTrue(result)
+        let expectation = XCTestExpectation(description: "Receive PrePlay Response")
+        mockEventListener.preplayVODResponseCallback = { _ in
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation])
+        let playEvent = PlayEvent(currentTime: 30, date: Date())
+        mockPlayer.playListener?(playEvent)
+
+        XCTAssertEqual(mockPingScheduler.events, [
+            .onStart(30)
         ])
     }
 }

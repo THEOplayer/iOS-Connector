@@ -35,8 +35,9 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
     private let controller: ServerSideAdIntegrationController
     private let configuration: UplynkConfiguration
     private(set) var isSettingSource: Bool = false
-    private var pingScheduler: PingScheduler?
+    private var pingScheduler: PingSchedulerProtocol?
 
+    private var pingSchedulerFactory: PingSchedulerFactory.Type
     private var adHandlerFactory: AdHandlerFactory.Type
     private var adSchedulerFactory: AdSchedulerFactory.Type
     private var adScheduler: AdSchedulerProtocol?
@@ -56,7 +57,8 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
          configuration: UplynkConfiguration,
          eventListener: UplynkEventListener? = nil,
          adSchedulerFactory: AdSchedulerFactory.Type = AdScheduler.self,
-         adHandlerFactory: AdHandlerFactory.Type = AdHandler.self
+         adHandlerFactory: AdHandlerFactory.Type = AdHandler.self,
+         pingSchedulerFactory: PingSchedulerFactory.Type = PingScheduler.self
     ) {
         self.eventListener = eventListener
         self.uplynkAPI = uplynkAPI
@@ -65,6 +67,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         self.configuration = configuration
         self.adSchedulerFactory = adSchedulerFactory
         self.adHandlerFactory = adHandlerFactory
+        self.pingSchedulerFactory = pingSchedulerFactory
 
         // Setup event listner's to schedule ping
         timeUpdateEventListener = player.addEventListener(type: PlayerEventTypes.TIME_UPDATE) { [weak self] event in
@@ -211,12 +214,13 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                 let adScheduler = self.createAdScheduler(preplayResponse: preplayResponse)
                 if uplynkConfig.pingFeature != .noPing {
                     os_log(.debug,log: .adIntegration, "Scheduling ping")
-                    pingScheduler = PingScheduler(urlBuilder: urlBuilder,
-                                                  prefix: preplayResponse.prefix,
-                                                  sessionId: preplayResponse.sid, 
-                                                  listener: eventListener,
-                                                  controller: self.controller,
-                                                  adScheduler: adScheduler)
+                    pingScheduler = self.pingSchedulerFactory.make(urlBuilder: urlBuilder,
+                                                                   prefix: preplayResponse.prefix,
+                                                                   sessionId: preplayResponse.sid,
+                                                                   listener: eventListener,
+                                                                   controller: self.controller,
+                                                                   adScheduler: adScheduler, 
+                                                                   uplynkApiType: uplynkAPI)
                 }
                 self.adScheduler = adScheduler
                 self.onPrePlayResponse(response: preplayResponse,
