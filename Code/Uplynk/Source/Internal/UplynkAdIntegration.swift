@@ -238,7 +238,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                     description: error.localizedDescription,
                     code: .UPLYNK_ERROR_CODE_PREPLAY_REQUEST_FAILED)
                 eventListener?.onError(uplynkError)
-                controller.error(error: uplynkError)
+                controller.fatalError(error: uplynkError, code: .SOURCE_INVALID)
             }
         }
         
