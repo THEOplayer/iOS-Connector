@@ -11,7 +11,7 @@ public class UplynkConnector {
     private let player: THEOplayer
     private var adIntegrationHandler: ServerSideAdIntegrationHandler?
     private weak var eventListener: UplynkEventListener?
-    public init(player: THEOplayer, configuration: UplynkConfiguration, eventListener: UplynkEventListener? = nil) {
+    public init(player: THEOplayer, configuration: UplynkConfiguration = .init(), eventListener: UplynkEventListener? = nil) {
         self.player = player
         self.eventListener = eventListener
         self.player.ads.registerServerSideIntegration(integrationId: UplynkAdIntegration.INTEGRATION_ID) { controller in
