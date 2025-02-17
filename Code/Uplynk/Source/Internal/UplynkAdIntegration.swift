@@ -344,7 +344,6 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
                             description: error.localizedDescription,
                             code: .UPLYNK_ERROR_CODE_ASSET_INFO_REQUEST_FAILED)
                         self.eventListener?.onError(uplynkError)
-                        self.controller.error(error: uplynkError)
                     }
                 }
                 

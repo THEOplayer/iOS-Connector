@@ -115,7 +115,7 @@ extension ViewController {
         
         listeners["AD_ERROR"] = player.ads.addEventListener(type: AdsEventTypes.AD_ERROR) {
             os_log("--------------------------------------->")
-            os_log("--> Ad Error Event occured: \($0)")
+            os_log("--> Ad Error Event occured: \($0.error ?? "")")
             os_log("--------------------------------------->")
         }
         

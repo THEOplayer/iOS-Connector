@@ -20,6 +20,11 @@ public struct ThumbNailResolution: Codable, Equatable {
     let prefix: String
 }
 
+struct AssetInfoErrorResponse: Codable, Equatable {
+    let error: Int
+    let msg: String
+}
+
 public struct AssetInfoResponse: Codable, Equatable {
     
     /// Returns 1 when the asset has been flagged as audio only. Valid values are: 0 or 1

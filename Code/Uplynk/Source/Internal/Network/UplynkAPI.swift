@@ -42,6 +42,12 @@ class UplynkAPI: UplynkAPIProtocol {
         let data = try await HTTPSConnection.request(type: .get, urlString: url)
         let decoder: JSONDecoder = .init()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try decoder.decode(AssetInfoResponse.self, from: data)
+        guard let successResponse = try? decoder.decode(AssetInfoResponse.self, from: data) else {
+            let errorResponse = try decoder.decode(AssetInfoErrorResponse.self, from: data)
+            throw UplynkError(url: url, 
+                              description: errorResponse.msg,
+                              code: .UPLYNK_ERROR_CODE_ASSET_INFO_REQUEST_FAILED)
+        }
+        return successResponse
     }
 }
