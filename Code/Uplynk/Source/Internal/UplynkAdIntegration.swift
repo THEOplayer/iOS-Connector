@@ -58,7 +58,8 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
          eventListener: UplynkEventListener? = nil,
          adSchedulerFactory: AdSchedulerFactory.Type = AdScheduler.self,
          adHandlerFactory: AdHandlerFactory.Type = AdHandler.self,
-         pingSchedulerFactory: PingSchedulerFactory.Type = PingScheduler.self
+         pingSchedulerFactory: PingSchedulerFactory.Type = PingScheduler.self,
+         drmIntegrationFactory: ContentProtectionIntegrationFactory = UplynkDRMIntegrationFactory()
     ) {
         self.eventListener = eventListener
         self.uplynkAPI = uplynkAPI
@@ -68,6 +69,10 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         self.adSchedulerFactory = adSchedulerFactory
         self.adHandlerFactory = adHandlerFactory
         self.pingSchedulerFactory = pingSchedulerFactory
+        
+        THEOplayer.registerContentProtectionIntegration(integrationId: UplynkDRMIntegration.integrationID,
+                                                        keySystem: .FAIRPLAY,
+                                                        integrationFactory: drmIntegrationFactory)
 
         // Setup event listner's to schedule ping
         timeUpdateEventListener = player.addEventListener(type: PlayerEventTypes.TIME_UPDATE) { [weak self] event in
@@ -368,9 +373,11 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         os_log(.debug,log: .adIntegration, "Play url: %@", playURL)
         typedSource.src = URL(string: playURL)!
         if let drm = response.drm, drm.required {
-            typedSource.drm = FairPlayDRMConfiguration(customIntegrationId: UplynkAdIntegration.INTEGRATION_ID,
-                                                       licenseAcquisitionURL: "",
-                                                       certificateURL: drm.fairplayCertificateURL)
+            // FIXME: Supply a dummy string for license URL - SDK fails the DRM flow if the license URL is empty
+            let drmConfig = FairPlayDRMConfiguration(customIntegrationId: UplynkDRMIntegration.integrationID,
+                                                     licenseAcquisitionURL: "DUMMY_URL",
+                                                     certificateURL: drm.fairplayCertificateURL)
+            typedSource.drm = drmConfig
         }
         player.source = sourceDescription
         

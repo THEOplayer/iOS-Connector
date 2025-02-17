@@ -23,4 +23,9 @@ extension OSLog {
         subsystem: String(describing: AdScheduler.self),
         category: String(describing: UplynkAdIntegration.self)
     )
+    
+    static let drmIntegration = OSLog(
+        subsystem: String(describing: UplynkDRMIntegration.self),
+        category: String(describing: UplynkAdIntegration.self)
+    )
 }
