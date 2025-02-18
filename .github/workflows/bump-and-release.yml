@@ -23,6 +23,7 @@ on:
           - Comscore
           - Conviva
           - SideloadedSubtitle
+          - Uplynk
 jobs:
   Bump-And-Release:
     runs-on: macos-14
