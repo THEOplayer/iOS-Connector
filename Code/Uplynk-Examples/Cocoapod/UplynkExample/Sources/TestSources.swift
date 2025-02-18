@@ -31,8 +31,6 @@ extension SourceDescription {
                                       ssai: UplynkSSAIConfiguration.uplynkDRM)
         return SourceDescription(source: typedSource)
     }
-    
-    }
 }
 
 private extension UplynkSSAIConfiguration {

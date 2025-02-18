@@ -344,6 +344,3 @@ extension ViewController: UplynkEventListener {
         print("Error Occured: { url: \(error.url), description: \(error.localizedDescription)")
     }
 }
-
-    }
-}
