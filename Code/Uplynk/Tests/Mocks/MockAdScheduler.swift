@@ -40,7 +40,7 @@ final class MockAdScheduler: AdSchedulerProtocol {
     }
     
     var lastUnwatchedAdBreakOffsetToReturn: Double?
-    func lastUnwatchedAdBreakOffset(before time: Double) -> Double? {
+    func lastUnwatchedAdBreakOffset(start: Double, end: Double) -> Double? {
         lastUnwatchedAdBreakOffsetToReturn
     }
 }

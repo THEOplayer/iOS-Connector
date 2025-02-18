@@ -425,6 +425,8 @@ final class UplynkAdIntegrationTests: XCTestCase {
         
         mockPlayer.currentTime = 100
         mockAdScheduler.lastUnwatchedAdBreakOffsetToReturn = 20.0
+        let seekingEvent = SeekingEvent(currentTime: 10, date: Date())
+        mockPlayer.seekingListener?(seekingEvent)
         let seekEvent = SeekedEvent(currentTime: 100, date: Date())
         mockPlayer.seekedListener?(seekEvent)
         XCTAssertEqual(mockPlayer.currentTime, 20.0)
@@ -704,6 +706,8 @@ final class UplynkAdIntegrationTests: XCTestCase {
         // When
         mockPlayer.currentTime = 20
         mockAdScheduler.lastUnwatchedAdBreakOffsetToReturn = 5.0
+        let seekingEvent = SeekingEvent(currentTime: 3, date: Date())
+        mockPlayer.seekingListener?(seekingEvent)
         let seekEvent = SeekedEvent(currentTime: 20, date: Date())
         mockPlayer.seekedListener?(seekEvent)
         XCTAssertEqual(mockPlayer.currentTime, 5.0)
@@ -756,6 +760,8 @@ final class UplynkAdIntegrationTests: XCTestCase {
         mockPlayer.currentTime = 20
         mockAdScheduler.lastUnwatchedAdBreakOffsetToReturn = 5.0
         mockAdScheduler.adBreakOffsetToReturnIfAdBreakContains = 5.0
+        let seekingEvent = SeekingEvent(currentTime: 3, date: Date())
+        mockPlayer.seekingListener?(seekingEvent)
         let seekEvent = SeekedEvent(currentTime: 20, date: Date())
         mockPlayer.seekedListener?(seekEvent)
         XCTAssertEqual(mockPlayer.currentTime, 5.0)

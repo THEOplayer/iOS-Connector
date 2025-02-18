@@ -26,7 +26,7 @@ protocol AdSchedulerProtocol {
     func adBreakOffsetIfAdBreakContains(time: Double) -> Double?
     func adBreakEndTimeIfAdBreakContains(time: Double) -> Double?
     func firstUnwatchedAdBreakOffset(before time: Double) -> Double?
-    func lastUnwatchedAdBreakOffset(before time: Double) -> Double?
+    func lastUnwatchedAdBreakOffset(start: Double, end: Double) -> Double?
 }
 
 final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
@@ -178,18 +178,12 @@ final class AdScheduler: AdSchedulerProtocol, AdSchedulerFactory {
         return firstUnplayedAdBreak.timeOffset
     }
     
-    func lastUnwatchedAdBreakOffset(before time: Double) -> Double? {
+    func lastUnwatchedAdBreakOffset(start: Double, end: Double) -> Double? {
         // Get the last adbreak before the passed in time
         guard 
-            let lastAdBreakBeforeTheSeekedTimed = adBreaks.last (where: { $0.adBreak.timeOffset <= time }),
+            let lastAdBreakBeforeTheSeekedTimed = adBreaks.last (where: { $0.adBreak.timeOffset <= end && $0.adBreak.timeOffset >= start}),
             lastAdBreakBeforeTheSeekedTimed.state == .notPlayed
         else {
-            return nil
-        }
-
-        // If there is an ad break after the current candidate ad break that is already completed,
-        // we won't play the candidate ad break
-        if adBreaks.first(where: { $0.adBreak.timeOffset > time && $0.state == .completed }) != nil {
             return nil
         }
 
