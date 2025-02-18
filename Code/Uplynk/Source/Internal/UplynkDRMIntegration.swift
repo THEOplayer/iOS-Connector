@@ -42,6 +42,10 @@ class UplynkDRMIntegration: ContentProtectionIntegration {
     func onLicenseRequest(request: LicenseRequest, callback: LicenseRequestCallback) {
         os_log(.debug,log: .drmIntegration, "onLicenseRequest %@", request.url)
         guard let skdUrl = self.skdUrl else {
+            callback.error(error: UplynkError(
+                url: "",
+                description: "An error occured while retrieving skd",
+                code: .UPLYNK_ERROR_DRM_LICENSE_ACQUISTION_FAILED))
             return
         }
         let laURL = skdUrl.replacingOccurrences(of: "skd://", with: "https://")
