@@ -32,30 +32,51 @@ class UplynkDRMIntegration: ContentProtectionIntegration {
     }
 
     func onCertificateResponse(response: CertificateResponse, callback: CertificateResponseCallback) {
-        let responseString = String(data: try! JSONEncoder().encode(response), encoding: .utf8)!
-        os_log(.debug,log: .drmIntegration, "onCertificateResponse %@", responseString)
+        if let data = try? JSONEncoder().encode(response) {
+            let responseString = String(data: data, encoding: .utf8)!
+            os_log(.debug,log: .drmIntegration, "onCertificateResponse %@", responseString)
+        }
         callback.respond(certificate: response.body)
     }
 
     func onLicenseRequest(request: LicenseRequest, callback: LicenseRequestCallback) {
         os_log(.debug,log: .drmIntegration, "onLicenseRequest %@", request.url)
-        let laURL = self.skdUrl!.replacingOccurrences(of: "skd://", with: "https://")
+        guard let skdUrl = self.skdUrl else {
+            return
+        }
+        let laURL = skdUrl.replacingOccurrences(of: "skd://", with: "https://")
         request.url = laURL
         var dict = [String: String]()
         dict.updateValue(request.body!.base64EncodedString(), forKey: "spc")
-
-        request.body = try! JSONEncoder().encode(dict)
-        callback.request(request: request)
+        
+        do {
+            request.body = try JSONEncoder().encode(dict)
+            callback.request(request: request)
+        } catch {
+            callback.error(error: error)
+        }
     }
 
     func onLicenseResponse(response: LicenseResponse, callback: LicenseResponseCallback) {
-        let responseString = String(data: try! JSONEncoder().encode(response), encoding: .utf8)!
-        os_log(.debug,log: .drmIntegration, "onLicenseResponse %@", responseString)
-
-        let dto = try! JSONDecoder().decode(UplynkDRMLicenseResponseDTO.self, from: response.body)
-        response.body = Data(base64Encoded: dto.ckc)!
+        if let data = try? JSONEncoder().encode(response) {
+            let responseString = String(data: data, encoding: .utf8)!
+            os_log(.debug,log: .drmIntegration, "onLicenseResponse %@", responseString)
+        }
         
-        callback.respond(license: response.body)
+        do {
+            let dto = try JSONDecoder().decode(UplynkDRMLicenseResponseDTO.self, from: response.body)
+            guard let data = Data(base64Encoded: dto.ckc) else {
+                callback.error(error: UplynkError(
+                    url: "",
+                    description: "ckc response could not be decoded properly",
+                    code: .UPLYNK_ERROR_DRM_LICENSE_ACQUISTION_FAILED))
+                return
+            }
+            response.body = data
+            callback.respond(license: response.body)
+        } catch {
+            callback.error(error: error)
+        }
     }
 }
 
