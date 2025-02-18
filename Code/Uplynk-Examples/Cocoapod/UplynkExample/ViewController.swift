@@ -19,22 +19,11 @@ class ViewController: UIViewController {
     // Dictionary of player event listeners
     var listeners: [String: EventListener] = [:]
 
-    // Web sources:
-    let webSources: [WebSource] = [
-        .source1,
-        .source2,
-        .source3,
-        .source4,
-        .source5,
-        .source6
-    ]
     
     @IBOutlet weak var playerStackView: UIStackView!
     @IBOutlet weak var playerViewContainer: UIView!
     @IBOutlet weak var stepper: UIStepper!
     @IBOutlet weak var sourceSegmentedControl: UISegmentedControl!
-    @IBOutlet weak var webSourcePickerView: UIPickerView!
-    @IBOutlet weak var webSourceStackView: UIStackView!
     @IBOutlet weak var skipStrategySegmentedControl: UISegmentedControl!
     @IBOutlet weak var adsConfigurationStackView: UIStackView!
     @IBOutlet weak var skipOffsetValue: UILabel!
@@ -51,7 +40,6 @@ class ViewController: UIViewController {
         skipOffsetValue.text = "\(Int(stepper.value))"
         skipStrategySegmentedControl.selectedSegmentIndex = 0
         adsConfigurationStackView.isHidden = sourceSegmentedControl.selectedSegmentIndex != 1 && sourceSegmentedControl.selectedSegmentIndex != 3
-        webSourceStackView.isHidden = sourceSegmentedControl.selectedSegmentIndex != 3
     }
     
     private var selectedSkipStrategy: SkippedAdStrategy {
@@ -98,8 +86,6 @@ class ViewController: UIViewController {
         addAdsEventListeners()
         attachPlayerEventListeners()
         
-        webSourcePickerView.delegate = self
-        webSourcePickerView.dataSource = self
     }
     
     private func configureUplynkConnector() {
@@ -140,9 +126,6 @@ class ViewController: UIViewController {
              player.source = .ads
         case 2:
             player.source = .multiDRM
-        case 3:
-            // web sources.
-            loadWebSourceAndSetToPlayer(at: webSourcePickerView.selectedRow(inComponent: 0))
         default:
             // No-op
             break
@@ -308,18 +291,6 @@ class ViewController: UIViewController {
         activityIndicatorView.stopAnimating()
         view.isUserInteractionEnabled = true
     }
-    
-    private func loadWebSourceAndSetToPlayer(at row: Int) {
-        startLoading()
-        playerStackView.alpha = 0.5
-        Task { @MainActor in
-            if let source = await SourceDescription.source(for: webSources[row], useExternalID: false) {
-                player.source = source
-            }
-            stopLoading()
-            playerStackView.alpha = 1.0
-        }
-    }
 }
 
 // MARK: - PlayerInterfaceViewDelegate
@@ -374,37 +345,5 @@ extension ViewController: UplynkEventListener {
     }
 }
 
-extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    func textForWebSource(at row: Int) -> String {
-        return "source \(row + 1): (\(webSources[row].meta) token: \(webSources[row].tokenRequired))"
-    }
-    
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return webSources.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return textForWebSource(at: row)
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        stop()
-        resetState()
-        setupPlayerView()
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        var label = view as? UILabel
-        if (label == nil)  {
-            label = UILabel()
-        }
-        label?.adjustsFontForContentSizeCategory = true
-        label?.adjustsFontSizeToFitWidth = true
-        label?.text = textForWebSource(at: row)
-        return label!
     }
 }

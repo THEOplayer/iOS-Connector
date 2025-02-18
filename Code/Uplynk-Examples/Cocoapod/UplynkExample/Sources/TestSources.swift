@@ -32,14 +32,6 @@ extension SourceDescription {
         return SourceDescription(source: typedSource)
     }
     
-    static func source(for webSource: WebSource, useExternalID: Bool) async -> SourceDescription? {
-        guard let ssai = await UplynkSSAIConfiguration.source(for: webSource, useExternalID: useExternalID) else {
-            return nil
-        }
-        let typedSource = TypedSource(src: "",
-                                      type: "application/x-mpegurl",
-                                      ssai: ssai)
-        return SourceDescription(source: typedSource)
     }
 }
 
@@ -93,55 +85,5 @@ private extension UplynkSSAIConfiguration {
                                 preplayParameters: [:],
                                 contentProtected: true,
                                 assetInfo: true)
-    }
-    
-    static func source(for webSource: WebSource, useExternalID: Bool) async -> UplynkSSAIConfiguration? {
-        var playbackURLComponents: [(String, String)] = []
-        if webSource.tokenRequired {
-            let request = URLRequest(url: webSource.url)
-            do {
-                let (data, _) = try await URLSession.shared.data(for: request)
-                let responseString = String(data: data, encoding: .utf8)
-                let regex = Regex {
-                    /let playbackUrl = "/
-                    Capture(
-                        OneOrMore(.anyNonNewline)
-                    )
-                    /";/
-                }
-                guard let playbackURLString = responseString?.firstMatch(of: regex)?.output.1 else {
-                    return nil
-                }
-                let components = URLComponents(string: String(playbackURLString))
-
-                components?.queryItems?.forEach {
-                    if let value = $0.value {
-                        playbackURLComponents.append(($0.name, value))
-                    }
-                }
-            } catch {
-                return nil
-            }
-        }
-        
-        if useExternalID {
-            return UplynkSSAIConfiguration(assetIDs: [],
-                                           externalIDs: webSource.externalID.map { [$0] } ?? [],
-                                           assetType: .asset,
-                                           prefix: "https://content.uplynk.com",
-                                           userID: webSource.userID,
-                                           contentProtected: false,
-                                           assetInfo: true,
-                                           playbackURLParameters: playbackURLComponents)
-        } else {
-            return UplynkSSAIConfiguration(assetIDs: [webSource.assetID],
-                                           externalIDs: [],
-                                           assetType: .asset,
-                                           prefix: "https://content.uplynk.com",
-                                           userID: nil,
-                                           contentProtected: false,
-                                           assetInfo: true,
-                                           playbackURLParameters: playbackURLComponents)
-        }
     }
 }
