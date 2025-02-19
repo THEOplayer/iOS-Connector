@@ -68,12 +68,12 @@ Next, when creating a `TypedSource`, you can pass a `UplynkSSAIConfiguration` to
 the content to be played is DRM protected or not, etc: 
 
 ```swift
-    let ssaiConfiguration = UplynkSSAIConfiguration(assetIDs:[ your list of asset IDs],
+    let ssaiConfiguration = UplynkSSAIConfiguration(id: .asset(ids: [ your list of asset IDs]),
                                 assetType: .asset or .channel,
                                 prefix: "https://content.uplynk.com", 
                                 contentProtected: true or false)
 ```
-For more information about what each configuration option is, have a look at the API reference for this class. 
+For more information about what each configuration option is, have a look at the API reference for this class. For the `id` argument, you can either pass a list of assetIDs, or a list of external IDs along with the user ID.
 
 For each source, you can attach the uplynk configuration above to the `ssai` property: 
 
