@@ -25,10 +25,8 @@ class UplynkSSAIURLBuilder {
     private var drmParameters: String { ssaiConfiguration.drmParameters }
     private var pingParameters: String { ssaiConfiguration.pingParameters }
     private var urlParameters: String { ssaiConfiguration.urlParameters }
-    private var assetIDs: [String] { ssaiConfiguration.assetIDs }
-    private var externalIDs: [String] { ssaiConfiguration.externalIDs }
-    private var userID: String? { ssaiConfiguration.userID }
-
+    private var id: UplynkSSAIConfiguration.ID { ssaiConfiguration.id }
+    
     func buildPreplayVODURL() -> String {
         return "\(prefix)/preplay/\(urlAssetID)?v=2\(drmParameters)\(pingParameters)\(urlParameters)"
     }
@@ -41,22 +39,22 @@ class UplynkSSAIURLBuilder {
         sessionID: String,
         prefix: String
     ) -> [String] {
-        let urlList: [String] = if !assetIDs.isEmpty {
-            assetIDs.map {
-                "\(prefix)/player/assetinfo/\($0).json"
+        let prefixPath = "\(prefix)/player/assetinfo"
+        let assetURLs = switch id {
+        case let .asset(ids):
+            ids.map {
+                "\(prefixPath)/\($0).json"
             }
-        } else if !externalIDs.isEmpty, let userID = userID {
-            externalIDs.map {
-                "\(prefix)/player/assetinfo/ext/\(userID)/\($0).json"
+        case let .external(ids, userID):
+            ids.map {
+                "\(prefixPath)/ext/\(userID)/\($0).json"
             }
-        } else {
-            []
         }
         
         return if sessionID.isEmpty {
-            urlList
+            assetURLs
         } else {
-            urlList.map {
+            assetURLs.map {
                 "\($0)?pbs=\(sessionID)"
             }
         }

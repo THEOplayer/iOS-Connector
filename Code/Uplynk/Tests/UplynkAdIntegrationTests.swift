@@ -90,7 +90,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
         }
         
         mockSource.ssai = UplynkSSAIConfiguration(
-            assetIDs: ["123"], externalIDs: [], assetType: type)
+            id: .asset(ids: ["123"]), assetType: type)
         
         XCTAssertTrue(integration.setSource(source: SourceDescription(source: mockSource)))
         await fulfillment(of: [expectation])
@@ -114,8 +114,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
             expectation.fulfill()
         }
         
+        
         mockSource.ssai = UplynkSSAIConfiguration(
-            assetIDs: ["123"], externalIDs: [], assetType: .asset)
+            id: .asset(ids: ["123"]), assetType: .asset)
         
         XCTAssertTrue(integration.setSource(source: SourceDescription(source: mockSource)))
         await fulfillment(of: [expectation])
@@ -123,8 +124,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
     
     func testSeekingOverAdBreakForStrategyPlayNone() async {
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [], 
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
@@ -142,8 +142,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
     
     func testSeekingOnAdBreakForStrategyPlayNone() async {
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
@@ -170,9 +169,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
         let expectation = XCTestExpectation(description: "Receive PrePlay Response")
@@ -198,9 +197,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
         let expectation = XCTestExpectation(description: "Receive PrePlay Response")
@@ -226,9 +225,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
         let expectation = XCTestExpectation(description: "Receive PrePlay Response")
@@ -255,9 +254,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
         let expectation = XCTestExpectation(description: "Receive PrePlay Response")
@@ -283,9 +282,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
         let expectation = XCTestExpectation(description: "Receive PrePlay Response")
@@ -338,9 +337,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
         let expectation = XCTestExpectation(description: "Receive PrePlay Response")
@@ -412,9 +411,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
         let expectation = XCTestExpectation(description: "Receive PrePlay Response")
@@ -459,9 +458,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let result = integration.setSource(source: SourceDescription(source: mockSource))
         XCTAssertTrue(result)
         let expectation = XCTestExpectation(description: "Receive PrePlay Response")
@@ -507,9 +506,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let sourceDescription = SourceDescription(source: mockSource)
         let result = integration.setSource(source: sourceDescription)
         XCTAssertTrue(result)
@@ -547,9 +546,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let sourceDescription = SourceDescription(source: mockSource)
         let result = integration.setSource(source: sourceDescription)
         XCTAssertTrue(result)
@@ -588,9 +587,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let sourceDescription = SourceDescription(source: mockSource)
         let result = integration.setSource(source: sourceDescription)
         XCTAssertTrue(result)
@@ -639,9 +638,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let sourceDescription = SourceDescription(source: mockSource)
         let result = integration.setSource(source: sourceDescription)
         XCTAssertTrue(result)
@@ -691,9 +690,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let sourceDescription = SourceDescription(source: mockSource)
         let result = integration.setSource(source: sourceDescription)
         XCTAssertTrue(result)
@@ -744,9 +743,9 @@ final class UplynkAdIntegrationTests: XCTestCase {
                                           adSchedulerFactory: mockAdSchedulerFactory,
                                           adHandlerFactory: mockAdHandlerFactory)
         // Set source
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset)
+        
         let sourceDescription = SourceDescription(source: mockSource)
         let result = integration.setSource(source: sourceDescription)
         XCTAssertTrue(result)
@@ -788,8 +787,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
     }
     
     func testPingSchedulerAPICallsOnTimeUpdate() async {
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset,
                                                   uplynkPingConfiguration: .init(adImpressions: true))
         let sourceDescription = SourceDescription(source: mockSource)
@@ -809,8 +807,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
     }
     
     func testPingSchedulerAPICallsOnSeeking() async {
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset,
                                                   uplynkPingConfiguration: .init(adImpressions: true))
         let sourceDescription = SourceDescription(source: mockSource)
@@ -830,8 +827,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
     }
     
     func testPingSchedulerAPICallsOnSeeked() async {
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset,
                                                   uplynkPingConfiguration: .init(adImpressions: true))
         let sourceDescription = SourceDescription(source: mockSource)
@@ -851,8 +847,7 @@ final class UplynkAdIntegrationTests: XCTestCase {
     }
     
     func testPingSchedulerAPICallsOnPlay() async {
-        mockSource.ssai = UplynkSSAIConfiguration(assetIDs: ["123"],
-                                                  externalIDs: [],
+        mockSource.ssai = UplynkSSAIConfiguration(id: .asset(ids: ["123"]),
                                                   assetType: .asset,
                                                   uplynkPingConfiguration: .init(adImpressions: true))
         let sourceDescription = SourceDescription(source: mockSource)

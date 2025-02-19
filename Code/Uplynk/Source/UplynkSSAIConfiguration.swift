@@ -9,6 +9,11 @@ import THEOplayerSDK
 
 public class UplynkSSAIConfiguration: CustomServerSideAdInsertionConfiguration {
     
+    public enum ID {
+        case asset(ids: [String])
+        case external(ids: [String], userID: String)
+    }
+    
     public enum AssetType {
         /// A Video-on-demand content asset.
         case asset
@@ -18,12 +23,9 @@ public class UplynkSSAIConfiguration: CustomServerSideAdInsertionConfiguration {
     
     public let integration: SSAIIntegrationId = .CustomSSAIIntegrationID
     public let customIntegration: String = UplynkAdIntegration.INTEGRATION_ID
-
-    public let assetIDs: [String]
-    public let externalIDs: [String]
     
+    public let id: ID
     public let prefix: String?
-    public let userID: String?
     public let preplayParameters: [String: String]
     public let assetType: AssetType
     public let contentProtected: Bool
@@ -32,22 +34,18 @@ public class UplynkSSAIConfiguration: CustomServerSideAdInsertionConfiguration {
     public let playbackURLParameters: [(String, String)]
 
     public init(
-        assetIDs: [String],
-        externalIDs: [String],
+        id: ID,
         assetType: AssetType,
         prefix: String? = nil,
-        userID: String? = nil,
         preplayParameters: [String: String] = [:],
         contentProtected: Bool = false,
         assetInfo: Bool = false,
         uplynkPingConfiguration: UplynkPingConfiguration = .init(),
         playbackURLParameters: [(String, String)] = []
     ) {
-        self.externalIDs = externalIDs
-        self.assetIDs = assetIDs
+        self.id = id
         self.assetType = assetType
         self.prefix = prefix
-        self.userID = userID
         self.preplayParameters = preplayParameters
         self.contentProtected = contentProtected
         self.assetInfo = assetInfo

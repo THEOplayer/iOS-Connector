@@ -27,18 +27,15 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let validLiveWithExternalIDURL = "\(prefix)/preplay\(assetType  == .channel ? "/channel" : "")/ext/\(userID)/\(externalID).json"
         
         let configurationWithAssetID = UplynkSSAIConfiguration(
-            assetIDs: [assetID],
-            externalIDs: [],
+            id: .asset(ids: [assetID]),
             assetType: assetType,
             prefix: prefix
         )
         
         let configurationWithExternalID = UplynkSSAIConfiguration(
-            assetIDs: [],
-            externalIDs: [externalID],
+            id: .external(ids: [externalID], userID: userID),
             assetType: assetType,
-            prefix: prefix,
-            userID: userID
+            prefix: prefix
         )
         
         let (builtURLWithAssetID, builtURLWithExternalID) = switch assetType {
@@ -83,8 +80,7 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         }
         
         let configurationWithAssetID = UplynkSSAIConfiguration(
-            assetIDs: [assetID],
-            externalIDs: [],
+            id: .asset(ids: [assetID]),
             assetType: assetType,
             prefix: prefix,
             uplynkPingConfiguration: pingConfiguration
@@ -117,8 +113,7 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let validDRMParameters = "manifest=m3u8&rmt=fps"
         
         let configurationWithAssetID = UplynkSSAIConfiguration(
-            assetIDs: [assetID],
-            externalIDs: [],
+            id: .asset(ids: [assetID]),
             assetType: .asset,
             prefix: prefix,
             contentProtected: true
@@ -135,8 +130,7 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let anotherValidPrePlayParameters = "key2=value2&key1=value1"
         
         let configurationWithAssetID = UplynkSSAIConfiguration(
-            assetIDs: [assetID],
-            externalIDs: [],
+            id: .asset(ids: [assetID]),
             assetType: .asset,
             prefix: prefix,
             preplayParameters: [ "key1" : "value1", "key2" : "value2" ]
