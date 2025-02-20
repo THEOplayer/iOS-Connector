@@ -9,8 +9,6 @@ This connector allows the user to specify a source for Preplay, and enable or di
 **Feature Assumptions**
 We assume the SSAI information returned through the Ping API to be of a certain format, which we compile from examples and our own testing. The documentation does not define the structure of this payload very well and only states that it is "like the object returned in Preplay requests", though the formats are not a one-on-one match.
 
-This feature currently excludes client-side ad tracking and VPAID support.
-
 **Assumptions**
 
 - THEOplayer assumes the availability of the Ping API and Uplynk content servers to be 100%, since these identify and provide the necessary streams for playback with this feature.
@@ -19,15 +17,7 @@ This feature currently excludes client-side ad tracking and VPAID support.
 
 ## Configuring Ping
 
-The player allows specification of the desired features of the Ping API as listed [in the official Ping API documentation](https://api-docs.uplynk.com/#Develop/Preplayv2.htm#Features).
-
-By default, the ping API is disabled for all sessions. To enable it, the `ad.cping=1` parameter must be added to your preplay request. If you attempt to call the API without passing in the `ad.cping` parameter, you can throw off the server's ability to make ad event calls correctly.
-
-In addition to enabling the API, you must also notify the server of the features you want to support for this viewing session. To specify which features you'd like to enable, you add the`ad.pingf={some value} `parameter to the playback token. The value of the parameter is detailed in the official Ping Documentation.
-
-Sample playback URL with `cping`:
-
-`https://content.uplynk.com/preplay/cc829785506f46dda4c605abdf65392b.json?ad=adserver&ad.cping=1&ad.pingf=3`
+The connector allows specification of the desired features of the Ping API as listed [in the official Ping API documentation](https://api-docs.uplynk.com/#Develop/Preplayv2.htm#Features).
 
 In the THEOplayer-Connector-Uplynk, these features can be activated through the `uplynkPingConfiguration` property in the SSAI configuration:
 
@@ -43,9 +33,17 @@ let ssaiConfiguration = UplynkSSAIConfiguration(
                                                                                  linearAdData: true or false)) // Defaults to false
 ```
 
-Another important note is that the official documentation does not permit certain options for certain content types (e.g.`adImpressions`must not be used with Live content). The player will respect this documentation and will not enable a feature that is not allowed for the current content type, even if explicitly enabled in the`ping`configuration.
+By default, the ping API is disabled for all sessions. To enable it, the `ad.cping=1` parameter must be added to your preplay request. In addition to enabling the API, you must also notify the server of the features you want to support for this viewing session. To specify which features you'd like to enable, you add the`ad.pingf={some value}` parameter to the playback token. The value of the parameter is detailed in the official Ping Documentation.
 
-If the `uplynkPingConfiguration` uses the default value, or all of `adImpressions`, `freeWheelVideoViews` and `linearAdData` are set to false, Ping API will not be used.
+Ping is enabled and `ad.pingf` is set to a proper value when the `uplynkPingConfiguration` has one or more of the `adImpressions`, `freeWheelVideoViews` or `linearAdData` configuration set to `true`.
+
+If you attempt to call the API without passing in the `ad.cping` parameter, you can throw off the server's ability to make ad event calls correctly.
+
+Sample Preplay URL with `ad.cping`:
+
+`https://content.uplynk.com/preplay/cc829785506f46dda4c605abdf65392b.json?ad=adserver&ad.cping=1&ad.pingf=3`
+
+The default value for `uplynkPingConfiguration` has `adImpressions`, `freeWheelVideoViews` and `linearAdData` all set to false, ie, Ping API will not be used.
 
 ## Ping requests
 
@@ -71,29 +69,29 @@ Where:
 
 ## Ping Response
 
-When performed correctly, a Ping request will return a JSON response. THEOplayer will interpret this response according to the following principles:
+When performed correctly, a Ping request will return a JSON response which is decoded into a `PingResponse`.
+
+The ping response includes:
 
 - next_time: A new beacon will be scheduled when the player's currentTime passes this value. In case the value is -1, no further beacons will be scheduled.
-- ads: Will be interpreted in order to display markers in the timeline as well as expose ad information through the `player.ads.scheduledAds` property.
-
+- ads: Will be interpreted in order to create AdBreak's and Ad's as well as expose Ad information through the THEOplayer instance's `ads.scheduledAds` property.
   - ads.breaks.timeOffset will be used in order to determine the start time of the ad break (in seconds).
-  - ads.breaks.ads will be looped in order to extract the ad information to be exposed in UplynkAdBreak:
-    - duration will serve as duration in UplynkAd (in seconds)
-    - mimeType will serve as mimeType in UplynkAd
-    - apiFramework will serve as apiFramework in UplynkAd
-    - companions will serve as companions UplynkAd
-    - creative will serve as creative in UplynkAd
-    - width will serve as width in UplynkAd
-    - height will serve as height in UplynkAd
-    - events will serve as events in UplynkAd
-    - fwParameters will serve as freeWheelParameters in UplynkAd
-    - extensions will serve as the custom set of VAST extensions in UplynkAd
-  - ads.breaks.breakEnd will be used in order to determine the end of the ad break. Note that this property is optional, and the duration of an ad break can be unknown and updated at a later point.
-  - ads.breaks.duration will be ignored by the player.
+  - ads.breaks.ads will be looped in order to extract the list of ad's in an UplynkAdBreak:
+    - apiFramework - Indicates the API Framework for the ad (e.g., VPAID).
+    - companions - List of companion ads that go with the ad.
+    - mimeType - Indicates the ad's Internet media type (aka mime-type)
+    - creative - If applicable, indicates the creative to display.
+    - events - Object containing all of the events for this ad. Each event type contains an array of URLs.
+    - width - If applicable, indicates the width of the creative.
+    - height - If applicable, indicates the height of the creative.
+    - duration - Indicates the duration, in seconds, of an ad's encoded video.
+    - extensions - Contains the custom set of VAST extensions returned by the ad server.
+    - fwParameters - If the ad response provided by FreeWheel contains creative parameters, they will be reported as name-value pairs within this object.
+  - ads.breaks.duration - Indicates the duration of the ad break.
+  - ads.breaks.position - Indicates the position of the ad break. Valid values are: preroll | midroll | postroll | pause | overlay.
+  - ads.breaks.events - Object containing all of the events for this ad break.
 
-  For all ads and adBreaks added, AD_BREAK_BEGIN, AD_BREAK_END, AD_BEGIN, AD_END events will be dispatched.
-
-The ping response can be retrieved from the `onPingResponse(:)` delegate method of UplynkConnector's `eventListener`.
+The ping response can be retrieved from the `onPingResponse(:)` delegate method by setting an `eventListener` to the `UplynkConnector` instance.
 
 | Delegate method |               Description               |                    Arguments                    |
 | :-------------: | :-------------------------------------: | :---------------------------------------------: |
