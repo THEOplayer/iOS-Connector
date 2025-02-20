@@ -245,37 +245,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
         return true
     }
     
-    // TODO: Check whether the adbreak or the current ad need to be skipped, when `skipAd` is called and remove the unused code
-    private static let SKIP_ADBREAK = false
     func skipAd(ad: Ad) -> Bool {
-        if Self.SKIP_ADBREAK {
-            os_log(.debug,log: .adIntegration, "SKIP_AD: Handling skip adbreak")
-            guard isSkippableAdBreak(),
-                  let adBreakStartTime = adScheduler?.currentAdBreakStartTime,
-                  player.currentTime >= adBreakStartTime + Double(configuration.defaultSkipOffset)
-            else {
-                return true
-            }
-
-            if case let .playingSeekedOverAdBreak(seekedTime: seekedTime, hasSeekedOnToThePlayingAdBreak: hasSeekedOnToThePlayingAdBreak) = state,
-                configuration.skippedAdStrategy != .playNone {
-                handleSkipWhenPlayingSeekedOverAdBreak(seekedTime, hasUserSeekedOnToTheLastPlayedAdBreak: hasSeekedOnToThePlayingAdBreak)
-            } else if let seekToTime = adScheduler?.currentAdBreakEndTime {
-                os_log(.debug,log: .adIntegration, "SKIP_AD: Skipping on to end of adbreak %f", seekToTime)
-                state = .internallyInitiatedSeekInProgress
-                seek(to: seekToTime) { [weak self] _, error in
-                    guard error == nil else {
-                        os_log(.debug,log: .adIntegration, "SKIP_AD: Failed to seek(skipAd) with error: %@", error?.localizedDescription ?? "N/A")
-                        self?.state = .playingContent
-                        return
-                    }
-                    self?.state = .playingContent
-                    os_log(.debug,log: .adIntegration, "SKIP_AD: Reset state to playing content")
-                }
-            }
-            return true
-        }
-        
         os_log(.debug,log: .adIntegration, "SKIP_AD: Handling skip ad")
         guard isSkippable(ad: ad),
               let adStartTime = adScheduler?.currentAdStartTime,
