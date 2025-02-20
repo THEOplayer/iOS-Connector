@@ -50,7 +50,7 @@ let myTypedSource = TypedSource(src: "",
                                 ssai: ssaiConfiguration)
 
 let sourceDescription = SourceDescription(source: typedSource)
-yourTHEOPlayer.source = sourceDescription
+yourTHEOplayer.source = sourceDescription
 ```
 
 ## Stream Configuration (with ads)

@@ -1,4 +1,4 @@
-# THEOPlayer 🤝 Uplynk
+# THEOplayer 🤝 Uplynk
 
 THEOplayer-Connector-Uplynk for iOS provides an integration between the THEOplayerSDK and the Uplynk CMS. It allows the `THEOplayerSDK` to playback uplynk sources.
 
@@ -8,7 +8,7 @@ For example xcode projects with this connector see [Uplynk-Examples](../Uplynk-E
 
 ### [Swift Package Manager](https://swift.org/package-manager/)
 
-1. In Xcode, install the THEOPlayer iOS-Connector package by navigating to **File > Add Packages**
+1. In Xcode, install the THEOplayer iOS-Connector package by navigating to **File > Add Packages**
 2. In the prompt that appears, select the iOS-Connector GitHub repository: `https://github.com/THEOplayer/iOS-Connector`
 3. Select the version you want to use. 
 > the Uplynk connector is available for versions >= 8.11 only.

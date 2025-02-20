@@ -6,7 +6,7 @@ sidebar_position: 2
 
 Uplynk offers support for server-side ad-insertion or in-short SSAI. 
 
-This article explains how to use the THEOPlayer's Ads APIs to interact with the Uplynk Ads service
+This article explains how to use the THEOplayer's Ads APIs to interact with the Uplynk Ads service
 
 ## Global Configuration
 
@@ -20,9 +20,9 @@ let uplynkConfiguration = UplynkConfiguration(defaultSkipOffset: ..., skippedAdS
 
 ## Uplynk Ads API
 
-Specifying a source which contains server-side ads configured through Uplynk will have the THEOPlayer instance report such ads through its Ads API. 
+Specifying a source which contains server-side ads configured through Uplynk will have the THEOplayer instance report such ads through its Ads API. 
 
-Users can use the THEOPlayer Ads events to interact with Uplynk Ads: 
+Users can use the THEOplayer Ads events to interact with Uplynk Ads: 
 ```swift
  func addAdsEventListeners() {
         listeners["ADD_AD_BREAK"] = player.ads.addEventListener(type: AdsEventTypes.ADD_AD_BREAK) { [weak self] in
@@ -98,7 +98,7 @@ Users can use the THEOPlayer Ads events to interact with Uplynk Ads:
         }
 ```
 
-Users can also skip Ads through the `skip` API in THEOPlayer: 
+Users can also skip Ads through the `skip` API in THEOplayer: 
 ```swift
 player.ads.skip()
 ```
