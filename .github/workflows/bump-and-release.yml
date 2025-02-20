@@ -107,7 +107,7 @@ jobs:
               cmd="$cmd --synchronous"
             else
               branch=$(git rev-parse --abbrev-ref HEAD)
-              sed -i '' "s|:tag => \"[^\"]*\"|:branch => \"$branch\"|g" "$connector"
+              sed -i '' "s|:tag => [^,}]*|:branch => \"$branch\"|g" "$connector"
               cat "$connector"
             fi
             $cmd
