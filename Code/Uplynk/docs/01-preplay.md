@@ -25,7 +25,7 @@ We start by creating an `UplynkSSAIConfiguration` object that describes how to c
                                 contentProtected: true or false)
 ```
 
-- `id`: The ID field identifies the asset. Instead of a single string, developers can also specify an array of asset IDs as strings, which will be stitched into a continuous stream. Assets can also be identified by `externalIds` and a `userId`. In that case, you can instantiate a `.channel(ids: [list of channel IDs], userID: your user ID)` instead.
+- `id`: The ID field identifies the asset. Instead of a single string, developers can also specify an array of asset IDs as strings, which will be stitched into a continuous stream. Assets can also be identified by `externalIds` and a `userId`. In that case, you can instantiate a `.external(ids: [list of channel IDs], userID: your user ID)` instead.
  
 - `preplayParameters`: The `preplayParameters` object should have string-key-string-value combinations, which will be used as query parameters for the Preplay API call. Nested objects are not supported.
 
