@@ -105,8 +105,16 @@ jobs:
             cmd="pod $command $connector --verbose --allow-warnings"
             if [ ${{ inputs.dryRun }} == false ]; then
               cmd="$cmd --synchronous"
+            else
+              branch=$(git rev-parse --abbrev-ref HEAD)
+              sed -i '' "s|:tag => \"[^\"]*\"|:branch => \"$branch\"|g" "$connector"
+              cat "$connector"
             fi
             $cmd
+            if [ ${{ inputs.dryRun }} == true ]; then
+              git checkout "$connector"
+              cat "$connector"
+            fi
           done
   Cleanup:
     needs: Bump-And-Release
