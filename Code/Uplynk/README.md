@@ -35,34 +35,15 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 1. Clone this repository to your computer.
 2. Use a [local override](https://guides.cocoapods.org/using/the-podfile.html#using-the-files-from-a-folder-local-to-the-machine) of the `THEOplayerSDK-basic` pod by adding the following line to your projects Podfile: `pod 'THEOplayerSDK-basic', :path => 'iOS-Connector/Helpers/TheoPod'` and make sure the path points to the [TheoPod folder](../../Helpers/TheoPod).
 
-## Usage
 
-Import the `THEOplayerConnectorUplynk` module
+Learn more about Uplynk and how to use the connector in the following list of articles: 
 
-```swift
-import THEOplayerConnectorUplynk
-```
-
-Create an `UplynkConfiguration` that contains information on how to handle ad skipping and seeking over ads scenarios: 
-
-```swift
-let uplynkConfiguration = UplynkConfiguration(defaultSkipOffset: ..., skippedAdStrategy: ...)
-
-```
-
-> `defaultSkipOffset` describes how many seconds the user has to wait before an ad is skippable. `skippedAdStrategy` controls how the connector behaves when seeking over ads. There are three values: `playAll`, `playLast` and `playNone`. The first option forces playback of all the unwatched ads before the seek point. `playLast` forces playback of the last ad before the seek point. 
-
-
-After that, create the `UplynkConnector` using a `THEOPlayer` instance and the above configuration: 
-```swift
-let connector = UplynkConnector(player: yourTHEOplayer,
-                                configuration: uplynkConfiguration
-                                eventListener: nil)
-
-```
-
-If you would like to receive the Uplynk API responses, then you need to implement the `UplynkEventListener` protocol, and pass your event listener in the `eventListener` argument above.
-
+- [Introduction](./docs/00-introduction.md): this article provides information on what Uplynk provides as a service.
+- [Preplay](./docs/01-preplay.md): this article provides information on how to configure a Uplynk source.
+- [Configuration](./docs/04-configuration.md): this article provides information on how to configure the Uplynk Connector.
+- [Interface](./docs/05-interface.md): this article provides information on the available properties, methods and events developers can leverage related to the Uplynk connector.
+- [Ads](./docs/02-ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.
+- [Ping](./docs/03-ping.md): this article provides information on how to leverage the Ping service and which THEOplayer APIs you should use.
 
 Next, when creating a `TypedSource`, you can pass a `UplynkSSAIConfiguration` to describe the server side ad injection configuration for Uplynk, such as the asset IDs to play, whether 
 the content to be played is DRM protected or not, etc: 
