@@ -36,38 +36,12 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 2. Use a [local override](https://guides.cocoapods.org/using/the-podfile.html#using-the-files-from-a-folder-local-to-the-machine) of the `THEOplayerSDK-basic` pod by adding the following line to your projects Podfile: `pod 'THEOplayerSDK-basic', :path => 'iOS-Connector/Helpers/TheoPod'` and make sure the path points to the [TheoPod folder](../../Helpers/TheoPod).
 
 
+## Related articles 
+
 Learn more about Uplynk and how to use the connector in the following list of articles: 
 
 - [Introduction](./docs/00-introduction.md): this article provides information on what Uplynk provides as a service.
 - [Preplay](./docs/01-preplay.md): this article provides information on how to configure a Uplynk source.
-- [Configuration](./docs/04-configuration.md): this article provides information on how to configure the Uplynk Connector.
-- [Interface](./docs/05-interface.md): this article provides information on the available properties, methods and events developers can leverage related to the Uplynk connector.
 - [Ads](./docs/02-ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.
 - [Ping](./docs/03-ping.md): this article provides information on how to leverage the Ping service and which THEOplayer APIs you should use.
 
-Next, when creating a `TypedSource`, you can pass a `UplynkSSAIConfiguration` to describe the server side ad injection configuration for Uplynk, such as the asset IDs to play, whether 
-the content to be played is DRM protected or not, etc: 
-
-```swift
-    let ssaiConfiguration = UplynkSSAIConfiguration(id: .asset(ids: [ your list of asset IDs]),
-                                assetType: .asset or .channel,
-                                prefix: "https://content.uplynk.com", 
-                                contentProtected: true or false)
-```
-For more information about what each configuration option is, have a look at the API reference for this class. For the `id` argument, you can either pass a list of assetIDs, or a list of external IDs along with the user ID.
-
-For each source, you can attach the uplynk configuration above to the `ssai` property: 
-
-```swift
-let myTypedSource = TypedSource(src: "",
-                                type: "application/x-mpegurl",
-                                ssai: ssaiConfiguration)
-
-let mySource = SourceDescription(source: myTypedSource)
-```
-
-Finally you can set the source on your `THEOplayer` instance: 
-
-```swift
-yourTHEOplayer.source = mySource
-```

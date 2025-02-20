@@ -47,9 +47,7 @@ Uplynk API responses. We will touch on what these responses are in the following
 
 For more information on the connector and available APIs, continue your read on the pages below.
 
-- [Preplay](./docs/01-preplay.md): this article provides information on how to configure a Uplynk source.
-- [Configuration](./docs/04-configuration.md): this article provides information on how to configure the Uplynk Connector.
-- [Interface](./docs/05-interface.md): this article provides information on the available properties, methods and events developers can leverage related to the Uplynk connector.
-- [Ads](./docs/02-ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.
-- [Ping](./docs/03-ping.md): this article provides information on how to leverage the Ping service and which THEOplayer APIs you should use.
+- [Preplay](./01-preplay.md): this article provides information on how to configure a Uplynk source.
+- [Ads](./02-ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.
+- [Ping](./03-ping.md): this article provides information on how to leverage the Ping service and which THEOplayer APIs you should use.
 
