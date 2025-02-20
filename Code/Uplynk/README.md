@@ -11,7 +11,7 @@ For example xcode projects with this connector see [Uplynk-Examples](../Uplynk-E
 1. In Xcode, install the THEOPlayer iOS-Connector package by navigating to **File > Add Packages**
 2. In the prompt that appears, select the iOS-Connector GitHub repository: `https://github.com/THEOplayer/iOS-Connector`
 3. Select the version you want to use. 
-> the Uplynk connector is available for versions >= 8.12 only.
+> the Uplynk connector is available for versions >= 8.11 only.
 
 4. Choose the Connector libraries you want to include in your app.
 
