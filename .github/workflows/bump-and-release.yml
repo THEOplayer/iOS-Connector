@@ -102,7 +102,11 @@ jobs:
           for connector in ${connectors[*]}
           do
             pod repo update
-            pod $command $connector --verbose --allow-warnings --synchronous
+            cmd="pod $command $connector --verbose --allow-warnings"
+            if [ ${{ inputs.dryRun }} == false ]; then
+              cmd="$cmd --synchronous"
+            fi
+            $cmd
           done
   Cleanup:
     needs: Bump-And-Release
