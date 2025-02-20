@@ -7,8 +7,7 @@ sidebar_position: 0
 THEOplayer and Uplynk are partners in the streaming industry. The [Uplynk Platform](https://www.uplynk.com/) offers services like encoding, transcoding, server-side ad-insertion, a CDN and more.
 
 
-> Uplynk was previously known as EdgeIO or Verizon Media. The iOS and Android connector will refer to the new name which is Uplynk. The Web integration, however, still refers to the service as Verizon Media.
-
+> Uplynk was previously known as EdgeIO or Verizon Media. The iOS and Android connector will refer to the new name which is Uplynk.
 
 Uplynk offers services which can enhance the API, UI and UX of video players and applications. The most popular services are called Preplay, Ping and Asset Info. THEOplayer integrates these services so that developers and viewers can benefit from them.
 
@@ -19,7 +18,7 @@ For example,
 - Developers can define the behavior when viewers try to seek over an ad;
 - Developers can query metadata to render a playlist in their application.
 
-A live demo of THEOplayer's integration of Verizon Media on the Web is available at https://cdn.theoplayer.com/demos/verizon-media/index.html.
+A live demo of THEOplayer's integration of Uplynk on the Web is available [here](https://cdn.theoplayer.com/demos/verizon-media/index.html).
 
 Once the connector is added to your project, you can import it like so: 
 
