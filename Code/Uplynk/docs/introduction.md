@@ -1,3 +1,7 @@
+---
+sidebar_position: 0
+---
+
 # Introduction
 
 THEOplayer and Uplynk are partners in the streaming industry. The [Uplynk Platform](https://www.uplynk.com/) offers services like encoding, transcoding, server-side ad-insertion, a CDN and more.
@@ -45,7 +49,7 @@ Uplynk API responses. We will touch on what these responses are in the following
 
 For more information on the connector and available APIs, continue your read on the pages below.
 
-- [Preplay](./01-preplay.md): this article provides information on how to configure a Uplynk source.
-- [Ads](./02-ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.
-- [Ping](./03-ping.md): this article provides information on how to leverage the Ping service and which THEOplayer APIs you should use.
+- [Preplay](preplay.md): this article provides information on how to configure a Uplynk source.
+- [Ads](ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.
+- [Ping](ping.md): this article provides information on how to leverage the Ping service and which THEOplayer APIs you should use.
 

@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 # Uplynk Ads
 
 Uplynk offers support for server-side ad-insertion or in-short SSAI. 
@@ -104,5 +108,5 @@ player.ads.skip()
 
 ## Related articles
 
-- [Uplynk - Preplay](../docs/01-preplay.md)
-- [Uplynk - Ping](../docs/03-ping.md)
+- [Uplynk - Preplay](preplay.md)
+- [Uplynk - Ping](ping.md)

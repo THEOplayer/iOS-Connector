@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # Preplay
 
 This article explains how to leverage the Uplynk Preplay API through THEOplayer. This API allows developers to pre-integrate with Uplynk Preplay service.
@@ -85,5 +89,5 @@ If you do not configure the `playbackURLParameters` correctly in relation to you
 
 # Related articles
 
-- [Uplynk - Ads](../docs/02-ads.md)
-- [Uplynk - Ping](../docs/03-ping.md)
+- [Uplynk - Ads](ads.md)
+- [Uplynk - Ping](ping.md)

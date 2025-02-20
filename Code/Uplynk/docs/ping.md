@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # Ping
 
 This article explains how to use the Uplynk Ping API.
@@ -99,5 +103,5 @@ The ping response can be retrieved from the `onPingResponse(:)` delegate method 
 
 ## Related articles
 
-- [Uplynk - Preplay](../docs/01-preplay.md)
-- [Uplynk - Ads](../docs/02-ads.md)
+- [Uplynk - Preplay](preplay.md)
+- [Uplynk - Ads](ads.md)
