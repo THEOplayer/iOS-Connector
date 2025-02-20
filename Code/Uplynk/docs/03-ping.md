@@ -101,5 +101,5 @@ The ping response can be retrieved from the `onPingResponse(:)` delegate method 
 
 ## Related articles
 
-- [Uplynk - Preplay](./01-preplay.md)
-- [Uplynk - Ads](./02-ads.md)
+- [Uplynk - Preplay](../docs/01-preplay.md)
+- [Uplynk - Ads](../docs/02-ads.md)

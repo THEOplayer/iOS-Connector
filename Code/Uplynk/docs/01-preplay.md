@@ -85,5 +85,5 @@ If you do not configure the `playbackURLParameters` correctly in relation to you
 
 # Related articles
 
-- [Uplynk - Ads](./02-ads.md)
-- [Uplynk - Ping](./03-ping.md)
+- [Uplynk - Ads](../docs/02-ads.md)
+- [Uplynk - Ping](../docs/03-ping.md)

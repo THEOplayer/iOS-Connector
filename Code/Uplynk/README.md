@@ -40,8 +40,8 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 
 Learn more about Uplynk and how to use the connector in the following list of articles: 
 
-- [Introduction](./docs/00-introduction.md): this article provides information on what Uplynk provides as a service.
-- [Preplay](./docs/01-preplay.md): this article provides information on how to configure a Uplynk source.
-- [Ads](./docs/02-ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.
-- [Ping](./docs/03-ping.md): this article provides information on how to leverage the Ping service and which THEOplayer APIs you should use.
+- [Introduction](../Uplynk/docs/00-introduction.md): this article provides information on what Uplynk provides as a service.
+- [Preplay](../Uplynk/docs/01-preplay.md): this article provides information on how to configure a Uplynk source.
+- [Ads](../Uplynk/docs/02-ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.
+- [Ping](../Uplynk/docs/03-ping.md): this article provides information on how to leverage the Ping service and which THEOplayer APIs you should use.
 

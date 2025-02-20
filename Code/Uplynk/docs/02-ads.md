@@ -104,5 +104,5 @@ player.ads.skip()
 
 ## Related articles
 
-- [Uplynk - Preplay](./01-preplay.md)
-- [Uplynk - Ping](./03-ping.md)
+- [Uplynk - Preplay](../docs/01-preplay.md)
+- [Uplynk - Ping](../docs/03-ping.md)
