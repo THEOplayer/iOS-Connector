@@ -7,7 +7,7 @@ Uplynk users can use an API (i.e. Preplay) to generate a streaming playlist give
 Assumptions:
 
 - THEOplayer assumes the availability of the Preplay API and Uplynk content servers to be 100%, since these identify and provide the necessary streams for playback with this feature.
-- THEOplayer assumes that developers who are interested in this feature have a basic understanding of the Preplay API. Uplynk documents this service at [https://docs.edgecast.com/video/#Develop/Preplayv2.htm](https://docs.edgecast.com/video/#Develop/Preplayv2.htm)
+- THEOplayer assumes that developers who are interested in this feature have a basic understanding of the Preplay API. Uplynk documents this service at [https://api-docs.uplynk.com/#Develop/Preplayv2.htm](https://api-docs.uplynk.com/#Develop/Preplayv2.htm)
 - THEOplayer assumes that developers provide correct asset identifiers, as well as the proper content protection level.
 
 ## Stream Configuration (without ads)

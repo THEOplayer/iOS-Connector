@@ -14,12 +14,12 @@ This feature currently excludes client-side ad tracking and VPAID support.
 **Assumptions**
 
 - THEOplayer assumes the availability of the Ping API and Uplynk content servers to be 100%, since these identify and provide the necessary streams for playback with this feature.
-- THEOplayer assumes application developers have a notion of the Ping API, namely any extra parameters to be appended to the requests to Uplynk (e.g. for correct ad insertion). As documented in https://docs.vdms.com/video/Content/Develop/Preplayv2.htm
+- THEOplayer assumes application developers have a notion of the Ping API, namely any extra parameters to be appended to the requests to Uplynk (e.g. for correct ad insertion). As documented in https://api-docs.uplynk.com/#Develop/Preplayv2.htm
 - THEOplayer assumes application developers provide proper ID's of the Assets they want to play back, as well as the proper content protection level.
 
 ## Configuring Ping
 
-The player allows specification of the desired features of the Ping API as listed [in the official Ping API documentation](https://docs.vdms.com/video/#Develop/Pingv3.htm#Features).
+The player allows specification of the desired features of the Ping API as listed [in the official Ping API documentation](https://api-docs.uplynk.com/#Develop/Preplayv2.htm#Features).
 
 By default, the ping API is disabled for all sessions. To enable it, the `ad.cping=1` parameter must be added to your preplay request. If you attempt to call the API without passing in the `ad.cping` parameter, you can throw off the server's ability to make ad event calls correctly.
 
@@ -101,5 +101,5 @@ The ping response can be retrieved from the `onPingResponse(:)` delegate method 
 
 ## Related articles
 
-- [Verizon Media - Preplay](../../../how-to-guides/07-miscellaneous/02-verizon-media/01-preplay.md)
-- [Verizon Media - Ads](../../../how-to-guides/07-miscellaneous/02-verizon-media/02-ads.md)
+- [Uplynk - Preplay](./01-preplay.md)
+- [Uplynk - Ads](./02-ads.md)
