@@ -42,11 +42,10 @@ let connector = UplynkConnector(player: yourTHEOplayer,
 
 ```
 
-Here, the event listener refers to to an implementation of the `UplynkEventListener` protocol which gives the client access to the 
-Uplynk API responses. We will touch on what these responses are in the following articles. If you are not interested in receiving those callbacks, you can pass `nil` like above.
+Here, the event listener refers to an implementation of the `UplynkEventListener` protocol which gives the client access to the Uplynk API responses. We will touch on what these responses are in the following articles. If you are not interested in receiving those callbacks, you can pass `nil` like above.
 
 
-For more information on the connector and available APIs, continue your read on the pages below.
+For more information on the connector and available APIs, continue to read on the pages below.
 
 - [Preplay](preplay.md): this article provides information on how to configure a Uplynk source.
 - [Ads](ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.

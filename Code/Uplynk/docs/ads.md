@@ -28,24 +28,18 @@ Users can use the THEOplayer Ads events to interact with Uplynk Ads:
         listeners["ADD_AD_BREAK"] = player.ads.addEventListener(type: AdsEventTypes.ADD_AD_BREAK) { [weak self] in
             os_log("--------------------------------------->")
             os_log("--> Add Ad Break Event occured: \($0)")
-            os_log("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
-            os_log("--> scheduled ad breaks are \(String(describing: self?.player.ads.scheduledAdBreaks))")
             os_log("--------------------------------------->")
         }
         
         listeners["AD_BREAK_BEGIN"] = player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_BEGIN) { [weak self] in
             os_log("--------------------------------------->")
             os_log("--> Ad break begin Event occured: \($0)")
-            os_log("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
-            os_log("--> current ads \(String(describing: self?.player.ads.currentAds))")
             os_log("--------------------------------------->")
         }
         
         listeners["AD_BREAK_END"] = player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_END) { [weak self] in
             os_log("--------------------------------------->")
             os_log("--> Ad break end Event occured: \($0)")
-            os_log("--> current ad break is \(String(describing: self?.player.ads.currentAdBreak))")
-            os_log("--> current ads \(String(describing: self?.player.ads.currentAds))")
             os_log("--------------------------------------->")
         }
         
