@@ -23,6 +23,7 @@ on:
           - Comscore
           - Conviva
           - SideloadedSubtitle
+          - Uplynk
 jobs:
   Bump-And-Release:
     runs-on: macos-14
@@ -101,7 +102,17 @@ jobs:
           for connector in ${connectors[*]}
           do
             pod repo update
-            pod $command $connector --verbose --allow-warnings --synchronous
+            cmd="pod $command $connector --verbose --allow-warnings"
+            if [ ${{ inputs.dryRun }} == false ]; then
+              cmd="$cmd --synchronous"
+            else
+              branch=$(git rev-parse --abbrev-ref HEAD)
+              sed -i '' "s|:tag => [^,}]*|:branch => \"$branch\"|g" "$connector"
+            fi
+            $cmd
+            if [ ${{ inputs.dryRun }} == true ]; then
+              git checkout "$connector"
+            fi
           done
   Cleanup:
     needs: Bump-And-Release

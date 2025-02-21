@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
 	- Added average bitrate reporting
 
+## [8.11.1] - 2025-02-21
+
+### Added
+
+- Uplynk
+  - Added Uplynk integration with THEOplayer to allow integrating Uplynk CMS into THEOplayer.
+
 ## [8.8.0] - 2025-01-02
 
 ### Added
