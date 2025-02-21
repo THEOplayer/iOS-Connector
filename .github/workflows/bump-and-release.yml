@@ -108,12 +108,10 @@ jobs:
             else
               branch=$(git rev-parse --abbrev-ref HEAD)
               sed -i '' "s|:tag => [^,}]*|:branch => \"$branch\"|g" "$connector"
-              cat "$connector"
             fi
             $cmd
             if [ ${{ inputs.dryRun }} == true ]; then
               git checkout "$connector"
-              cat "$connector"
             fi
           done
   Cleanup:
