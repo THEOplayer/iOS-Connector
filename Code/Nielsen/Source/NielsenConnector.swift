@@ -10,6 +10,7 @@ import NielsenAppApi
 #elseif os(tvOS)
 import NielsenTVAppApi
 #endif
+
 import THEOplayerSDK
 
 /// Connects to a THEOplayer instance and reports its events to Nielsen.
