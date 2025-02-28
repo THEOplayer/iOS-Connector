@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Nielsen
-  - Bump the Nielsen SDK to v9.4.0.0.
+  - Allow bumping minor and patch versions of the Nielsen SDK dependency.
 
 ## [8.11.1] - 2025-02-21
 
