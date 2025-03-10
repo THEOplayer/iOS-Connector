@@ -10,13 +10,13 @@ import Dispatch
 public class Filter {
     public typealias Function<Argument> = (Argument)->Void
     
-    let queue = DispatchQueue(label: "Filter")
+    let queue = DispatchQueue.main
     var letThrough = false
     
     public init() {}
             
-    public func sendConditionally<Argument>(argument: Argument, function: Function<Argument>) {
-        queue.sync {
+    public func sendConditionally<Argument>(argument: Argument,  function: @escaping Function<Argument>) {
+        queue.async {
             if self.letThrough {
                 function(argument)
             }
@@ -29,7 +29,7 @@ public class Filter {
     
     public func togglingSender<Argument>(_ function: @escaping Function<Argument>, setLetThroughTo newValue: Bool) -> Function<Argument> {
         { argument in
-            self.queue.sync {
+            self.queue.async {
                 self.letThrough = newValue
                 function(argument)
             }
