@@ -49,7 +49,7 @@ class AppEventForwarder {
                 guard item == player.currentItem else { return } // TODO: Remove this.
 
                 // BUGFIX: There is a case where we get the ad bitrate reported as a new log entry
-                eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: player.ads.playing)
+                eventProcessor.appGotNewAccessLogEntry(event: event, item: item, isPlayingAd: player.ads.playing)
             }
         )
         // Temporary workaround for THEOlive bitrate change events
@@ -102,6 +102,6 @@ protocol AppEventProcessor {
     func adDidEnd(event: AdEndEvent)
     func appWillEnterForeground(notification: Notification)
     func appDidEnterBackground(notification: Notification)
-    func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, isPlayingAd: Bool)
+    func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, item: AVPlayerItem, isPlayingAd: Bool)
     func appGotBitrateChangeEvent(bitrate: Double, isPlayingAd: Bool)
 }
