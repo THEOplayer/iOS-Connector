@@ -47,19 +47,21 @@ class AppEventConvivaReporter: AppEventProcessor {
     }
     
     func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, item: AVPlayerItem, isPlayingAd: Bool) {
-        
-        // if we get the same bitrate for the same item in a row, we don't need to report that.
-        // I see this happens when we get an access log towards the end of an ad.
-        // as well, which might be indicating something else other than a bitrate change.
-        if lastPlayerItem == item, event.indicatedBitrate == lastAccessLogEvent?.indicatedBitrate {
-            return
-        }
-        
         // This indicates that the current access log we got belongs
         // to an ad that is not playing, we will receive the same
         // access log bitrate shortly after when we start playing, so
         // we can ignore this bitrate.
         if adLoaded, !isPlayingAd {
+            return
+        }
+        
+        // if we get the same bitrate and number of dropped frames for the same item in a row, we don't need to report that.
+        // I see this happens when we get an access log towards the end of an ad.
+        // as well, which might be indicating something else other than a bitrate change.
+        if lastPlayerItem == item,
+           event.indicatedBitrate == lastAccessLogEvent?.indicatedBitrate,
+           event.numberOfDroppedVideoFrames == event.numberOfDroppedVideoFrames
+           {
             return
         }
         
