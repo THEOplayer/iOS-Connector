@@ -37,6 +37,9 @@ class AppEventConvivaReporter: AppEventProcessor {
         adLoaded = false
     }
     
+    func sourceChanged(event: THEOplayerSDK.SourceChangeEvent) {
+        self.reset()
+    }
     
     func appWillEnterForeground(notification: Notification) {
         self.analytics.reportAppForegrounded()
@@ -88,5 +91,11 @@ class AppEventConvivaReporter: AppEventProcessor {
 
         endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
         self.storage.storeKeyValuePair(key: CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
+    }
+
+    private func reset() {
+        self.adLoaded = false
+        self.lastPlayerItem = nil
+        self.lastAccessLogEvent = nil
     }
 }

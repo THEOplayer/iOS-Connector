@@ -21,6 +21,7 @@ class AppEventForwarder {
     let foregroundObserver, backgroundObserver, accessLogObserver, bitrateChangeObserver: Any
     let adsLoadedEventListener: RemovableEventListenerProtocol?
     let adsEndEventListener: RemovableEventListenerProtocol?
+    let sourceChangeEventListener: RemovableEventListenerProtocol?
 
     let player: THEOplayer
     
@@ -83,6 +84,13 @@ class AppEventForwarder {
             }
         }
         
+        sourceChangeEventListener = player.addRemovableEventListener(
+            type: PlayerEventTypes.SOURCE_CHANGE
+        ) { event in
+            DispatchQueue.main.async {
+                eventProcessor.sourceChanged(event: event)
+            }
+        }
     }
     
     deinit {
@@ -92,6 +100,7 @@ class AppEventForwarder {
         center.removeObserver(accessLogObserver, name: bitrateChangeEvent, object: nil)
         adsLoadedEventListener?.remove(from: player.ads)
         adsEndEventListener?.remove(from: player.ads)
+        sourceChangeEventListener?.remove(from: player)
 
     }
 }
@@ -100,6 +109,7 @@ protocol AppEventProcessor {
     // Workaround for THEOSD-14780
     func adDidLoad(event: AdLoadedEvent)
     func adDidEnd(event: AdEndEvent)
+    func sourceChanged(event: SourceChangeEvent)
     func appWillEnterForeground(notification: Notification)
     func appDidEnterBackground(notification: Notification)
     func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, item: AVPlayerItem, isPlayingAd: Bool)
