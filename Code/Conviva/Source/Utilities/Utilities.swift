@@ -23,13 +23,30 @@ enum Utilities {
     static let en_usLocale = Locale(identifier: "en_US")
     
     static func extendedContentInfo(contentInfo: [String: Any], storage: ConvivaConnectorStorage?) -> [String: Any] {
-        var extendedContentInfo = contentInfo
-        if let viewerId = storage?.valueForKey(CIS_SSDK_METADATA_VIEWER_ID) as? String {
+        var extendedContentInfo: [String: Any] = [:]
+        if let viewerId = storage?.clientMetadata[CIS_SSDK_METADATA_VIEWER_ID] as? String {
             extendedContentInfo.updateValue(viewerId, forKey: CIS_SSDK_METADATA_VIEWER_ID)
+        }
+        if let assetName = storage?.clientMetadata[CIS_SSDK_METADATA_ASSET_NAME] as? String {
+            extendedContentInfo.updateValue(assetName, forKey: CIS_SSDK_METADATA_ASSET_NAME)
+        } else if let assetName = storage?.valueForKey(CIS_SSDK_METADATA_ASSET_NAME) as? String {
+            extendedContentInfo.updateValue(assetName, forKey: CIS_SSDK_METADATA_ASSET_NAME)
+        } else {
+            extendedContentInfo.updateValue(defaultStringValue, forKey: CIS_SSDK_METADATA_ASSET_NAME)
+        }
+        if let streamUrl = storage?.valueForKey(CIS_SSDK_METADATA_STREAM_URL) as? String {
+            extendedContentInfo.updateValue(streamUrl, forKey: CIS_SSDK_METADATA_STREAM_URL)
         }
         extendedContentInfo.updateValue(Utilities.playerName, forKey: CIS_SSDK_METADATA_PLAYER_NAME)
         extendedContentInfo.updateValue(Utilities.playerName, forKey: CIS_SSDK_PLAYER_FRAMEWORK_NAME)
         extendedContentInfo.updateValue(Utilities.playerVersion, forKey: CIS_SSDK_PLAYER_FRAMEWORK_VERSION)
+        
+        storage?.clientMetadata.forEach { (key, value) in
+            extendedContentInfo[key] = value
+        }
+        contentInfo.forEach { (key, value) in
+            extendedContentInfo[key] = value
+        }
         return extendedContentInfo
     }
 }
