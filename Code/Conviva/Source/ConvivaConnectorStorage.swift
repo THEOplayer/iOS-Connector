@@ -5,6 +5,8 @@
 public class ConvivaConnectorStorage {
     private var storedValues: [String:Any] = [:]
     
+    public var clientMetadata: [String: Any] = [:]
+    
     public func storeKeyValuePair(key: String, value: Any) {
         self.storedValues.updateValue(value, forKey: key)
     }

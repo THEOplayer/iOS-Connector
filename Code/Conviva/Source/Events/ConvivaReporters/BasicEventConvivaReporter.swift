@@ -94,6 +94,7 @@ class BasicEventConvivaReporter {
             ] as [String: Any]
             self.videoAnalytics.setContentInfo(contentInfo)
             self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_ASSET_NAME, value: assetName)
+            self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_STREAM_URL, value: url)
         } else {
             newSource = nil
             #if DEBUG

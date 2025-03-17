@@ -12,6 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
 	- Added average bitrate reporting
 
+## [8.13.0] - 2025-03-13
+
+### Fixed
+
+- Conviva
+  - Fixed an issue where the bitrate change events were reported to the incorrect Conviva endpoint.
+
+## [8.12.0] - 2025-02-26
+
+### Changed
+
+- Nielsen
+  - Allow bumping minor and patch versions of the Nielsen SDK dependency.
+
 ## [8.11.1] - 2025-02-21
 
 ### Added

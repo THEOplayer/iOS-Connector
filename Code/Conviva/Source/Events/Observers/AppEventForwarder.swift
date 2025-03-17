@@ -5,6 +5,7 @@
 import UIKit
 import THEOplayerSDK
 import AVFoundation
+import THEOplayerConnectorUtilities
 
 fileprivate let willEnterForeground = UIApplication.willEnterForegroundNotification
 fileprivate let didEnterBackground = UIApplication.didEnterBackgroundNotification
@@ -18,6 +19,10 @@ fileprivate let bitrateChangeEvent = Notification.Name("THEOliveBitrateChangeEve
 class AppEventForwarder {
     let center = NotificationCenter.default
     let foregroundObserver, backgroundObserver, accessLogObserver, bitrateChangeObserver: Any
+    let adsLoadedEventListener: RemovableEventListenerProtocol?
+    let adsEndEventListener: RemovableEventListenerProtocol?
+    let sourceChangeEventListener: RemovableEventListenerProtocol?
+
     let player: THEOplayer
     
     init(player: THEOplayer, eventProcessor: AppEventProcessor) {
@@ -38,13 +43,14 @@ class AppEventForwarder {
         accessLogObserver = center.addObserver( // TODO: implement this in THEOplayerSDK using an observer on the correct player item so we can remove src URL checks
             forName: newAccessLogEntry,
             object: .none,
-            queue: .none,
+            queue: OperationQueue.main,
             using: { [unowned player] notification in
                 guard let item = notification.object as? AVPlayerItem else {return}
                 guard let event = item.accessLog()?.events.last else {return}
                 guard item == player.currentItem else { return } // TODO: Remove this.
 
-                eventProcessor.appGotNewAccessLogEntry(event: event, isPlayingAd: player.ads.playing)
+                // BUGFIX: There is a case where we get the ad bitrate reported as a new log entry
+                eventProcessor.appGotNewAccessLogEntry(event: event, item: item, isPlayingAd: player.ads.playing)
             }
         )
         // Temporary workaround for THEOlive bitrate change events
@@ -57,10 +63,34 @@ class AppEventForwarder {
             using: { notification in
                 guard let userInfo = notification.userInfo else { return }
                 guard let bitrate = userInfo["bitrate"] as? Double else { return }
-
+                
                 eventProcessor.appGotBitrateChangeEvent(bitrate: bitrate, isPlayingAd: player.ads.playing)
             }
         )
+        
+        
+        adsLoadedEventListener = player.ads.addRemovableEventListener(
+            type: AdsEventTypes.AD_LOADED
+        ) { event in
+            DispatchQueue.main.async {
+                eventProcessor.adDidLoad(event: event)
+            }
+        }
+        adsEndEventListener = player.ads.addRemovableEventListener(
+            type: AdsEventTypes.AD_END
+        ) { event in
+            DispatchQueue.main.async {
+                eventProcessor.adDidEnd(event: event)
+            }
+        }
+        
+        sourceChangeEventListener = player.addRemovableEventListener(
+            type: PlayerEventTypes.SOURCE_CHANGE
+        ) { event in
+            DispatchQueue.main.async {
+                eventProcessor.sourceChanged(event: event)
+            }
+        }
     }
     
     deinit {
@@ -68,12 +98,20 @@ class AppEventForwarder {
         center.removeObserver(backgroundObserver, name: didEnterBackground, object: nil)
         center.removeObserver(accessLogObserver, name: newAccessLogEntry, object: nil)
         center.removeObserver(accessLogObserver, name: bitrateChangeEvent, object: nil)
+        adsLoadedEventListener?.remove(from: player.ads)
+        adsEndEventListener?.remove(from: player.ads)
+        sourceChangeEventListener?.remove(from: player)
+
     }
 }
 
 protocol AppEventProcessor {
+    // Workaround for THEOSD-14780
+    func adDidLoad(event: AdLoadedEvent)
+    func adDidEnd(event: AdEndEvent)
+    func sourceChanged(event: SourceChangeEvent)
     func appWillEnterForeground(notification: Notification)
     func appDidEnterBackground(notification: Notification)
-    func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, isPlayingAd: Bool)
+    func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, item: AVPlayerItem, isPlayingAd: Bool)
     func appGotBitrateChangeEvent(bitrate: Double, isPlayingAd: Bool)
 }
