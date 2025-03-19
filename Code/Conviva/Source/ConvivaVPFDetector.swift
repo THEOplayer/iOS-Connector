@@ -32,7 +32,7 @@ class ConvivaVPFDetector {
     weak var delegate: VPFDetectordelegate?
     private var lastMarkedReset: TimeInterval?
     private var stallCheckTimer: Timer?
-    private let errorCountTreshold = 5
+    private let errorCountTreshold = 1
     private var videoPlaybackFailureCallback: (([String: Any]) -> Void)?
     private let vpfErrorDictionary = [
         "error": [
