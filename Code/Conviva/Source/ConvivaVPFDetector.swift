@@ -24,7 +24,7 @@ protocol VPFDetectordelegate: AnyObject {
     func onVPFDetected()
 }
 
-let VPF_STALL_INTERVAL: TimeInterval = 20.0
+let VPF_STALL_INTERVAL: TimeInterval = 10.0
 let DEBUG_VPF = false
 
 class ConvivaVPFDetector {
