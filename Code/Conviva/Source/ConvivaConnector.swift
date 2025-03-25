@@ -43,7 +43,7 @@ public struct ConvivaConnector {
     
     public func setContentInfo(_ contentInfo: [String: Any]) {
         self.endPoints.videoAnalytics.setContentInfo(contentInfo)
-        self.storeViewerId(contentInfo)
+        self.storeClientMetadata(contentInfo)
     }
     
     public func setAdInfo(_ adInfo: [String: Any]) {
@@ -59,7 +59,7 @@ public struct ConvivaConnector {
     }
     
     public func stopAndStartNewSession(contentInfo: [String: Any]) {
-        self.storeViewerId(contentInfo)
+        self.storeClientMetadata(contentInfo)
         self.endPoints.videoAnalytics.reportPlaybackEnded()
         self.endPoints.videoAnalytics.cleanup()
         let extendedContentInfo = Utilities.extendedContentInfo(contentInfo: contentInfo, storage: self.storage)
@@ -74,9 +74,9 @@ public struct ConvivaConnector {
         self.basicEventForwarder.setVideoPlaybackFailureCallback(onNativeError)
     }
     
-    private func storeViewerId(_ contentInfo: [String: Any]) {
-        if let viewerId = contentInfo[CIS_SSDK_METADATA_VIEWER_ID] as? String {
-            self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_VIEWER_ID, value: viewerId)
+    private func storeClientMetadata(_ contentInfo: [String: Any]) {
+        contentInfo.forEach { (key, value) in
+            self.storage.clientMetadata[key] = value
         }
     }
 }
