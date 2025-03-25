@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
   - Improved the VPF detection for iOS and tvOS.
 
+### Removed
+
+- Conviva
+  - Removed Objective-C API support.
+
+- Yospace
+  - Removed Objective-C API support.
+
 ## [8.13.0] - 2025-03-13
 
 ### Fixed
