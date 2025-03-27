@@ -14,7 +14,6 @@ import YOAdManagement
     - livepause: The stream is a live stream with a large DVR window.
     - vod: The stream is a video-on-demand stream.
  */
-@objc(THEOplayerYospaceStreamType)
 public enum YospaceStreamType: Int {
     case live
     case livepause
@@ -22,10 +21,9 @@ public enum YospaceStreamType: Int {
 }
 
 /** Represents a configuration for server-side ad insertion with the Yospace integration.*/
-@objc(THEOplayerYospaceServerSideAdInsertionConfiguration)
 public class YospaceServerSideAdInsertionConfiguration: NSObject, THEOplayerSDK.CustomServerSideAdInsertionConfiguration {
-    @objc public let integration: THEOplayerSDK.SSAIIntegrationId = .CustomSSAIIntegrationID
-    @objc public let customIntegration: String = "yospace"
+    public let integration: THEOplayerSDK.SSAIIntegrationId = .CustomSSAIIntegrationID
+    public let customIntegration: String = "yospace"
 
     /** The type of the requested stream.*/
     public let streamType: YospaceStreamType
