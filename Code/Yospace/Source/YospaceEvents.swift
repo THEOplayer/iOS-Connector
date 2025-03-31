@@ -18,12 +18,11 @@ class SessionAvailableEventType: THEOplayerSDK.EventType<SessionAvailableEvent> 
 }
 
 /** Fired when a new Yospace event occurs.*/
-@objc(THEOplayerYospaceEvent)
 public class YospaceEvent: NSObject, THEOplayerSDK.EventProtocol {
     /** A textual representation of the type of the event.*/
-    @objc public let type: String
+    public let type: String
     /** The date at which the event occurred.*/
-    @objc public let date: Date
+    public let date: Date
 
     init(type: String, date: Date) {
         self.date = date
@@ -33,7 +32,6 @@ public class YospaceEvent: NSObject, THEOplayerSDK.EventProtocol {
 }
 
 /** Fired when a new Yospace session starts.*/
-@objc(THEOplayerSessionAvailableEvent)
 public class SessionAvailableEvent: YospaceEvent {
     init(date: Date) {
         super.init(type: YospaceEventsString.sessionavailable.rawValue, date: date)
@@ -43,11 +41,4 @@ public class SessionAvailableEvent: YospaceEvent {
 public struct YospaceEventTypes {
     /** Fired when a new Yospace session starts.*/
     public static var SESSION_AVAILABLE: THEOplayerSDK.EventType<SessionAvailableEvent> = SessionAvailableEventType()
-}
-
-@available(swift, obsoleted: 1.0)
-@objc(THEOplayerYospaceEventTypes)
-public class YospaceEventTypes_Objc: NSObject {
-    /** Fired when a new Yospace session starts.*/
-    @objc public static let sessionavailable = YospaceEventsString.sessionavailable.rawValue
 }

@@ -24,7 +24,7 @@ protocol VPFDetectordelegate: AnyObject {
     func onVPFDetected()
 }
 
-let VPF_STALL_INTERVAL: TimeInterval = 20.0
+let VPF_STALL_INTERVAL: TimeInterval = 10.0
 let DEBUG_VPF = false
 
 class ConvivaVPFDetector {
@@ -32,7 +32,7 @@ class ConvivaVPFDetector {
     weak var delegate: VPFDetectordelegate?
     private var lastMarkedReset: TimeInterval?
     private var stallCheckTimer: Timer?
-    private let errorCountTreshold = 5
+    private let errorCountTreshold = 1
     private var videoPlaybackFailureCallback: (([String: Any]) -> Void)?
     private let vpfErrorDictionary = [
         "error": [
