@@ -94,6 +94,14 @@ class BasicEventConvivaReporter {
                 CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: false),
                 CIS_SSDK_METADATA_DURATION: NSNumber(value: -1)
             ] as [String: Any]
+            
+            // THEOads adTagParameters
+            if let adTagParams = self.theoAdsAdTagParams(source: newSource?.description) {
+                adTagParams.forEach { (key, value) in
+                    contentInfo["theoAdsTag_\(key)"] = value
+                }
+            }
+            
             self.videoAnalytics.setContentInfo(contentInfo)
             self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_ASSET_NAME, value: assetName)
             self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_STREAM_URL, value: url)
