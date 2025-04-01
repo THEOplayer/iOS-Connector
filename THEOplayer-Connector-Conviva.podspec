@@ -22,4 +22,7 @@ Pod::Spec.new do |s|
   s.dependency 'ConvivaSDK', '4.0.51'
   s.dependency 'THEOplayerSDK-core', "~> 8"
   s.dependency 'THEOplayer-Connector-Utilities', "~> " + theoplayer_connector_major_minor_version, ">= " + theoplayer_connector_version
+  
+  # THEOads AdTagParameter reporting
+  s.ios.dependency "THEOplayer-Integration-THEOads", "~> 8.11"
 end

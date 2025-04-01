@@ -4,6 +4,9 @@
 
 import ConvivaSDK
 import THEOplayerSDK
+#if canImport(THEOplayerTHEOadsIntegration)
+import THEOplayerTHEOadsIntegration
+#endif
 
 class BasicEventConvivaReporter {
     
