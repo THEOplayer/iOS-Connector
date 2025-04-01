@@ -87,7 +87,7 @@ class BasicEventConvivaReporter {
         if let source = event.source, let url = selectedSource {
             newSource = .init(description: source, url: url)
             let assetName = source.metadata?.title ?? Utilities.defaultStringValue;
-            let contentInfo = [
+            var contentInfo = [
                 CIS_SSDK_METADATA_PLAYER_NAME: Utilities.playerName,
                 CIS_SSDK_METADATA_STREAM_URL: url,
                 CIS_SSDK_METADATA_ASSET_NAME: assetName,
