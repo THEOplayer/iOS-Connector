@@ -106,6 +106,20 @@ class BasicEventConvivaReporter {
         self.currentSession.source = newSource
     }
     
+    private func theoAdsAdTagParams(source: SourceDescription?) -> [String:String]? {
+#if canImport(THEOplayerTHEOadsIntegration)
+        if let currentSource = source,
+           let ads = currentSource.ads,
+           let theoAdsDescription = ads.first(where: {
+               $0.integration == .theoAds && $0 is THEOAdDescription
+           }) as? THEOAdDescription,
+           let foundParams = theoAdsDescription.adTagParameters {
+            return foundParams
+        }
+#endif
+        return [:]
+    }
+    
     func renderedFramerateUpdate(framerate: Float) {
         self.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: NSNumber(value: Int(framerate.rounded())))
     }
