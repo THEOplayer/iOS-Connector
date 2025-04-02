@@ -195,7 +195,7 @@ class ViewController: UIViewController {
     }
 
     private func onSourceChange(event: SourceChangeEvent) {
-        os_log("SOURCE_CHANGE event, url: %@", event.source?.sources[0].src.absoluteString ?? "")
+        os_log("SOURCE_CHANGE event, url: %@", event.source?.sources[0].src ?? "")
         // Initialise UI on source change
         self.playerInterfaceView.state = .initialise
     }
