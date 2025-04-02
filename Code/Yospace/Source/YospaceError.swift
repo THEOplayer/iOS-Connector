@@ -49,8 +49,6 @@ extension YOSessionError {
             return "Yospace: The fulfilment payload for an initial partial VMAP response was not received or did not contain the expected data."
         case .parseError:
             return "Yospace: The parser returned error(s) during XML parsing."
-        case .trackError:
-            return "Yospace: The result of a tracking beacon was unsuccessful."
         @unknown default:
             return "Yospace: An unknown error occured."
         }
