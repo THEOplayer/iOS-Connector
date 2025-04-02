@@ -42,7 +42,7 @@ class YospaceManager {
         if let typedSource: THEOplayerSDK.TypedSource = source.sources.first(where: isYospaceSSAI),
            let yospaceConfig: YospaceServerSideAdInsertionConfiguration = typedSource.ssai as? YospaceServerSideAdInsertionConfiguration {
             self.source = (source, typedSource)
-            let src: String = typedSource.src.absoluteString
+            let src: String = typedSource.src
             switch yospaceConfig.streamType {
             case .live:
                 YOSessionLive.create(src, properties: yospaceConfig.sessionProperties, completionHandler: self.onSessionCreate)
@@ -93,8 +93,7 @@ class YospaceManager {
     }
 
     private func setupManager(session: YOSession) {
-        if let playbackUrlStr: String = session.playbackUrl,
-           let playbackUrl: URL = .init(string: playbackUrlStr) {
+        if let playbackUrl: String = session.playbackUrl {
             self.yospaceSession = session
             (self.adIntegrationHandler as? YospaceHandler)?.session = session
             self.id3MetadataHandler = YospaceID3MetadataHandler(player: self.player, session: session)

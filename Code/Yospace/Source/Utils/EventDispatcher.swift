@@ -18,7 +18,7 @@ class EventDispatcher: THEOplayerSDK.EventDispatcherProtocol {
     }
 
     func removeEventListener<E>(type: THEOplayerSDK.EventType<E>, listener: THEOplayerSDK.EventListener) where E : THEOplayerSDK.EventProtocol {
-        guard let eventListener: EventListenerWrapper<THEOplayerSDK.EventProtocol> = listener as? EventListenerWrapper<THEOplayerSDK.EventProtocol> else { return }
+        guard let eventListener = listener as? EventListenerWrapperInterface else { return }
         self.eventListeners[type.name]?.removeAll { $0 === eventListener }
     }
 
