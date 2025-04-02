@@ -7,7 +7,7 @@ import AVFoundation
 import THEOplayerSDK
 
 class AppEventConvivaReporter: AppEventProcessor {
-
+    
     
     let analytics: CISAnalytics
     let videoAnalytics: CISVideoAnalytics
@@ -64,12 +64,17 @@ class AppEventConvivaReporter: AppEventProcessor {
         if lastPlayerItem == item,
            event.indicatedBitrate == lastAccessLogEvent?.indicatedBitrate,
            event.numberOfDroppedVideoFrames == event.numberOfDroppedVideoFrames
-           {
+        {
             return
         }
         
         let endpoint = isPlayingAd ? self.adAnalytics : self.videoAnalytics
-        self.handleBitrateChange(bitrate: event.indicatedBitrate, endpoint: endpoint)
+        
+        self.handleBitrateChange(
+            bitrate: event.indicatedBitrate,
+            avgBitrate: event.indicatedAverageBitrate,
+            endpoint: endpoint
+        )
         
         if event.numberOfDroppedVideoFrames >= 0 {
             endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL, value: NSNumber(value: event.numberOfDroppedVideoFrames))
@@ -78,21 +83,25 @@ class AppEventConvivaReporter: AppEventProcessor {
         lastPlayerItem = item
         lastAccessLogEvent = event
     }
-
+    
     func appGotBitrateChangeEvent(bitrate: Double, isPlayingAd: Bool) {
         let endpoint = isPlayingAd ? self.adAnalytics : self.videoAnalytics
-        self.handleBitrateChange(bitrate: bitrate, endpoint: endpoint)
+        self.handleBitrateChange(bitrate: bitrate, avgBitrate: -1, endpoint: endpoint)
     }
-
-    private func handleBitrateChange(bitrate: Double, endpoint: CISStreamAnalyticsProtocol) {
-        guard bitrate >= 0 else { return }
-
-        let bitrateValue = NSNumber(value: bitrate / 1000)
-
-        endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
-        self.storage.storeKeyValuePair(key: CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
+    
+    private func handleBitrateChange(bitrate: Double, avgBitrate: Double, endpoint: CISStreamAnalyticsProtocol) {
+        if bitrate >= 0 {
+            let bitrateValue = NSNumber(value: bitrate / 1000)
+            endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
+            self.storage.storeKeyValuePair(key: CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
+        }
+        if avgBitrate >= 0 {
+            let avgBitrateValue = NSNumber(value: avgBitrate / 1000)
+            endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrateValue)
+            self.storage.storeKeyValuePair(key: CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrateValue)
+        }
     }
-
+    
     private func reset() {
         self.adLoaded = false
         self.lastPlayerItem = nil

@@ -76,8 +76,9 @@ class BasicEventConvivaReporter {
         }
         
         // clear all session specific stored values for the previous source
-        self.storage.clearValueForKey(CIS_SSDK_METADATA_ASSET_NAME)         // asset name from the previous source
-        self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE)     // last reported bitrate for previous source
+        self.storage.clearValueForKey(CIS_SSDK_METADATA_ASSET_NAME)                 // asset name from the previous source
+        self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE)             // last reported bitrate for previous source
+        self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE)     // last reported average bitrate for previous source
         
         let newSource: Session.Source?
         
