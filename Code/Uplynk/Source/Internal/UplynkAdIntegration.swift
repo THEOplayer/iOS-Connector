@@ -341,7 +341,7 @@ class UplynkAdIntegration: ServerSideAdIntegrationHandler {
             response.playURL
         }
         os_log(.debug,log: .adIntegration, "Play url: %@", playURL)
-        typedSource.src = URL(string: playURL)!
+        typedSource.src = playURL
         if let drm = response.drm, drm.required {
             // FIXME: Supply a dummy string for license URL - SDK fails the DRM flow if the license URL is empty
             let drmConfig = FairPlayDRMConfiguration(customIntegrationId: UplynkDRMIntegration.integrationID,
