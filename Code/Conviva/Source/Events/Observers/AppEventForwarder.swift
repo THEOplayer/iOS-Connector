@@ -97,7 +97,7 @@ class AppEventForwarder {
         center.removeObserver(foregroundObserver, name: willEnterForeground, object: nil)
         center.removeObserver(backgroundObserver, name: didEnterBackground, object: nil)
         center.removeObserver(accessLogObserver, name: newAccessLogEntry, object: nil)
-        center.removeObserver(accessLogObserver, name: bitrateChangeEvent, object: nil)
+        center.removeObserver(bitrateChangeObserver, name: bitrateChangeEvent, object: nil)
         adsLoadedEventListener?.remove(from: player.ads)
         adsEndEventListener?.remove(from: player.ads)
         sourceChangeEventListener?.remove(from: player)
