@@ -17,13 +17,12 @@ fileprivate let newAccessLogEntry = Notification.Name("AVPlayerItemNewAccessLogE
 fileprivate let bitrateChangeEvent = Notification.Name("THEOliveBitrateChangeEvent")
 
 class AppEventForwarder {
-    let center = NotificationCenter.default
-    let foregroundObserver, backgroundObserver, accessLogObserver, bitrateChangeObserver: Any
-    let adsLoadedEventListener: RemovableEventListenerProtocol?
-    let adsEndEventListener: RemovableEventListenerProtocol?
-    let sourceChangeEventListener: RemovableEventListenerProtocol?
-
-    let player: THEOplayer
+    private let center = NotificationCenter.default
+    private var foregroundObserver, backgroundObserver, accessLogObserver, bitrateChangeObserver: Any
+    private var adsLoadedEventListener: RemovableEventListenerProtocol?
+    private var adsEndEventListener: RemovableEventListenerProtocol?
+    private var sourceChangeEventListener: RemovableEventListenerProtocol?
+    private weak var player: THEOplayer?
     
     init(player: THEOplayer, eventProcessor: AppEventProcessor) {
         self.player = player
@@ -97,11 +96,12 @@ class AppEventForwarder {
         center.removeObserver(foregroundObserver, name: willEnterForeground, object: nil)
         center.removeObserver(backgroundObserver, name: didEnterBackground, object: nil)
         center.removeObserver(accessLogObserver, name: newAccessLogEntry, object: nil)
-        center.removeObserver(accessLogObserver, name: bitrateChangeEvent, object: nil)
-        adsLoadedEventListener?.remove(from: player.ads)
-        adsEndEventListener?.remove(from: player.ads)
-        sourceChangeEventListener?.remove(from: player)
-
+        center.removeObserver(bitrateChangeObserver, name: bitrateChangeEvent, object: nil)
+        if let player = self.player {
+            adsLoadedEventListener?.remove(from: player.ads)
+            adsEndEventListener?.remove(from: player.ads)
+            sourceChangeEventListener?.remove(from: player)
+        }
     }
 }
 

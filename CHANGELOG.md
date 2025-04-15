@@ -7,10 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Conviva
+  - Fixed a memory leak on iOS, caused by a dangling bitrate change observer on the AppEventForwarder.
+
+## [9.0.0] - 2025-04-03
+
 ### Added
 
 - Conviva
-	- Added average bitrate reporting
+  - Added average bitrate reporting
+	
 ### Fixed
 
 - Conviva
