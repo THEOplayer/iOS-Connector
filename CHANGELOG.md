@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.3.2] - 2025-05-13
 
+### Added
+
+- Conviva
+  - Report AdTagPArameters to Conviva for THEOads sources.
+
 ### Fixed
 
 - Conviva
