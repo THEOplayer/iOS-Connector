@@ -7,8 +7,8 @@ public struct AdscriptConfiguration {
 }
 
 public struct AdscriptConnector {
-    public let adapter: AdscriptAdapter
-    public let player: THEOplayer
+    private let adapter: AdscriptAdapter
+    private let player: THEOplayer
 
 
     public init(configuration: AdscriptConfiguration, player: THEOplayer, metadata: AdScriptDataObject) {
