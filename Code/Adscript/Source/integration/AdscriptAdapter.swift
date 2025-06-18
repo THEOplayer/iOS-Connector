@@ -23,7 +23,7 @@ public struct AdscriptAdapter {
     }
     
     public func update(metadata: AdScriptDataObject) {
-        // TODO
+        self.adscriptCollector.contentMetadata = metadata
     }
     
     public func updateUser(i12n: AdScriptI12n) {
