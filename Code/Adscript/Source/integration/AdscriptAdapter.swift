@@ -27,7 +27,7 @@ public struct AdscriptAdapter {
     }
     
     public func updateUser(i12n: AdScriptI12n) {
-        // TODO
+        self.adscriptCollector.i12n = i12n
     }
     
     private func reportPlayerState() {
