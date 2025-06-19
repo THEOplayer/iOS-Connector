@@ -168,12 +168,10 @@ extension Ad {
         result["c3.ad.adStitcher"] = Utilities.defaultStringValue
         result["c3.ad.position"] = self.adBreak.calculateCurrentAdBreakPosition()
         // linearAd specific
-        if let linearAd = self as? LinearAd,
-           let duration = linearAd.duration {
+        if self.type == THEOplayerSDK.AdType.linear, let duration = self.duration {
             result[CIS_SSDK_METADATA_IS_LIVE] = false
             result[CIS_SSDK_METADATA_DURATION] = NSNumber(value: Int(duration))
         }
-        
         return result
     }
     
