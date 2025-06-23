@@ -1,11 +1,41 @@
 import THEOplayerSDK
+import Collections
 import AdScriptApiClient
 
-public struct AdscriptAdapter {
+public struct LogPoint {
+    let name: AdScriptEventName;
+    let cue: Double;
+}
+
+public class AdscriptAdapter {
     private let player: THEOplayer
     private let contentMetadata: AdScriptDataObject
+    private var contentLogPoints: Deque<LogPoint>
+    private let adMetadata: AdScriptDataObject? = nil
+    private var waitingForFirstSecondOfAd = false
+    private var waitingForFirstSecondOfSsaiAdSince: Double? = nil
     private let configuration: AdscriptConfiguration
     private let adscriptCollector: AdScriptCollector
+    
+    private var playEventListener: EventListener?
+    private var playingEventListener: EventListener?
+    private var errorEventListener: EventListener?
+    private var sourceChangeEventListener: EventListener?
+    private var endedEventListener: EventListener?
+    private var durationChangeEventListener: EventListener?
+    private var timeUpdateEventListener: EventListener?
+    private var volumeChangeEventListener: EventListener?
+    private var rateChangeEventListener: EventListener?
+    private var presentationModeChangeEventListener: EventListener?
+    
+    private var adBreakBeginListener: EventListener?
+    private var adBeginListener: EventListener?
+    private var adFirstQuartileListener: EventListener?
+    private var adMidpointListener: EventListener?
+    private var adThirdQuartileListener: EventListener?
+    private var adCompletedListener: EventListener?
+    private var adBreakEndedListener: EventListener?
+    
 
     public init(configuration: AdscriptConfiguration, player: THEOplayer, metadata: AdScriptDataObject) {
         self.player = player
@@ -64,7 +94,232 @@ public struct AdscriptAdapter {
         // TODO
     }
     
+    private func handlePlaying(event: PlayingEvent) {
+        if (self.configuration.debug) {
+            print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
+        }
+        if (self.player.ads.playing) {
+            self.adscriptCollector.push(event: AdScriptEventName.start, data: self.adMetadata ?? AdScriptDataObject())
+        } else {
+            self.adscriptCollector.push(event: AdScriptEventName.start, data: self.contentMetadata)
+            // TODO check if flag is needed or just one playing event is dispatched on iOS
+        }
+        if let playingEventListener: THEOplayerSDK.EventListener = self.playingEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
+        }
+    }
+    
+    private func addLogPoints(duration: Double?) {
+        if let duration = duration {
+            if (duration.isFinite) {
+                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.progress1 , cue: 1.0))
+                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.firstQuartile , cue: 0.25 * duration))
+                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.midpoint , cue: 0.5 * duration))
+                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.thirdQuartile , cue: 0.75 * duration))
+            } else {
+                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.progress1, cue: 1.0))
+            }
+        }
+        
+    }
+    
+    private func reportLogPoint(name: AdScriptEventName) {
+        self.adscriptCollector.push(event: name, data: self.contentMetadata)
+    }
+    
+    private func maybeReportAdProgress(currentTime: Double) {
+        if (!self.waitingForFirstSecondOfAd) { return }
+        if let currentAd = player.ads.currentAds.first {
+            switch currentAd.integration {
+            case .google_ima:
+                if (currentTime >= 1) {
+                    self.adscriptCollector.push(event: AdScriptEventName.progress1, data: self.adMetadata ?? AdScriptDataObject())
+                    self.waitingForFirstSecondOfAd = false
+                }
+            case .google_dai:
+                if let waitingSince = self.waitingForFirstSecondOfSsaiAdSince {
+                    if (currentTime >= waitingSince + 1.0) {
+                        self.adscriptCollector.push(event: AdScriptEventName.progress1, data: self.adMetadata ?? AdScriptDataObject())
+                        self.waitingForFirstSecondOfAd = false
+                        self.waitingForFirstSecondOfSsaiAdSince = nil
+                    }
+                }
+            default:
+                if (self.configuration.debug) { print("[AdscriptConnector] Ad Integration is not supported (maybeReportAdProgress)") }
+            }
+        }
+    }
+    
+    private func maybeReportProgress(currentTime: Double) {
+        if (player.ads.playing) {
+            maybeReportAdProgress(currentTime: currentTime)
+            return
+        }
+        
+        let nextLogPoint = contentLogPoints.first
+        if (nextLogPoint != nil && nextLogPoint!.cue >= currentTime) {
+            reportLogPoint(name: nextLogPoint!.name)
+            contentLogPoints.removeFirst()
+        }
+    }
+
+    
     private func addEventListeners() {
-        // TODO
+        self.playEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAY, listener: { [weak self] event in
+            guard let welf: AdscriptAdapter = self else { return }
+            if (welf.configuration.debug) {
+                print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
+            }
+        })
+        self.playingEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+        self.errorEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ERROR, listener: { [weak self] event in
+            guard let welf: AdscriptAdapter = self else { return }
+            if (welf.configuration.debug) {
+                print("[AdscriptConnector] Player Event: %s : code = $s ; cause = $s", event.type, event.errorObject?.code ?? "", event.errorObject?.cause ?? "")
+            }
+        })
+        self.sourceChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.SOURCE_CHANGE, listener: { [weak self] event in
+            guard let welf: AdscriptAdapter = self else { return }
+            if (welf.configuration.debug) {
+                print("[AdscriptConnector] Player Event: %s : source = $f", event.type, event.source.debugDescription)
+            }
+            welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+        })
+        self.endedEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ENDED, listener: { [weak self] event in
+            guard let welf: AdscriptAdapter = self else { return }
+            if (welf.configuration.debug) {
+                print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
+            }
+            welf.adscriptCollector.push(event: AdScriptEventName.complete, data: welf.contentMetadata)
+        })
+        self.durationChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.DURATION_CHANGE, listener: { [weak self] event in
+            guard let welf: AdscriptAdapter = self else { return }
+            if (welf.configuration.debug) {
+                print("[AdscriptConnector] Player Event: %s : duration = $d", event.type, event.duration ?? "N/A")
+            }
+            welf.addLogPoints(duration: event.duration)
+        })
+        self.timeUpdateEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.TIME_UPDATE, listener: { [weak self] event in
+            guard let welf: AdscriptAdapter = self else { return }
+            if (welf.configuration.debug) {
+                print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
+            }
+            welf.maybeReportProgress(currentTime: event.currentTime)
+        })
+        self.volumeChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.VOLUME_CHANGE, listener: { [weak self] event in
+            guard let welf: AdscriptAdapter = self else { return }
+            if (welf.configuration.debug) {
+                print("[AdscriptConnector] Player Event: %s : volume = $f", event.type, event.volume)
+            }
+            welf.reportVolumeAndMuted(isMuted: welf.player.muted, volume: event.volume)
+        })
+        self.rateChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.RATE_CHANGE, listener: { [weak self] event in
+            guard let welf: AdscriptAdapter = self else { return }
+            if (welf.configuration.debug) {
+                print("[AdscriptConnector] Player Event: %s : playbackRate = $d", event.type, event.playbackRate)
+            }
+            welf.reportPlaybackSpeed(playbackRate: event.playbackRate)
+        })
+        self.presentationModeChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PRESENTATION_MODE_CHANGE, listener: { [weak self] event in
+            guard let welf: AdscriptAdapter = self else { return }
+            if (welf.configuration.debug) {
+                print("[AdscriptConnector] Player Event: %s : presentationMode = $s", event.type, event.presentationMode._rawValue)
+            }
+            welf.reportFullscreen(isFullscreen: event.presentationMode == PresentationMode.fullscreen)
+        })
+        
+    
+        if (hasAdIntegration()) {
+            self.adBreakBeginListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_BEGIN, listener: { [weak self] event in
+                guard let welf: AdscriptAdapter = self else { return }
+            })
+            self.adBeginListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BEGIN, listener: { [weak self] event in
+                guard let welf: AdscriptAdapter = self else { return }
+            })
+            self.adFirstQuartileListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_FIRST_QUARTILE, listener: { [weak self] event in
+                guard let welf: AdscriptAdapter = self else { return }
+            })
+            self.adMidpointListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_MIDPOINT, listener: { [weak self] event in
+                guard let welf: AdscriptAdapter = self else { return }
+            })
+            self.adThirdQuartileListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_THIRD_QUARTILE, listener: { [weak self] event in
+                guard let welf: AdscriptAdapter = self else { return }
+            })
+            self.adCompletedListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_END, listener: { [weak self] event in
+                guard let welf: AdscriptAdapter = self else { return }
+            })
+            self.adBreakEndedListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_END, listener: { [weak self] event in
+                guard let welf: AdscriptAdapter = self else { return }
+            })
+        }
+    }
+
+    private func removeEventListeners() {
+        if let playEventListener: THEOplayerSDK.EventListener = self.playEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.TIME_UPDATE, listener: playEventListener)
+        }
+        if let playingEventListener: THEOplayerSDK.EventListener = self.playingEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
+        }
+        if let errorEventListener: THEOplayerSDK.EventListener = self.errorEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.ERROR, listener: errorEventListener)
+        }
+        if let sourceChangeEventListener: THEOplayerSDK.EventListener = self.sourceChangeEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.SOURCE_CHANGE, listener: sourceChangeEventListener)
+        }
+        if let endedEventListener: THEOplayerSDK.EventListener = self.endedEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.ENDED, listener: endedEventListener)
+        }
+        if let durationChangeEventListener: THEOplayerSDK.EventListener = self.durationChangeEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.DURATION_CHANGE, listener: durationChangeEventListener)
+        }
+        if let timeUpdateEventListener: THEOplayerSDK.EventListener = self.timeUpdateEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.TIME_UPDATE, listener: timeUpdateEventListener)
+        }
+        if let volumeChangeEventListener: THEOplayerSDK.EventListener = self.volumeChangeEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.VOLUME_CHANGE, listener: volumeChangeEventListener)
+        }
+        if let rateChangeEventListener: THEOplayerSDK.EventListener = self.rateChangeEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.RATE_CHANGE, listener: rateChangeEventListener)
+        }
+        if let presentationModeChangeEventListener: THEOplayerSDK.EventListener = self.presentationModeChangeEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PRESENTATION_MODE_CHANGE, listener: presentationModeChangeEventListener)
+        }
+        if let adBreakBeginListener: THEOplayerSDK.EventListener = self.adBreakBeginListener {
+            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_BEGIN, listener: adBreakBeginListener)
+        }
+        if let adBeginListener: THEOplayerSDK.EventListener = self.adBeginListener {
+            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BEGIN, listener: adBeginListener)
+        }
+        if let adFirstQuartileListener: THEOplayerSDK.EventListener = self.adFirstQuartileListener {
+            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_FIRST_QUARTILE, listener: adFirstQuartileListener)
+        }
+        if let adMidpointListener: THEOplayerSDK.EventListener = self.adMidpointListener {
+            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_MIDPOINT, listener: adMidpointListener)
+        }
+        if let adThirdQuartileListener: THEOplayerSDK.EventListener = self.adThirdQuartileListener {
+            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_THIRD_QUARTILE, listener: adThirdQuartileListener)
+        }
+        if let adCompletedListener: THEOplayerSDK.EventListener = self.adCompletedListener {
+            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_END, listener: adCompletedListener)
+        }
+        if let adBreakEndedListener: THEOplayerSDK.EventListener = self.adBreakEndedListener {
+            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_END, listener: adBreakEndedListener)
+        }
+    }
+    
+    private func hasAdIntegration() -> Bool {
+        let hasAdIntegration = player.getAllIntegrations().contains { integration in
+            switch integration.kind {
+            case IntegrationKind.GOOGLE_DAI:
+                return true
+            case IntegrationKind.GOOGLE_IMA:
+                return true
+            default:
+                print("[AdscriptConnector] no supported ad integration was found")
+                return false
+            }
+        }
+        return hasAdIntegration
     }
 }
