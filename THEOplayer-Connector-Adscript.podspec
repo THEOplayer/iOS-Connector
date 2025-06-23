@@ -21,4 +21,6 @@ Pod::Spec.new do |s|
   s.swift_versions = ['5.3', '5.4', '5.5', '5.6', '5.7']
   s.dependency 'THEOplayerSDK-core', "~> 9"
   s.dependency 'AdscriptApiClient', '>= 1.0.4'
+  s.dependency 'swift-collections', '~> 1.1'
+
 end
