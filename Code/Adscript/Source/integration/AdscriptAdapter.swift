@@ -170,7 +170,15 @@ public class AdscriptAdapter {
     }
     
     private func getAdType(offset: Int) -> AdScriptDataValueType {
-        return .midroll
+        if (offset == 0) {
+            return .preroll
+        } else if (offset == -1) {
+            return .postroll
+        } else if let duration = player.duration, offset >= Int(floor(duration)) {
+            return .postroll
+        } else {
+            return .midroll
+        }
     }
     
     private func buildAdMetadata(ad: THEOplayerSDK.Ad) {
