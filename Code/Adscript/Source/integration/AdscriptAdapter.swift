@@ -99,9 +99,9 @@ public class AdscriptAdapter {
             print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
         }
         if (self.player.ads.playing) {
-            self.adscriptCollector.push(event: AdScriptEventName.start, data: self.adMetadata ?? AdScriptDataObject())
+            self.adscriptCollector.push(event: .start, data: self.adMetadata ?? AdScriptDataObject())
         } else {
-            self.adscriptCollector.push(event: AdScriptEventName.start, data: self.contentMetadata)
+            self.adscriptCollector.push(event: .start, data: self.contentMetadata)
             // TODO check if flag is needed or just one playing event is dispatched on iOS
         }
         if let playingEventListener: THEOplayerSDK.EventListener = self.playingEventListener {
@@ -112,12 +112,12 @@ public class AdscriptAdapter {
     private func addLogPoints(duration: Double?) {
         if let duration = duration {
             if (duration.isFinite) {
-                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.progress1 , cue: 1.0))
-                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.firstQuartile , cue: 0.25 * duration))
-                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.midpoint , cue: 0.5 * duration))
-                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.thirdQuartile , cue: 0.75 * duration))
+                self.contentLogPoints.append(LogPoint(name: .progress1 , cue: 1.0))
+                self.contentLogPoints.append(LogPoint(name: .firstQuartile , cue: 0.25 * duration))
+                self.contentLogPoints.append(LogPoint(name: .midpoint , cue: 0.5 * duration))
+                self.contentLogPoints.append(LogPoint(name: .thirdQuartile , cue: 0.75 * duration))
             } else {
-                self.contentLogPoints.append(LogPoint(name: AdScriptEventName.progress1, cue: 1.0))
+                self.contentLogPoints.append(LogPoint(name: .progress1, cue: 1.0))
             }
         }
         
@@ -133,13 +133,13 @@ public class AdscriptAdapter {
             switch currentAd.integration {
             case .google_ima:
                 if (currentTime >= 1) {
-                    self.adscriptCollector.push(event: AdScriptEventName.progress1, data: self.adMetadata ?? AdScriptDataObject())
+                    self.adscriptCollector.push(event: .progress1, data: self.adMetadata ?? AdScriptDataObject())
                     self.waitingForFirstSecondOfAd = false
                 }
             case .google_dai:
                 if let waitingSince = self.waitingForFirstSecondOfSsaiAdSince {
                     if (currentTime >= waitingSince + 1.0) {
-                        self.adscriptCollector.push(event: AdScriptEventName.progress1, data: self.adMetadata ?? AdScriptDataObject())
+                        self.adscriptCollector.push(event: .progress1, data: self.adMetadata ?? AdScriptDataObject())
                         self.waitingForFirstSecondOfAd = false
                         self.waitingForFirstSecondOfSsaiAdSince = nil
                     }
@@ -211,7 +211,7 @@ public class AdscriptAdapter {
             if (welf.configuration.debug) {
                 print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
             }
-            welf.adscriptCollector.push(event: AdScriptEventName.complete, data: welf.contentMetadata)
+            welf.adscriptCollector.push(event: .complete, data: welf.contentMetadata)
         })
         self.durationChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.DURATION_CHANGE, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
@@ -268,7 +268,7 @@ public class AdscriptAdapter {
                 if (event.ad?.integration == .google_dai) {
                     welf.waitingForFirstSecondOfSsaiAdSince = welf.player.currentTime
                 }
-                welf.adscriptCollector.push(event: AdScriptEventName.start, data: welf.adMetadata ?? AdScriptDataObject())
+                welf.adscriptCollector.push(event: .start, data: welf.adMetadata ?? AdScriptDataObject())
             })
             self.adFirstQuartileListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_FIRST_QUARTILE, listener: { [weak self] event in
                 guard let welf: AdscriptAdapter = self else { return }
