@@ -1,9 +1,14 @@
 import THEOplayerSDK
-import AdScriptApiClient
+import AdScriptNoTrackingApiClient
 
 public struct AdscriptConfiguration {
-     let implementationId: String
-     let debug: Bool
+    let implementationId: String
+    let debug: Bool
+    
+    public init(implementationId: String, debug: Bool) {
+        self.implementationId = implementationId
+        self.debug = debug
+    }
 }
 
 public struct AdscriptConnector {

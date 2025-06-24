@@ -33,6 +33,6 @@ Pod::Spec.new do |spec|
 
   spec.source_files  = "Classes", "Classes/**/*.{h,m}"
 
-  spec.ios.vendored_frameworks = "AdScriptNoTrackingApiClient.xcframework"
+  spec.ios.vendored_frameworks = "AdscriptApiClient.xcframework"
 
 end
