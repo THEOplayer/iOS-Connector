@@ -167,7 +167,7 @@ public class AdscriptAdapter {
         }
         
         let nextLogPoint = contentLogPoints.first
-        if (nextLogPoint != nil && nextLogPoint!.cue >= currentTime) {
+        if (nextLogPoint != nil && currentTime >= nextLogPoint!.cue) {
             reportLogPoint(name: nextLogPoint!.name)
             contentLogPoints.removeFirst()
         }
