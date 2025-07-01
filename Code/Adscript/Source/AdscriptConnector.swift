@@ -1,5 +1,10 @@
 import THEOplayerSDK
+#if canImport(AdScriptNoTrackingApiClient)
 import AdScriptNoTrackingApiClient
+#endif
+#if canImport(AdScriptApiClient)
+import AdScriptApiClient
+#endif
 
 public struct AdscriptConfiguration {
     let implementationId: String
