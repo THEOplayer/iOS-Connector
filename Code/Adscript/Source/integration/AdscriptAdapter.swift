@@ -1,7 +1,11 @@
 import THEOplayerSDK
 import Collections
+#if canImport(AdScriptNoTrackingApiClient)
 import AdScriptNoTrackingApiClient
-
+#endif
+#if canImport(AdScriptApiClient)
+import AdScriptApiClient
+#endif
 public struct LogPoint {
     let name: AdScriptEventName;
     let cue: Double;
