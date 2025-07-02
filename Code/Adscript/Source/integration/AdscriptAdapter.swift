@@ -241,6 +241,10 @@ public class AdscriptAdapter {
             if (welf.configuration.debug) {
                 print("[AdscriptConnector] Player Event: %s : source = $f", event.type, event.source.debugDescription)
             }
+            
+            if let playingEventListener: THEOplayerSDK.EventListener = welf.playingEventListener {
+                welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
+            }
             welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
         })
         self.endedEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ENDED, listener: { [weak self] event in
