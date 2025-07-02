@@ -105,13 +105,13 @@ public class AdscriptAdapter {
         if (self.player.ads.playing) {
             if let adMetadata = self.adMetadata {
                 if (self.configuration.debug) {
-                    print("[AdscriptConnector] Push .start event with adMetadata $s", adMetadata.description)
+                    print("[AdscriptConnector] Push .start event with adMetadata $s", adMetadata.toJsonString())
                 }
                 self.adscriptCollector.push(event: .start, data: adMetadata)
             }
         } else {
             if (self.configuration.debug) {
-                print("[AdscriptConnector] Push .start event with contentMetadata $s", contentMetadata.description)
+                print("[AdscriptConnector] Push .start event with contentMetadata $s", contentMetadata.toJsonString())
             }
             self.adscriptCollector.push(event: .start, data: self.contentMetadata)
             // TODO check if flag is needed or just one playing event is dispatched on iOS
@@ -137,7 +137,7 @@ public class AdscriptAdapter {
     
     private func reportLogPoint(name: AdScriptEventName) {
         if (self.configuration.debug) {
-            print("[AdscriptConnector] Push .$s event with contentMetadata $s", name.rawValue, contentMetadata.description)
+            print("[AdscriptConnector] Push .$s event with contentMetadata $s", name.rawValue, contentMetadata.toJsonString())
         }
         self.adscriptCollector.push(event: name, data: self.contentMetadata)
     }
@@ -149,7 +149,7 @@ public class AdscriptAdapter {
             case .google_ima:
                 if let adMetadata = self.adMetadata, currentTime >= 1 {
                     if (self.configuration.debug) {
-                        print("[AdscriptConnector] Push .progress1 event with adMetadata $s", adMetadata.description)
+                        print("[AdscriptConnector] Push .progress1 event with adMetadata $s", adMetadata.toJsonString())
                     }
                     self.adscriptCollector.push(event: .progress1, data: adMetadata)
                     self.waitingForFirstSecondOfAd = false
@@ -159,7 +159,7 @@ public class AdscriptAdapter {
                    let adMetadata = self.adMetadata,
                    currentTime >= waitingSince + 1.0 {
                         if (self.configuration.debug) {
-                            print("[AdscriptConnector] Push .progress1 event with adMetadata $s", adMetadata.description)
+                            print("[AdscriptConnector] Push .progress1 event with adMetadata $s", adMetadata.toJsonString())
                         }
                         self.adscriptCollector.push(event: .progress1, data: adMetadata)
                         self.waitingForFirstSecondOfAd = false
@@ -253,7 +253,7 @@ public class AdscriptAdapter {
                 print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
             }
             if (welf.configuration.debug) {
-                print("[AdscriptConnector] Push .complete event with contentMetadata $s", welf.contentMetadata.description)
+                print("[AdscriptConnector] Push .complete event with contentMetadata $s", welf.contentMetadata.toJsonString())
             }
             welf.adscriptCollector.push(event: .complete, data: welf.contentMetadata)
         })
@@ -314,7 +314,7 @@ public class AdscriptAdapter {
                 }
                 guard let adMetadata = self?.adMetadata else { return }
                 if (welf.configuration.debug) {
-                    print("[AdscriptConnector] Push .start event with adMetadata $s", adMetadata.description)
+                    print("[AdscriptConnector] Push .start event with adMetadata $s", adMetadata.toJsonString())
                 }
                 welf.adscriptCollector.push(event: .start, data: adMetadata)
             })
@@ -325,7 +325,7 @@ public class AdscriptAdapter {
                 }
                 guard let adMetadata = welf.adMetadata else { return }
                 if (welf.configuration.debug) {
-                    print("[AdscriptConnector] Push .firstQuartile event with adMetadata $s", adMetadata.description)
+                    print("[AdscriptConnector] Push .firstQuartile event with adMetadata $s", adMetadata.toJsonString())
                 }
                 welf.adscriptCollector.push(event: .firstQuartile, data: adMetadata)
             })
@@ -336,7 +336,7 @@ public class AdscriptAdapter {
                 }
                 guard let adMetadata = welf.adMetadata else { return }
                 if (welf.configuration.debug) {
-                    print("[AdscriptConnector] Push .midpoint event with adMetadata $s", adMetadata.description)
+                    print("[AdscriptConnector] Push .midpoint event with adMetadata $s", adMetadata.toJsonString())
                 }
                 welf.adscriptCollector.push(event: .midpoint, data: adMetadata)
             })
@@ -347,7 +347,7 @@ public class AdscriptAdapter {
                 }
                 guard let adMetadata = welf.adMetadata else { return }
                 if (welf.configuration.debug) {
-                    print("[AdscriptConnector] Push .thirdQuartile event with adMetadata $s", adMetadata.description)
+                    print("[AdscriptConnector] Push .thirdQuartile event with adMetadata $s", adMetadata.toJsonString())
                 }
                 welf.adscriptCollector.push(event: .thirdQuartile, data: adMetadata)
             })
@@ -358,7 +358,7 @@ public class AdscriptAdapter {
                 }
                 guard let adMetadata = welf.adMetadata else { return }
                 if (welf.configuration.debug) {
-                    print("[AdscriptConnector] Push .complete event with adMetadata $s", adMetadata.description)
+                    print("[AdscriptConnector] Push .complete event with adMetadata $s", adMetadata.toJsonString())
                 }
                 welf.adscriptCollector.push(event: .complete, data: adMetadata)
             })
