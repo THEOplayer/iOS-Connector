@@ -11,6 +11,9 @@ public struct LogPoint {
     let cue: Double;
 }
 
+let LOG_PLAYER_EVENTS = false
+let LOG_ADSCRIPT_EVENTS = false
+
 public class AdscriptAdapter {
     private let player: THEOplayer
     private var contentMetadata: AdScriptDataObject
@@ -46,7 +49,7 @@ public class AdscriptAdapter {
         self.contentMetadata = metadata
         self.configuration = configuration
         
-        self.adscriptCollector = AdScriptCollector(implementationId: configuration.implementationId, isDebug: configuration.debug)
+        self.adscriptCollector = AdScriptCollector(implementationId: configuration.implementationId, isDebug: configuration.debug && LOG_ADSCRIPT_EVENTS)
         
         reportPlayerState()
         addEventListeners()
@@ -99,7 +102,7 @@ public class AdscriptAdapter {
     }
     
     private func handlePlaying(event: PlayingEvent) {
-        if (self.configuration.debug) {
+        if (self.configuration.debug && LOG_PLAYER_EVENTS) {
             print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
         }
         if (self.player.ads.playing) {
@@ -228,20 +231,20 @@ public class AdscriptAdapter {
     private func addEventListeners() {
         self.playEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAY, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
-            if (welf.configuration.debug) {
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
             }
         })
         self.playingEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
         self.errorEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ERROR, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
-            if let code = event.errorObject?.code, let cause = event.errorObject?.cause, welf.configuration.debug {
+            if let code = event.errorObject?.code, let cause = event.errorObject?.cause, welf.configuration.debug && LOG_PLAYER_EVENTS {
                 print("[AdscriptConnector] Player Event: %s : code = $s ; cause = $s", event.type, code, cause)
             }
         })
         self.sourceChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.SOURCE_CHANGE, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
-            if (welf.configuration.debug) {
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[AdscriptConnector] Player Event: %s : source = $f", event.type, event.source.debugDescription)
             }
             
@@ -253,7 +256,7 @@ public class AdscriptAdapter {
         })
         self.endedEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ENDED, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
-            if (welf.configuration.debug) {
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
             }
             if (welf.configuration.debug) {
@@ -263,35 +266,35 @@ public class AdscriptAdapter {
         })
         self.durationChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.DURATION_CHANGE, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
-            if let duration = event.duration, welf.configuration.debug {
+            if let duration = event.duration, welf.configuration.debug && LOG_PLAYER_EVENTS {
                 print("[AdscriptConnector] Player Event: %s : duration = $d", event.type, duration)
             }
             welf.addLogPoints(duration: event.duration)
         })
         self.timeUpdateEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.TIME_UPDATE, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
-            if (welf.configuration.debug) {
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[AdscriptConnector] Player Event: %s : currentTime = $f", event.type, event.currentTime)
             }
             welf.maybeReportProgress(currentTime: event.currentTime)
         })
         self.volumeChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.VOLUME_CHANGE, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
-            if (welf.configuration.debug) {
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[AdscriptConnector] Player Event: %s : volume = $f", event.type, event.volume)
             }
             welf.reportVolumeAndMuted(isMuted: welf.player.muted, volume: event.volume)
         })
         self.rateChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.RATE_CHANGE, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
-            if (welf.configuration.debug) {
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[AdscriptConnector] Player Event: %s : playbackRate = $d", event.type, event.playbackRate)
             }
             welf.reportPlaybackSpeed(playbackRate: event.playbackRate)
         })
         self.presentationModeChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PRESENTATION_MODE_CHANGE, listener: { [weak self] event in
             guard let welf: AdscriptAdapter = self else { return }
-            if (welf.configuration.debug) {
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[AdscriptConnector] Player Event: %s : presentationMode = $s", event.type, event.presentationMode._rawValue)
             }
             welf.reportFullscreen(isFullscreen: event.presentationMode == PresentationMode.fullscreen)
@@ -301,13 +304,13 @@ public class AdscriptAdapter {
         if (hasAdIntegration()) {
             self.adBreakBeginListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_BEGIN, listener: { [weak self] event in
                 guard let welf: AdscriptAdapter = self else { return }
-                if let offset = event.ad?.timeOffset, welf.configuration.debug {
+                if let offset = event.ad?.timeOffset, welf.configuration.debug && LOG_PLAYER_EVENTS {
                     print("[AdscriptConnector] Player Event: %s : offset = $s", event.type, offset)
                 }
             })
             self.adBeginListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BEGIN, listener: { [weak self] event in
                 guard let welf: AdscriptAdapter = self else { return }
-                if let id = event.ad?.id, welf.configuration.debug {
+                if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
                     print("[AdscriptConnector] Player Event: %s : id = $s", event.type, id)
                 }
                 guard let ad = event.ad else { return }
@@ -324,7 +327,7 @@ public class AdscriptAdapter {
             })
             self.adFirstQuartileListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_FIRST_QUARTILE, listener: { [weak self] event in
                 guard let welf: AdscriptAdapter = self else { return }
-                if let id = event.ad?.id, welf.configuration.debug {
+                if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
                     print("[AdscriptConnector] Player Event: %s : id = $s", event.type, id)
                 }
                 guard let adMetadata = welf.adMetadata else { return }
@@ -335,7 +338,7 @@ public class AdscriptAdapter {
             })
             self.adMidpointListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_MIDPOINT, listener: { [weak self] event in
                 guard let welf: AdscriptAdapter = self else { return }
-                if let id = event.ad?.id, welf.configuration.debug {
+                if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
                     print("[AdscriptConnector] Player Event: %s : id = $s", event.type, id)
                 }
                 guard let adMetadata = welf.adMetadata else { return }
@@ -357,7 +360,7 @@ public class AdscriptAdapter {
             })
             self.adCompletedListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_END, listener: { [weak self] event in
                 guard let welf: AdscriptAdapter = self else { return }
-                if let id = event.ad?.id, welf.configuration.debug {
+                if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
                     print("[AdscriptConnector] Player Event: %s : id = $s", event.type, id)
                 }
                 guard let adMetadata = welf.adMetadata else { return }
@@ -368,7 +371,7 @@ public class AdscriptAdapter {
             })
             self.adBreakEndedListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_END, listener: { [weak self] event in
                 guard let welf: AdscriptAdapter = self else { return }
-                if let offset = event.ad?.timeOffset, welf.configuration.debug {
+                if let offset = event.ad?.timeOffset, welf.configuration.debug && LOG_PLAYER_EVENTS {
                     print("[AdscriptConnector] Player Event: %s : offset = $s", event.type, offset)
                 }
                 if (event.ad?.timeOffset == 0) {
