@@ -245,6 +245,7 @@ public class AdscriptAdapter {
             if let playingEventListener: THEOplayerSDK.EventListener = welf.playingEventListener {
                 welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
             }
+            welf.contentLogPoints = Deque<LogPoint>()
             welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
         })
         self.endedEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ENDED, listener: { [weak self] event in
