@@ -6,6 +6,7 @@ import AdScriptNoTrackingApiClient
 #if canImport(AdScriptApiClient)
 import AdScriptApiClient
 #endif
+
 public struct LogPoint {
     let name: AdScriptEventName;
     let cue: Double;
