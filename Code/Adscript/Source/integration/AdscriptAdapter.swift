@@ -131,6 +131,9 @@ public class AdscriptAdapter {
             } else {
                 self.contentLogPoints.append(LogPoint(name: .progress1, cue: 1.0))
             }
+            if (self.configuration.debug) {
+                print("[AdscriptConnector] Added logpoints : $s", self.contentLogPoints.debugDescription, self.contentLogPoints.count)
+            }
         }
         
     }
