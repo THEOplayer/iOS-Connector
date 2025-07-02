@@ -13,7 +13,7 @@ public struct LogPoint {
 
 public class AdscriptAdapter {
     private let player: THEOplayer
-    private let contentMetadata: AdScriptDataObject
+    private var contentMetadata: AdScriptDataObject
     private var contentLogPoints: Deque<LogPoint> = Deque<LogPoint>()
     private var adMetadata: AdScriptDataObject? = nil
     private var waitingForFirstSecondOfAd = false
@@ -57,7 +57,7 @@ public class AdscriptAdapter {
     }
     
     public func update(metadata: AdScriptDataObject) {
-        self.adscriptCollector.contentMetadata = metadata
+        self.contentMetadata = metadata
     }
     
     public func updateUser(i12n: AdScriptI12n) {
