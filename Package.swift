@@ -13,6 +13,8 @@ let package = Package(
         
         .library(name: "THEOplayerConnectorNielsen", targets: ["THEOplayerConnectorNielsen"]),
         
+        .library(name: "THEOplayerConnectorAdscript", targets: ["THEOplayerConnectorAdscript"]),
+        
         .library(name: "THEOplayerConnectorUtilities", targets: ["THEOplayerConnectorUtilities"]),
 
         .library(name: "THEOplayerConnectorSideloadedSubtitle", targets: ["THEOplayerConnectorSideloadedSubtitle"]),
@@ -59,6 +61,15 @@ let package = Package(
                 .target(name: "THEOplayerConnectorUtilities")
             ],
             path: "Code/Nielsen/Source"
+        ),
+        
+        // ADSCRIPT \\
+        .target(
+            name: "THEOplayerConnectorAdscript",
+            dependencies: [
+                "THEOplayerSDK"
+            ],
+            path: "Code/Adscript/Source"
         ),
         
         // UTILITY \\
