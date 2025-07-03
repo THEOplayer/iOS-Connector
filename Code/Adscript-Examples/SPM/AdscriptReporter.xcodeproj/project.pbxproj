@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		295C3DD72E174118000C4499 /* THEOplayerConnectorAdscript in Frameworks */ = {isa = PBXBuildFile; productRef = 295C3DD62E174118000C4499 /* THEOplayerConnectorAdscript */; };
 		295ED3D22E16B19B0095420B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3C92E16B19B0095420B /* Info.plist */; };
 		295ED3D32E16B19B0095420B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3CB2E16B19B0095420B /* LaunchScreen.storyboard */; };
 		295ED3D42E16B19B0095420B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3CD2E16B19B0095420B /* Main.storyboard */; };
@@ -34,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				295C3DD72E174118000C4499 /* THEOplayerConnectorAdscript in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,7 +45,7 @@
 		295ED3A62E16B1260095420B = {
 			isa = PBXGroup;
 			children = (
-				295ED3D12E16B19B0095420B /* SharedCode */,
+				295ED3D12E16B19B0095420B /* AdscriptReporter */,
 				295ED3B02E16B1260095420B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,7 +58,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		295ED3D12E16B19B0095420B /* SharedCode */ = {
+		295ED3D12E16B19B0095420B /* AdscriptReporter */ = {
 			isa = PBXGroup;
 			children = (
 				295ED3C72E16B19B0095420B /* AppDelegate.swift */,
@@ -89,6 +91,7 @@
 			);
 			name = AdscriptReporter;
 			packageProductDependencies = (
+				295C3DD62E174118000C4499 /* THEOplayerConnectorAdscript */,
 			);
 			productName = AdscriptReporter;
 			productReference = 295ED3AF2E16B1260095420B /* AdscriptReporter.app */;
@@ -118,6 +121,9 @@
 			);
 			mainGroup = 295ED3A62E16B1260095420B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				295C3DD52E174118000C4499 /* XCLocalSwiftPackageReference "../../../../iOS-Connector" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 295ED3B02E16B1260095420B /* Products */;
 			projectDirPath = "";
@@ -375,6 +381,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		295C3DD52E174118000C4499 /* XCLocalSwiftPackageReference "../../../../iOS-Connector" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../../iOS-Connector";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		295C3DD62E174118000C4499 /* THEOplayerConnectorAdscript */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = THEOplayerConnectorAdscript;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 295ED3A72E16B1260095420B /* Project object */;
 }
