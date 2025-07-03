@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		295ED3E52E16B2350095420B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3DB2E16B2350095420B /* Assets.xcassets */; };
+		295ED3E72E16B2350095420B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3E02E16B2350095420B /* Main.storyboard */; };
+		295ED3E82E16B2350095420B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3DE2E16B2350095420B /* LaunchScreen.storyboard */; };
+		295ED3E92E16B2350095420B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295ED3DA2E16B2350095420B /* AppDelegate.swift */; };
+		295ED3EA2E16B2350095420B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295ED3E32E16B2350095420B /* ViewController.swift */; };
+		295ED3EB2E16B2350095420B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295ED3E22E16B2350095420B /* SceneDelegate.swift */; };
+		295ED3EC2E16B2350095420B /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295ED3E12E16B2350095420B /* PlayerView.swift */; };
 		869D111A592EF8154DA1AB03 /* libPods-AdscriptReporter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7AEAE2F99316EBC3A7E059A /* libPods-AdscriptReporter.a */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +35,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		295ED3DA2E16B2350095420B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		295ED3DB2E16B2350095420B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		295ED3DC2E16B2350095420B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		295ED3DD2E16B2350095420B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		295ED3DF2E16B2350095420B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		295ED3E12E16B2350095420B /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		295ED3E22E16B2350095420B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		295ED3E32E16B2350095420B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		29994EB22DFDC6D80016F0E2 /* AdscriptReporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdscriptReporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29994EC82DFDC6DA0016F0E2 /* AdscriptReporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AdscriptReporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		29994ED22DFDC6DA0016F0E2 /* AdscriptReporterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AdscriptReporterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -35,27 +50,6 @@
 		CA025FA0C60D148274C918BC /* Pods-AdscriptReporter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AdscriptReporter.release.xcconfig"; path = "Target Support Files/Pods-AdscriptReporter/Pods-AdscriptReporter.release.xcconfig"; sourceTree = "<group>"; };
 		F7AEAE2F99316EBC3A7E059A /* libPods-AdscriptReporter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AdscriptReporter.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		29994EDA2DFDC6DA0016F0E2 /* Exceptions for "AdscriptReporter" folder in "AdscriptReporter" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 29994EB12DFDC6D80016F0E2 /* AdscriptReporter */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		29994EB42DFDC6D80016F0E2 /* AdscriptReporter */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				29994EDA2DFDC6DA0016F0E2 /* Exceptions for "AdscriptReporter" folder in "AdscriptReporter" target */,
-			);
-			path = AdscriptReporter;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		29994EAF2DFDC6D80016F0E2 /* Frameworks */ = {
@@ -83,10 +77,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		295ED3E42E16B2350095420B /* AdscriptReporter */ = {
+			isa = PBXGroup;
+			children = (
+				295ED3DA2E16B2350095420B /* AppDelegate.swift */,
+				295ED3DB2E16B2350095420B /* Assets.xcassets */,
+				295ED3DC2E16B2350095420B /* Info.plist */,
+				295ED3DE2E16B2350095420B /* LaunchScreen.storyboard */,
+				295ED3E02E16B2350095420B /* Main.storyboard */,
+				295ED3E12E16B2350095420B /* PlayerView.swift */,
+				295ED3E22E16B2350095420B /* SceneDelegate.swift */,
+				295ED3E32E16B2350095420B /* ViewController.swift */,
+			);
+			name = AdscriptReporter;
+			path = ../SharedCode;
+			sourceTree = SOURCE_ROOT;
+		};
 		29994EA92DFDC6D80016F0E2 = {
 			isa = PBXGroup;
 			children = (
-				29994EB42DFDC6D80016F0E2 /* AdscriptReporter */,
+				295ED3E42E16B2350095420B /* AdscriptReporter */,
 				29994EB32DFDC6D80016F0E2 /* Products */,
 				2DEA1210CC5916F8004A4364 /* Pods */,
 				D1C02604FAF420079FE8B046 /* Frameworks */,
@@ -136,9 +146,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				29994EB42DFDC6D80016F0E2 /* AdscriptReporter */,
 			);
 			name = AdscriptReporter;
 			productName = AdscriptReporter;
@@ -230,6 +237,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				295ED3E52E16B2350095420B /* Assets.xcassets in Resources */,
+				295ED3E72E16B2350095420B /* Main.storyboard in Resources */,
+				295ED3E82E16B2350095420B /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,9 +290,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AdscriptReporter/Pods-AdscriptReporter-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AdscriptReporter/Pods-AdscriptReporter-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -296,6 +310,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				295ED3E92E16B2350095420B /* AppDelegate.swift in Sources */,
+				295ED3EA2E16B2350095420B /* ViewController.swift in Sources */,
+				295ED3EB2E16B2350095420B /* SceneDelegate.swift in Sources */,
+				295ED3EC2E16B2350095420B /* PlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,6 +346,25 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		295ED3DE2E16B2350095420B /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				295ED3DD2E16B2350095420B /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		295ED3E02E16B2350095420B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				295ED3DF2E16B2350095420B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		29994EDC2DFDC6DA0016F0E2 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -339,7 +376,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G749Q24N3X;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AdscriptReporter/Info.plist;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -368,7 +405,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G749Q24N3X;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AdscriptReporter/Info.plist;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
