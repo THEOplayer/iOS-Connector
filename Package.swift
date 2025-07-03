@@ -29,6 +29,7 @@ let package = Package(
         .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "9.0.0"),
         .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
         .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
+        .package(url: "https://github.com/apple/swift-collections.git", .upToNextMinor(from: "1.2.0")),
     ],
     targets: [
         // CONVIVA \\
@@ -67,7 +68,8 @@ let package = Package(
         .target(
             name: "THEOplayerConnectorAdscript",
             dependencies: [
-                "THEOplayerSDK"
+                "THEOplayerSDK",
+                .product(name: "Collections", package: "swift-collections")
             ],
             path: "Code/Adscript/Source"
         ),
