@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		295C3DD72E174118000C4499 /* THEOplayerConnectorAdscript in Frameworks */ = {isa = PBXBuildFile; productRef = 295C3DD62E174118000C4499 /* THEOplayerConnectorAdscript */; };
-		295ED3D22E16B19B0095420B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3C92E16B19B0095420B /* Info.plist */; };
 		295ED3D32E16B19B0095420B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3CB2E16B19B0095420B /* LaunchScreen.storyboard */; };
 		295ED3D42E16B19B0095420B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3CD2E16B19B0095420B /* Main.storyboard */; };
 		295ED3D52E16B19B0095420B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3C82E16B19B0095420B /* Assets.xcassets */; };
@@ -139,7 +138,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				295ED3D22E16B19B0095420B /* Info.plist in Resources */,
 				295ED3D32E16B19B0095420B /* LaunchScreen.storyboard in Resources */,
 				295ED3D42E16B19B0095420B /* Main.storyboard in Resources */,
 				295ED3D52E16B19B0095420B /* Assets.xcassets in Resources */,
@@ -191,7 +189,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8YAB8ZY55Y;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AdscriptReporter/Info.plist;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -219,7 +217,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8YAB8ZY55Y;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AdscriptReporter/Info.plist;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
