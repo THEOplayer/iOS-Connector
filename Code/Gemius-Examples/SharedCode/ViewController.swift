@@ -8,7 +8,7 @@
 import UIKit
 import THEOplayerSDK
 import THEOplayerConnectorGemius
-//import GemiusSDK
+import GemiusSDK
 
 #if canImport(THEOplayerGoogleIMAIntegration)
 import THEOplayerGoogleIMAIntegration
@@ -33,7 +33,12 @@ class ViewController: UIViewController {
         player.addIntegration(imaIntegration)
         #endif
         self.gemius = GemiusConnector(
-            configuration: GemiusConfiguration(implementationId: "test123", debug: true),
+            configuration: GemiusConfiguration(
+                playerId: "test",
+                hitCollectorHost: "https://prefix.gemius.pl",
+                gemiusId: "abcde",
+                debug: true
+            ),
             player: player
         )
         super.init(coder: coder)
@@ -65,7 +70,6 @@ class ViewController: UIViewController {
             )
         )
         
-        gemius.update()
     }
     
     @IBAction func starWarsButtonClicked(_ sender: UIButton) {
@@ -81,7 +85,6 @@ class ViewController: UIViewController {
             )
         )
 
-        gemius.update()
     }
     
     @IBAction func togglePlayPause(_ sender: UIButton) {
