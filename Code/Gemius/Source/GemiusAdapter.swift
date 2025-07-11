@@ -20,7 +20,7 @@ public class GemiusAdapter {
     private var currentAd: Ad? = nil
     
     private var sourceChangeEventListener: EventListener? //DONE
-    private var playingEventListener: EventListener?
+    private var playingEventListener: EventListener? // DONE
     private var playEventListener: EventListener?
     private var pauseEventListener: EventListener?
     private var waitingEventListener: EventListener?
@@ -83,6 +83,26 @@ public class GemiusAdapter {
             guard let welf: GemiusAdapter = self else { return }
             if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
+            }
+            let computedVolume = welf.player.muted ? -1 : Int(welf.player.volume * 100)
+            if let currentAd = welf.currentAd, let id = currentAd.id {
+                let adBreak = currentAd.adBreak
+                let offset = adBreak.timeOffset
+                let adEventData = GSMEventAdData()
+                adEventData.adDuration = NSNumber(value: currentAd.duration ?? 0)
+                adEventData.autoPlay = welf.player.autoplay ? 1 : 0
+                adEventData.adPosition = NSNumber(value: welf.adCount)
+                adEventData.breakSize = NSNumber(value: adBreak.ads.count)
+                adEventData.volume = NSNumber(value: computedVolume)
+                welf.gsmPlayer.adEvent(.PLAY, forProgram: welf.programId, forAd: id, atOffset: NSNumber(value: offset), with: adEventData)
+            } else {
+                if (welf.hasPrerollScheduled()) { return }
+                let programEventData = GSMEventProgramData()
+                programEventData.autoPlay = welf.player.autoplay ? 1 : 0
+                programEventData.volume = NSNumber(value: computedVolume)
+                programEventData.partID = NSNumber(value: welf.partCount)
+                programEventData.programDuration = NSNumber(value: welf.player.duration ?? 0)
+                welf.gsmPlayer.program(.PLAY, forProgram: welf.programId, atOffset: NSNumber(value: welf.player.currentTime), with: programEventData)
             }
         })
         self.pauseEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PAUSE, listener: { [weak self] event in
