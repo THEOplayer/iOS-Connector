@@ -76,9 +76,9 @@ public class GemiusAdapter {
             if let playingEventListener: THEOplayerSDK.EventListener = welf.playingEventListener {
                 welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
             }
-            welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+            welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handleFirstPlaying(event: event) })
         })
-        self.playingEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+        self.playingEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handleFirstPlaying(event: event) })
         self.playEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAY, listener: { [weak self] event in
             guard let welf: GemiusAdapter = self else { return }
             if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
@@ -133,7 +133,7 @@ public class GemiusAdapter {
                 if let playingEventListener: THEOplayerSDK.EventListener = welf.playingEventListener {
                                 welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
                             }
-                welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+                welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handleFirstPlaying(event: event) })
             })
             self.adBeginListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BEGIN, listener: { [weak self] event in
                 guard let welf: GemiusAdapter = self else { return }
@@ -158,7 +158,7 @@ public class GemiusAdapter {
                 if let playingEventListener: THEOplayerSDK.EventListener = welf.playingEventListener {
                     welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
                 }
-                welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+                welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handleFirstPlaying(event: event) })
 
             })
             self.adSkipListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_SKIP, listener: { [weak self] event in
@@ -184,7 +184,7 @@ public class GemiusAdapter {
                     welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
                 }
                 if (event.ad?.timeOffset == 0) {
-                    welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+                    welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handleFirstPlaying(event: event) })
                 }
             })
         }
@@ -235,7 +235,7 @@ public class GemiusAdapter {
         }
     }
     
-    private func handlePlaying(event: PlayingEvent) {
+    private func handleFirstPlaying(event: PlayingEvent) {
         if (self.configuration.debug && LOG_PLAYER_EVENTS) {
             print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
         }
