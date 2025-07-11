@@ -19,16 +19,16 @@ public class GemiusAdapter {
     private var adCount = 1
     private var currentAd: Ad? = nil
     
-    private var playEventListener: EventListener?
-    private var playingEventListener: EventListener?
-    private var errorEventListener: EventListener?
     private var sourceChangeEventListener: EventListener? //DONE
+    private var playingEventListener: EventListener?
+    private var playEventListener: EventListener?
+    private var pauseEventListener: EventListener?
+    private var waitingEventListener: EventListener?
+    private var seekingEventListener: EventListener?
+    private var errorEventListener: EventListener?
     private var endedEventListener: EventListener?
-    private var durationChangeEventListener: EventListener?
-    private var timeUpdateEventListener: EventListener?
     private var volumeChangeEventListener: EventListener?
-    private var rateChangeEventListener: EventListener?
-    private var presentationModeChangeEventListener: EventListener?
+
     
     private var adBreakBeginListener: EventListener? // DONE
     private var adBeginListener: EventListener? // DONE
@@ -97,34 +97,10 @@ public class GemiusAdapter {
                 print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
             }
         })
-        self.durationChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.DURATION_CHANGE, listener: { [weak self] event in
-            guard let welf: GemiusAdapter = self else { return }
-            if let duration = event.duration, welf.configuration.debug && LOG_PLAYER_EVENTS {
-                print("[GemiusConnector] Player Event: \(event.type) : duration = \(duration)")
-            }
-        })
-        self.timeUpdateEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.TIME_UPDATE, listener: { [weak self] event in
-            guard let welf: GemiusAdapter = self else { return }
-            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
-                print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
-            }
-        })
         self.volumeChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.VOLUME_CHANGE, listener: { [weak self] event in
             guard let welf: GemiusAdapter = self else { return }
             if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[GemiusConnector] Player Event: \(event.type) : volume = \(event.volume)")
-            }
-        })
-        self.rateChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.RATE_CHANGE, listener: { [weak self] event in
-            guard let welf: GemiusAdapter = self else { return }
-            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
-                print("[GemiusConnector] Player Event: \(event.type) : playbackRate = \(event.playbackRate)")
-            }
-        })
-        self.presentationModeChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PRESENTATION_MODE_CHANGE, listener: { [weak self] event in
-            guard let welf: GemiusAdapter = self else { return }
-            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
-                print("[GemiusConnector] Player Event: \(event.type) : presentationMode = \(event.presentationMode._rawValue)")
             }
         })
         
@@ -212,20 +188,8 @@ public class GemiusAdapter {
         if let endedEventListener: THEOplayerSDK.EventListener = self.endedEventListener {
             self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.ENDED, listener: endedEventListener)
         }
-        if let durationChangeEventListener: THEOplayerSDK.EventListener = self.durationChangeEventListener {
-            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.DURATION_CHANGE, listener: durationChangeEventListener)
-        }
-        if let timeUpdateEventListener: THEOplayerSDK.EventListener = self.timeUpdateEventListener {
-            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.TIME_UPDATE, listener: timeUpdateEventListener)
-        }
         if let volumeChangeEventListener: THEOplayerSDK.EventListener = self.volumeChangeEventListener {
             self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.VOLUME_CHANGE, listener: volumeChangeEventListener)
-        }
-        if let rateChangeEventListener: THEOplayerSDK.EventListener = self.rateChangeEventListener {
-            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.RATE_CHANGE, listener: rateChangeEventListener)
-        }
-        if let presentationModeChangeEventListener: THEOplayerSDK.EventListener = self.presentationModeChangeEventListener {
-            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PRESENTATION_MODE_CHANGE, listener: presentationModeChangeEventListener)
         }
         if let adBreakBeginListener: THEOplayerSDK.EventListener = self.adBreakBeginListener {
             self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_BEGIN, listener: adBreakBeginListener)
