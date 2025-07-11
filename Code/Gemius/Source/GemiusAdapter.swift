@@ -34,10 +34,6 @@ public class GemiusAdapter {
     private var adBeginListener: EventListener? // DONE
     private var adEndListener: EventListener? // DONE
     private var adSkipListener: EventListener? // DONE
-    private var adFirstQuartileListener: EventListener?
-    private var adMidpointListener: EventListener?
-    private var adThirdQuartileListener: EventListener?
-    private var adCompletedListener: EventListener?
     private var adBreakEndedListener: EventListener?
     
 
@@ -173,30 +169,6 @@ public class GemiusAdapter {
                 }
                 welf.reportBasicEvent(event: .SKIP)
             })
-            self.adFirstQuartileListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_FIRST_QUARTILE, listener: { [weak self] event in
-                guard let welf: GemiusAdapter = self else { return }
-                if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
-                    print("[GemiusConnector] Player Event: \(event.type) : id = \(id)")
-                }
-            })
-            self.adMidpointListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_MIDPOINT, listener: { [weak self] event in
-                guard let welf: GemiusAdapter = self else { return }
-                if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
-                    print("[GemiusConnector] Player Event: \(event.type) : id = \(id)")
-                }
-            })
-            self.adThirdQuartileListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_THIRD_QUARTILE, listener: { [weak self] event in
-                guard let welf: GemiusAdapter = self else { return }
-                if let id = event.ad?.id, welf.configuration.debug {
-                    print("[GemiusConnector] Player Event: \(event.type) : id = \(id)")
-                }
-            })
-            self.adCompletedListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_END, listener: { [weak self] event in
-                guard let welf: GemiusAdapter = self else { return }
-                if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
-                    print("[GemiusConnector] Player Event: \(event.type) : id = \(id)")
-                }
-            })
             self.adBreakEndedListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_END, listener: { [weak self] event in
                 guard let welf: GemiusAdapter = self else { return }
                 if let offset = event.ad?.timeOffset, welf.configuration.debug && LOG_PLAYER_EVENTS {
@@ -251,18 +223,6 @@ public class GemiusAdapter {
         }
         if let adSkipListener: THEOplayerSDK.EventListener = self.adSkipListener {
             self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_SKIP, listener: adSkipListener)
-        }
-        if let adFirstQuartileListener: THEOplayerSDK.EventListener = self.adFirstQuartileListener {
-            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_FIRST_QUARTILE, listener: adFirstQuartileListener)
-        }
-        if let adMidpointListener: THEOplayerSDK.EventListener = self.adMidpointListener {
-            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_MIDPOINT, listener: adMidpointListener)
-        }
-        if let adThirdQuartileListener: THEOplayerSDK.EventListener = self.adThirdQuartileListener {
-            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_THIRD_QUARTILE, listener: adThirdQuartileListener)
-        }
-        if let adCompletedListener: THEOplayerSDK.EventListener = self.adCompletedListener {
-            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_END, listener: adCompletedListener)
         }
         if let adBreakEndedListener: THEOplayerSDK.EventListener = self.adBreakEndedListener {
             self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_END, listener: adBreakEndedListener)
