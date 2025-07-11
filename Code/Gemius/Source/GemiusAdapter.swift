@@ -30,11 +30,11 @@ public class GemiusAdapter {
     private var rateChangeEventListener: EventListener?
     private var presentationModeChangeEventListener: EventListener?
     
-    private var adBreakBeginListener: EventListener?
+    private var adBreakBeginListener: EventListener? // DONE
     private var adBeginListener: EventListener? // DONE
     private var adEndListener: EventListener? // DONE
     private var adSkipListener: EventListener? // DONE
-    private var adBreakEndedListener: EventListener?
+    private var adBreakEndedListener: EventListener? // DONE
     
 
     public init(configuration: GemiusConfiguration, player: THEOplayer, adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil) {
@@ -135,6 +135,11 @@ public class GemiusAdapter {
                 if let offset = event.ad?.timeOffset, welf.configuration.debug && LOG_PLAYER_EVENTS {
                     print("[GemiusConnector] Player Event: \(event.type) : offset = \(offset)")
                 }
+                welf.reportBasicEvent(event: .BREAK)
+                if let playingEventListener: THEOplayerSDK.EventListener = welf.playingEventListener {
+                                welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
+                            }
+                welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
             })
             self.adBeginListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BEGIN, listener: { [weak self] event in
                 guard let welf: GemiusAdapter = self else { return }
@@ -170,9 +175,19 @@ public class GemiusAdapter {
                 welf.reportBasicEvent(event: .SKIP)
             })
             self.adBreakEndedListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_END, listener: { [weak self] event in
+                
                 guard let welf: GemiusAdapter = self else { return }
-                if let offset = event.ad?.timeOffset, welf.configuration.debug && LOG_PLAYER_EVENTS {
+                welf.adCount = 1
+                guard let offset = event.ad?.timeOffset else { return }
+                if  welf.configuration.debug && LOG_PLAYER_EVENTS {
                     print("[GemiusConnector] Player Event: \(event.type) : offset = \(offset)")
+                }
+                if (offset > 0) {
+                    welf.partCount += 1
+                }
+                welf.gsmPlayer.newProgram(welf.programId, with: welf.programData)
+                if let playingEventListener: THEOplayerSDK.EventListener = welf.playingEventListener {
+                    welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
                 }
                 if (event.ad?.timeOffset == 0) {
                     welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
