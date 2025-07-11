@@ -8,12 +8,14 @@ public struct GemiusConfiguration {
     let hitCollectorHost: String
     let gemiusId: String
     let debug: Bool
+    let adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil
 
-    public init(playerId: String, hitCollectorHost: String, gemiusId: String, debug: Bool) {
+    public init(playerId: String, hitCollectorHost: String, gemiusId: String, debug: Bool, adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil) {
         self.playerId = playerId
         self.hitCollectorHost = hitCollectorHost
         self.gemiusId = gemiusId
         self.debug = debug
+        self.adProcessor = adProcessor
     }
 }
 
@@ -24,7 +26,7 @@ public struct GemiusConnector {
 
     public init(configuration: GemiusConfiguration, player: THEOplayer) {
         self.player = player
-        self.adapter = GemiusAdapter(configuration: configuration, player: player)
+        self.adapter = GemiusAdapter(configuration: configuration, player: player, adProcessor: configuration.adProcessor)
     }
 
     public func update(programId: String, programData: GemiusSDK.GSMProgramData) {
