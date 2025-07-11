@@ -239,6 +239,27 @@ public class GemiusAdapter {
         if (self.configuration.debug && LOG_PLAYER_EVENTS) {
             print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
         }
+        let computedVolume = player.muted ? -1 : Int(player.volume * 100)
+        if let currentAd = self.currentAd, let id = currentAd.id {
+            let adBreak = currentAd.adBreak
+            let offset = adBreak.timeOffset
+            let adEventData = GSMEventAdData()
+            adEventData.adDuration = NSNumber(value: currentAd.duration ?? 0)
+            adEventData.autoPlay = self.player.autoplay ? 1 : 0
+            adEventData.adPosition = NSNumber(value: self.adCount)
+            adEventData.breakSize = NSNumber(value: adBreak.ads.count)
+            adEventData.volume = NSNumber(value: computedVolume)
+            self.gsmPlayer.adEvent(.PLAY, forProgram: self.programId, forAd: id, atOffset: NSNumber(value: offset), with: adEventData)
+        } else {
+            if (hasPrerollScheduled()) { return }
+            let programEventData = GSMEventProgramData()
+            programEventData.autoPlay = self.player.autoplay ? 1 : 0
+            programEventData.volume = NSNumber(value: computedVolume)
+            programEventData.partID = NSNumber(value: self.partCount)
+            programEventData.programDuration = NSNumber(value: self.player.duration ?? 0)
+            self.gsmPlayer.program(.PLAY, forProgram: self.programId, atOffset: NSNumber(value: self.player.currentTime), with: programEventData)
+        }
+        
         if let playingEventListener: THEOplayerSDK.EventListener = self.playingEventListener {
             self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
         }
@@ -289,5 +310,9 @@ public class GemiusAdapter {
             self.gsmPlayer.program(event, forProgram: programId, atOffset: NSNumber(value: player.currentTime), with: nil)
 
         }
+    }
+    
+    private func hasPrerollScheduled() -> Bool {
+        player.ads.scheduledAdBreaks.contains(where: {adBreak in adBreak.timeOffset == 0})
     }
 }
