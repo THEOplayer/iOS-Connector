@@ -10,6 +10,7 @@ public class GemiusAdapter {
     private let player: THEOplayer
     private let configuration: GemiusConfiguration
     private var gsmPlayer: GSMPlayer
+    private let adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)?
     
     private var programId: String?
     private var programData: GemiusSDK.GSMProgramData?
@@ -34,9 +35,10 @@ public class GemiusAdapter {
     private var adBreakEndedListener: EventListener?
     
 
-    public init(configuration: GemiusConfiguration, player: THEOplayer) {
+    public init(configuration: GemiusConfiguration, player: THEOplayer, adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil) {
         self.player = player
         self.configuration = configuration
+        self.adProcessor = adProcessor
         let playerData = GemiusSDK.GSMPlayerData()
         playerData.resolution = "\(player.frame.width)x\(player.frame.height)"
         if (player.muted) {
@@ -247,5 +249,26 @@ public class GemiusAdapter {
             }
         }
         return hasAdIntegration
+    }
+    
+    private func buildAdData(ad: THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData {
+        if let adProcessor = self.adProcessor {
+            return adProcessor(ad)
+        }
+        let adData = GemiusSDK.GSMAdData()
+        if [AdIntegrationKind.google_ima, AdIntegrationKind.google_dai].contains(ad.integration),
+           let imaAd = ad as? GoogleImaAd {
+            adData.name = imaAd.creativeId
+        }
+            
+        adData.adFormat = .video
+        adData.adType = .AD_BREAK
+        if let duration = ad.duration {
+            adData.duration = NSNumber(value: duration)
+        }
+        adData.name = ad.id
+        adData.quality = "\(ad.width)x\(ad.height)"
+        adData.resolution = "\(player.frame.width)x\(player.frame.height)"
+        return adData
     }
 }
