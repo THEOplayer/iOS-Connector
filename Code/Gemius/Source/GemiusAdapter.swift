@@ -60,19 +60,6 @@ public class GemiusAdapter {
     
     
     private func addEventListeners() {
-        self.playEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAY, listener: { [weak self] event in
-            guard let welf: GemiusAdapter = self else { return }
-            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
-                print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
-            }
-        })
-        self.playingEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
-        self.errorEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ERROR, listener: { [weak self] event in
-            guard let welf: GemiusAdapter = self else { return }
-            if let code = event.errorObject?.code, let cause = event.errorObject?.cause, welf.configuration.debug && LOG_PLAYER_EVENTS {
-                print("[GemiusConnector] Player Event: \(event.type) : code = \(code) ; cause = \(cause)")
-            }
-        })
         self.sourceChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.SOURCE_CHANGE, listener: { [weak self] event in
             guard let welf: GemiusAdapter = self else { return }
             if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
@@ -90,6 +77,37 @@ public class GemiusAdapter {
                 welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
             }
             welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+        })
+        self.playingEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+        self.playEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAY, listener: { [weak self] event in
+            guard let welf: GemiusAdapter = self else { return }
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
+                print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
+            }
+        })
+        self.pauseEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PAUSE, listener: { [weak self] event in
+            guard let welf: GemiusAdapter = self else { return }
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
+                print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
+            }
+        })
+        self.waitingEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.WAITING, listener: { [weak self] event in
+            guard let welf: GemiusAdapter = self else { return }
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
+                print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
+            }
+        })
+        self.seekingEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.SEEKING, listener: { [weak self] event in
+            guard let welf: GemiusAdapter = self else { return }
+            if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
+                print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
+            }
+        })
+        self.errorEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ERROR, listener: { [weak self] event in
+            guard let welf: GemiusAdapter = self else { return }
+            if let code = event.errorObject?.code, let cause = event.errorObject?.cause, welf.configuration.debug && LOG_PLAYER_EVENTS {
+                print("[GemiusConnector] Player Event: \(event.type) : code = \(code) ; cause = \(cause)")
+            }
         })
         self.endedEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ENDED, listener: { [weak self] event in
             guard let welf: GemiusAdapter = self else { return }
@@ -173,17 +191,26 @@ public class GemiusAdapter {
     }
 
     private func removeEventListeners() {
-        if let playEventListener: THEOplayerSDK.EventListener = self.playEventListener {
-            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.TIME_UPDATE, listener: playEventListener)
+        if let sourceChangeEventListener: THEOplayerSDK.EventListener = self.sourceChangeEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.SOURCE_CHANGE, listener: sourceChangeEventListener)
         }
         if let playingEventListener: THEOplayerSDK.EventListener = self.playingEventListener {
             self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
         }
+        if let playEventListener: THEOplayerSDK.EventListener = self.playEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAY, listener: playEventListener)
+        }
+        if let pauseEventListener: THEOplayerSDK.EventListener = self.pauseEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PAUSE, listener: pauseEventListener)
+        }
+        if let waitingEventListener: THEOplayerSDK.EventListener = self.waitingEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.WAITING, listener: waitingEventListener)
+        }
+        if let seekingEventListener: THEOplayerSDK.EventListener = self.seekingEventListener {
+            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.SEEKING, listener: seekingEventListener)
+        }
         if let errorEventListener: THEOplayerSDK.EventListener = self.errorEventListener {
             self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.ERROR, listener: errorEventListener)
-        }
-        if let sourceChangeEventListener: THEOplayerSDK.EventListener = self.sourceChangeEventListener {
-            self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.SOURCE_CHANGE, listener: sourceChangeEventListener)
         }
         if let endedEventListener: THEOplayerSDK.EventListener = self.endedEventListener {
             self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.ENDED, listener: endedEventListener)
