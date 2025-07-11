@@ -15,10 +15,14 @@ public class GemiusAdapter {
     private var programId: String?
     private var programData: GemiusSDK.GSMProgramData?
     
+    private var partCount = 1
+    private var adCount = 1
+    private var currentAd: Ad? = nil
+    
     private var playEventListener: EventListener?
     private var playingEventListener: EventListener?
     private var errorEventListener: EventListener?
-    private var sourceChangeEventListener: EventListener?
+    private var sourceChangeEventListener: EventListener? //DONE
     private var endedEventListener: EventListener?
     private var durationChangeEventListener: EventListener?
     private var timeUpdateEventListener: EventListener?
@@ -27,7 +31,9 @@ public class GemiusAdapter {
     private var presentationModeChangeEventListener: EventListener?
     
     private var adBreakBeginListener: EventListener?
-    private var adBeginListener: EventListener?
+    private var adBeginListener: EventListener? // DONE
+    private var adEndListener: EventListener? // DONE
+    private var adSkipListener: EventListener? // DONE
     private var adFirstQuartileListener: EventListener?
     private var adMidpointListener: EventListener?
     private var adThirdQuartileListener: EventListener?
@@ -76,8 +82,12 @@ public class GemiusAdapter {
             if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[GemiusConnector] Player Event: \(event.type) : source = \(event.source.debugDescription)")
             }
+            welf.partCount = 1
+            welf.currentAd = nil
             if let programData = welf.programData, let programId = welf.programId {
                 welf.gsmPlayer.newProgram(programId, with: programData)
+            } else {
+                print("[GemiusConnector] No program parameters were provided")
             }
             
             if let playingEventListener: THEOplayerSDK.EventListener = welf.playingEventListener {
@@ -135,7 +145,33 @@ public class GemiusAdapter {
                 if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
                     print("[GemiusConnector] Player Event: \(event.type) : id = \(id)")
                 }
-                guard let ad = event.ad else { return }
+                guard let ad = event.ad, let id = ad.id else { return }
+                welf.currentAd = ad
+                let adData = welf.buildAdData(ad: ad)
+                welf.gsmPlayer.newAd(id, with: adData)
+            })
+            self.adEndListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_END, listener: { [weak self] event in
+                guard let welf: GemiusAdapter = self else { return }
+                if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
+                    print("[GemiusConnector] Player Event: \(event.type) : id = \(id)")
+                }
+                guard let ad = event.ad, let id = ad.id else { return }
+                welf.reportBasicEvent(event: .COMPLETE)
+                welf.reportBasicEvent(event: .CLOSE)
+                welf.adCount += 1
+                welf.currentAd = nil
+                if let playingEventListener: THEOplayerSDK.EventListener = welf.playingEventListener {
+                    welf.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: playingEventListener)
+                }
+                welf.playingEventListener = welf.player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener:  { [weak self] event in self?.handlePlaying(event: event) })
+
+            })
+            self.adSkipListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_SKIP, listener: { [weak self] event in
+                guard let welf: GemiusAdapter = self else { return }
+                if let id = event.ad?.id, welf.configuration.debug && LOG_PLAYER_EVENTS {
+                    print("[GemiusConnector] Player Event: \(event.type) : id = \(id)")
+                }
+                welf.reportBasicEvent(event: .SKIP)
             })
             self.adFirstQuartileListener = player.ads.addEventListener(type: THEOplayerSDK.AdsEventTypes.AD_FIRST_QUARTILE, listener: { [weak self] event in
                 guard let welf: GemiusAdapter = self else { return }
@@ -210,6 +246,12 @@ public class GemiusAdapter {
         if let adBeginListener: THEOplayerSDK.EventListener = self.adBeginListener {
             self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BEGIN, listener: adBeginListener)
         }
+        if let adEndListener: THEOplayerSDK.EventListener = self.adEndListener {
+            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_END, listener: adEndListener)
+        }
+        if let adSkipListener: THEOplayerSDK.EventListener = self.adSkipListener {
+            self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_SKIP, listener: adSkipListener)
+        }
         if let adFirstQuartileListener: THEOplayerSDK.EventListener = self.adFirstQuartileListener {
             self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_FIRST_QUARTILE, listener: adFirstQuartileListener)
         }
@@ -270,5 +312,16 @@ public class GemiusAdapter {
         adData.quality = "\(ad.width)x\(ad.height)"
         adData.resolution = "\(player.frame.width)x\(player.frame.height)"
         return adData
+    }
+    
+    private func reportBasicEvent(event: GemiusSDK.GSMEventType) {
+        guard let programId = self.programId else { return }
+        if let currentAd =  self.currentAd {
+            self.gsmPlayer.adEvent(event, forProgram: programId, forAd: currentAd.id, atOffset: NSNumber(value: currentAd.adBreak.timeOffset), with: nil)
+            
+        } else {
+            self.gsmPlayer.program(event, forProgram: programId, atOffset: NSNumber(value: player.currentTime), with: nil)
+
+        }
     }
 }
