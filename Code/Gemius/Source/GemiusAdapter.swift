@@ -25,8 +25,8 @@ public class GemiusAdapter {
     private var pauseEventListener: EventListener? // DONE
     private var waitingEventListener: EventListener? // DONE
     private var seekingEventListener: EventListener? // DONE
-    private var errorEventListener: EventListener?
-    private var endedEventListener: EventListener?
+    private var errorEventListener: EventListener? // DONE
+    private var endedEventListener: EventListener? // DONE
     private var volumeChangeEventListener: EventListener?
 
     
@@ -131,12 +131,14 @@ public class GemiusAdapter {
             if let code = event.errorObject?.code, let cause = event.errorObject?.cause, welf.configuration.debug && LOG_PLAYER_EVENTS {
                 print("[GemiusConnector] Player Event: \(event.type) : code = \(code) ; cause = \(cause)")
             }
+            welf.reportBasicEvent(event: .COMPLETE)
         })
         self.endedEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ENDED, listener: { [weak self] event in
             guard let welf: GemiusAdapter = self else { return }
             if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
             }
+            welf.reportBasicEvent(event: .COMPLETE)
         })
         self.volumeChangeEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.VOLUME_CHANGE, listener: { [weak self] event in
             guard let welf: GemiusAdapter = self else { return }
