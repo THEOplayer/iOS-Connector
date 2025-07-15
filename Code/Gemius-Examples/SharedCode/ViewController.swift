@@ -60,6 +60,15 @@ class ViewController: UIViewController {
     
     
     @IBAction func bbbButtonClicked(_ sender: UIButton) {
+        let programData = GemiusSDK.GSMProgramData()
+        programData.name = "Big Bug Bunny Movie"
+        programData.programGenre = .series
+        programData.programSeason = "1"
+        programData.transmissionType = .onDemand
+        programData.programProducer = "Blender Studio"
+        programData.series = "Test Content"
+        programData.duration = 634
+        gemius.update(programId: "BigBuckBunny", programData: programData)
         player.source = SourceDescription(
             source: TypedSource(
                 src: bigBuckBunnyURL,
