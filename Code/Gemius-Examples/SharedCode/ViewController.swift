@@ -7,6 +7,7 @@
 
 import UIKit
 import THEOplayerSDK
+import THEOplayerGoogleIMAIntegration
 import THEOplayerConnectorGemius
 import GemiusSDK
 
