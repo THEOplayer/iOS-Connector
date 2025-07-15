@@ -34,9 +34,10 @@ class ViewController: UIViewController {
         #endif
         self.gemius = GemiusConnector(
             configuration: GemiusConfiguration(
-                playerId: "test",
-                hitCollectorHost: "https://prefix.gemius.pl",
-                gemiusId: "abcde",
+                applicationName: "GemiusReporter",
+                applicationVersion: "0.0.1",
+                hitCollectorHost: "https://<prefix>.hit.gemius.pl",
+                gemiusId: "<your gemius id>",
                 debug: true
             ),
             player: player
