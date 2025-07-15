@@ -27,7 +27,7 @@ public class GemiusAdapter {
     private var seekingEventListener: EventListener? // DONE
     private var errorEventListener: EventListener? // DONE
     private var endedEventListener: EventListener? // DONE
-    private var volumeChangeEventListener: EventListener?
+    private var volumeChangeEventListener: EventListener? // DONE
 
     
     private var adBreakBeginListener: EventListener? // DONE
@@ -144,6 +144,18 @@ public class GemiusAdapter {
             guard let welf: GemiusAdapter = self else { return }
             if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[GemiusConnector] Player Event: \(event.type) : volume = \(event.volume)")
+            }
+            let computedVolume = welf.player.muted ? -1 : Int(welf.player.volume * 100)
+            let programId = welf.programId
+            if let currentAd = welf.currentAd, let id = currentAd.id {
+                let adBreak = currentAd.adBreak
+                let adEventData = GSMEventAdData()
+                adEventData.volume = NSNumber(value: computedVolume)
+                welf.gsmPlayer.adEvent(.CHANGE_VOL, forProgram: programId, forAd: id, atOffset: NSNumber(value: adBreak.timeOffset), with: adEventData)
+            } else {
+                let programEventData = GSMEventProgramData()
+                programEventData.volume = NSNumber(value: computedVolume)
+                welf.gsmPlayer.program(.CHANGE_VOL, forProgram: programId, atOffset: NSNumber( value: welf.player.currentTime), with: programEventData)
             }
         })
         
