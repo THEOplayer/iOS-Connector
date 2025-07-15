@@ -8,7 +8,7 @@ public struct GemiusConfiguration {
     let hitCollectorHost: String
     let gemiusId: String
     let debug: Bool
-    let adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil
+    let adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)?
 
     public init(playerId: String, hitCollectorHost: String, gemiusId: String, debug: Bool, adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil) {
         self.playerId = playerId
