@@ -4,14 +4,16 @@ import GemiusSDK
 #endif
 
 public struct GemiusConfiguration {
-    let playerId: String
+    let applicationName: String
+    let applicationVersion: String
     let hitCollectorHost: String
     let gemiusId: String
     let debug: Bool
     let adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)?
 
-    public init(playerId: String, hitCollectorHost: String, gemiusId: String, debug: Bool, adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil) {
-        self.playerId = playerId
+    public init(applicationName: String, applicationVersion: String, hitCollectorHost: String, gemiusId: String, debug: Bool, adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil) {
+        self.applicationName = applicationName
+        self.applicationVersion = applicationVersion
         self.hitCollectorHost = hitCollectorHost
         self.gemiusId = gemiusId
         self.debug = debug

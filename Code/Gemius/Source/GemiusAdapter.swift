@@ -51,7 +51,9 @@ public class GemiusAdapter {
         } else {
             playerData.volume = NSNumber(value: player.volume * 100)
         }
-        self.gsmPlayer = GemiusSDK.GSMPlayer(id: configuration.playerId, withHost: configuration.hitCollectorHost, withGemiusID: configuration.gemiusId, with: playerData)
+        GemiusSDK.GEMConfig.sharedInstance().loggingEnabled = configuration.debug
+        GemiusSDK.GEMConfig.sharedInstance().setAppInfo(configuration.applicationName, version: configuration.applicationVersion)
+        self.gsmPlayer = GemiusSDK.GSMPlayer(id: "THEOplayer", withHost: configuration.hitCollectorHost, withGemiusID: configuration.gemiusId, with: playerData)
         
         addEventListeners()
     }
