@@ -19,25 +19,25 @@ public class GemiusAdapter {
     private var adCount = 1
     private var currentAd: Ad? = nil
     
-    private var sourceChangeEventListener: EventListener? //DONE
-    private var playingEventListener: EventListener? // DONE
-    private var playEventListener: EventListener? // DONE
-    private var pauseEventListener: EventListener? // DONE
-    private var waitingEventListener: EventListener? // DONE
-    private var seekingEventListener: EventListener? // DONE
-    private var errorEventListener: EventListener? // DONE
-    private var endedEventListener: EventListener? // DONE
-    private var volumeChangeEventListener: EventListener? // DONE
+    private var sourceChangeEventListener: EventListener?
+    private var playingEventListener: EventListener?
+    private var playEventListener: EventListener?
+    private var pauseEventListener: EventListener?
+    private var waitingEventListener: EventListener?
+    private var seekingEventListener: EventListener?
+    private var errorEventListener: EventListener?
+    private var endedEventListener: EventListener?
+    private var volumeChangeEventListener: EventListener?
     
     private var addVideoTrackEventListener: EventListener?
     private var removeVideoTrackEventListener: EventListener?
     private var videoQualityChangedEventListener: EventListener?
 
-    private var adBreakBeginListener: EventListener? // DONE
-    private var adBeginListener: EventListener? // DONE
-    private var adEndListener: EventListener? // DONE
-    private var adSkipListener: EventListener? // DONE
-    private var adBreakEndedListener: EventListener? // DONE
+    private var adBreakBeginListener: EventListener?
+    private var adBeginListener: EventListener?
+    private var adEndListener: EventListener?
+    private var adSkipListener: EventListener?
+    private var adBreakEndedListener: EventListener?
     
 
     public init(configuration: GemiusConfiguration, player: THEOplayer, adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil) {
