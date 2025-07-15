@@ -83,6 +83,15 @@ class ViewController: UIViewController {
     }
     
     @IBAction func starWarsButtonClicked(_ sender: UIButton) {
+        let programData = GemiusSDK.GSMProgramData()
+        programData.name = "Star Wars"
+        programData.programGenre = .series
+        programData.programSeason = "1"
+        programData.transmissionType = .onDemand
+        programData.programProducer = "GWL"
+        programData.series = "Star Wars"
+        programData.duration = 211
+        gemius.update(programId: "Episode VII The Force Awakens", programData: programData)
         player.source = SourceDescription(
             source: TypedSource(
                 src: starwarsURL.absoluteString,
