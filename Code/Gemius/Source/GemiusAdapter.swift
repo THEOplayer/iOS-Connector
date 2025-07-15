@@ -24,7 +24,7 @@ public class GemiusAdapter {
     private var playEventListener: EventListener? // DONE
     private var pauseEventListener: EventListener? // DONE
     private var waitingEventListener: EventListener? // DONE
-    private var seekingEventListener: EventListener?
+    private var seekingEventListener: EventListener? // DONE
     private var errorEventListener: EventListener?
     private var endedEventListener: EventListener?
     private var volumeChangeEventListener: EventListener?
@@ -124,6 +124,7 @@ public class GemiusAdapter {
             if (welf.configuration.debug && LOG_PLAYER_EVENTS) {
                 print("[GemiusConnector] Player Event: \(event.type) : currentTime = \(event.currentTime)")
             }
+            welf.reportBasicEvent(event: .SEEK)
         })
         self.errorEventListener = player.addEventListener(type: THEOplayerSDK.PlayerEventTypes.ERROR, listener: { [weak self] event in
             guard let welf: GemiusAdapter = self else { return }
