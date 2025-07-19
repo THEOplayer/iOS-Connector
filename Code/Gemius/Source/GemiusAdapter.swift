@@ -187,7 +187,7 @@ public class GemiusAdapter {
             guard let welf: GemiusAdapter = self else { return }
             let videoTrack = event.track
             if let videoQualityChangedEventListener: THEOplayerSDK.EventListener = welf.videoQualityChangedEventListener {
-                videoTrack.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.PLAYING, listener: videoQualityChangedEventListener)
+                videoTrack.removeEventListener(type: THEOplayerSDK.MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED, listener: videoQualityChangedEventListener)
             }
         })
 
