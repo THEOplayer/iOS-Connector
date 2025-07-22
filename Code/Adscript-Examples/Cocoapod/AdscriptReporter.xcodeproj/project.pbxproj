@@ -1,0 +1,656 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		295ED3E52E16B2350095420B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3DB2E16B2350095420B /* Assets.xcassets */; };
+		295ED3E72E16B2350095420B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3E02E16B2350095420B /* Main.storyboard */; };
+		295ED3E82E16B2350095420B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295ED3DE2E16B2350095420B /* LaunchScreen.storyboard */; };
+		295ED3E92E16B2350095420B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295ED3DA2E16B2350095420B /* AppDelegate.swift */; };
+		295ED3EA2E16B2350095420B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295ED3E32E16B2350095420B /* ViewController.swift */; };
+		295ED3EB2E16B2350095420B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295ED3E22E16B2350095420B /* SceneDelegate.swift */; };
+		295ED3EC2E16B2350095420B /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295ED3E12E16B2350095420B /* PlayerView.swift */; };
+		869D111A592EF8154DA1AB03 /* libPods-AdscriptReporter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7AEAE2F99316EBC3A7E059A /* libPods-AdscriptReporter.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		29994EC92DFDC6DA0016F0E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29994EAA2DFDC6D80016F0E2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29994EB12DFDC6D80016F0E2;
+			remoteInfo = AdscriptReporter;
+		};
+		29994ED32DFDC6DA0016F0E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29994EAA2DFDC6D80016F0E2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29994EB12DFDC6D80016F0E2;
+			remoteInfo = AdscriptReporter;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		295ED3DA2E16B2350095420B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		295ED3DB2E16B2350095420B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		295ED3DC2E16B2350095420B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		295ED3DD2E16B2350095420B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		295ED3DF2E16B2350095420B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		295ED3E12E16B2350095420B /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		295ED3E22E16B2350095420B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		295ED3E32E16B2350095420B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		29994EB22DFDC6D80016F0E2 /* AdscriptReporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdscriptReporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		29994EC82DFDC6DA0016F0E2 /* AdscriptReporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AdscriptReporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		29994ED22DFDC6DA0016F0E2 /* AdscriptReporterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AdscriptReporterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D223C4308E6BCF0F6785F8F /* Pods-AdscriptReporter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AdscriptReporter.debug.xcconfig"; path = "Target Support Files/Pods-AdscriptReporter/Pods-AdscriptReporter.debug.xcconfig"; sourceTree = "<group>"; };
+		CA025FA0C60D148274C918BC /* Pods-AdscriptReporter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AdscriptReporter.release.xcconfig"; path = "Target Support Files/Pods-AdscriptReporter/Pods-AdscriptReporter.release.xcconfig"; sourceTree = "<group>"; };
+		F7AEAE2F99316EBC3A7E059A /* libPods-AdscriptReporter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AdscriptReporter.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		29994EAF2DFDC6D80016F0E2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				869D111A592EF8154DA1AB03 /* libPods-AdscriptReporter.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29994EC52DFDC6DA0016F0E2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29994ECF2DFDC6DA0016F0E2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		295ED3E42E16B2350095420B /* AdscriptReporter */ = {
+			isa = PBXGroup;
+			children = (
+				295ED3DA2E16B2350095420B /* AppDelegate.swift */,
+				295ED3DB2E16B2350095420B /* Assets.xcassets */,
+				295ED3DC2E16B2350095420B /* Info.plist */,
+				295ED3DE2E16B2350095420B /* LaunchScreen.storyboard */,
+				295ED3E02E16B2350095420B /* Main.storyboard */,
+				295ED3E12E16B2350095420B /* PlayerView.swift */,
+				295ED3E22E16B2350095420B /* SceneDelegate.swift */,
+				295ED3E32E16B2350095420B /* ViewController.swift */,
+			);
+			name = AdscriptReporter;
+			path = ../SharedCode;
+			sourceTree = SOURCE_ROOT;
+		};
+		29994EA92DFDC6D80016F0E2 = {
+			isa = PBXGroup;
+			children = (
+				295ED3E42E16B2350095420B /* AdscriptReporter */,
+				29994EB32DFDC6D80016F0E2 /* Products */,
+				2DEA1210CC5916F8004A4364 /* Pods */,
+				D1C02604FAF420079FE8B046 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		29994EB32DFDC6D80016F0E2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				29994EB22DFDC6D80016F0E2 /* AdscriptReporter.app */,
+				29994EC82DFDC6DA0016F0E2 /* AdscriptReporterTests.xctest */,
+				29994ED22DFDC6DA0016F0E2 /* AdscriptReporterUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2DEA1210CC5916F8004A4364 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7D223C4308E6BCF0F6785F8F /* Pods-AdscriptReporter.debug.xcconfig */,
+				CA025FA0C60D148274C918BC /* Pods-AdscriptReporter.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		D1C02604FAF420079FE8B046 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F7AEAE2F99316EBC3A7E059A /* libPods-AdscriptReporter.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		29994EB12DFDC6D80016F0E2 /* AdscriptReporter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29994EDB2DFDC6DA0016F0E2 /* Build configuration list for PBXNativeTarget "AdscriptReporter" */;
+			buildPhases = (
+				6191FCA4F0B6655B3496C06F /* [CP] Check Pods Manifest.lock */,
+				29994EAE2DFDC6D80016F0E2 /* Sources */,
+				29994EAF2DFDC6D80016F0E2 /* Frameworks */,
+				29994EB02DFDC6D80016F0E2 /* Resources */,
+				A31CD09B89FCD1875C0C920D /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AdscriptReporter;
+			productName = AdscriptReporter;
+			productReference = 29994EB22DFDC6D80016F0E2 /* AdscriptReporter.app */;
+			productType = "com.apple.product-type.application";
+		};
+		29994EC72DFDC6DA0016F0E2 /* AdscriptReporterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29994EE02DFDC6DA0016F0E2 /* Build configuration list for PBXNativeTarget "AdscriptReporterTests" */;
+			buildPhases = (
+				29994EC42DFDC6DA0016F0E2 /* Sources */,
+				29994EC52DFDC6DA0016F0E2 /* Frameworks */,
+				29994EC62DFDC6DA0016F0E2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				29994ECA2DFDC6DA0016F0E2 /* PBXTargetDependency */,
+			);
+			name = AdscriptReporterTests;
+			productName = AdscriptReporterTests;
+			productReference = 29994EC82DFDC6DA0016F0E2 /* AdscriptReporterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		29994ED12DFDC6DA0016F0E2 /* AdscriptReporterUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29994EE32DFDC6DA0016F0E2 /* Build configuration list for PBXNativeTarget "AdscriptReporterUITests" */;
+			buildPhases = (
+				29994ECE2DFDC6DA0016F0E2 /* Sources */,
+				29994ECF2DFDC6DA0016F0E2 /* Frameworks */,
+				29994ED02DFDC6DA0016F0E2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				29994ED42DFDC6DA0016F0E2 /* PBXTargetDependency */,
+			);
+			name = AdscriptReporterUITests;
+			productName = AdscriptReporterUITests;
+			productReference = 29994ED22DFDC6DA0016F0E2 /* AdscriptReporterUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29994EAA2DFDC6D80016F0E2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					29994EB12DFDC6D80016F0E2 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					29994EC72DFDC6DA0016F0E2 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 29994EB12DFDC6D80016F0E2;
+					};
+					29994ED12DFDC6DA0016F0E2 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 29994EB12DFDC6D80016F0E2;
+					};
+				};
+			};
+			buildConfigurationList = 29994EAD2DFDC6D80016F0E2 /* Build configuration list for PBXProject "AdscriptReporter" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 29994EA92DFDC6D80016F0E2;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 29994EB32DFDC6D80016F0E2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				29994EB12DFDC6D80016F0E2 /* AdscriptReporter */,
+				29994EC72DFDC6DA0016F0E2 /* AdscriptReporterTests */,
+				29994ED12DFDC6DA0016F0E2 /* AdscriptReporterUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		29994EB02DFDC6D80016F0E2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				295ED3E52E16B2350095420B /* Assets.xcassets in Resources */,
+				295ED3E72E16B2350095420B /* Main.storyboard in Resources */,
+				295ED3E82E16B2350095420B /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29994EC62DFDC6DA0016F0E2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29994ED02DFDC6DA0016F0E2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6191FCA4F0B6655B3496C06F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AdscriptReporter-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A31CD09B89FCD1875C0C920D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AdscriptReporter/Pods-AdscriptReporter-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AdscriptReporter/Pods-AdscriptReporter-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AdscriptReporter/Pods-AdscriptReporter-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		29994EAE2DFDC6D80016F0E2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				295ED3E92E16B2350095420B /* AppDelegate.swift in Sources */,
+				295ED3EA2E16B2350095420B /* ViewController.swift in Sources */,
+				295ED3EB2E16B2350095420B /* SceneDelegate.swift in Sources */,
+				295ED3EC2E16B2350095420B /* PlayerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29994EC42DFDC6DA0016F0E2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29994ECE2DFDC6DA0016F0E2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		29994ECA2DFDC6DA0016F0E2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 29994EB12DFDC6D80016F0E2 /* AdscriptReporter */;
+			targetProxy = 29994EC92DFDC6DA0016F0E2 /* PBXContainerItemProxy */;
+		};
+		29994ED42DFDC6DA0016F0E2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 29994EB12DFDC6D80016F0E2 /* AdscriptReporter */;
+			targetProxy = 29994ED32DFDC6DA0016F0E2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		295ED3DE2E16B2350095420B /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				295ED3DD2E16B2350095420B /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		295ED3E02E16B2350095420B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				295ED3DF2E16B2350095420B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		29994EDC2DFDC6DA0016F0E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7D223C4308E6BCF0F6785F8F /* Pods-AdscriptReporter.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G749Q24N3X;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.adscript.ios.integration.AdscriptReporter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		29994EDD2DFDC6DA0016F0E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA025FA0C60D148274C918BC /* Pods-AdscriptReporter.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G749Q24N3X;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.adscript.ios.integration.AdscriptReporter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		29994EDE2DFDC6DA0016F0E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		29994EDF2DFDC6DA0016F0E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		29994EE12DFDC6DA0016F0E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.adscript.ios.integration.AdscriptReporterTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AdscriptReporter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AdscriptReporter";
+			};
+			name = Debug;
+		};
+		29994EE22DFDC6DA0016F0E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.adscript.ios.integration.AdscriptReporterTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AdscriptReporter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AdscriptReporter";
+			};
+			name = Release;
+		};
+		29994EE42DFDC6DA0016F0E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.adscript.ios.integration.AdscriptReporterUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AdscriptReporter;
+			};
+			name = Debug;
+		};
+		29994EE52DFDC6DA0016F0E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.adscript.ios.integration.AdscriptReporterUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AdscriptReporter;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		29994EAD2DFDC6D80016F0E2 /* Build configuration list for PBXProject "AdscriptReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29994EDE2DFDC6DA0016F0E2 /* Debug */,
+				29994EDF2DFDC6DA0016F0E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		29994EDB2DFDC6DA0016F0E2 /* Build configuration list for PBXNativeTarget "AdscriptReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29994EDC2DFDC6DA0016F0E2 /* Debug */,
+				29994EDD2DFDC6DA0016F0E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		29994EE02DFDC6DA0016F0E2 /* Build configuration list for PBXNativeTarget "AdscriptReporterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29994EE12DFDC6DA0016F0E2 /* Debug */,
+				29994EE22DFDC6DA0016F0E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		29994EE32DFDC6DA0016F0E2 /* Build configuration list for PBXNativeTarget "AdscriptReporterUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29994EE42DFDC6DA0016F0E2 /* Debug */,
+				29994EE52DFDC6DA0016F0E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29994EAA2DFDC6D80016F0E2 /* Project object */;
+}

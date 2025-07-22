@@ -1,0 +1,51 @@
+PODS:
+  - AdscriptApiClient (1.0.4)
+  - InternalCollectionsUtilities (1.1.1)
+  - swift-collections (1.1.1):
+    - swift-collections/BitCollections (= 1.1.1)
+    - swift-collections/DequeModule (= 1.1.1)
+    - swift-collections/HashTreeCollections (= 1.1.1)
+    - swift-collections/HeapModule (= 1.1.1)
+    - swift-collections/OrderedCollections (= 1.1.1)
+  - swift-collections/BitCollections (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
+  - swift-collections/DequeModule (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
+  - swift-collections/HashTreeCollections (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
+  - swift-collections/HeapModule (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
+  - swift-collections/OrderedCollections (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
+  - THEOplayer-Connector-Adscript (9.5.1):
+    - AdscriptApiClient (>= 1.0.4)
+    - swift-collections (~> 1.1)
+    - THEOplayerSDK-core (~> 9)
+  - THEOplayerSDK-core (9.5.1)
+
+DEPENDENCIES:
+  - AdscriptApiClient (from `Frameworks/`)
+  - THEOplayer-Connector-Adscript (from `../../../`)
+
+SPEC REPOS:
+  trunk:
+    - InternalCollectionsUtilities
+    - swift-collections
+    - THEOplayerSDK-core
+
+EXTERNAL SOURCES:
+  AdscriptApiClient:
+    :path: Frameworks/
+  THEOplayer-Connector-Adscript:
+    :path: "../../../"
+
+SPEC CHECKSUMS:
+  AdscriptApiClient: 7ef1012a2b6d597c7dd5858d20726c4045768733
+  InternalCollectionsUtilities: af3f471602c4a67cbcb0bee0a80f6f55a33ae453
+  swift-collections: ba248ecaf44ef500b27d5cf94d304218c89892ff
+  THEOplayer-Connector-Adscript: 4dfcb0ebb17aa868ddbe6b63b5a53226861deb37
+  THEOplayerSDK-core: df3ec4ed64e19bd006f6a5476d96161e07f700a3
+
+PODFILE CHECKSUM: 2d601d96608b6ce3d8d2f78d6e205aca8709be50
+
+COCOAPODS: 1.16.2
