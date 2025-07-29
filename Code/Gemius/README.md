@@ -13,6 +13,8 @@ For example xcode projects with this connector see [Gemius-Examples](../Gemius-E
 2. In the prompt that appears, select the iOS-Connector GitHub repository: `https://github.com/THEOplayer/iOS-Connector`
 3. Select the version you want to use.
 4. Choose the Connector libraries you want to include in your app.
+5. The Gemius SDK is not available as a Swift Package. Download the .xcframework from the Gemius developer portal and drag it onto Project > General > Frameworks, Libraries and Embedded Content.
+
 
 To support custom feature builds of THEOplayerSDK perform the following steps:
 
@@ -27,7 +29,14 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 
 1. Create a Podfile if you don't already have one. From the root of your project directory, run the following command: `pod init`
 2. To your Podfile, add the Gemius connector pods that you want to use in your app: `pod 'THEOplayer-Connector-Gemius'`
-3. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
+3. The Gemius SDK is not available as a pod.  Download the .xcframework from the Gemius developer portal. Place it in a folder next to a custom podspec. Refer to the ones in [Gemius-Example for Cocoapods for an example](./../Gemius-Examples//Cocoapod/Frameworks/). Include a line in you app's Podfile to point to that podspec for the `GemiusSDK` dependency. 
+```ruby
+  pod 'GemiusSDK', :path => 'path/to/folder/with/custompodspec/'
+```
+4. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
+
+**Important note**: You will need to set Project > Build Settings > User Script Sandboxing to `No`
+
 
 To support custom feature builds of THEOplayerSDK perform the following steps:
 
