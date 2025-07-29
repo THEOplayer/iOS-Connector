@@ -42,6 +42,18 @@ Import the `THEOplayerConnectorGemius` module
 import THEOplayerConnectorGemius
 ```
 
+Create a `GemiusConfiguration`
+
+```swift
+let configuration = GemiusConfiguration(
+    applicationName: "GemiusReporter",
+    applicationVersion: "0.0.1",
+    hitCollectorHost: "<your hitcollectorhost>",
+    gemiusId: "<your gemiusId>",
+    debug: true
+)
+```
+
 Create a `GemiusConnector` that uses this `configuration` and your `THEOplayer` instance:
 
 ```swift
@@ -49,6 +61,14 @@ let connector = GemiusConnector(
     configuration: configuration,
     player: yourTHEOplayer
 )
+```
+
+Update metadata using the `update` method
+
+```swift
+let programId = "<your program id>"
+let programData: GemiusSDK.GSMProgramData = <your program data>
+connector.update(programId,programData)
 ```
 
 
