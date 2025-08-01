@@ -6,15 +6,26 @@ import THEOplayerSDK
 import ConvivaSDK
 
 /// Connects to a THEOplayer instance and reports its events to conviva
-public struct ConvivaConnector {
+public class ConvivaConnector: Sessiondelegate {
     private let storage = ConvivaConnectorStorage()
     
     private var endPoints: ConvivaEndpoints
+    
+    // event handlers
     private var appEventForwarder: AppEventForwarder
     private var basicEventForwarder: BasicEventForwarder
     private var adEventHandler: AdEventForwarder
+    private var theoliveHandler: THEOliveEventForwarder
     
-    public init?(configuration: ConvivaConfiguration, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
+    // event reporters
+    private var theoliveReporter: THEOliveEventConvivaReporter
+    private var basicEventReporter: BasicEventConvivaReporter
+    
+    public convenience init?(
+        configuration: ConvivaConfiguration,
+        player: THEOplayer,
+        externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil
+    ) {
         guard let endPoints = ConvivaEndpoints(configuration: configuration) else { return nil }
         self.init(conviva: endPoints, player: player, externalEventDispatcher: externalEventDispatcher)
     }
@@ -26,20 +37,34 @@ public struct ConvivaConnector {
                                                                                            videoAnalytics: endPoints.videoAnalytics,
                                                                                            adAnalytics: endPoints.adAnalytics,
                                                                                            storage: self.storage))
-        self.basicEventForwarder = BasicEventForwarder(player: player,
-                                                       eventProcessor: BasicEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
-                                                                                                 adAnalytics: endPoints.adAnalytics,
-                                                                                                 storage: self.storage))
+        
+        self.basicEventReporter = BasicEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics, adAnalytics: endPoints.adAnalytics, storage: self.storage)
+        self.basicEventForwarder = BasicEventForwarder(player: player, eventProcessor: self.basicEventReporter)
+        
         self.adEventHandler = AdEventForwarder(player: player,
                                                externalEventDispatcher: externalEventDispatcher,
                                                eventProcessor: AdEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
                                                                                       adAnalytics: endPoints.adAnalytics,
                                                                                       storage: self.storage,
                                                                                       player: player))
+        
+        self.theoliveReporter = THEOliveEventConvivaReporter( videoAnalytics: endPoints.videoAnalytics, storage: self.storage)
+        self.theoliveHandler = THEOliveEventForwarder(player: player, eventProcessor: self.theoliveReporter)
+        
+        self.basicEventReporter.sessionDelegate = self
+    }
+    
+    func onSessionStarted() {
+        self.theoliveReporter.onSessionStarted()
+    }
+    
+    func onSessionEnded() {
+        self.theoliveReporter.onSessionEnded()
     }
     
     public func destroy() {
         self.endPoints.destroy()
+        self.basicEventForwarder.destroy()
     }
     
     public func setContentInfo(_ contentInfo: [String: Any]) {

@@ -5,23 +5,27 @@
 import ConvivaSDK
 import THEOplayerSDK
 
-class BasicEventConvivaReporter {
-    
-    struct Session {
-        struct Source {
-            let description: SourceDescription
-            let url: String?
-        }
-        var started = false
-        var source: Source?
+protocol Sessiondelegate: AnyObject {
+    func onSessionStarted()
+    func onSessionEnded()
+}
+
+struct Session {
+    struct Source {
+        let description: SourceDescription
+        let url: String?
     }
-    
+    var started = false
+    var source: Source?
+}
+
+class BasicEventConvivaReporter {
     /// The endpoint to which all the events are sent
     private let videoAnalytics: CISVideoAnalytics
     private let adAnalytics: CISAdAnalytics
     private let storage: ConvivaConnectorStorage
-    
-    var currentSession = Session()
+    private var currentSession = Session()
+    weak var sessionDelegate: Sessiondelegate?
         
     init(videoAnalytics: CISVideoAnalytics, adAnalytics: CISAdAnalytics, storage: ConvivaConnectorStorage) {
         self.videoAnalytics = videoAnalytics
@@ -34,6 +38,9 @@ class BasicEventConvivaReporter {
         let initialContentInfo = Utilities.extendedContentInfo(contentInfo: [:], storage: self.storage)
         self.videoAnalytics.reportPlaybackRequested(initialContentInfo)
         self.currentSession.started = true
+        if let delegate = self.sessionDelegate {
+            delegate.onSessionStarted()
+        }
     }
     
     func playing(event: PlayingEvent) {
@@ -65,6 +72,9 @@ class BasicEventConvivaReporter {
             self.videoAnalytics.reportPlaybackFailed(event.error, contentInfo: nil)
             // the reportPlaybackFailed will close the session on the Conviva backend.
             self.currentSession.started = false
+            if let delegate = self.sessionDelegate {
+                delegate.onSessionEnded()
+            }
         }
     }
     
@@ -81,6 +91,7 @@ class BasicEventConvivaReporter {
         self.storage.clearValueForKey(CIS_SSDK_METADATA_ASSET_NAME)                 // asset name from the previous source
         self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE)             // last reported bitrate for previous source
         self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE)     // last reported average bitrate for previous source
+        self.storage.clearValueForKey(CIS_SSDK_METADATA_DEFAULT_RESOURCE)           // last reported cdn for previous source
         
         let newSource: Session.Source?
         
@@ -119,6 +130,9 @@ class BasicEventConvivaReporter {
         if self.currentSession.started {
             self.videoAnalytics.reportPlaybackEnded()
             self.videoAnalytics.cleanup()
+            if let delegate = self.sessionDelegate {
+                delegate.onSessionEnded()
+            }
             self.currentSession = Session()
         }
     }
