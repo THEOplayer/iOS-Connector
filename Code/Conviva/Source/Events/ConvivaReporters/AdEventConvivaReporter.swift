@@ -52,7 +52,8 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         self.videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: self.calculatedAdTechnology(adBreak.integration), adBreakInfo: [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: adBreak.maxDuration)),
             CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: adBreak.timeOffset)),
-            CIS_SSDK_AD_BREAK_POD_POSITION: adBreak.calculateCurrentAdBreakPosition()
+            CIS_SSDK_AD_BREAK_POD_POSITION: adBreak.calculateCurrentAdBreakPosition(),
+            "podTechnology": self.AdTechnologyAsString(adBreak.integration)
         ])
     }
     
