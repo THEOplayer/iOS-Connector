@@ -9,22 +9,31 @@
 import UIKit
 import THEOplayerSDK
 import THEOplayerConnectorConviva
+import THEOplayerTHEOliveIntegration
 
 class ViewController: UIViewController {
     let player = THEOplayer(with: nil, configuration: nil)
     var conviva: ConvivaConnector?
+    var THEOliveIntegration: THEOplayerTHEOliveIntegration.THEOliveIntegration?
     
     @IBOutlet weak var playerViewContainer: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.conviva = ConvivaConnector(configuration: convivaConfig, player: self.player)
         let playerView = PlayerView(player: player)
         playerView.translatesAutoresizingMaskIntoConstraints = true
         playerView.frame = playerViewContainer.bounds
         playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         playerViewContainer.addSubview(playerView)
+        
+        let THEOliveConfig = THEOliveConfiguration(externalSessionId: nil)
+        self.THEOliveIntegration = THEOliveIntegrationFactory.createIntegration(with: THEOliveConfig)
+        self.player.addIntegration(self.THEOliveIntegration!)
+        
+        self.player.autoplay = true
+        
+        self.conviva = ConvivaConnector(configuration: convivaConfig, player: self.player)
     }
 
     override func didReceiveMemoryWarning() {
@@ -43,6 +52,10 @@ class ViewController: UIViewController {
                 title: "Big buck bunny"
             )
         )
+    }
+    
+    @IBAction func meridianButtonClicked(_ sender: UIButton) {
+        player.source = SourceDescription(source: TheoLiveSource( channelId: "9lwkudxeyjwwm132pukwwhhtk"))
     }
     
     @IBAction func starWarsButtonClicked(_ sender: UIButton) {
