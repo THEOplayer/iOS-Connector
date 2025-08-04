@@ -1,0 +1,13 @@
+platform :ios, '13.0'
+
+target 'AdscriptReporter' do
+  # Use the AdscriptConnector that is locally defined in the parent directory
+  pod 'THEOplayer-Connector-Adscript', :path => '../../../'
+  pod 'AdscriptApiClient', :path => 'Frameworks/'
+
+  # When you want to use a custom THEOplayerSDK build:
+  #  - place your build at '../../../Helpers/TheoPod/Frameworks/THEOplayerSDK.xcframework'
+  #  - uncomment the following line
+  # pod 'THEOplayerSDK-core', :path => '../../../Helpers/TheoPod'
+
+end
