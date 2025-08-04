@@ -34,4 +34,4 @@ Carthage/Build
 # `pod install` in .travis.yml
 #
 Pods/
-/CocoapodExample/ConvivaReporter.xcworkspace
+Code/Gemius-Examples/Cocoapods/Frameworks/GemiusSDK.xcframework/
