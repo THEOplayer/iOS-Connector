@@ -20,35 +20,15 @@ let PROP_REASON_ERROR_MESSAGE: String = "errorMessage"
 class THEOliveEventConvivaReporter {
     private let videoAnalytics: CISVideoAnalytics
     private let storage: ConvivaConnectorStorage
-    private var sessionStarted = false;
-    private var cachedEndpointData: THEOplayerTHEOliveIntegration.EndpointAPI?
     
     init(videoAnalytics: CISVideoAnalytics, storage: ConvivaConnectorStorage) {
         self.videoAnalytics = videoAnalytics
         self.storage = storage
-        self.sessionStarted = false
-        self.cachedEndpointData = nil
-    }
-    
-    func onSessionStarted() {
-        self.sessionStarted = true
-        if let cachedEndpoint = self.cachedEndpointData {
-            self.reportEndpointData(endpoint: cachedEndpoint)
-            self.cachedEndpointData = nil
-        }
-    }
-    
-    func onSessionEnded() {
-        self.sessionStarted = false
     }
     
     func onEndpointLoaded(event: THEOplayerTHEOliveIntegration.EndpointLoadedEvent)  {
         // send endpoint info
-        if self.sessionStarted {
-            self.reportEndpointData(endpoint: event.endpoint)
-        } else {
-            self.cachedEndpointData = event.endpoint
-        }
+        self.reportEndpointData(endpoint: event.endpoint)
     }
     
     func reportEndpointData(endpoint: THEOplayerTHEOliveIntegration.EndpointAPI) {
