@@ -6,7 +6,7 @@ import THEOplayerSDK
 import ConvivaSDK
 
 /// Connects to a THEOplayer instance and reports its events to conviva
-public class ConvivaConnector: Sessiondelegate {
+public class ConvivaConnector {
     private let storage = ConvivaConnectorStorage()
     
     private var endPoints: ConvivaEndpoints
@@ -15,11 +15,15 @@ public class ConvivaConnector: Sessiondelegate {
     private var appEventForwarder: AppEventForwarder
     private var basicEventForwarder: BasicEventForwarder
     private var adEventHandler: AdEventForwarder
+#if canImport(THEOplayerTHEOliveIntegration)
     private var theoliveHandler: THEOliveEventForwarder
+#endif
     
     // event reporters
-    private var theoliveReporter: THEOliveEventConvivaReporter
     private var basicEventReporter: BasicEventConvivaReporter
+#if canImport(THEOplayerTHEOliveIntegration)
+    private var theoliveReporter: THEOliveEventConvivaReporter
+#endif
     
     public convenience init?(
         configuration: ConvivaConfiguration,
@@ -48,18 +52,10 @@ public class ConvivaConnector: Sessiondelegate {
                                                                                       storage: self.storage,
                                                                                       player: player))
         
+#if canImport(THEOplayerTHEOliveIntegration)
         self.theoliveReporter = THEOliveEventConvivaReporter( videoAnalytics: endPoints.videoAnalytics, storage: self.storage)
         self.theoliveHandler = THEOliveEventForwarder(player: player, eventProcessor: self.theoliveReporter)
-        
-        self.basicEventReporter.sessionDelegate = self
-    }
-    
-    func onSessionStarted() {
-        self.theoliveReporter.onSessionStarted()
-    }
-    
-    func onSessionEnded() {
-        self.theoliveReporter.onSessionEnded()
+#endif
     }
     
     public func destroy() {
