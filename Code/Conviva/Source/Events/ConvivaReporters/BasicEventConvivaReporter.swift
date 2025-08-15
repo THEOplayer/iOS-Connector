@@ -4,6 +4,9 @@
 
 import ConvivaSDK
 import THEOplayerSDK
+#if canImport(THEOplayerTHEOadsIntegration)
+import THEOplayerTHEOadsIntegration
+#endif
 
 class BasicEventConvivaReporter {
     
@@ -85,13 +88,21 @@ class BasicEventConvivaReporter {
         if let source = event.source, let url = selectedSource {
             newSource = .init(description: source, url: url)
             let assetName = source.metadata?.title ?? Utilities.defaultStringValue;
-            let contentInfo = [
+            var contentInfo = [
                 CIS_SSDK_METADATA_PLAYER_NAME: Utilities.playerName,
                 CIS_SSDK_METADATA_STREAM_URL: url,
                 CIS_SSDK_METADATA_ASSET_NAME: assetName,
                 CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: false),
                 CIS_SSDK_METADATA_DURATION: NSNumber(value: -1)
             ] as [String: Any]
+            
+            // THEOads adTagParameters
+            if let adTagParams = self.theoAdsAdTagParams(source: newSource?.description) {
+                adTagParams.forEach { (key, value) in
+                    contentInfo["theoAdsTag_\(key)"] = value
+                }
+            }
+            
             self.videoAnalytics.setContentInfo(contentInfo)
             self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_ASSET_NAME, value: assetName)
             self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_STREAM_URL, value: url)
@@ -102,6 +113,20 @@ class BasicEventConvivaReporter {
             #endif
         }
         self.currentSession.source = newSource
+    }
+    
+    private func theoAdsAdTagParams(source: SourceDescription?) -> [String:String]? {
+#if canImport(THEOplayerTHEOadsIntegration)
+        if let currentSource = source,
+           let ads = currentSource.ads,
+           let theoAdsDescription = ads.first(where: {
+               $0.integration == .theoAds && $0 is THEOAdDescription
+           }) as? THEOAdDescription,
+           let foundParams = theoAdsDescription.adTagParameters {
+            return foundParams
+        }
+#endif
+        return [:]
     }
     
     func renderedFramerateUpdate(framerate: Float) {
