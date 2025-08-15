@@ -1,11 +1,21 @@
 platform :ios, '13.0'
 
+source 'https://cdn.cocoapods.org/'
+
 target 'ConvivaReporter' do
   # Use the ConvivaConnector that is locally defined in the parent directory
+  # Without specific subspec all dependencies are loaded.
   pod 'THEOplayer-Connector-Conviva', :path => '../../../'
+  
+  # Alternatively, specify the required subspecs based on your needs:
+  # - add /Base to only load the core functionality
+  # - add /THEOlive to also load THEOlive specific event reporting
+  # pod 'THEOplayer-Connector-Conviva/Base', :path => '../../../'
+  # pod 'THEOplayer-Connector-Conviva/THEOlive', :path => '../../../'
 
   # When you want to use a custom THEOplayerSDK build:
   #  - place your build at '../../../Helpers/TheoPod/Frameworks/THEOplayerSDK.xcframework'
   #  - uncomment the following line
   # pod 'THEOplayerSDK-core', :path => '../../../Helpers/TheoPod'
+  
 end
