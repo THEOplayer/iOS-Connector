@@ -47,15 +47,6 @@
         }
       },
       {
-        "package": "THEOplayerSDK",
-        "repositoryURL": "https://github.com/THEOplayer/theoplayer-sdk-apple",
-        "state": {
-          "branch": null,
-          "revision": "d421a40b48d77ccacc2a0346b711f395d7cba4b1",
-          "version": "9.11.0"
-        }
-      },
-      {
         "package": "TinyCSV",
         "repositoryURL": "https://github.com/dagronf/TinyCSV",
         "state": {
