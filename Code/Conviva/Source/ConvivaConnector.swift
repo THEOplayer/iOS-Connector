@@ -71,11 +71,7 @@ public struct ConvivaConnector {
         if let avgBitrate = self.storage.valueForKey(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE) as? NSNumber {
             self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrate)
         }
-    }
-    
-    public func setErrorCallback(onNativeError: (([String: Any]) -> Void)? ) {
-        self.basicEventForwarder.setVideoPlaybackFailureCallback(onNativeError)
-    }
+    }    
     
     private func storeClientMetadata(_ contentInfo: [String: Any]) {
         contentInfo.forEach { (key, value) in
