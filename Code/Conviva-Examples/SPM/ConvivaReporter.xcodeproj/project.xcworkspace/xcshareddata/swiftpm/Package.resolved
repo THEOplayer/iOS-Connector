@@ -1,0 +1,61 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "ConvivaSDK",
+        "repositoryURL": "https://github.com/Conviva/conviva-ios-sdk-spm",
+        "state": {
+          "branch": null,
+          "revision": "62f136ddb511cbf7d6b110bf024aea6b548a86e6",
+          "version": "4.0.51"
+        }
+      },
+      {
+        "package": "DSFRegex",
+        "repositoryURL": "https://github.com/dagronf/DSFRegex",
+        "state": {
+          "branch": null,
+          "revision": "e0e64805519b23b08dcca9c83ca2d4a2b3de4c33",
+          "version": "3.4.0"
+        }
+      },
+      {
+        "package": "NielsenAppApi",
+        "repositoryURL": "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global",
+        "state": {
+          "branch": null,
+          "revision": "ca6116bd7b21bbd46b8cab353ac6faded9f78f83",
+          "version": "9.4.0"
+        }
+      },
+      {
+        "package": "Swifter",
+        "repositoryURL": "https://github.com/httpswift/swifter.git",
+        "state": {
+          "branch": null,
+          "revision": "9483a5d459b45c3ffd059f7b55f9638e268632fd",
+          "version": "1.5.0"
+        }
+      },
+      {
+        "package": "SwiftSubtitles",
+        "repositoryURL": "https://github.com/dagronf/SwiftSubtitles.git",
+        "state": {
+          "branch": null,
+          "revision": "65f6eb4ad1ddfe0c440888e3802e9f0af8c4902b",
+          "version": "0.9.1"
+        }
+      },
+      {
+        "package": "TinyCSV",
+        "repositoryURL": "https://github.com/dagronf/TinyCSV",
+        "state": {
+          "branch": null,
+          "revision": "63f30830cd986de84cd844d59926cf1aa2009f0b",
+          "version": "0.5.3"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

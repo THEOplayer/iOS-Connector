@@ -5,8 +5,8 @@ import PackageDescription
 let package = Package(
     name: "THEOplayerSDK",
     platforms: [
-        .iOS(.v11),
-        .tvOS(.v11)
+        .iOS(.v13),
+        .tvOS(.v13)
     ],
     products: [
         .library(name: "THEOplayerSDK", targets: ["TheoSdkWithDependencies"]),
