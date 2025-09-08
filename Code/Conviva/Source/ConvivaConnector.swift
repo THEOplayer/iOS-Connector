@@ -73,6 +73,7 @@ public struct ConvivaConnector {
         }
     }
     
+    @available(*, deprecated, message: "This will be removed in version 10.0. Instead use addEventListener on THEOplayer with a type of PlayerEventTypes.ERROR")
     public func setErrorCallback(onNativeError: (([String: Any]) -> Void)? ) {
         self.basicEventForwarder.vpfHandler.callback = onNativeError
     }
