@@ -8,15 +8,17 @@ import AVFoundation
 
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
 class BasicEventForwarder {
+    typealias VPFCallback = ([String: Any]) -> Void
     private let playerObserver: DispatchObserver
     private let networkObserver: DispatchObserver
+    let vpfHandler = VPFHandler()
     weak var player: THEOplayer?
     weak var eventProcessor: BasicEventConvivaReporter?
     
     init(player: THEOplayer, eventProcessor: BasicEventConvivaReporter) {
         playerObserver = .init(
             dispatcher: player,
-            eventListeners: Self.forwardEvents(from: player, to: eventProcessor)
+            eventListeners: Self.forwardEvents(from: player, vpfHandler: vpfHandler, to: eventProcessor)
         )
         networkObserver = .init(
             dispatcher: player.network,
@@ -33,7 +35,7 @@ class BasicEventForwarder {
         self.eventProcessor = eventProcessor
     }
     
-    static func forwardEvents(from player: THEOplayer, to processor: BasicEventConvivaReporter) -> [RemovableEventListenerProtocol] {
+    static func forwardEvents(from player: THEOplayer, vpfHandler: VPFHandler, to processor: BasicEventConvivaReporter) -> [RemovableEventListenerProtocol] {
         [
             player.addRemovableEventListener(type: PlayerEventTypes.PAUSE, listener: processor.pause),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: processor.play),
@@ -42,7 +44,6 @@ class BasicEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.DURATION_CHANGE, listener: processor.durationChange),
             player.addRemovableEventListener(type: PlayerEventTypes.WAITING, listener: processor.waiting),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: processor.playing),
-            player.addRemovableEventListener(type: PlayerEventTypes.ERROR, listener: processor.error),
             player.addRemovableEventListener(type: PlayerEventTypes.ENDED, listener: processor.ended),
             player.addRemovableEventListener(type: PlayerEventTypes.DESTROY, listener: processor.destroy),
 
@@ -55,10 +56,23 @@ class BasicEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.SOURCE_CHANGE) {
                 processor.sourceChange(event: $0, selectedSource: player.src)
             },
+            player.addRemovableEventListener(type: PlayerEventTypes.ERROR) { errorEvent in
+                processor.error(event: errorEvent)
+                vpfHandler.callback?([
+                    "error": [
+                        "errorCode": "\(errorEvent.errorObject?.code.rawValue ?? -1)",
+                        "errorMessage": errorEvent.error
+                    ]
+                ])
+            },
         ]
     }
     
     func reportFatalError(message: String, errorObject: THEOplayerSDK.THEOError? = nil, date: Date = Date()) {
         self.eventProcessor?.error(event: ErrorEvent(error: message, errorObject: errorObject, date: date))
+    }
+    
+    class VPFHandler {
+        var callback: VPFCallback?
     }
 }
