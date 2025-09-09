@@ -11,14 +11,13 @@ class BasicEventForwarder {
     typealias VPFCallback = ([String: Any]) -> Void
     private let playerObserver: DispatchObserver
     private let networkObserver: DispatchObserver
-    let vpfHandler = VPFHandler()
     weak var player: THEOplayer?
     weak var eventProcessor: BasicEventConvivaReporter?
     
     init(player: THEOplayer, eventProcessor: BasicEventConvivaReporter) {
         playerObserver = .init(
             dispatcher: player,
-            eventListeners: Self.forwardEvents(from: player, vpfHandler: vpfHandler, to: eventProcessor)
+            eventListeners: Self.forwardEvents(from: player, to: eventProcessor)
         )
         networkObserver = .init(
             dispatcher: player.network,
@@ -35,7 +34,7 @@ class BasicEventForwarder {
         self.eventProcessor = eventProcessor
     }
     
-    static func forwardEvents(from player: THEOplayer, vpfHandler: VPFHandler, to processor: BasicEventConvivaReporter) -> [RemovableEventListenerProtocol] {
+    static func forwardEvents(from player: THEOplayer, to processor: BasicEventConvivaReporter) -> [RemovableEventListenerProtocol] {
         [
             player.addRemovableEventListener(type: PlayerEventTypes.PAUSE, listener: processor.pause),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: processor.play),
@@ -58,21 +57,11 @@ class BasicEventForwarder {
             },
             player.addRemovableEventListener(type: PlayerEventTypes.ERROR) { errorEvent in
                 processor.error(event: errorEvent)
-                vpfHandler.callback?([
-                    "error": [
-                        "errorCode": "\(errorEvent.errorObject?.code.rawValue ?? -1)",
-                        "errorMessage": errorEvent.error
-                    ]
-                ])
             },
         ]
     }
     
     func reportFatalError(message: String, errorObject: THEOplayerSDK.THEOError? = nil, date: Date = Date()) {
         self.eventProcessor?.error(event: ErrorEvent(error: message, errorObject: errorObject, date: date))
-    }
-    
-    class VPFHandler {
-        var callback: VPFCallback?
     }
 }
