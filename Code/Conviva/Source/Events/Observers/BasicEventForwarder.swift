@@ -8,7 +8,6 @@ import AVFoundation
 
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
 class BasicEventForwarder {
-    typealias VPFCallback = ([String: Any]) -> Void
     private let playerObserver: DispatchObserver
     private let networkObserver: DispatchObserver
     weak var player: THEOplayer?
