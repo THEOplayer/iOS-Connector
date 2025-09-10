@@ -71,10 +71,7 @@ public struct ConvivaConnector {
         if let avgBitrate = self.storage.valueForKey(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE) as? NSNumber {
             self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrate)
         }
-    }
-    
-    @available(*, deprecated, message: "This will be removed in version 10.0. Instead use addEventListener on THEOplayer with a type of PlayerEventTypes.ERROR")
-    public func setErrorCallback(onNativeError: (([String: Any]) -> Void)? ) {}
+    }    
     
     private func storeClientMetadata(_ contentInfo: [String: Any]) {
         contentInfo.forEach { (key, value) in
