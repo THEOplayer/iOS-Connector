@@ -58,9 +58,5 @@ class BasicEventForwarder {
                 processor.error(event: errorEvent)
             },
         ]
-    }
-    
-    func reportFatalError(message: String, errorObject: THEOplayerSDK.THEOError? = nil, date: Date = Date()) {
-        self.eventProcessor?.error(event: ErrorEvent(error: message, errorObject: errorObject, date: date))
-    }
+    }    
 }
