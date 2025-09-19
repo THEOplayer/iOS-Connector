@@ -14,11 +14,10 @@ fileprivate let didEnterBackground = UIApplication.didEnterBackgroundNotificatio
 // Both `AVPlayerItem.newAccessLogEntryNotification` and `Notification.Name.AVPlayerItemNewAccessLogEntry` are mapped to `Notification.Name("AVPlayerItemNewAccessLogEntry")`, hence we use that.
 // Once we drop support for older versions (below Xcode 15 and Swift 5.9) we can switch from `Notification.Name("AVPlayerItemNewAccessLogEntry")` to `AVPlayerItem.newAccessLogEntryNotification`.
 fileprivate let newAccessLogEntry = Notification.Name("AVPlayerItemNewAccessLogEntry")
-fileprivate let bitrateChangeEvent = Notification.Name("THEOliveBitrateChangeEvent")
 
 class AppEventForwarder {
     let center = NotificationCenter.default
-    let foregroundObserver, backgroundObserver, accessLogObserver, bitrateChangeObserver: Any
+    let foregroundObserver, backgroundObserver, accessLogObserver: Any
     let adsLoadedEventListener: RemovableEventListenerProtocol?
     let adsEndEventListener: RemovableEventListenerProtocol?
     let sourceChangeEventListener: RemovableEventListenerProtocol?
@@ -53,21 +52,6 @@ class AppEventForwarder {
                 eventProcessor.appGotNewAccessLogEntry(event: event, item: item, isPlayingAd: player.ads.playing)
             }
         )
-        // Temporary workaround for THEOlive bitrate change events
-        // TODO: Refactor this with active quality switch event dispatched from THEOplayer. This needs a videoTrack property exposed on THEOlive SDK which is currently missing.
-        // NOTE: accessLogObserver can also be removed once the active quality switch event is implemented.
-        bitrateChangeObserver = center.addObserver(
-            forName: bitrateChangeEvent,
-            object: .none,
-            queue: .none,
-            using: { notification in
-                guard let userInfo = notification.userInfo else { return }
-                guard let bitrate = userInfo["bitrate"] as? Double else { return }
-                
-                eventProcessor.appGotBitrateChangeEvent(bitrate: bitrate, isPlayingAd: player.ads.playing)
-            }
-        )
-        
         
         adsLoadedEventListener = player.ads.addRemovableEventListener(
             type: AdsEventTypes.AD_LOADED
@@ -91,13 +75,26 @@ class AppEventForwarder {
                 eventProcessor.sourceChanged(event: event)
             }
         }
+
+        // With the current player SDK we should only have a single videoTrack with multiple qualities.
+        // If more than one videoTrack is supported by the player SDK we should adjust the code.
+        _ = player.videoTracks.addRemovableEventListener(
+            type: VideoTrackListEventTypes.ADD_TRACK
+        ) { addTrackEvent in
+            guard let videoTrack = addTrackEvent.track as? VideoTrack else { return }
+            _ = videoTrack.addRemovableEventListener(
+                type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED
+            ) { qualityChangeEvent in
+                let bandwidth = qualityChangeEvent.quality.bandwidth
+                eventProcessor.appGotBitrateChangeEvent(bitrate: Double(bandwidth), isPlayingAd: player.ads.playing)
+            }
+        }
     }
     
     deinit {
         center.removeObserver(foregroundObserver, name: willEnterForeground, object: nil)
         center.removeObserver(backgroundObserver, name: didEnterBackground, object: nil)
         center.removeObserver(accessLogObserver, name: newAccessLogEntry, object: nil)
-        center.removeObserver(bitrateChangeObserver, name: bitrateChangeEvent, object: nil)
         adsLoadedEventListener?.remove(from: player.ads)
         adsEndEventListener?.remove(from: player.ads)
         sourceChangeEventListener?.remove(from: player)
