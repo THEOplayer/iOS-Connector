@@ -58,23 +58,15 @@ class AppEventConvivaReporter: AppEventProcessor {
             return
         }
         
-        // if we get the same bitrate and number of dropped frames for the same item in a row, we don't need to report that.
+        // if we get the same number of dropped frames for the same item in a row, we don't need to report that.
         // I see this happens when we get an access log towards the end of an ad.
-        // as well, which might be indicating something else other than a bitrate change.
         if lastPlayerItem == item,
-           event.indicatedBitrate == lastAccessLogEvent?.indicatedBitrate,
            event.numberOfDroppedVideoFrames == event.numberOfDroppedVideoFrames
         {
             return
         }
         
         let endpoint = isPlayingAd ? self.adAnalytics : self.videoAnalytics
-        
-        self.handleBitrateChange(
-            bitrate: event.indicatedBitrate,
-            avgBitrate: event.indicatedAverageBitrate,
-            endpoint: endpoint
-        )
         
         if event.numberOfDroppedVideoFrames >= 0 {
             endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL, value: NSNumber(value: event.numberOfDroppedVideoFrames))
