@@ -32,7 +32,8 @@ class THEOliveEventConvivaReporter {
     }
     
     func reportEndpointData(endpoint: THEOplayerTHEOliveIntegration.EndpointAPI) {
-        self.videoAnalytics.reportPlaybackEvent("endpointLoaded", withAttributes: self.fromEndpoint(endpoint: endpoint))
+        // placeholder:
+        //self.videoAnalytics.reportPlaybackEvent("endpointLoaded", withAttributes: self.fromEndpoint(endpoint: endpoint))
         
         // Update CDN
         let cdn = endpoint.cdn ?? "unknown"
