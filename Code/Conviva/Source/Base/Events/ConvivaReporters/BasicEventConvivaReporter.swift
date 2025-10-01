@@ -176,7 +176,11 @@ class BasicEventConvivaReporter {
         }
     }
     
-    func destroy(event: DestroyEvent) {
+    func onDestroy(event: DestroyEvent) {
+        self.destroy()
+    }
+    
+    func destroy() {
         self.reportEndedIfPlayed()
     }
     

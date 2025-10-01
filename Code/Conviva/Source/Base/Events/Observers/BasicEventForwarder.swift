@@ -43,7 +43,7 @@ class BasicEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.WAITING, listener: processor.waiting),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: processor.playing),
             player.addRemovableEventListener(type: PlayerEventTypes.ENDED, listener: processor.ended),
-            player.addRemovableEventListener(type: PlayerEventTypes.DESTROY, listener: processor.destroy),
+            player.addRemovableEventListener(type: PlayerEventTypes.DESTROY, listener: processor.onDestroy),
             player.addRemovableEventListener(type: PlayerEventTypes.CURRENT_SOURCE_CHANGE, listener: processor.currentSourceChange),
             player.addRemovableEventListener(type: PlayerEventTypes.ENCRYPTED, listener: processor.encrypted),
             player.addRemovableEventListener(type: PlayerEventTypes.CONTENT_PROTECTION_SUCCESS, listener: processor.contentProtectionSuccess),

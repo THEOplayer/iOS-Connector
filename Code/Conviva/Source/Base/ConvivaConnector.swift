@@ -60,7 +60,7 @@ public class ConvivaConnector {
     
     public func destroy() {
         self.endPoints.destroy()
-        self.basicEventForwarder.destroy()
+        self.basicEventReporter.destroy()
     }
     
     public func setContentInfo(_ contentInfo: [String: Any]) {
