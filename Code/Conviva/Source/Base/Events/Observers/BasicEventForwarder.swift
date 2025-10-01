@@ -44,6 +44,7 @@ class BasicEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: processor.playing),
             player.addRemovableEventListener(type: PlayerEventTypes.ENDED, listener: processor.ended),
             player.addRemovableEventListener(type: PlayerEventTypes.DESTROY, listener: processor.destroy),
+            player.addRemovableEventListener(type: PlayerEventTypes.CURRENT_SOURCE_CHANGE, listener: processor.currentSourceChange),
 
             player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
                 processor.timeUpdate(event: $0)
