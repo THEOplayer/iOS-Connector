@@ -5,6 +5,8 @@
 import ConvivaSDK
 import THEOplayerSDK
 
+let ENCODING_TYPE: String = "encoding_type"
+
 protocol Sessiondelegate: AnyObject {
     func onSessionStarted()
     func onSessionEnded()
@@ -82,6 +84,27 @@ class BasicEventConvivaReporter {
         self.videoAnalytics.reportPlaybackError(event.error?.message ?? Utilities.defaultStringValue, errorSeverity: .ERROR_WARNING)
     }
     
+    func currentSourceChange(event: CurrentSourceChangeEvent) {
+        guard let sourceType = event.currentSource?.type else {
+            return
+        }
+        var encodingType: String?
+        switch sourceType {
+        case "application/vnd.theo.hesp+json":
+            encodingType = "HESP"
+        case "application/x-mpegurl":
+            encodingType = "HLS"
+        default:
+            encodingType = nil
+        }
+        
+        if self.storage.valueForKey(ENCODING_TYPE) == nil,
+           let encodingType = encodingType {
+            self.videoAnalytics.setContentInfo([ENCODING_TYPE:encodingType])
+            self.storage.storeKeyValuePair(key: ENCODING_TYPE, value: encodingType)
+        }
+    }
+    
     func sourceChange(event: SourceChangeEvent, selectedSource: String?) {
         if event.source != self.currentSession.source?.description, self.currentSession.source != nil {
             self.reportEndedIfPlayed()
@@ -92,6 +115,7 @@ class BasicEventConvivaReporter {
         self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE)             // last reported bitrate for previous source
         self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE)     // last reported average bitrate for previous source
         self.storage.clearValueForKey(CIS_SSDK_METADATA_DEFAULT_RESOURCE)           // last reported cdn for previous source
+        self.storage.clearValueForKey(ENCODING_TYPE)                                // last reported encodingtype
         
         let newSource: Session.Source?
         
