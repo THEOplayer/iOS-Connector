@@ -106,14 +106,18 @@ class AVSubtitlesLoader: NSObject {
         } else {
             subtitlesMediaURL = self.transformer.composeTranformationUrl(with: originalURL.absoluteString, format: format, timestamp: timestamp)
         }
+        
         // if the variantTotalDuration is equal to zero then we can use a higher number as AVPlayer is not expecting the EXACT duration but the MAXIMUM duration that the stream can reach
+        let DEFAULT_DURATION = 604800 // Corresponds to a week in seconds, as AVPplayer didn't handle Int.max as a default value well.
+        let subtitleSegmentDuration = self.variantTotalDuration == 0 ? DEFAULT_DURATION : Int(self.variantTotalDuration)
+        
         return """
         #EXTM3U
         #EXT-X-VERSION:3
         #EXT-X-MEDIA-SEQUENCE:0
         #EXT-X-PLAYLIST-TYPE:VOD
-        #EXT-X-TARGETDURATION:\(self.variantTotalDuration == 0 ? Int.max : Int(self.variantTotalDuration))
-        #EXTINF:\(self.variantTotalDuration == 0 ? String(Int.max) : String(format: "%.3f", self.variantTotalDuration))
+        #EXT-X-TARGETDURATION:\(Int(subtitleSegmentDuration))
+        #EXTINF:\(String(format: "%.3f", Double(subtitleSegmentDuration)))
         \(subtitlesMediaURL)
         #EXT-X-ENDLIST
         """

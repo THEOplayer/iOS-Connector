@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- SideloadedSubtitle
+  - Fixed an issue where enabling a `TextTrack` on the `ADD_TRACK` event would cause an error.
+
 ### Removed
 
 - Conviva
- - Removed the `setErrorCallback`. The same behaviour can be achieved in THEOplayer 10 by calling `addEventListener` on THEOplayer with a type of `PlayerEventTypes.ERROR`
+  - Removed the `setErrorCallback`. The same behaviour can be achieved in THEOplayer 10 by calling `addEventListener` on THEOplayer with a type of `PlayerEventTypes.ERROR`
 
 ## [9.6.1] - 2025-06-23
 
