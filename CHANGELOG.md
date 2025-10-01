@@ -26,7 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Conviva
-  - Report THEOlive events 'endpointLoaded' and 'intentToFallback' to Conviva as custom events.
+  - Report intentToFallback event to Conviva as custom event.
+  - Report encoding_type (HLS or HESP) to conviva
+  - Report cdn for THEOlive sources to conviva
 
 ## [9.6.1] - 2025-06-23
 
