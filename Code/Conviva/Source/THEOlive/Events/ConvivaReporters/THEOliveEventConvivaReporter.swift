@@ -27,16 +27,11 @@ class THEOliveEventConvivaReporter {
     }
     
     func onEndpointLoaded(event: THEOplayerTHEOliveIntegration.EndpointLoadedEvent)  {
-        // send endpoint info
-        self.reportEndpointData(endpoint: event.endpoint)
-    }
-    
-    func reportEndpointData(endpoint: THEOplayerTHEOliveIntegration.EndpointAPI) {
         // placeholder:
-        //self.videoAnalytics.reportPlaybackEvent("endpointLoaded", withAttributes: self.fromEndpoint(endpoint: endpoint))
+        //self.videoAnalytics.reportPlaybackEvent("endpointLoaded", withAttributes: self.fromEndpoint(endpoint: event.endpoint))
         
         // Update CDN
-        let cdn = endpoint.cdn ?? "unknown"
+        let cdn = event.endpoint.cdn ?? "unknown"
         self.videoAnalytics.setContentInfo([ CIS_SSDK_METADATA_DEFAULT_RESOURCE: cdn ])
         self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_DEFAULT_RESOURCE, value: cdn)
     }
