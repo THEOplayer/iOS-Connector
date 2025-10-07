@@ -5,6 +5,8 @@
 import ConvivaSDK
 import AVFoundation
 import THEOplayerSDK
+
+#if canImport(THEOplayerTHEOliveIntegration)
 import THEOplayerTHEOliveIntegration
 
 let PROP_ENDPOINT_HESP_SRC: String = "hespSrc"
@@ -77,3 +79,4 @@ class THEOliveEventConvivaReporter {
         ]
     }
 }
+#endif

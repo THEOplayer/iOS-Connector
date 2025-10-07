@@ -5,6 +5,7 @@
 import THEOplayerSDK
 import THEOplayerConnectorUtilities
 import AVFoundation
+#if canImport(THEOplayerTHEOliveIntegration)
 import THEOplayerTHEOliveIntegration
 
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
@@ -34,3 +35,4 @@ class THEOliveEventForwarder {
         ]
     }
 }
+#endif
