@@ -18,12 +18,14 @@ class BasicEventConvivaReporter {
     
     /// The endpoint to which all the events are sent
     private let videoAnalytics: CISVideoAnalytics
+    private let adAnalytics: CISAdAnalytics
     private let storage: ConvivaConnectorStorage
     
     var currentSession = Session()
         
-    init(videoAnalytics: CISVideoAnalytics, storage: ConvivaConnectorStorage) {
+    init(videoAnalytics: CISVideoAnalytics, adAnalytics: CISAdAnalytics, storage: ConvivaConnectorStorage) {
         self.videoAnalytics = videoAnalytics
+        self.adAnalytics = adAnalytics
         self.storage = storage
     }
 
@@ -140,6 +142,37 @@ class BasicEventConvivaReporter {
         self.reportEndedIfPlayed()
     }
     
+    func videoTrackAdded(event: AddTrackEvent, player: THEOplayer) {
+        // With the current player SDK we should only have a single videoTrack with multiple qualities.
+        // If more than one videoTrack is supported by the player SDK we should adjust the code.
+        guard let videoTrack = event.track as? VideoTrack else { return }
+        _ = videoTrack.addRemovableEventListener(
+            type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED
+        ) { [weak self, weak player] activeQualityChangedEvent in
+            guard let self, let player else { return }
+            self.activeQualityChangedEvent(event: activeQualityChangedEvent, isPlayingAd: player.ads.playing)
+        }
+    }
+
+    private func activeQualityChangedEvent(event: ActiveQualityChangedEvent, isPlayingAd: Bool) {
+        let bandwidth = event.quality.bandwidth
+        let endpoint = isPlayingAd ? self.adAnalytics : self.videoAnalytics
+        self.handleBitrateChange(bitrate: Double(bandwidth), avgBitrate: -1, endpoint: endpoint)
+    }
+
+    private func handleBitrateChange(bitrate: Double, avgBitrate: Double, endpoint: CISStreamAnalyticsProtocol) {
+        if bitrate >= 0 {
+            let bitrateValue = NSNumber(value: bitrate / 1000)
+            endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
+            self.storage.storeKeyValuePair(key: CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
+        }
+        if avgBitrate >= 0 {
+            let avgBitrateValue = NSNumber(value: avgBitrate / 1000)
+            endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrateValue)
+            self.storage.storeKeyValuePair(key: CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrateValue)
+        }
+    }
+
     deinit {
         self.reportEndedIfPlayed()
     }

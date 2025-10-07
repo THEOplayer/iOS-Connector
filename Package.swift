@@ -9,7 +9,6 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(name: "THEOplayerConnectorConviva", targets: ["THEOplayerConnectorConviva"]),
-        .library(name: "THEOplayerConnectorConvivaVerizonMedia", targets: ["THEOplayerConnectorConvivaVerizonMedia"]),
         
         .library(name: "THEOplayerConnectorNielsen", targets: ["THEOplayerConnectorNielsen"]),
         
@@ -23,13 +22,12 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", .exactItem( "4.0.51")),
-        .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-apple", from: "9.0.0"),
+        .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-apple", from: "10.0.0"),
         .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "9.0.0"),
         .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
         .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
     ],
     targets: [
-        // CONVIVA \\
         .target(
             name: "THEOplayerConnectorConviva",
             dependencies: [
@@ -39,18 +37,7 @@ let package = Package(
             ],
             path: "Code/Conviva/Source"
         ),
-        .target(
-            name: "THEOplayerConnectorConvivaVerizonMedia",
-            dependencies: [
-                "THEOplayerSDK",
-                "ConvivaSDK",
-                .target(name: "THEOplayerConnectorConviva"),
-                .target(name: "THEOplayerConnectorUtilities")
-            ],
-            path: "Code/Conviva-VerizonMedia/Source"
-        ),
 
-        // NIELSEN \\
         .target(
             name: "THEOplayerConnectorNielsen",
             dependencies: [
@@ -61,14 +48,12 @@ let package = Package(
             path: "Code/Nielsen/Source"
         ),
         
-        // UTILITY \\
         .target(
             name: "THEOplayerConnectorUtilities",
             dependencies: ["THEOplayerSDK"],
             path: "Code/Utilities/Source"
         ),
 
-        // Sideloaded subtitles \\
         .target(
             name: "THEOplayerConnectorSideloadedSubtitle",
             dependencies: [
@@ -79,7 +64,6 @@ let package = Package(
             path: "Code/Sideloaded-TextTracks/Sources/THEOplayerConnectorSideloadedSubtitle" 
         ),
 
-        // Yospace \\
         .target(
             name: "THEOplayerConnectorYospace",
             dependencies: [
@@ -88,7 +72,6 @@ let package = Package(
             path: "Code/Yospace/Source"
         ),
         
-        // Uplynk \\
         .target(
             name: "THEOplayerConnectorUplynk",
             dependencies: [
