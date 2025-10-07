@@ -75,20 +75,6 @@ class AppEventForwarder {
                 eventProcessor.sourceChanged(event: event)
             }
         }
-
-        // With the current player SDK we should only have a single videoTrack with multiple qualities.
-        // If more than one videoTrack is supported by the player SDK we should adjust the code.
-        _ = player.videoTracks.addRemovableEventListener(
-            type: VideoTrackListEventTypes.ADD_TRACK
-        ) { addTrackEvent in
-            guard let videoTrack = addTrackEvent.track as? VideoTrack else { return }
-            _ = videoTrack.addRemovableEventListener(
-                type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED
-            ) { qualityChangeEvent in
-                let bandwidth = qualityChangeEvent.quality.bandwidth
-                eventProcessor.appGotBitrateChangeEvent(bitrate: Double(bandwidth), isPlayingAd: player.ads.playing)
-            }
-        }
     }
     
     deinit {
@@ -109,5 +95,4 @@ protocol AppEventProcessor {
     func appWillEnterForeground(notification: Notification)
     func appDidEnterBackground(notification: Notification)
     func appGotNewAccessLogEntry(event: AVPlayerItemAccessLogEvent, item: AVPlayerItem, isPlayingAd: Bool)
-    func appGotBitrateChangeEvent(bitrate: Double, isPlayingAd: Bool)
 }

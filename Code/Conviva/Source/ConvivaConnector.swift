@@ -28,6 +28,7 @@ public struct ConvivaConnector {
                                                                                            storage: self.storage))
         self.basicEventForwarder = BasicEventForwarder(player: player,
                                                        eventProcessor: BasicEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
+                                                                                                 adAnalytics: endPoints.adAnalytics,
                                                                                                  storage: self.storage))
         self.adEventHandler = AdEventForwarder(player: player,
                                                externalEventDispatcher: externalEventDispatcher,
