@@ -57,6 +57,11 @@ class BasicEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.ERROR) { errorEvent in
                 processor.error(event: errorEvent)
             },
+
+            player.videoTracks.addRemovableEventListener(type: VideoTrackListEventTypes.ADD_TRACK) { [weak player] addTrackEvent in
+                guard let player else { return }
+                processor.videoTrackAdded(event: addTrackEvent, player: player)
+            }
         ]
     }    
 }
