@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         playerViewContainer.addSubview(playerView)
         
 #if canImport(THEOplayerTHEOliveIntegration)
-        let THEOliveConfig = THEOliveConfiguration(externalSessionId: nil)
+        let THEOliveConfig = THEOliveConfiguration(externalSessionId: UUID().uuidString)
         self.THEOliveIntegration = THEOliveIntegrationFactory.createIntegration(with: THEOliveConfig)
         self.player.addIntegration(self.THEOliveIntegration!)
 #endif
