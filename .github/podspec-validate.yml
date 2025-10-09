@@ -1,0 +1,121 @@
+name: Validate CocoaPods (PR)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: podspec-validate-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+run-name: Validating CocoaPods
+
+jobs:
+  cocoapods-validate:
+    runs-on: macos-14
+
+    steps:
+      - name: Log environment
+        run: |
+          echo "macOS:" && sw_vers
+          echo "Xcode:" && xcodebuild -version
+          echo "Ruby:" && ruby -v
+          echo "CocoaPods:" && pod --version
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # (Optional but recommended) Ensure recent CocoaPods with include-podspecs support
+      # - name: Update CocoaPods
+      #   run: sudo gem install cocoapods --no-document
+
+      - name: Build validation plan
+        id: plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Collect podspecs
+          shopt -s nullglob
+          all_specs=( *.podspec )
+
+          # Skip these completely
+          blacklist_regex='(VerizonMedia|Nielsen|Yospace)\.podspec$'
+
+          utils="THEOplayer-Connector-Utilities.podspec"
+          conviva="THEOplayer-Connector-Conviva.podspec"
+
+          list=()
+          for f in "${all_specs[@]}"; do
+            [[ $f =~ $blacklist_regex ]] && continue
+            # We'll handle Utilities + Conviva explicitly later
+            if [[ "$f" == "$utils" || "$f" == "$conviva" ]]; then
+              continue
+            fi
+            list+=("$f")
+          done
+
+          echo "utils=$utils" >> "$GITHUB_OUTPUT"
+          echo "conviva=$conviva" >> "$GITHUB_OUTPUT"
+          printf 'others<<EOF\n%s\nEOF\n' "$(printf '%s\n' "${list[@]}")" >> "$GITHUB_OUTPUT"
+
+      - name: Point podspecs to PR branch (replace :tag => 'vX' with :branch => '<branch>')
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="$(git rev-parse --abbrev-ref HEAD)"
+          echo "Using branch: $branch"
+          for f in *.podspec; do
+            # macOS/BSD sed needs -i ''
+            sed -i '' "s|:tag => [^,}]*|:branch => \"$branch\"|g" "$f"
+          done
+
+      - name: Lint Utilities first
+        shell: bash
+        run: |
+          set -euo pipefail
+          pod repo update
+          utils="${{ steps.plan.outputs.utils }}"
+          if [[ -f "$utils" ]]; then
+            echo "Linting $utils"
+            pod spec lint "$utils" --verbose --allow-warnings
+          else
+            echo "Utilities podspec not found at: $utils"
+            exit 1
+          fi
+
+      - name: Lint Conviva including local Utilities
+        shell: bash
+        run: |
+          set -euo pipefail
+          conviva="${{ steps.plan.outputs.conviva }}"
+          if [[ -f "$conviva" ]]; then
+            echo "Linting $conviva (with local Utilities)"
+            pod spec lint "$conviva" \
+              --include-podspecs="THEOplayer-Connector-Utilities.podspec" \
+              --verbose --allow-warnings
+          else
+            echo "Conviva podspec not found at: $conviva"
+            exit 1
+          fi
+
+      - name: Lint remaining podspecs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t others <<< "${{ steps.plan.outputs.others }}"
+          if (( ${#others[@]} )); then
+            for spec in "${others[@]}"; do
+              [[ -z "$spec" ]] && continue
+              echo "Linting $spec"
+              pod spec lint "$spec" --verbose --allow-warnings
+            done
+          else
+            echo "No additional podspecs to lint."
+          fi
+
+      - name: Revert podspec edits
+        if: always()
+        shell: bash
+        run: |
+          git checkout -- *.podspec || true
+
