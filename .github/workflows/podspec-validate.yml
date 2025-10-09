@@ -22,48 +22,60 @@ jobs:
           echo "Ruby:" && ruby -v
           echo "CocoaPods:" && pod --version
 
-      - name: Check out repository
+      - name: Check out repository (use PR head branch)
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
 
-      # (Optional but recommended) Ensure recent CocoaPods with include-podspecs support
-      # - name: Update CocoaPods
-      #   run: sudo gem install cocoapods --no-document
-
-      - name: Build validation plan
+      - name: Build validation set
         id: plan
         shell: bash
         run: |
           set -euo pipefail
-          # Collect podspecs
           shopt -s nullglob
-          all_specs=( *.podspec )
 
-          # Skip these completely
+          all_specs=( *.podspec )
+          if (( ${#all_specs[@]} == 0 )); then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Skip these entirely
           blacklist_regex='(VerizonMedia|Nielsen|Yospace)\.podspec$'
 
-          utils="THEOplayer-Connector-Utilities.podspec"
-          conviva="THEOplayer-Connector-Conviva.podspec"
-
-          list=()
+          filtered=()
           for f in "${all_specs[@]}"; do
             [[ $f =~ $blacklist_regex ]] && continue
-            # We'll handle Utilities + Conviva explicitly later
-            if [[ "$f" == "$utils" || "$f" == "$conviva" ]]; then
-              continue
-            fi
-            list+=("$f")
+            filtered+=("$f")
           done
 
-          echo "utils=$utils" >> "$GITHUB_OUTPUT"
-          echo "conviva=$conviva" >> "$GITHUB_OUTPUT"
-          printf 'others<<EOF\n%s\nEOF\n' "$(printf '%s\n' "${list[@]}")" >> "$GITHUB_OUTPUT"
+          if (( ${#filtered[@]} == 0 )); then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Ensure Utilities goes first if present (often a base dep)
+          utils="THEOplayer-Connector-Utilities.podspec"
+          ordered=()
+          if printf '%s\n' "${filtered[@]}" | grep -qx "$utils"; then
+            ordered+=("$utils")
+            for f in "${filtered[@]}"; do
+              [[ "$f" == "$utils" ]] && continue
+              ordered+=("$f")
+            done
+          else
+            ordered=("${filtered[@]}")
+          fi
+
+          printf 'list<<EOF\n%s\nEOF\n' "$(printf '%s\n' "${ordered[@]}")" >> "$GITHUB_OUTPUT"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
 
       - name: Point podspecs to PR branch and fork origin
+        if: steps.plan.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
-
-          # Prefer the PR branch name from the event; fall back to ref_name or git
           branch="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME:-$(git rev-parse --abbrev-ref HEAD)}}"
           origin_url="$(git remote get-url origin)"
 
@@ -72,55 +84,64 @@ jobs:
 
           # macOS/BSD sed requires -i ''
           for f in *.podspec; do
-            # 1) Make the source git URL point to this repo (fork or upstream)
+            # 1) point source git URL to this repo (fork or upstream)
             sed -i '' -E "s|:git => ['\"][^'\"]+['\"]|:git => '${origin_url}'|g" "$f"
-            # 2) Replace any :tag => ... with :branch => "<branch>"
+            # 2) replace any :tag => ... with :branch => "<branch>"
             sed -i '' -E "s|:tag => [^,}]*|:branch => '${branch}'|g" "$f"
           done
 
-      - name: Lint Utilities first
+      - name: pod repo update (resolve remote deps)
+        if: steps.plan.outputs.skip == 'false'
+        run: pod repo update
+
+      - name: Lint all podspecs with local dependencies injected
+        if: steps.plan.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
-          pod repo update
-          utils="${{ steps.plan.outputs.utils }}"
-          if [[ -f "$utils" ]]; then
-            echo "Linting $utils"
-            pod spec lint "$utils" --verbose --allow-warnings
-          else
-            echo "Utilities podspec not found at: $utils"
+
+          # Verify this CocoaPods supports --include-podspecs for lib lint
+          if ! pod lib lint --help | grep -q -- '--include-podspecs'; then
+            echo "::error::Your CocoaPods version doesn't support --include-podspecs on pod lib lint. Consider updating CocoaPods (gem install cocoapods)."
             exit 1
           fi
 
-      - name: Lint Conviva including local Utilities
-        shell: bash
-        run: |
-          set -euo pipefail
-          conviva="${{ steps.plan.outputs.conviva }}"
-          if [[ -f "$conviva" ]]; then
-            echo "Linting $conviva (with local Utilities)"
-            pod spec lint "$conviva" \
-              --include-podspecs="THEOplayer-Connector-Utilities.podspec" \
-              --verbose --allow-warnings
-          else
-            echo "Conviva podspec not found at: $conviva"
-            exit 1
-          fi
+          # Read multiline output into an array 
+          specs_str="${{ steps.plan.outputs.list }}"
+          specs=()
+          while IFS= read -r line; do
+            [[ -z "$line" ]] && continue
+            specs+=("$line")
+          done <<< "$specs_str"
 
-      - name: Lint remaining podspecs
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t others <<< "${{ steps.plan.outputs.others }}"
-          if (( ${#others[@]} )); then
-            for spec in "${others[@]}"; do
-              [[ -z "$spec" ]] && continue
-              echo "Linting $spec"
-              pod spec lint "$spec" --verbose --allow-warnings
+          printf 'Planned specs:\n- %s\n' "${specs[@]}"
+
+          # For each spec, include *all the other* local podspecs so inter-deps resolve locally
+          for spec in "${specs[@]}"; do
+            [[ -z "$spec" ]] && continue
+
+            # Build include list excluding the current spec
+            includes=()
+            for other in "${specs[@]}"; do
+              [[ "$other" == "$spec" ]] && continue
+              includes+=("$other")
             done
-          else
-            echo "No additional podspecs to lint."
-          fi
+
+            include_flag=()
+            if [[ ${#includes[@]} -gt 0 ]]; then
+              include_csv="$(IFS=,; echo "${includes[*]}")"
+              include_flag=(--include-podspecs="$include_csv")
+            fi
+
+            echo "----------------------------------------"
+            echo "Linting: $spec"
+            echo "Include: ${include_flag[*]:-(none)}"
+            echo "----------------------------------------"
+
+            pod lib lint "$spec" \
+              "${include_flag[@]}" \
+              --verbose --allow-warnings
+          done
 
       - name: Revert podspec edits
         if: always()
@@ -128,3 +149,6 @@ jobs:
         run: |
           git checkout -- *.podspec || true
 
+      - name: Done
+        if: steps.plan.outputs.skip == 'true'
+        run: echo "No podspecs to validate on this PR."
