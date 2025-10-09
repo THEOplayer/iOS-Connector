@@ -29,6 +29,7 @@ Pod::Spec.new do |s|
   # --- Subspec: THEOlive ---
   s.subspec 'THEOlive' do |deps|
     deps.source_files = 'Code/Conviva/Source/THEOlive/**/*'
+    deps.dependency 'THEOplayer-Connector-Conviva/Base'
     deps.dependency 'THEOplayer-Integration-THEOlive', "~> 10.2"
   end
   
