@@ -89,7 +89,7 @@ class BasicEventConvivaReporter {
             return
         }
         var encodingType: String?
-        switch sourceType {
+        switch sourceType.lowercased() {
         case "application/vnd.theo.hesp+json":
             encodingType = "HESP"
         case "application/x-mpegurl":
