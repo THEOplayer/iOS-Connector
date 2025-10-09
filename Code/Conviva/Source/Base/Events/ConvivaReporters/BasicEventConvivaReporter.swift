@@ -92,7 +92,9 @@ class BasicEventConvivaReporter {
         switch sourceType.lowercased() {
         case "application/vnd.theo.hesp+json":
             encodingType = "HESP"
-        case "application/x-mpegurl":
+        case "application/x-mpegurl",
+            "application/vnd.apple.mpegurl",
+            "video/mp2t":
             encodingType = "HLS"
         default:
             encodingType = nil
