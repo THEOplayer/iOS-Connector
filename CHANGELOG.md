@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Conviva
   - Pass podTechnology as custom field in reportAdBreakStarted.
+  - Report DRM events.
 
 ### Fixed
 

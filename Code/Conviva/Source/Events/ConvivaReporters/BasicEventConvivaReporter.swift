@@ -142,6 +142,14 @@ class BasicEventConvivaReporter {
         self.reportEndedIfPlayed()
     }
     
+    func encrypted(event: EncryptedEvent) {
+        videoAnalytics.reportPlaybackEvent(event.type, withAttributes: nil)
+    }
+
+    func contentProtectionSuccess(event: ContentProtectionSuccessEvent) {
+        videoAnalytics.reportPlaybackEvent(event.type, withAttributes: nil)
+    }
+
     func videoTrackAdded(event: AddTrackEvent, player: THEOplayer) {
         // With the current player SDK we should only have a single videoTrack with multiple qualities.
         // If more than one videoTrack is supported by the player SDK we should adjust the code.
