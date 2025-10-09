@@ -7,7 +7,7 @@ import THEOplayerSDK
 
 let ENCODING_TYPE: String = "encoding_type"
 
-struct Session {
+struct THEOConvivaSession {
     protocol Delegate: AnyObject {
         func onSessionStarted()
         func onSessionEnded()
@@ -27,8 +27,8 @@ class BasicEventConvivaReporter {
     private let videoAnalytics: CISVideoAnalytics
     private let adAnalytics: CISAdAnalytics
     private let storage: ConvivaConnectorStorage
-    private var currentSession = Session()
-    weak var sessionDelegate: Session.Delegate?
+    private var currentConvivaSession = THEOConvivaSession()
+    weak var sessionDelegate: THEOConvivaSession.Delegate?
         
     init(videoAnalytics: CISVideoAnalytics, adAnalytics: CISAdAnalytics, storage: ConvivaConnectorStorage) {
         self.videoAnalytics = videoAnalytics
@@ -37,10 +37,10 @@ class BasicEventConvivaReporter {
     }
 
     func play(event: PlayEvent) {
-        guard !self.currentSession.started else { return }
+        guard !self.currentConvivaSession.started else { return }
         let initialContentInfo = Utilities.extendedContentInfo(contentInfo: [:], storage: self.storage)
         self.videoAnalytics.reportPlaybackRequested(initialContentInfo)
-        self.currentSession.started = true
+        self.currentConvivaSession.started = true
         if let delegate = self.sessionDelegate {
             delegate.onSessionStarted()
         }
@@ -71,10 +71,10 @@ class BasicEventConvivaReporter {
     }
     
     func error(event: ErrorEvent) {
-        if self.currentSession.started {
+        if self.currentConvivaSession.started {
             self.videoAnalytics.reportPlaybackFailed(event.error, contentInfo: nil)
             // the reportPlaybackFailed will close the session on the Conviva backend.
-            self.currentSession.started = false
+            self.currentConvivaSession.started = false
             if let delegate = self.sessionDelegate {
                 delegate.onSessionEnded()
             }
@@ -109,7 +109,7 @@ class BasicEventConvivaReporter {
     }
     
     func sourceChange(event: SourceChangeEvent, selectedSource: String?) {
-        if event.source != self.currentSession.source?.description, self.currentSession.source != nil {
+        if event.source != self.currentConvivaSession.source?.description, self.currentConvivaSession.source != nil {
             self.reportEndedIfPlayed()
         }
         
@@ -120,7 +120,7 @@ class BasicEventConvivaReporter {
         self.storage.clearValueForKey(CIS_SSDK_METADATA_DEFAULT_RESOURCE)           // last reported cdn for previous source
         self.storage.clearValueForKey(ENCODING_TYPE)                                // last reported encodingtype
         
-        let newSource: Session.Source?
+        let newSource: THEOConvivaSession.Source?
         
         if let source = event.source, let url = selectedSource {
             newSource = .init(description: source, url: url)
@@ -141,7 +141,7 @@ class BasicEventConvivaReporter {
             print("[THEOplayerConnectorConviva] setting unknown source")
             #endif
         }
-        self.currentSession.source = newSource
+        self.currentConvivaSession.source = newSource
     }
     
     func renderedFramerateUpdate(framerate: Float) {
@@ -154,18 +154,18 @@ class BasicEventConvivaReporter {
     }
     
     func reportEndedIfPlayed() {
-        if self.currentSession.started {
+        if self.currentConvivaSession.started {
             self.videoAnalytics.reportPlaybackEnded()
             self.videoAnalytics.cleanup()
             if let delegate = self.sessionDelegate {
                 delegate.onSessionEnded()
             }
-            self.currentSession = Session()
+            self.currentConvivaSession = THEOConvivaSession()
         }
     }
     
     func durationChange(event: DurationChangeEvent) {
-        if let duration = event.duration, self.currentSession.source?.url != nil {
+        if let duration = event.duration, self.currentConvivaSession.source?.url != nil {
             if duration.isInfinite {
                 self.videoAnalytics.setContentInfo([
                     CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: true)
