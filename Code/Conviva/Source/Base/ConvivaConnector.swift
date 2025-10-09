@@ -8,21 +8,14 @@ import ConvivaSDK
 /// Connects to a THEOplayer instance and reports its events to conviva
 public class ConvivaConnector {
     private let storage = ConvivaConnectorStorage()
-    
-    private var endPoints: ConvivaEndpoints
-    
-    // event handlers
-    private var appEventForwarder: AppEventForwarder
-    private var basicEventForwarder: BasicEventForwarder
-    private var adEventHandler: AdEventForwarder
+    private let endPoints: ConvivaEndpoints
+    private let appEventForwarder: AppEventForwarder
+    private let basicEventForwarder: BasicEventForwarder
+    private let basicEventReporter: BasicEventConvivaReporter
+    private let adEventForwarder: AdEventForwarder
 #if canImport(THEOplayerTHEOliveIntegration)
-    private var theoliveHandler: THEOliveEventForwarder
-#endif
-    
-    // event reporters
-    private var basicEventReporter: BasicEventConvivaReporter
-#if canImport(THEOplayerTHEOliveIntegration)
-    private var theoliveReporter: THEOliveEventConvivaReporter
+    private let theoliveForwarder: THEOliveEventForwarder
+    private let theoliveReporter: THEOliveEventConvivaReporter
 #endif
     
     public convenience init?(
@@ -45,16 +38,16 @@ public class ConvivaConnector {
         self.basicEventReporter = BasicEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics, adAnalytics: endPoints.adAnalytics, storage: self.storage)
         self.basicEventForwarder = BasicEventForwarder(player: player, eventProcessor: self.basicEventReporter)
         
-        self.adEventHandler = AdEventForwarder(player: player,
-                                               externalEventDispatcher: externalEventDispatcher,
-                                               eventProcessor: AdEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
-                                                                                      adAnalytics: endPoints.adAnalytics,
-                                                                                      storage: self.storage,
-                                                                                      player: player))
+        self.adEventForwarder = AdEventForwarder(player: player,
+                                                 externalEventDispatcher: externalEventDispatcher,
+                                                 eventProcessor: AdEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
+                                                                                        adAnalytics: endPoints.adAnalytics,
+                                                                                        storage: self.storage,
+                                                                                        player: player))
         
 #if canImport(THEOplayerTHEOliveIntegration)
         self.theoliveReporter = THEOliveEventConvivaReporter( videoAnalytics: endPoints.videoAnalytics, storage: self.storage)
-        self.theoliveHandler = THEOliveEventForwarder(player: player, eventProcessor: self.theoliveReporter)
+        self.theoliveForwarder = THEOliveEventForwarder(player: player, eventProcessor: self.theoliveReporter)
 #endif
     }
     
