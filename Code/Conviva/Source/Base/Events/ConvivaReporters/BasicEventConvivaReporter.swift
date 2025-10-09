@@ -7,16 +7,17 @@ import THEOplayerSDK
 
 let ENCODING_TYPE: String = "encoding_type"
 
-protocol Sessiondelegate: AnyObject {
-    func onSessionStarted()
-    func onSessionEnded()
-}
-
 struct Session {
+    protocol Delegate: AnyObject {
+        func onSessionStarted()
+        func onSessionEnded()
+    }
+    
     struct Source {
         let description: SourceDescription
         let url: String?
     }
+    
     var started = false
     var source: Source?
 }
@@ -27,7 +28,7 @@ class BasicEventConvivaReporter {
     private let adAnalytics: CISAdAnalytics
     private let storage: ConvivaConnectorStorage
     private var currentSession = Session()
-    weak var sessionDelegate: Sessiondelegate?
+    weak var sessionDelegate: Session.Delegate?
         
     init(videoAnalytics: CISVideoAnalytics, adAnalytics: CISAdAnalytics, storage: ConvivaConnectorStorage) {
         self.videoAnalytics = videoAnalytics
