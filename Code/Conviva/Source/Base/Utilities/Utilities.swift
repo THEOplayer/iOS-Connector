@@ -37,6 +37,9 @@ enum Utilities {
         if let streamUrl = storage?.valueForKey(CIS_SSDK_METADATA_STREAM_URL) as? String {
             extendedContentInfo.updateValue(streamUrl, forKey: CIS_SSDK_METADATA_STREAM_URL)
         }
+        if let encodingType = storage?.valueForKey(ENCODING_TYPE) as? String {
+            extendedContentInfo.updateValue(encodingType, forKey: ENCODING_TYPE)
+        }
         extendedContentInfo.updateValue(Utilities.playerName, forKey: CIS_SSDK_METADATA_PLAYER_NAME)
         extendedContentInfo.updateValue(Utilities.playerName, forKey: CIS_SSDK_PLAYER_FRAMEWORK_NAME)
         extendedContentInfo.updateValue(Utilities.playerVersion, forKey: CIS_SSDK_PLAYER_FRAMEWORK_VERSION)

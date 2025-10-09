@@ -5,23 +5,30 @@
 import ConvivaSDK
 import THEOplayerSDK
 
-class BasicEventConvivaReporter {
-    
-    struct Session {
-        struct Source {
-            let description: SourceDescription
-            let url: String?
-        }
-        var started = false
-        var source: Source?
+let ENCODING_TYPE: String = "encoding_type"
+
+struct THEOConvivaSession {
+    protocol Delegate: AnyObject {
+        func onSessionStarted()
+        func onSessionEnded()
     }
     
+    struct Source {
+        let description: SourceDescription
+        let url: String?
+    }
+    
+    var started = false
+    var source: Source?
+}
+
+class BasicEventConvivaReporter {
     /// The endpoint to which all the events are sent
     private let videoAnalytics: CISVideoAnalytics
     private let adAnalytics: CISAdAnalytics
     private let storage: ConvivaConnectorStorage
-    
-    var currentSession = Session()
+    private var currentConvivaSession = THEOConvivaSession()
+    weak var sessionDelegate: THEOConvivaSession.Delegate?
         
     init(videoAnalytics: CISVideoAnalytics, adAnalytics: CISAdAnalytics, storage: ConvivaConnectorStorage) {
         self.videoAnalytics = videoAnalytics
@@ -30,10 +37,13 @@ class BasicEventConvivaReporter {
     }
 
     func play(event: PlayEvent) {
-        guard !self.currentSession.started else { return }
+        guard !self.currentConvivaSession.started else { return }
         let initialContentInfo = Utilities.extendedContentInfo(contentInfo: [:], storage: self.storage)
         self.videoAnalytics.reportPlaybackRequested(initialContentInfo)
-        self.currentSession.started = true
+        self.currentConvivaSession.started = true
+        if let delegate = self.sessionDelegate {
+            delegate.onSessionStarted()
+        }
     }
     
     func playing(event: PlayingEvent) {
@@ -61,10 +71,13 @@ class BasicEventConvivaReporter {
     }
     
     func error(event: ErrorEvent) {
-        if self.currentSession.started {
+        if self.currentConvivaSession.started {
             self.videoAnalytics.reportPlaybackFailed(event.error, contentInfo: nil)
             // the reportPlaybackFailed will close the session on the Conviva backend.
-            self.currentSession.started = false
+            self.currentConvivaSession.started = false
+            if let delegate = self.sessionDelegate {
+                delegate.onSessionEnded()
+            }
         }
     }
     
@@ -72,8 +85,31 @@ class BasicEventConvivaReporter {
         self.videoAnalytics.reportPlaybackError(event.error?.message ?? Utilities.defaultStringValue, errorSeverity: .ERROR_WARNING)
     }
     
+    func currentSourceChange(event: CurrentSourceChangeEvent) {
+        guard let sourceType = event.currentSource?.type else {
+            return
+        }
+        var encodingType: String?
+        switch sourceType.lowercased() {
+        case "application/vnd.theo.hesp+json":
+            encodingType = "HESP"
+        case "application/x-mpegurl",
+            "application/vnd.apple.mpegurl",
+            "video/mp2t":
+            encodingType = "HLS"
+        default:
+            encodingType = nil
+        }
+        
+        if self.storage.valueForKey(ENCODING_TYPE) == nil,
+           let encodingType = encodingType {
+            self.videoAnalytics.setContentInfo([ENCODING_TYPE:encodingType])
+            self.storage.storeKeyValuePair(key: ENCODING_TYPE, value: encodingType)
+        }
+    }
+    
     func sourceChange(event: SourceChangeEvent, selectedSource: String?) {
-        if event.source != self.currentSession.source?.description, self.currentSession.source != nil {
+        if event.source != self.currentConvivaSession.source?.description, self.currentConvivaSession.source != nil {
             self.reportEndedIfPlayed()
         }
         
@@ -81,8 +117,10 @@ class BasicEventConvivaReporter {
         self.storage.clearValueForKey(CIS_SSDK_METADATA_ASSET_NAME)                 // asset name from the previous source
         self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE)             // last reported bitrate for previous source
         self.storage.clearValueForKey(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE)     // last reported average bitrate for previous source
+        self.storage.clearValueForKey(CIS_SSDK_METADATA_DEFAULT_RESOURCE)           // last reported cdn for previous source
+        self.storage.clearValueForKey(ENCODING_TYPE)                                // last reported encodingtype
         
-        let newSource: Session.Source?
+        let newSource: THEOConvivaSession.Source?
         
         if let source = event.source, let url = selectedSource {
             newSource = .init(description: source, url: url)
@@ -103,7 +141,7 @@ class BasicEventConvivaReporter {
             print("[THEOplayerConnectorConviva] setting unknown source")
             #endif
         }
-        self.currentSession.source = newSource
+        self.currentConvivaSession.source = newSource
     }
     
     func renderedFramerateUpdate(framerate: Float) {
@@ -116,15 +154,18 @@ class BasicEventConvivaReporter {
     }
     
     func reportEndedIfPlayed() {
-        if self.currentSession.started {
+        if self.currentConvivaSession.started {
             self.videoAnalytics.reportPlaybackEnded()
             self.videoAnalytics.cleanup()
-            self.currentSession = Session()
+            if let delegate = self.sessionDelegate {
+                delegate.onSessionEnded()
+            }
+            self.currentConvivaSession = THEOConvivaSession()
         }
     }
     
     func durationChange(event: DurationChangeEvent) {
-        if let duration = event.duration, self.currentSession.source?.url != nil {
+        if let duration = event.duration, self.currentConvivaSession.source?.url != nil {
             if duration.isInfinite {
                 self.videoAnalytics.setContentInfo([
                     CIS_SSDK_METADATA_IS_LIVE: NSNumber(value: true)
@@ -138,7 +179,11 @@ class BasicEventConvivaReporter {
         }
     }
     
-    func destroy(event: DestroyEvent) {
+    func onDestroy(event: DestroyEvent) {
+        self.destroy()
+    }
+    
+    func destroy() {
         self.reportEndedIfPlayed()
     }
     
