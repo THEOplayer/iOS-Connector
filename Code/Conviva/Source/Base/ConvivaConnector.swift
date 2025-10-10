@@ -7,15 +7,18 @@ import ConvivaSDK
 
 /// Connects to a THEOplayer instance and reports its events to conviva
 public class ConvivaConnector {
-    private let storage = ConvivaConnectorStorage()
+    private let storage = ConvivaStorage()
     private let endPoints: ConvivaEndpoints
     private let appEventForwarder: AppEventForwarder
-    private let basicEventForwarder: BasicEventForwarder
-    private let basicEventReporter: BasicEventConvivaReporter
+    private let appHandler: AppHandler
+    private let playerEventForwarder: PlayerEventForwarder
+    private let playerHandler: PlayerHandler
     private let adEventForwarder: AdEventForwarder
+    private let adHandler: AdHandler
+    
 #if canImport(THEOplayerTHEOliveIntegration)
     private let theoliveForwarder: THEOliveEventForwarder
-    private let theoliveReporter: THEOliveEventConvivaReporter
+    private let theoliveHandler: THEOliveHandler
 #endif
     
     public convenience init?(
@@ -29,68 +32,48 @@ public class ConvivaConnector {
     
     init(conviva: ConvivaEndpoints, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
         self.endPoints = conviva
-        self.appEventForwarder = AppEventForwarder(player: player,
-                                                   eventProcessor: AppEventConvivaReporter(analytics: endPoints.analytics,
-                                                                                           videoAnalytics: endPoints.videoAnalytics,
-                                                                                           adAnalytics: endPoints.adAnalytics,
-                                                                                           storage: self.storage))
         
-        self.basicEventReporter = BasicEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics, adAnalytics: endPoints.adAnalytics, storage: self.storage)
-        self.basicEventForwarder = BasicEventForwarder(player: player, eventProcessor: self.basicEventReporter)
+        // App level handling
+        self.appHandler = AppHandler(endpoints: self.endPoints, storage: self.storage)
+        self.appEventForwarder = AppEventForwarder(player: player, handler: self.appHandler)
         
-        self.adEventForwarder = AdEventForwarder(player: player,
-                                                 externalEventDispatcher: externalEventDispatcher,
-                                                 eventProcessor: AdEventConvivaReporter(videoAnalytics: endPoints.videoAnalytics,
-                                                                                        adAnalytics: endPoints.adAnalytics,
-                                                                                        storage: self.storage,
-                                                                                        player: player))
+        // Player level handling
+        self.playerHandler = PlayerHandler(endpoints: self.endPoints, storage: self.storage)
+        self.playerEventForwarder = PlayerEventForwarder(player: player, handler: self.playerHandler)
+        
+        // Ad level handling
+        self.adHandler = AdHandler(endpoints: self.endPoints, storage: self.storage)
+        self.adEventForwarder = AdEventForwarder(player: player, externalEventDispatcher: externalEventDispatcher, handler: self.adHandler)
         
 #if canImport(THEOplayerTHEOliveIntegration)
-        self.theoliveReporter = THEOliveEventConvivaReporter( videoAnalytics: endPoints.videoAnalytics, storage: self.storage)
-        self.theoliveForwarder = THEOliveEventForwarder(player: player, eventProcessor: self.theoliveReporter)
+        // THEOlive level handling
+        self.theoliveHandler = THEOliveHandler(endpoints: self.endPoints, storage: self.storage)
+        self.theoliveForwarder = THEOliveEventForwarder(player: player, handler: self.theoliveHandler)
 #endif
     }
     
     public func destroy() {
         self.endPoints.destroy()
-        self.basicEventReporter.destroy()
+        self.playerHandler.destroy()
     }
     
     public func setContentInfo(_ contentInfo: [String: Any]) {
-        self.endPoints.videoAnalytics.setContentInfo(contentInfo)
-        self.storeClientMetadata(contentInfo)
+        self.playerHandler.setContentInfo(contentInfo)
     }
     
     public func setAdInfo(_ adInfo: [String: Any]) {
-        self.endPoints.adAnalytics.setAdInfo(adInfo)
+        self.adHandler.setAdInfo(adInfo)
     }
     
     public func reportPlaybackFailed(message: String) {
-        self.endPoints.videoAnalytics.reportPlaybackFailed(message, contentInfo: nil)
+        self.playerHandler.reportPlaybackFailed(message: message)
     }
     
     public func reportPlaybackEvent(eventType: String, eventDetail: [String: Any]) {
-        self.endPoints.videoAnalytics.reportPlaybackEvent(eventType, withAttributes: eventDetail)
+        self.playerHandler.reportPlaybackEvent(eventType: eventType, eventDetail: eventDetail)
     }
     
     public func stopAndStartNewSession(contentInfo: [String: Any]) {
-        self.storeClientMetadata(contentInfo)
-        self.endPoints.videoAnalytics.reportPlaybackEnded()
-        self.endPoints.videoAnalytics.cleanup()
-        let extendedContentInfo = Utilities.extendedContentInfo(contentInfo: contentInfo, storage: self.storage)
-        self.endPoints.videoAnalytics.reportPlaybackRequested(extendedContentInfo)
-        self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
-        if let bitrate = self.storage.valueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE) as? NSNumber {
-            self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrate)
-        }
-        if let avgBitrate = self.storage.valueForKey(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE) as? NSNumber {
-            self.endPoints.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrate)
-        }
+        self.playerHandler.stopAndStartNewSession(contentInfo: contentInfo)
     }    
-    
-    private func storeClientMetadata(_ contentInfo: [String: Any]) {
-        contentInfo.forEach { (key, value) in
-            self.storage.clientMetadata[key] = value
-        }
-    }
 }
