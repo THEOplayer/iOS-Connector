@@ -7,12 +7,7 @@ import THEOplayerSDK
 
 let ENCODING_TYPE: String = "encoding_type"
 
-struct THEOConvivaSession {
-    protocol Delegate: AnyObject {
-        func onSessionStarted()
-        func onSessionEnded()
-    }
-    
+fileprivate struct THEOConvivaSession {
     struct Source {
         let description: SourceDescription
         let url: String?
@@ -22,13 +17,18 @@ struct THEOConvivaSession {
     var source: Source?
 }
 
+fileprivate protocol THEOConvivaSessionDelegate: AnyObject {
+    func onSessionStarted()
+    func onSessionEnded()
+}
+
 class BasicEventConvivaReporter {
     /// The endpoint to which all the events are sent
     private let videoAnalytics: CISVideoAnalytics
     private let adAnalytics: CISAdAnalytics
     private let storage: ConvivaConnectorStorage
     private var currentConvivaSession = THEOConvivaSession()
-    weak var sessionDelegate: THEOConvivaSession.Delegate?
+    fileprivate weak var sessionDelegate: THEOConvivaSessionDelegate?
         
     init(videoAnalytics: CISVideoAnalytics, adAnalytics: CISAdAnalytics, storage: ConvivaConnectorStorage) {
         self.videoAnalytics = videoAnalytics
