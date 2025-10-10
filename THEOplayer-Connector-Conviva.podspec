@@ -19,21 +19,27 @@ Pod::Spec.new do |s|
       
   s.static_framework = true
   s.swift_versions = ['5.3', '5.4', '5.5', '5.6', '5.7']
-  
-  # --- Subspec: Base (default) ---
-  s.subspec 'Base' do |base|
-    base.source_files = 'Code/Conviva/Source/Base/**/*'
-    base.dependency 'ConvivaSDK', '4.0.51'
-    base.dependency 'THEOplayerSDK-core', "~> 10.2"
-    base.dependency 'THEOplayer-Connector-Utilities', "~> " + theoplayer_connector_major_minor_version, ">= " + theoplayer_connector_version
+
+  # --- Subspec: Common dependencies ---
+  s.subspec 'CommonDependencies' do |deps|
+    deps.dependency 'ConvivaSDK', '4.0.51'
+    deps.dependency 'THEOplayerSDK-core', "~> 10.2"
+    deps.dependency 'THEOplayer-Connector-Utilities', "~> " + theoplayer_connector_major_minor_version, ">= " + theoplayer_connector_version
   end
   
-  # --- Subspec: THEOlive ---
-  s.subspec 'THEOlive' do |deps|
-    deps.source_files = 'Code/Conviva/Source/THEOlive/**/*'
-    deps.dependency 'THEOplayer-Integration-THEOlive', "~> 10.2"
+  # --- Subspec: Base (THEOplayer Conviva) ---
+  s.subspec 'Base' do |base|
+    base.source_files = 'Code/Conviva/Source/Base/**/*'
+    base.dependency "#{s.name}/CommonDependencies"
+  end
+  
+  # --- Subspec: THEOlive (+THEOlive Conviva) ---
+  s.subspec 'THEOlive' do |live|
+    live.source_files = ['Code/Conviva/Source/Base/**/*', 'Code/Conviva/Source/THEOlive/**/*']
+    live.dependency "#{s.name}/CommonDependencies"
+    live.dependency 'THEOplayer-Integration-THEOlive', "~> 10.2"
   end
   
   # Default
-  s.default_subspecs = ['Base', 'THEOlive']
+  s.default_subspecs = ['CommonDependencies', 'Base', 'THEOlive']
 end
