@@ -34,6 +34,7 @@ class PlayerHandler {
     private weak var sessionDelegate: THEOConvivaSessionDelegate?
     private weak var endpoints: ConvivaEndpoints?
     private weak var storage: ConvivaStorage?
+    private var playerIsPaused = true
         
     init(endpoints: ConvivaEndpoints, storage: ConvivaStorage) {
         self.endpoints = endpoints
@@ -116,6 +117,7 @@ class PlayerHandler {
     func playing(event: PlayingEvent) {
         log("handling playing")
         log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PLAYING]")
+        self.playerIsPaused = false
         self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
     }
     
@@ -127,6 +129,7 @@ class PlayerHandler {
     func pause(event: PauseEvent) {
         log("handling pause")
         log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PAUSED]")
+        self.playerIsPaused = true
         self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
     }
     
