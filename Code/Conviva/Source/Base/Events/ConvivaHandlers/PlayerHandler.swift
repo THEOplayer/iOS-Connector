@@ -96,8 +96,10 @@ class PlayerHandler {
         // stop current conviva session
         self.maybeReportPlaybackEnded()
         
-        // start new conviva session
-        self.maybeReportPlaybackRequested()
+        // start new conviva session when not paused. When paused, the session will start once play-out resumes.
+        if !self.playerIsPaused {
+            self.maybeReportPlaybackRequested()
+        }
         
         // store and push the passed metadata
         self.setContentInfo(contentInfo)
