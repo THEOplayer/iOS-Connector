@@ -19,27 +19,33 @@ let PROP_ENDPOINT_CONTENT_PROTECTION: String = "contentProtection"
 let PROP_REASON_ERROR_CODE: String = "errorCode"
 let PROP_REASON_ERROR_MESSAGE: String = "errorMessage"
 
-class THEOliveEventConvivaReporter {
-    private let videoAnalytics: CISVideoAnalytics
-    private let storage: ConvivaConnectorStorage
+class THEOliveHandler {
+    private weak var endpoints: ConvivaEndpoints?
+    private weak var storage: ConvivaStorage?
     
-    init(videoAnalytics: CISVideoAnalytics, storage: ConvivaConnectorStorage) {
-        self.videoAnalytics = videoAnalytics
+    init(endpoints: ConvivaEndpoints, storage: ConvivaStorage) {
+        self.endpoints = endpoints
         self.storage = storage
     }
     
     func onEndpointLoaded(event: THEOplayerTHEOliveIntegration.EndpointLoadedEvent)  {
+        log("onEndpointLoaded")
         // placeholder:
         //self.videoAnalytics.reportPlaybackEvent("endpointLoaded", withAttributes: self.fromEndpoint(endpoint: event.endpoint))
         
         // Update CDN
         let cdn = event.endpoint.cdn ?? "unknown"
-        self.videoAnalytics.setContentInfo([ CIS_SSDK_METADATA_DEFAULT_RESOURCE: cdn ])
-        self.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_DEFAULT_RESOURCE, value: cdn)
+        if let storage = self.storage {
+            storage.storeMetadata([CIS_SSDK_METADATA_DEFAULT_RESOURCE : cdn])
+            log("videoAnalytics.setContentInfo: \(storage.metadata)")
+            self.endpoints?.videoAnalytics.setContentInfo(storage.metadata)
+        }
     }
     
     func onIntentToFallback(event: THEOplayerTHEOliveIntegration.IntentToFallbackEvent)  {
-        self.videoAnalytics.reportPlaybackEvent("intentToFallback", withAttributes: self.fromReason(reason: event.reason))
+        log("onIntentToFallback")
+        log("videoAnalytics.reportPlaybackEvent intentToFallback")
+        self.endpoints?.videoAnalytics.reportPlaybackEvent("intentToFallback", withAttributes: self.fromReason(reason: event.reason))
     }
     
     func fromEndpoint(endpoint: THEOplayerTHEOliveIntegration.EndpointAPI?) -> [String:String] {
@@ -77,6 +83,12 @@ class THEOliveEventConvivaReporter {
             PROP_REASON_ERROR_CODE: String(reason.code.rawValue),
             PROP_REASON_ERROR_MESSAGE: reason.message
         ]
+    }
+    
+    private func log(_ message: String) {
+        if DEBUG_LOGGING {
+            print("[THEOplayerConnector-Conviva] THEOliveHandler: \(message)")
+        }
     }
 }
 #endif
