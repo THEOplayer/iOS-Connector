@@ -53,10 +53,16 @@ class AdHandler {
         self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
     }
     
-    func adTimeUpdate(event: TimeUpdateEvent) {
-        //log("adTimeUpdate")
-        //log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME : \(event.currentTimeInMilliseconds)]")
-        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: event.currentTimeInMilliseconds)
+    func adTimeUpdate(currentTimeInMilliseconds: NSNumber) {
+        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: currentTimeInMilliseconds)
+    }
+    
+    func adRenderedFramerateUpdate(renderedFramerate: NSNumber) {
+        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: renderedFramerate)
+    }
+    
+    func adDroppedFramesUpdate(droppedFrames: NSNumber) {
+        self.endpoints?.adAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL, value: droppedFrames)
     }
     
     func adPause(event: PauseEvent) {
