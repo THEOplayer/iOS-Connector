@@ -44,9 +44,8 @@ class PlayerEventForwarder {
 
             player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
                 handler.timeUpdate(event: $0)
-                if let rate = player.renderedFramerate {
-                    handler.renderedFramerateUpdate(framerate: rate)
-                }
+                handler.renderedFramerateUpdate(framerate: player.playerMetrics.renderedFramerate)
+                handler.droppedFramesUpdate(droppedFrames: player.playerMetrics.droppedVideoFrames)
             },
             player.addRemovableEventListener(type: PlayerEventTypes.SOURCE_CHANGE) {
                 handler.sourceChange(event: $0, selectedSource: player.src)
