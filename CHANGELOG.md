@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- Conviva
-  - Pass podTechnology as custom field in reportAdBreakStarted.
-  - Report DRM events.
-
 ### Fixed
 
 - SideloadedSubtitle
@@ -23,12 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
   - Removed the `setErrorCallback`. The same behaviour can be achieved in THEOplayer 10 by calling `addEventListener` on THEOplayer with a type of `PlayerEventTypes.ERROR`
 
+### Changed
+
+- Conviva 
+  - Report droppedFrames and renderedFramerates from player metrics, making the AVPlayer accesslog usage obsolete.
+
 ### Added
 
 - Conviva
   - Report intentToFallback event to Conviva as custom event.
   - Report encoding_type (HLS or HESP) to conviva
   - Report cdn for THEOlive sources to conviva
+  - Report average bitrate from activeQualityChange event.
+  - Pass podTechnology as custom field in reportAdBreakStarted.
+  - Report DRM events.
 
 ## [9.6.1] - 2025-06-23
 
