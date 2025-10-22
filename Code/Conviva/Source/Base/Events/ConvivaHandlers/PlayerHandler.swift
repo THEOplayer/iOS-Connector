@@ -304,10 +304,19 @@ class PlayerHandler {
     private func activeQualityChangedEvent(event: ActiveQualityChangedEvent, isPlayingAd: Bool) {
         log("activeQualityChangedEvent")
         if let endpoint: CISStreamAnalyticsProtocol = isPlayingAd ? self.endpoints?.adAnalytics : self.endpoints?.videoAnalytics {
+            // report bitrate in kbps
             let bitrateValue = NSNumber(value: event.quality.bandwidth / 1000)
             log("endpoint.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_BITRATE : \(bitrateValue)]")
             endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
             self.storage?.storeMetric(key: CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
+            
+            // report optional average bitrate in kbps
+            if let averageBandwidth = event.quality.averageBandwidth {
+                let avgBitrateValue = NSNumber(value: averageBandwidth / 1000)
+                log("endpoint.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE : \(avgBitrateValue)]")
+                endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrateValue)
+                self.storage?.storeMetric(key: CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrateValue)
+            }
         }
     }
 
