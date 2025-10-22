@@ -11,7 +11,6 @@ import THEOplayerTHEOliveIntegration
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
 class THEOliveEventForwarder {
     private let theoliveObserver: DispatchObserver?
-    weak var eventProcessor: THEOliveHandler?
     
     init(player: THEOplayer, handler: THEOliveHandler) {
         if let theolive = player.theoLive {
