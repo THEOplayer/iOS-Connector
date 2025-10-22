@@ -221,11 +221,17 @@ class PlayerHandler {
         self.currentConvivaSession.source = newSource
     }
     
-    func renderedFramerateUpdate(framerate: Float) {
+    func renderedFramerateUpdate(framerate: Double) {
         //log("renderedFramerateUpdate")
         let rate = NSNumber(value: Int(framerate.rounded()))
         //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE : \(rate)]")
         self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: rate)
+    }
+    
+    func droppedFramesUpdate(droppedFrames: Int) {
+        //log("droppedFramesUpdate")
+        //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL : \(droppedFrames)]")
+        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL, value: droppedFrames)
     }
     
     func ended(event: EndedEvent) {
