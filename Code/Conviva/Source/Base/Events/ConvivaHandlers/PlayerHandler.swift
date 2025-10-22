@@ -119,9 +119,10 @@ class PlayerHandler {
         self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
     }
     
-    func timeUpdate(event: TimeUpdateEvent) {
-        //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME : \(event.currentTimeInMilliseconds)]")
-        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: event.currentTimeInMilliseconds)
+    func timeUpdate(currentTimeInMilliseconds: NSNumber, renderedFramerate: NSNumber, droppedFrames: NSNumber) {
+        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: currentTimeInMilliseconds)
+        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: renderedFramerate)
+        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL, value: droppedFrames)
     }
     
     func pause(event: PauseEvent) {
@@ -208,19 +209,6 @@ class PlayerHandler {
             newSource = .init(description: source, url: selectedSource ?? "unknown")
         }
         self.currentConvivaSession.source = newSource
-    }
-    
-    func renderedFramerateUpdate(framerate: Double) {
-        //log("renderedFramerateUpdate")
-        let rate = NSNumber(value: Int(framerate.rounded()))
-        //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE : \(rate)]")
-        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: rate)
-    }
-    
-    func droppedFramesUpdate(droppedFrames: Int) {
-        //log("droppedFramesUpdate")
-        //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL : \(droppedFrames)]")
-        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL, value: droppedFrames)
     }
     
     func ended(event: EndedEvent) {
