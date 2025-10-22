@@ -54,14 +54,20 @@ class AdHandler {
     }
     
     func adTimeUpdate(currentTimeInMilliseconds: NSNumber) {
+        //log("handling adTimeUpdate")
+        //log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME : \(currentTimeInMilliseconds)]")
         self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: currentTimeInMilliseconds)
     }
     
     func adRenderedFramerateUpdate(renderedFramerate: NSNumber) {
+        //log("handling adRenderedFramerateUpdate")
+        //log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE : \(renderedFramerate)]")
         self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: renderedFramerate)
     }
     
     func adDroppedFramesUpdate(droppedFrames: NSNumber) {
+        //log("handling adDroppedFramesUpdate")
+        //log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL : \(droppedFrames)]")
         self.endpoints?.adAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL, value: droppedFrames)
     }
     
