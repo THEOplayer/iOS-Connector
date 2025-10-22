@@ -119,9 +119,14 @@ class PlayerHandler {
         self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
     }
     
-    func timeUpdate(event: TimeUpdateEvent) {
-        //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME : \(event.currentTimeInMilliseconds)]")
-        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: event.currentTimeInMilliseconds)
+    func timeUpdate(currentTimeInMilliseconds: NSNumber, renderedFramerate: NSNumber, droppedFrames: NSNumber) {
+        //log("handling timeUpdate")
+        //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME : \(currentTimeInMilliseconds)]")
+        //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE : \(renderedFramerate)]")
+        //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL : \(droppedFrames)]")
+        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: currentTimeInMilliseconds)
+        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: renderedFramerate)
+        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_DROPPED_FRAMES_TOTAL, value: droppedFrames)
     }
     
     func pause(event: PauseEvent) {
@@ -210,13 +215,6 @@ class PlayerHandler {
         self.currentConvivaSession.source = newSource
     }
     
-    func renderedFramerateUpdate(framerate: Float) {
-        //log("renderedFramerateUpdate")
-        let rate = NSNumber(value: Int(framerate.rounded()))
-        //log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE : \(rate)]")
-        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: rate)
-    }
-    
     func ended(event: EndedEvent) {
         log("handling ended")
         log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_STOPPED]")
@@ -293,10 +291,19 @@ class PlayerHandler {
     private func activeQualityChangedEvent(event: ActiveQualityChangedEvent, isPlayingAd: Bool) {
         log("activeQualityChangedEvent")
         if let endpoint: CISStreamAnalyticsProtocol = isPlayingAd ? self.endpoints?.adAnalytics : self.endpoints?.videoAnalytics {
+            // report bitrate in kbps
             let bitrateValue = NSNumber(value: event.quality.bandwidth / 1000)
             log("endpoint.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_BITRATE : \(bitrateValue)]")
             endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
             self.storage?.storeMetric(key: CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrateValue)
+            
+            // report optional average bitrate in kbps
+            if let averageBandwidth = event.quality.averageBandwidth {
+                let avgBitrateValue = NSNumber(value: averageBandwidth / 1000)
+                log("endpoint.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE : \(avgBitrateValue)]")
+                endpoint.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrateValue)
+                self.storage?.storeMetric(key: CIS_SSDK_PLAYBACK_METRIC_AVERAGE_BITRATE, value: avgBitrateValue)
+            }
         }
     }
 

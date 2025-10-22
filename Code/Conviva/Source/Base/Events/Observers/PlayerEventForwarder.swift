@@ -43,10 +43,11 @@ class PlayerEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.CONTENT_PROTECTION_SUCCESS, listener: handler.contentProtectionSuccess),
 
             player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
-                handler.timeUpdate(event: $0)
-                if let rate = player.renderedFramerate {
-                    handler.renderedFramerateUpdate(framerate: rate)
-                }
+                handler.timeUpdate(
+                    currentTimeInMilliseconds: $0.currentTimeInMilliseconds,
+                    renderedFramerate: NSNumber(value: Int(player.playerMetrics.renderedFramerate.rounded())),
+                    droppedFrames: NSNumber(value: player.playerMetrics.droppedVideoFrames)
+                )
             },
             player.addRemovableEventListener(type: PlayerEventTypes.SOURCE_CHANGE) {
                 handler.sourceChange(event: $0, selectedSource: player.src)
