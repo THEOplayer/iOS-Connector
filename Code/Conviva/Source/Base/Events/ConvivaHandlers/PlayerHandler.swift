@@ -13,12 +13,12 @@ let DEBUG_LOGGING = false
 
 let ENCODING_TYPE: String = "encoding_type"
 
+protocol THEOConvivaSessionDelegate: AnyObject {
+    func onSessionStarted()
+    func onSessionEnded()
+}
+
 struct THEOConvivaSession {
-    protocol Delegate: AnyObject {
-        func onSessionStarted()
-        func onSessionEnded()
-    }
-    
     struct Source {
         let description: SourceDescription
         let url: String?
@@ -31,7 +31,7 @@ struct THEOConvivaSession {
 class PlayerHandler {
     /// The endpoint to which all the events are sent
     private var currentConvivaSession = THEOConvivaSession()
-    private weak var sessionDelegate: THEOConvivaSession.Delegate?
+    private weak var sessionDelegate: THEOConvivaSessionDelegate?
     private weak var endpoints: ConvivaEndpoints?
     private weak var storage: ConvivaStorage?
         
