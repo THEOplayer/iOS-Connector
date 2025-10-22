@@ -47,10 +47,14 @@ class AdHandler {
         }
     }
     
+    private func reportPlayerState(playerState: PlayerState) {
+        log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : \(playerState)]")
+        self.endpoints?.adAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: playerState.rawValue)
+    }
+    
     func adPlaying(event: PlayingEvent) {
         log("handling adPlaying")
-        log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PLAYING]")
-        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+        self.reportPlayerState(playerState: PlayerState.CONVIVA_PLAYING)
     }
     
     func adTimeUpdate(event: TimeUpdateEvent) {
@@ -61,8 +65,7 @@ class AdHandler {
     
     func adPause(event: PauseEvent) {
         log("handling adPause")
-        log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PAUSED]")
-        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
+        self.reportPlayerState(playerState: PlayerState.CONVIVA_PAUSED)
     }
     
     func adBreakBegin(event: AdBreakBeginEvent) {
@@ -128,8 +131,7 @@ class AdHandler {
         }
         
         if self.calculatedAdTechnology(ad.integration) == .SERVER_SIDE {
-            log("adAnalytics.reportAdMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PLAYING]")
-            self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+            self.reportPlayerState(playerState: PlayerState.CONVIVA_PLAYING)
         }
     }
     
