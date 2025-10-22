@@ -1,18 +1,14 @@
 //
-//  AppStateConvivaReporter.swift
-//  
+//  AppHandler.swift
+//
 
 import ConvivaSDK
-import AVFoundation
-import THEOplayerSDK
 
 class AppHandler {
-    private weak var storage: ConvivaStorage?
     private weak var endpoints: ConvivaEndpoints?
     
     init(endpoints: ConvivaEndpoints, storage: ConvivaStorage) {
         self.endpoints = endpoints
-        self.storage = storage
     }
     
     func appWillEnterForeground(notification: Notification) {
