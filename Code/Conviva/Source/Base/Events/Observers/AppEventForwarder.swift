@@ -17,7 +17,7 @@ fileprivate let newAccessLogEntry = Notification.Name("AVPlayerItemNewAccessLogE
 
 class AppEventForwarder {
     private let center = NotificationCenter.default
-    private let foregroundObserver, backgroundObserver, accessLogObserver: Any
+    private let foregroundObserver, backgroundObserver: Any
     private let adsLoadedEventListener: RemovableEventListenerProtocol?
     private let adsEndEventListener: RemovableEventListenerProtocol?
     private let sourceChangeEventListener: RemovableEventListenerProtocol?
@@ -38,20 +38,6 @@ class AppEventForwarder {
             object: .none,
             queue: .none,
             using: handler.appDidEnterBackground
-        )
-        
-        self.accessLogObserver = center.addObserver( // TODO: implement this in THEOplayerSDK using an observer on the correct player item so we can remove src URL checks
-            forName: newAccessLogEntry,
-            object: .none,
-            queue: OperationQueue.main,
-            using: { [unowned player] notification in
-                guard let item = notification.object as? AVPlayerItem else {return}
-                guard let event = item.accessLog()?.events.last else {return}
-                guard item == player.currentItem else { return } // TODO: Remove this.
-
-                // BUGFIX: There is a case where we get the ad bitrate reported as a new log entry
-                handler.appGotNewAccessLogEntry(event: event, item: item, isPlayingAd: player.ads.playing)
-            }
         )
         
         self.adsLoadedEventListener = player.ads.addRemovableEventListener(type: AdsEventTypes.AD_LOADED) { event in
@@ -76,7 +62,6 @@ class AppEventForwarder {
     deinit {
         self.center.removeObserver(foregroundObserver, name: willEnterForeground, object: nil)
         self.center.removeObserver(backgroundObserver, name: didEnterBackground, object: nil)
-        self.center.removeObserver(accessLogObserver, name: newAccessLogEntry, object: nil)
         if let player = self.player {
             self.adsLoadedEventListener?.remove(from: player.ads)
             self.adsEndEventListener?.remove(from: player.ads)
