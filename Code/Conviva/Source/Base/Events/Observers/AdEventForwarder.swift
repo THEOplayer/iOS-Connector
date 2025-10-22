@@ -24,7 +24,6 @@ struct AdEventForwarder {
  
     static func forwardAdPlaybackEvents(from player: THEOplayer, to handler: AdHandler, using filter: Filter) -> [RemovableEventListenerProtocol] {
         [
-            player.addRemovableEventListener(type: PlayerEventTypes.PLAY, listener: filter.conditionalSender(handler.adPlay)),
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: filter.conditionalSender(handler.adPlaying)),
             player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
                 filter.conditionalSender(handler.adTimeUpdate)($0)

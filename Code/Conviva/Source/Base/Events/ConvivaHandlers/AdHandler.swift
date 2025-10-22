@@ -47,12 +47,6 @@ class AdHandler {
         }
     }
     
-    func adPlay(event: PlayEvent) {
-        log("handling adPlay")
-        log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PLAYING]")
-        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
-    }
-    
     func adPlaying(event: PlayingEvent) {
         log("handling adPlaying")
         log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PLAYING]")
