@@ -34,6 +34,7 @@ class PlayerHandler {
     private weak var sessionDelegate: THEOConvivaSessionDelegate?
     private weak var endpoints: ConvivaEndpoints?
     private weak var storage: ConvivaStorage?
+    private var playerState: PlayerState = .CONVIVA_UNKNOWN
         
     init(endpoints: ConvivaEndpoints, storage: ConvivaStorage) {
         self.endpoints = endpoints
@@ -95,8 +96,10 @@ class PlayerHandler {
         // stop current conviva session
         self.maybeReportPlaybackEnded()
         
-        // start new conviva session
-        self.maybeReportPlaybackRequested()
+        // start new conviva session when not paused. When paused, the session will start once play-out resumes.
+        if self.playerState != .CONVIVA_PAUSED {
+            self.maybeReportPlaybackRequested()
+        }
         
         // store and push the passed metadata
         self.setContentInfo(contentInfo)
@@ -106,6 +109,14 @@ class PlayerHandler {
             log("videoAnalytics.reportPlaybackMetric from storage [\(key) : \(value)]")
             self.endpoints?.videoAnalytics.reportPlaybackMetric(key, value: value)
         }
+        
+        // push current player state
+        self.reportPlayerState()
+    }
+    
+    private func reportPlayerState() {
+        log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : \(self.playerState)]")
+        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: self.playerState.rawValue)
     }
 
     func play(event: PlayEvent) {
@@ -115,8 +126,8 @@ class PlayerHandler {
     
     func playing(event: PlayingEvent) {
         log("handling playing")
-        log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PLAYING]")
-        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+        self.playerState = .CONVIVA_PLAYING
+        self.reportPlayerState()
     }
     
     func timeUpdate(event: TimeUpdateEvent) {
@@ -126,14 +137,14 @@ class PlayerHandler {
     
     func pause(event: PauseEvent) {
         log("handling pause")
-        log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PAUSED]")
-        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
+        self.playerState = .CONVIVA_PAUSED
+        self.reportPlayerState()
     }
     
     func waiting(event: WaitingEvent) {
         log("handling waiting")
-        log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_BUFFERING]")
-        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_BUFFERING.rawValue)
+        self.playerState = .CONVIVA_BUFFERING
+        self.reportPlayerState()
     }
     
     func seeking(event: SeekingEvent) {
@@ -219,8 +230,8 @@ class PlayerHandler {
     
     func ended(event: EndedEvent) {
         log("handling ended")
-        log("videoAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_STOPPED]")
-        self.endpoints?.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_STOPPED.rawValue)
+        self.playerState = .CONVIVA_STOPPED
+        self.reportPlayerState()
         self.maybeReportPlaybackEnded()
     }
     
