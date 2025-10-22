@@ -35,7 +35,7 @@ public class ConvivaConnector {
         
         // App level handling
         self.appHandler = AppHandler(endpoints: self.endPoints, storage: self.storage)
-        self.appEventForwarder = AppEventForwarder(player: player, handler: self.appHandler)
+        self.appEventForwarder = AppEventForwarder(handler: self.appHandler)
         
         // Player level handling
         self.playerHandler = PlayerHandler(endpoints: self.endPoints, storage: self.storage)
