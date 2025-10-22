@@ -17,11 +17,8 @@ fileprivate let didEnterBackground = UIApplication.didEnterBackgroundNotificatio
 class AppEventForwarder {
     private let center = NotificationCenter.default
     private let foregroundObserver, backgroundObserver: Any
-    private weak var player: THEOplayer?
     
-    init(player: THEOplayer, handler: AppHandler) {
-        self.player = player
-        
+    init(handler: AppHandler) {
         self.foregroundObserver = center.addObserver(
             forName: willEnterForeground,
             object: .none,
