@@ -5,30 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## Unreleased
+
+## [10.2.0] - 2025-10-09
 
 ### Added
 
 - Conviva
   - Pass podTechnology as custom field in reportAdBreakStarted.
   - Report DRM events.
+  - Report intentToFallback event to Conviva as custom event.
+  - Report encoding_type (HLS or HESP) to conviva
+  - Report cdn for THEOlive sources to conviva
 
 ### Fixed
 
 - SideloadedSubtitle
   - Fixed an issue where enabling a `TextTrack` on the `ADD_TRACK` event would cause an error.
 
+## [10.0.0] - 2025-09-12
+
 ### Removed
 
 - Conviva
   - Removed the `setErrorCallback`. The same behaviour can be achieved in THEOplayer 10 by calling `addEventListener` on THEOplayer with a type of `PlayerEventTypes.ERROR`
-
-### Added
-
-- Conviva
-  - Report intentToFallback event to Conviva as custom event.
-  - Report encoding_type (HLS or HESP) to conviva
-  - Report cdn for THEOlive sources to conviva
 
 ## [9.6.1] - 2025-06-23
 
