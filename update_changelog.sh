@@ -14,4 +14,26 @@ file_path="./CHANGELOG.md"
 date=$(date +"%Y-%m-%d")
 
 # Replace the line containing "## Unreleased" with new version and date
-sed -i '' -e "s/^## Unreleased$/## [$v] - $date/" "$file_path"
+# only when there are new changelog entries. Adds back the ## Unreleased mark.
+awk -v v="$v" -v date="$date" '
+/^## Unreleased$/ {
+    print
+    getline nextline
+    if (nextline ~ /^$/) {
+        buffer = ""
+        while ((getline peek) > 0 && peek ~ /^$/) buffer = buffer "\n" peek
+        if (peek ~ /^## \[/) {
+            print ""
+            print nextline buffer peek
+            next
+        } else {
+            print ""
+            print "## [" v "] - " date
+            print ""
+            print nextline buffer peek
+            next
+        }
+    }
+}
+{ print }
+' "$file_path" > "$file_path.tmp" && mv "$file_path.tmp" "$file_path"
