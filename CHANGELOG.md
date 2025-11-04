@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Conviva
+  - Fixed an issue where the session was automatically started with a stopAndStartNewSession request, even when the player was in a paused state.
+
 ### Changed
 
 - Nielsen
@@ -25,8 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Conviva
-  - Fixed an issue where the session was automatically started with a stopAndStartNewSession request, even when the player was in a paused state.
 - SideloadedSubtitle
   - Fixed an issue where enabling a `TextTrack` on the `ADD_TRACK` event would cause an error.
 
