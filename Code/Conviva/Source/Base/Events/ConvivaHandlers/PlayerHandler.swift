@@ -248,6 +248,15 @@ class PlayerHandler {
         self.setContentInfo(metadata)
     }
     
+    private func collectAdDescriptionMetadata(from sourceDescription: SourceDescription) -> [String: Any] {
+        var metadata: [String: Any] = [:]
+        if let theoAdDescription = sourceDescription.ads?.first as? THEOAdDescription,
+           let streamActivityMonitorId = theoAdDescription.streamActivityMonitorId {
+            metadata["streamActivityMonitorId"] = streamActivityMonitorId
+        }
+        return metadata
+    }
+    
     func durationChange(event: DurationChangeEvent) {
         log("handling durationChange")
         var metadata: [String: Any] = [:]
