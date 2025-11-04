@@ -47,15 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
   - Removed the `setErrorCallback`. The same behaviour can be achieved in THEOplayer 10 by calling `addEventListener` on THEOplayer with a type of `PlayerEventTypes.ERROR`
 
-### Added
-
-- Conviva
-  - Report intentToFallback event to Conviva as custom event.
-  - Report encoding_type (HLS or HESP) to conviva
-  - Report cdn for THEOlive sources to conviva
-  - Pass podTechnology as custom field in reportAdBreakStarted.
-  - Report DRM events.
-
 ## [9.6.1] - 2025-06-23
 
 ### Fixed
