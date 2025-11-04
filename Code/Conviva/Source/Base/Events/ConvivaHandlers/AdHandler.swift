@@ -5,19 +5,19 @@
 import ConvivaSDK
 import THEOplayerSDK
 
-class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter {
+class AdHandler {
     static let serializationFormatter: NumberFormatter = createSerializationFormatter()
-    
-    var videoAnalytics: CISVideoAnalytics
-    var adAnalytics: CISAdAnalytics
-    private let storage: ConvivaConnectorStorage
-    private weak var player: THEOplayer?
+    private weak var endpoints: ConvivaEndpoints?
+    private weak var storage: ConvivaStorage?
         
-    init(videoAnalytics: CISVideoAnalytics, adAnalytics: CISAdAnalytics, storage: ConvivaConnectorStorage, player: THEOplayer) {
-        self.videoAnalytics = videoAnalytics
-        self.adAnalytics = adAnalytics
+    init(endpoints: ConvivaEndpoints, storage: ConvivaStorage) {
+        self.endpoints = endpoints
         self.storage = storage
-        self.player = player
+    }
+    
+    func setAdInfo(_ adInfo: [String: Any]) {
+        log("adAnalytics.setAdInfo: \(adInfo)")
+        self.endpoints?.adAnalytics.setAdInfo(adInfo)
     }
     
     private func calculatedAdTechnology(_ integrationKind: AdIntegrationKind) -> AdTechnology {
@@ -47,21 +47,49 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         }
     }
     
-    public func adBreakBegin(event: AdBreakBeginEvent) {
+    func adPlaying(event: PlayingEvent) {
+        log("handling adPlaying")
+        log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PLAYING]")
+        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+    }
+    
+    func adTimeUpdate(event: TimeUpdateEvent) {
+        //log("adTimeUpdate")
+        //log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME : \(event.currentTimeInMilliseconds)]")
+        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: event.currentTimeInMilliseconds)
+    }
+    
+    func adPause(event: PauseEvent) {
+        log("handling adPause")
+        log("adAnalytics.reportPlaybackMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PAUSED]")
+        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
+    }
+    
+    func adBreakBegin(event: AdBreakBeginEvent) {
+        log("handling adBreakBegin")
         guard let adBreak = event.ad else { return }
-        self.videoAnalytics.reportAdBreakStarted(.ADPLAYER_CONTENT, adType: self.calculatedAdTechnology(adBreak.integration), adBreakInfo: [
+        let adBreakInfo = [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: adBreak.maxDuration)),
             CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: adBreak.timeOffset)),
             CIS_SSDK_AD_BREAK_POD_POSITION: adBreak.calculateCurrentAdBreakPosition(),
             "podTechnology": self.AdTechnologyAsString(adBreak.integration)
-        ])
+        ]
+        log("videoAnalytics.reportAdBreakStarted: \(adBreakInfo)]")
+        self.endpoints?.videoAnalytics.reportAdBreakStarted(
+            .ADPLAYER_CONTENT,
+            adType: self.calculatedAdTechnology(adBreak.integration),
+            adBreakInfo: adBreakInfo
+        )
     }
     
-    public func adBreakEnd(event: AdBreakEndEvent) {
-        self.videoAnalytics.reportAdBreakEnded()
+    func adBreakEnd(event: AdBreakEndEvent) {
+        log("handling adBreakEnd")
+        log("videoAnalytics.reportAdBreakEnded")
+        self.endpoints?.videoAnalytics.reportAdBreakEnded()
     }
     
-    public func adBegin(event: AdBeginWithDurationEvent) {
+    func adBegin(event: AdBeginWithDurationEvent) {
+        log("handling adBegin")
         guard let ad = event.beginEvent.ad, ad.type == THEOplayerSDK.AdType.linear else { return }
 
         var info = ad.convivaInfo
@@ -71,11 +99,13 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
         info["c3.ad.technology"] = adTechnology
         
         // set Ad contentAssetName
-        if let contentAssetName = self.storage.valueForKey(CIS_SSDK_METADATA_ASSET_NAME) {
+        if let contentAssetName = self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_ASSET_NAME) {
             info["contentAssetName"] = contentAssetName
         }
         // set Ad session ID
-        info["c3.csid"] = self.videoAnalytics.getSessionId()
+        if let videoAnalytics = self.endpoints?.videoAnalytics {
+            info["c3.csid"] = videoAnalytics.getSessionId()
+        }
         
         // Temporary workaround for missing LinearAd in Native THEOplayerGoogleIMAIntegration. Can be removed after THEO-10161 is completed.
         if !info.keys.contains(CIS_SSDK_METADATA_IS_LIVE), let duration = event.duration {
@@ -87,40 +117,46 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
             }
         }
 
-        adAnalytics.reportAdLoaded(info)
-        adAnalytics.reportAdStarted(info)
+        log("adAnalytics.reportAdLoaded: \(info)")
+        self.endpoints?.adAnalytics.reportAdLoaded(info)
+        log("adAnalytics.reportAdStarted: \(info)")
+        self.endpoints?.adAnalytics.reportAdStarted(info)
         if let width = ad.width, let height = ad.height {
-            adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_RESOLUTION, value: NSValue(
-                cgSize: .init(width: width, height: height)
-            ))
+            let resolution = NSValue(cgSize: .init(width: width, height: height))
+            log("adAnalytics.reportAdMetric [CIS_SSDK_PLAYBACK_METRIC_RESOLUTION : \(resolution)]")
+            self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_RESOLUTION, value: resolution)
         }
         
         if self.calculatedAdTechnology(ad.integration) == .SERVER_SIDE {
-            adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+            log("adAnalytics.reportAdMetric [CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE : CONVIVA_PLAYING]")
+            self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
         }
     }
     
-    public func adRenderedFramerateUpdate(framerate: Float) {
-        adAnalytics.reportAdMetric(
-            CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE,
-            value: NSNumber(value: Int(framerate.rounded()))
-        )
+    func adRenderedFramerateUpdate(framerate: Float) {
+        //log("adRenderedFramerateUpdate")
+        let framerate = NSNumber(value: Int(framerate.rounded()))
+        //log("adAnalytics.reportAdMetric [CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, \(framerate)]")
+        self.endpoints?.adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_RENDERED_FRAMERATE, value: framerate)
     }
     
-    public func adEnd(event: AdEndEvent) {
+    func adEnd(event: AdEndEvent) {
+        log("handling adEnd")
         if event.ad?.type == THEOplayerSDK.AdType.linear {
-            adAnalytics.reportAdEnded()
+            self.endpoints?.adAnalytics.reportAdEnded()
         }
     }
     
-    public func adError(event: AdErrorEvent) {
+    func adError(event: AdErrorEvent) {
+        log("handling adError")
         if let ad = event.ad {
-            adAnalytics.reportAdFailed(
-                event.error ?? "An error occured while playing ad \(ad.id ?? "without id")",
-                adInfo: ad.convivaInfo
-            )
+            let message = event.error ?? "An error occured while playing ad \(ad.id ?? "without id")"
+            log("adAnalytics.reportAdFailed: \(message)")
+            self.endpoints?.adAnalytics.reportAdFailed(message, adInfo: ad.convivaInfo)
         } else {
-            adAnalytics.reportAdFailed(event.error ?? "An error occured while playing an ad", adInfo: nil)
+            let message = event.error ?? "An error occured while playing an ad"
+            log("adAnalytics.reportAdFailed: \(message)")
+            self.endpoints?.adAnalytics.reportAdFailed(message, adInfo: nil)
         }
     }
         
@@ -133,8 +169,14 @@ class AdEventConvivaReporter: AdEventProcessor, ConvivaAdPlaybackEventsReporter 
     }
     
     /// Serializes a number into a string without 'grouping separators' and using a `"."` as decimal separator
-    public static func serialize(number: NSNumber) -> String {
-        serializationFormatter.string(from: number) ?? number.description(withLocale: Utilities.en_usLocale)
+    static func serialize(number: NSNumber) -> String {
+        self.serializationFormatter.string(from: number) ?? number.description(withLocale: Utilities.en_usLocale)
+    }
+    
+    private func log(_ message: String) {
+        if DEBUG_LOGGING {
+            print("[THEOplayerConnector-Conviva] AdHandler: \(message)")
+        }
     }
 }
 
@@ -181,28 +223,5 @@ extension Ad {
             return nil
         }
         return string.count > 0 ? string : nil
-    }
-}
-
-public protocol ConvivaAdPlaybackEventsReporter: AdPlaybackEventProcessor {
-    var videoAnalytics: CISVideoAnalytics { get }
-    var adAnalytics: CISAdAnalytics { get }
-}
-
-extension ConvivaAdPlaybackEventsReporter {
-    public func adPlay(event: PlayEvent) {
-        adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
-    }
-    
-    public func adPlaying(event: PlayingEvent) {
-        adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
-    }
-    
-    public func adTimeUpdate(event: TimeUpdateEvent) {
-        adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAY_HEAD_TIME, value: event.currentTimeInMilliseconds)
-    }
-    
-    public func adPause(event: PauseEvent) {
-        adAnalytics.reportAdMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PAUSED.rawValue)
     }
 }
