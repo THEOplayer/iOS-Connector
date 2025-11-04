@@ -236,7 +236,7 @@ class PlayerHandler {
     func updateMetadata() {
         log("handling updateMetadata")
         guard let convivaSessionSource = self.currentConvivaSession.source,
-              let url = self.currentConvivaSession.source?.url as? String else {
+              let url = convivaSessionSource.url else {
             return
         }
         
