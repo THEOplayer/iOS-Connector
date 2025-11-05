@@ -257,6 +257,10 @@ class PlayerHandler {
         if let theoAdDescription = sourceDescription.ads?.first as? THEOAdDescription,
            let streamActivityMonitorId = theoAdDescription.streamActivityMonitorId {
             metadata["streamActivityMonitorId"] = streamActivityMonitorId
+        } else if let daiConfiguration = sourceDescription.sources.first?.ssai as? GoogleDAIConfiguration,
+                  let streamActivityMonitorId = daiConfiguration.streamActivityMonitorID {
+            metadata["streamActivityMonitorId"] = streamActivityMonitorId
+            return metadata
         }
         return metadata
     }
