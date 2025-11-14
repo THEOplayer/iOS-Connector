@@ -254,7 +254,7 @@ class PlayerHandler {
     
     private func collectAdDescriptionMetadata(from sourceDescription: SourceDescription) -> [String: Any] {
         var metadata: [String: Any] = [:]
-        if let theoAdDescription = sourceDescription.ads?.first as? THEOAdDescription,
+        if let theoAdDescription = sourceDescription.ads?.first(where: { $0 is THEOAdDescription }) as? THEOAdDescription,
            let streamActivityMonitorId = theoAdDescription.streamActivityMonitorId {
             metadata["streamActivityMonitorId"] = streamActivityMonitorId
         } else if let daiConfiguration = sourceDescription.sources.first?.ssai as? GoogleDAIConfiguration,
