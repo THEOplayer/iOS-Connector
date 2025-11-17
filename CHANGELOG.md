@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Conviva
   - Report average bitrate from activeQualityChange event.
+  - Report streamActivityMonitorId from theoads AdDescription and GoogleDAIConfiguration.
 
 ## [10.2.0] - 2025-10-09
 
