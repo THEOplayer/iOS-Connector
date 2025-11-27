@@ -12,7 +12,6 @@ class MasterPlaylistParser: PlaylistParser {
     var constructedManifestArray = [String]()
     fileprivate var lastMediaLine: Int?
     fileprivate let subtitlesGroupId = "THEOsubs"
-    private var extXMediaSubtitlesOriginallyExists = false
 
     override init(url: URL) {
         super.init(url: url)
@@ -21,25 +20,8 @@ class MasterPlaylistParser: PlaylistParser {
     func sideLoadSubtitles(subtitles: [TextTrackDescription], completion: @escaping (_ data: Data?) -> ()) {
         self.loadManifest { succ in
             if succ {
-                let validSubtitles = subtitles.filter { subtitle in
-                    guard subtitle.src.isValid == true else {
-                        print("The provided subtitle source \(subtitle.src.absoluteString) is invalid")
-                        return false
-                    }
-                    return true
-                }
                 self.parseManifest()
-                self.appendSubtitlesLines(subtitles: validSubtitles)
-                if !self.extXMediaSubtitlesOriginallyExists,
-                   validSubtitles.isEmpty {
-                    // when the original m3u8 does not have any subtitles, and there are no valid subtitles to sideload
-                    // then we remove the added subs attribute from the ExtXStreamInf entries
-                    for (i, ele) in self.constructedManifestArray.enumerated() {
-                        let line = HLSLine(lineString: ele)
-                        line.paramsObject.removeValue(forKey: HLSKeywords.subtitles.rawValue)
-                        self.constructedManifestArray[i] = line.joinLine()
-                    }
-                }
+                self.appendSubtitlesLines(subtitles: subtitles)
                 let constructed = self.constructedManifestArray.joined(separator: "\n")
                 
                 if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
@@ -77,7 +59,7 @@ class MasterPlaylistParser: PlaylistParser {
                     case HLSKeywords.subtitles.rawValue:
                         line.paramsObject[HLSKeywords.groupId.rawValue] = "\"\(self.subtitlesGroupId)\""
                         self.lastMediaLine = self.constructedManifestArray.count
-                        self.extXMediaSubtitlesOriginallyExists = true
+
                     default:
                         break
                     }
