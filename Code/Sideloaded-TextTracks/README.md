@@ -171,7 +171,7 @@ All that is needed is a source with a text track description:
 ```swift
 public static var sourceWithSideloadedTextTrack: SourceDescription {
     let typedSource = TypedSource(src: "https://sourceURL.com/manifest.m3u8, type: "application/x-mpegurl")
-    let textTrack = TextTrackDescription(src: "https://sideloadedurl.com/subtitle.vtt", srclang: "language_code", isDefault: false, kind: .subtitles, label: "Label", format: .WebVTT)
+    let textTrack = TextTrackDescription(src: "https://sideloadedurl.com/subtitle.vtt", srclang: "language_code", isDefault: true, kind: .subtitles, label: "Label", format: .WebVTT)
     return SourceDescription(source: typedSource, textTracks: [textTrack])
 }
 ```
