@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- SideloadedSubtitle
+  - Added support to make a sideloaded subtitle selected for caching by default. Use the `isDefault` property in `SSTextTrackDescription` or `TextTrackDescription`.
+
 ## [10.4.0] - 2025-11-05
 
 ### Fixed
