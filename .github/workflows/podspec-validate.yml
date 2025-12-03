@@ -15,6 +15,9 @@ jobs:
     runs-on: macos-14
 
     steps:
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.2.0'
       - name: Log environment
         run: |
           echo "macOS:" && sw_vers
