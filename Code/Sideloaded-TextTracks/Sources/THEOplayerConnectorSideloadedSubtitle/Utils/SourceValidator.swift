@@ -15,7 +15,14 @@ class SourceValidator {
             return nil
         }
 
-        let filteredTextTracks = sideLoadedTextTracks.filter { $0.kind == .subtitles }
+        let subtitlesTextTracks = sideLoadedTextTracks.filter { $0.kind == .subtitles }
+        let filteredTextTracks = subtitlesTextTracks.filter { subtitle in
+            guard subtitle.src.isValid == true else {
+                print("[AVSubtitlesLoader] The provided subtitle source \(subtitle.src.absoluteString) is invalid.")
+                return false
+            }
+            return true
+        }
         if filteredTextTracks.isEmpty {
             print("[AVSubtitlesLoader] Unable to find a valid TextTrackDescription for sideloading.")
             return nil

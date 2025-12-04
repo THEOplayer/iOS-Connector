@@ -12,6 +12,7 @@ class MasterPlaylistParser: PlaylistParser {
     var constructedManifestArray = [String]()
     fileprivate var lastMediaLine: Int?
     fileprivate let subtitlesGroupId = "THEOsubs"
+
     override init(url: URL) {
         super.init(url: url)
     }
@@ -58,7 +59,7 @@ class MasterPlaylistParser: PlaylistParser {
                     case HLSKeywords.subtitles.rawValue:
                         line.paramsObject[HLSKeywords.groupId.rawValue] = "\"\(self.subtitlesGroupId)\""
                         self.lastMediaLine = self.constructedManifestArray.count
-                        
+
                     default:
                         break
                     }
