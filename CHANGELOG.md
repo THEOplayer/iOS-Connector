@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - SideloadedSubtitle
+  - Added support for simultaneous multi-source caching with sideloaded subtitles. Previously there was a limitation of caching only a single task at a time.
   - Added support to make a sideloaded subtitle selected for caching by default. Use the `isDefault` property in `SSTextTrackDescription` or `TextTrackDescription`.
 
 ## [10.7.0] - 2025-12-18
