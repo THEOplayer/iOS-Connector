@@ -15,7 +15,6 @@ class AVSubtitlesLoader: NSObject {
     static func removeInstance(by id: String) {
         Self.instances.removeAll { $0._id == id }
     }
-    static var cachingInstance: AVSubtitlesLoader? // can be removed when adding multi-cachingtask support
 
     private let subtitles: [TextTrackDescription]
     private let transformer = SubtitlesTransformer()
@@ -23,7 +22,7 @@ class AVSubtitlesLoader: NSObject {
     private let _id: String
     private var variantTotalDuration: Double = 0
     
-    init(subtitles: [TextTrackDescription], id: String, player: THEOplayer?) {
+    init(subtitles: [TextTrackDescription], id: String, player: THEOplayer? = nil, cachingTask: CachingTask? = nil) {
         self.subtitles = subtitles
         self._id = id
         self.synchronizer = SubtitlesSynchronizer(player: player)
@@ -32,6 +31,7 @@ class AVSubtitlesLoader: NSObject {
         super.init()
 
         _ = player?.addEventListener(type: PlayerEventTypes.DESTROY, listener: { [weak self] destroyEvent in self?.handleDestroyEvent() })
+        _ = cachingTask?.addEventListener(type: CachingTaskEventTypes.STATE_CHANGE, listener: { [weak self] cachingTaskStateChangeEvent in self?.handleCachingTaskStateChangeEvent(task: cachingTask) })
     }
 
     func handleMasterManifestRequest(_ url: URL) async -> Data? {
@@ -110,6 +110,12 @@ class AVSubtitlesLoader: NSObject {
 
     private func handleDestroyEvent() {
         Self.removeInstance(by: _id)
+    }
+
+    private func handleCachingTaskStateChangeEvent(task: CachingTask?) {
+        guard let task,
+              task.status == .evicted else { return }
+        Self.removeInstance(by: task.id)
     }
 }
 
@@ -205,12 +211,10 @@ extension Cache {
             let loader = AVSubtitlesLoader(
                 subtitles: sideLoadedTextTracks,
                 id: cachingTask.id,
-                player: nil
+                cachingTask: cachingTask
             )
-            AVSubtitlesLoader.cachingInstance = loader
-            self.network.addMediaPlaylistInterceptor(loader)
-        } else {
-            AVSubtitlesLoader.cachingInstance = nil
+            AVSubtitlesLoader.addInstance(loader)
+            cachingTask.network.addMediaPlaylistInterceptor(loader)
         }
 
         return cachingTask
