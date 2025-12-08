@@ -236,16 +236,33 @@ class PlayerHandler {
     func updateMetadata() {
         log("handling updateMetadata")
         guard let convivaSessionSource = self.currentConvivaSession.source,
-              let url = self.currentConvivaSession.source?.url as? String else {
+              let url = convivaSessionSource.url else {
             return
         }
         
-        let metadata: [String: Any] = [
+        var metadata: [String: Any] = [
             CIS_SSDK_METADATA_PLAYER_NAME: self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_PLAYER_NAME) ?? Utilities.playerName,
             CIS_SSDK_METADATA_STREAM_URL: url,
             CIS_SSDK_METADATA_ASSET_NAME: convivaSessionSource.description.metadata?.title ?? Utilities.defaultStringValue,
         ]
+        
+        let adDescriptionMetadata: [String: Any] = collectAdDescriptionMetadata(from: convivaSessionSource.description)
+        metadata.merge(adDescriptionMetadata) { (_, new) in new }
+   
         self.setContentInfo(metadata)
+    }
+    
+    private func collectAdDescriptionMetadata(from sourceDescription: SourceDescription) -> [String: Any] {
+        var metadata: [String: Any] = [:]
+        if let theoAdDescription = sourceDescription.ads?.first(where: { $0 is THEOAdDescription }) as? THEOAdDescription,
+           let streamActivityMonitorId = theoAdDescription.streamActivityMonitorId {
+            metadata["streamActivityMonitorId"] = streamActivityMonitorId
+        } else if let daiConfiguration = sourceDescription.sources.first?.ssai as? GoogleDAIConfiguration,
+                  let streamActivityMonitorId = daiConfiguration.streamActivityMonitorID {
+            metadata["streamActivityMonitorId"] = streamActivityMonitorId
+            return metadata
+        }
+        return metadata
     }
     
     func durationChange(event: DurationChangeEvent) {
