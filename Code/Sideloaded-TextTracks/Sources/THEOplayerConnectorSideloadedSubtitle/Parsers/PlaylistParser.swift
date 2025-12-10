@@ -16,24 +16,20 @@ class PlaylistParser {
         self.manifestData = nil
     }
     
-    func loadManifest(completion: @escaping (_ success: Bool) -> ()) {
-        URLSession.shared.dataTask(with: self.manifestURL) { [weak self] data, response, error in
-            guard let responseData = data, let self = self else {
-                completion(false)
-                return
-            }
+    func loadManifest() async -> Data? {
+        if let (data, response) = try? await URLSession.shared.data(from: self.manifestURL) {
             // Update the manifestUrl to the url received in the response (to pickup possible url redirect)
-            if let responseUrl = response?.url {
+            if let responseUrl = response.url {
                 self.manifestURL = responseUrl
             }
-            if self.isValidManifest(data: responseData) {
-                self.manifestData = responseData
-                completion(true)
+            if self.isValidManifest(data: data) {
+                self.manifestData = data
+                return data
             } else {
-                completion(false)
+                return nil
             }
         }
-        .resume()
+        return nil
     }
     
     func isValidManifest(data: Data) -> Bool {
