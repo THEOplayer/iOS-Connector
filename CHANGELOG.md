@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Conviva
+  - Bumped the Conviva SDK dependency to 4.2.4.
+
 ## [10.4.0] - 2025-11-05
 
 ### Fixed
