@@ -188,5 +188,4 @@ For more information on how to implement offline playback with caching, please r
 
 ### Limitations
 
-1. Caching sources with sideloaded subtitles can only be done one task at a time. This is due to some technical complexities in the underlying implementation. This limitation may be addressed in future releases.
-2. Caching is only available on iOS.
+1. Caching is only available on iOS.
