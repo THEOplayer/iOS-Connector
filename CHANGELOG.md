@@ -9,17 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.7.0] - 2025-12-18
 
-<<<<<<< HEAD
 ### Changed
 
 - Conviva
   - Bumped the Conviva SDK dependency to 4.2.4.
-=======
+
 ### Fixed
 
 - SideloadedSubtitle
   - Fixed an issue where the stream would not play if an invalid subtitle source is passed and activated.
->>>>>>> 22a7075 (add changelog)
 
 ## [10.4.0] - 2025-11-05
 
@@ -30,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Conviva 
+- Conviva
   - Report droppedFrames and renderedFramerates from player metrics, making the AVPlayer accesslog usage obsolete.
 - Nielsen
   - Bumped minimum Nielsen SDK Dependency to 10.0.0
@@ -91,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Conviva
   - Added average bitrate reporting
-	
+
 ### Fixed
 
 - Conviva
@@ -100,6 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Conviva
+
   - Removed Objective-C API support.
 
 - Yospace
@@ -151,15 +150,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Conviva
-	- Fixed an issue where the vpfDetector was not firing a VPF due to a missing player reference.
+  - Fixed an issue where the vpfDetector was not firing a VPF due to a missing player reference.
 
 ## [7.10.0] - 2024-08-13
 
 ### Fixed
 
 - Conviva
-	- Fixed an issue where multiple fatal errors were reported to the Conviva backend, resulting in multiple sessions being created.
-	- Fixed an issue where VPF was not detected for VOD when the player has enough buffered data to get passed the detection interval. 
+  - Fixed an issue where multiple fatal errors were reported to the Conviva backend, resulting in multiple sessions being created.
+  - Fixed an issue where VPF was not detected for VOD when the player has enough buffered data to get passed the detection interval.
 
 ## [7.9.0] - 2024-08-01
 
