@@ -246,7 +246,7 @@ class PlayerHandler {
         var metadata: [String: Any] = [
             CIS_SSDK_METADATA_PLAYER_NAME: self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_PLAYER_NAME) ?? Utilities.playerName,
             CIS_SSDK_METADATA_STREAM_URL: url,
-            CIS_SSDK_METADATA_ASSET_NAME: convivaSessionSource.description.metadata?.title ?? Utilities.defaultStringValue,
+            CIS_SSDK_METADATA_ASSET_NAME: self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_ASSET_NAME) ?? convivaSessionSource.description.metadata?.title ?? Utilities.defaultStringValue,
         ]
         
         let adDescriptionMetadata: [String: Any] = collectAdDescriptionMetadata(from: convivaSessionSource.description)
