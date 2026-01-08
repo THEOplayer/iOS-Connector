@@ -35,6 +35,9 @@ class PlayerHandler {
     private weak var endpoints: ConvivaEndpoints?
     private weak var storage: ConvivaStorage?
     private var playerState: PlayerState = .CONVIVA_UNKNOWN
+    
+    private var unreportedEncodingType: String?
+    private var encodingTypeIsPending = false
         
     init(endpoints: ConvivaEndpoints, storage: ConvivaStorage, convivaMetadata: [String:Any]) {
         self.endpoints = endpoints
@@ -189,23 +192,29 @@ class PlayerHandler {
     func currentSourceChange(event: CurrentSourceChangeEvent) {
         log("handling currentSourceChange")
         guard let sourceType = event.currentSource?.type else {
+            log("not processing currentSourceChange")
             return
         }
-        var encodingType: String?
+        self.unreportedEncodingType = nil
         switch sourceType.lowercased() {
         case "application/vnd.theo.hesp+json":
-            encodingType = "HESP"
+            self.unreportedEncodingType = "HESP"
         case "application/x-mpegurl",
             "application/vnd.apple.mpegurl",
             "video/mp2t":
-            encodingType = "HLS"
+            self.unreportedEncodingType = "HLS"
         default:
-            encodingType = nil
+            self.unreportedEncodingType = nil
         }
+        log("self.unreportedEncodingType updated to \(self.unreportedEncodingType ?? "nil")")
         
-        if self.storage?.metadataEntryForKey(ENCODING_TYPE) == nil,
-           let encodingType = encodingType {
+        if self.encodingTypeIsPending,
+           let encodingType = self.storage?.metadataEntryForKey(ENCODING_TYPE) as? String ?? self.unreportedEncodingType {
+            // report the pending encodingType and reset the pending state
             self.setContentInfo([ENCODING_TYPE:encodingType])
+            self.unreportedEncodingType = nil
+            self.encodingTypeIsPending = false
+            log("unreportedEncodingType was reset to nil after processing pending encodingtype")
         }
     }
     
@@ -251,6 +260,17 @@ class PlayerHandler {
         
         let adDescriptionMetadata: [String: Any] = collectAdDescriptionMetadata(from: convivaSessionSource.description)
         metadata.merge(adDescriptionMetadata) { (_, new) in new }
+        
+        // Do not override `encoding_type` value if already set by the customer.
+        if let encodingType = self.storage?.metadataEntryForKey(ENCODING_TYPE) as? String ?? self.unreportedEncodingType {
+            log("processing encodingType based on unreportedEncodingType \(self.unreportedEncodingType ?? "nil")")
+            metadata[ENCODING_TYPE] = encodingType
+            self.unreportedEncodingType = nil
+            log("reset unreportedEncodingType to nil after processing it")
+        } else {
+            self.encodingTypeIsPending = true
+            log("mark encodingType as pending")
+        }
    
         self.setContentInfo(metadata)
     }
