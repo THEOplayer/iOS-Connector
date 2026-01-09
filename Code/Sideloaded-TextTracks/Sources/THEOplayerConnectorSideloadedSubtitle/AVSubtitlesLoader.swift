@@ -10,94 +10,72 @@ import AVFoundation
 import THEOplayerSDK
 
 class AVSubtitlesLoader: NSObject {
+    private static var instances: [AVSubtitlesLoader] = []
+    static func addInstance(_ loader: AVSubtitlesLoader) { Self.instances.append(loader) }
+    static func removeInstance(by id: String) {
+        Self.instances.removeAll { $0._id == id }
+    }
+
     private let subtitles: [TextTrackDescription]
-    private(set) var variantTotalDuration: Double = 0
     private let transformer = SubtitlesTransformer()
     private let synchronizer: SubtitlesSynchronizer?
+    private let _id: String
+    private var variantTotalDuration: Double = 0
     
-    init(subtitles: [TextTrackDescription], player: THEOplayer?) {
+    init(subtitles: [TextTrackDescription], id: String, player: THEOplayer? = nil, cachingTask: CachingTask? = nil) {
         self.subtitles = subtitles
+        self._id = id
         self.synchronizer = SubtitlesSynchronizer(player: player)
         self.synchronizer?.delegate = self.transformer
+
+        super.init()
+
+        _ = player?.addEventListener(type: PlayerEventTypes.DESTROY, listener: { [weak self] destroyEvent in self?.handleDestroyEvent() })
+        _ = cachingTask?.addEventListener(type: CachingTaskEventTypes.STATE_CHANGE, listener: { [weak self] cachingTaskStateChangeEvent in self?.handleCachingTaskStateChangeEvent(task: cachingTask) })
+    }
+
+    func handleMasterManifestRequest(_ url: URL) async -> Data? {
+        let parser = MasterPlaylistParser(url: url)
+
+        guard let responseData = await parser.sideLoadSubtitles(subtitles: subtitles) else {
+            print("[AVSubtitlesLoader] ERROR: Couldn't find manifest data")
+            return nil
+        }
+
+        return responseData
     }
     
-    func handleMasterManifestRequest(_ request: AVAssetResourceLoadingRequest) -> Bool {
-        guard let originalURL = request.request.url?.withScheme(newScheme: URLScheme.https) else {
-            return false
+    func handleVariantManifest(_ url: URL) async -> Data? {
+        let parser = VariantPlaylistParser(url: url)
+
+        guard let playlist = await parser.parse(),
+           let responseData = playlist.manifestData else {
+            print("[AVSubtitlesLoader] ERROR: Couldn't find variant data")
+            return nil
         }
-        
-        MasterPlaylistParser(url: originalURL).sideLoadSubtitles(subtitles: subtitles) { data in
-            guard let masterManifestData = data else {
-                print("[AVSubtitlesLoader] ERROR: Couldn't find manifest data")
-                request.finishLoading(with: URLError(URLError.cannotParseResponse))
-                return
-            }
-            let response = HTTPURLResponse(url: originalURL, statusCode: 200, httpVersion: nil, headerFields: nil)
-            request.response = response
-            request.dataRequest?.respond(with: masterManifestData)
-            request.finishLoading()
-        }
-        return true
+
+        self.variantTotalDuration = playlist.totalPlayListDuration
+        return responseData
     }
-    
-    func handleVariantManifest(_ request: AVAssetResourceLoadingRequest) -> Bool {
-        guard let customSchemeURL = request.request.url,
-              let originalURLString = customSchemeURL.absoluteString.byRemovingScheme(scheme: URLScheme.variantm3u8),
-              let originalURL = URL(string:originalURLString) else {
-            print("[AVSubtitlesLoader] ERROR: Variant manifest is invalid")
-            request.finishLoading(with: URLError(URLError.unsupportedURL))
-            return false
+
+    func handleSubtitles(_ url: URL) -> Data? {
+        guard let trackDescription: THEOplayerSDK.TextTrackDescription = self.findTrackDescription(by: url) else {
+            return nil
         }
-        
-        VariantPlaylistParser(url: originalURL).parse { playlist in
-            guard let playlist = playlist, let responseData = playlist.manifestData else {
-                print("[AVSubtitlesLoader] ERROR: Couldn't find variant data")
-                request.finishLoading(with: URLError(URLError.cannotParseResponse))
-                return
-            }
-            self.variantTotalDuration = playlist.totalPlayListDuration
-            let response = HTTPURLResponse(url: originalURL, statusCode: 200, httpVersion: nil, headerFields: nil)
-            request.response = response
-            request.dataRequest?.respond(with: responseData)
-            request.finishLoading()
-        }
-        return true
-    }
-    
-    func handleSubtitles(_ request: AVAssetResourceLoadingRequest) -> Bool {
-        guard let customSchemeURL = request.request.url else {
-            return false
-        }
-        
-        guard let originalURLString = customSchemeURL.absoluteString.byRemovingScheme(scheme: URLScheme.subtitlesm3u8),
-              let originalURL = URL(string: originalURLString) else {
-            print("[AVSubtitlesLoader] ERROR: Failed to revert subtitle URL!")
-            return false
-        }
-        
-        let subtitlem3u8 = self.getSubtitleManifest(for: originalURL)
+
+        let subtitlem3u8 = self.getSubtitleManifest(for: url, trackDescription: trackDescription)
         
         if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
             print("[AVSubtitlesLoader] SUBTITLE: +++++++")
             print(subtitlem3u8)
             print("[AVSubtitlesLoader] SUBTITLE: ------")
         }
-        
-        guard let data = subtitlem3u8.data(using: .utf8) else {
-            return false
-        }
-        
-        let response = HTTPURLResponse(url: originalURL, statusCode: 200, httpVersion: nil, headerFields: nil)
-        request.response = response
-        request.dataRequest?.respond(with: data)
-        request.finishLoading()
-        
-        return true
+
+        return subtitlem3u8.data(using: .utf8)
     }
     
-    fileprivate func getSubtitleManifest(for originalURL: URL) -> String {
-        let trackDescription: THEOplayerSDK.TextTrackDescription? = self.findTrackDescription(by: originalURL)
-        let format: THEOplayerSDK.TextTrackFormat = trackDescription?.format ?? .WebVTT
+    fileprivate func getSubtitleManifest(for originalURL: URL, trackDescription: THEOplayerSDK.TextTrackDescription) -> String {
+        let format: THEOplayerSDK.TextTrackFormat = trackDescription.format ?? .WebVTT
         let timestamp: SSTextTrackDescription.WebVttTimestamp? = (trackDescription as? SSTextTrackDescription)?.vttTimestamp
         let autosync: Bool? = (trackDescription as? SSTextTrackDescription)?.automaticTimestampSyncEnabled
         let subtitlesMediaURL: String
@@ -132,6 +110,16 @@ class AVSubtitlesLoader: NSObject {
         }
         return track
     }
+
+    private func handleDestroyEvent() {
+        Self.removeInstance(by: _id)
+    }
+
+    private func handleCachingTaskStateChangeEvent(task: CachingTask?) {
+        guard let task,
+              task.status == .evicted else { return }
+        Self.removeInstance(by: task.id)
+    }
 }
 
 enum URLScheme: String {
@@ -151,48 +139,40 @@ enum URLScheme: String {
     }
 }
 
-extension AVSubtitlesLoader: ManifestInterceptor {
-    var customScheme: String {
-        //the initial interception scheme
-        URLScheme.masterm3u8.urlScheme
-    }
-    
-    func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
-        if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
-            print("[AVSubtitlesLoader] loadingRequest", loadingRequest.request.url?.absoluteString ?? "")
-        }
-        return intercept(loadingRequest: loadingRequest)
+extension AVSubtitlesLoader: MediaPlaylistInterceptor {
+    func shouldInterceptPlaylistRequest(type: HlsPlaylistType) -> Bool { false }
+    func didInterceptPlaylistRequest(type: HlsPlaylistType, request: URLRequest) async throws -> URLRequest { request }
 
-    }
-    
-    func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForRenewalOfRequestedResource renewalRequest: AVAssetResourceRenewalRequest) -> Bool {
+    func failedToPerformURLRequest(request: URLRequest, response: URLResponse) {
         if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
-            print("[AVSubtitlesLoader] renewalRequest", renewalRequest.request.url?.absoluteString ?? "")
+            print("[AVSubtitlesLoader] failedToPerformURLRequest", request.url?.absoluteString ?? "")
         }
-        return intercept(loadingRequest: renewalRequest)
     }
-    
-    private func intercept(loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
-        guard let scheme = loadingRequest.request.url?.scheme else {
-            return false
+
+    func shouldInterceptPlaylistResponse(type: HlsPlaylistType) -> Bool { true }
+    func didInterceptPlaylistResponse(type: HlsPlaylistType, url: URL, response: URLResponse, data: Data) async throws -> Data {
+        if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
+            print("[AVSubtitlesLoader] intercept url", url.absoluteString, self)
         }
-        switch scheme {
-        case URLScheme.masterm3u8.name:
+        return await interceptResponse(type: type, url: url, data: data)
+    }
+
+    private func interceptResponse(type: HlsPlaylistType, url: URL, data: Data) async -> Data {
+        switch type {
+        case .master :
             // intercept the master manifest to append the subtitles
-            return self.handleMasterManifestRequest(loadingRequest)
-        case URLScheme.variantm3u8.name:
+            return await self.handleMasterManifestRequest(url) ?? data
+        case .video:
             // intercept the variant manifest to get the duration
-            return self.handleVariantManifest(loadingRequest)
-        case URLScheme.subtitlesm3u8.name:
+            return await self.handleVariantManifest(url) ?? data
+        case .subtitles:
             // intercept the subtitle request to respond with the HLS subtitle
-            return self.handleSubtitles(loadingRequest)
+            return self.handleSubtitles(url) ?? data
         default:
             break
         }
-        
-        return false
+        return data
     }
-    
 }
 
 extension THEOplayer {
@@ -202,17 +182,18 @@ extension THEOplayer {
      - Remark:
         - Once used this method, always use it to set a source (even if there are no sideloaded subtitles in it), otherwise the subtitle helper logic can break the playback behavior
      */
-    public func setSourceWithSubtitles(source: SourceDescription?){
-        
-        if let source = source {
-            if let sideLoadedTextTracks = SourceValidator.getValidTextTracks(source) {
-                let subtitleLoader = AVSubtitlesLoader(subtitles: sideLoadedTextTracks, player: self)
-                self.developerSettings?.manifestInterceptor = subtitleLoader
-            } else {
-                self.developerSettings?.manifestInterceptor = nil
-            }
+    public func setSourceWithSubtitles(source: SourceDescription?) {
+        if let source = source,
+           let sideLoadedTextTracks = SourceValidator.getValidTextTracks(source) {
+                let loader = AVSubtitlesLoader(
+                    subtitles: sideLoadedTextTracks,
+                    id: String(self.uid),
+                    player: self
+                )
+                AVSubtitlesLoader.addInstance(loader)
+                self.network.addMediaPlaylistInterceptor(loader)
         } else {
-            self.developerSettings?.manifestInterceptor = nil
+            AVSubtitlesLoader.removeInstance(by: String(self.uid))
         }
         
         self.source = source
@@ -228,14 +209,18 @@ extension Cache {
         - Once used this method, always use it to cache a source (even if there are no sideloaded subtitles in it), otherwise the subtitle helper logic can break the caching behavior
      */
     public func createTaskWithSubtitles(source: SourceDescription, parameters: CachingParameters?) -> CachingTask? {
+        guard let cachingTask = createTask(source: source, parameters: parameters) else { return nil }
         if let sideLoadedTextTracks = SourceValidator.getValidTextTracks(source) {
-            let subtitleLoader = AVSubtitlesLoader(subtitles: sideLoadedTextTracks, player: nil)
-            self.developerSettings?.manifestInterceptor = subtitleLoader
-        } else {
-            self.developerSettings?.manifestInterceptor = nil
+            let loader = AVSubtitlesLoader(
+                subtitles: sideLoadedTextTracks,
+                id: cachingTask.id,
+                cachingTask: cachingTask
+            )
+            AVSubtitlesLoader.addInstance(loader)
+            cachingTask.network.addMediaPlaylistInterceptor(loader)
         }
 
-        return createTask(source: source, parameters: parameters)
+        return cachingTask
     }
 }
 #endif

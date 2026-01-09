@@ -16,26 +16,19 @@ class VariantPlaylistParser: PlaylistParser {
         super.init(url: url)
     }
     
-    func parse(completion: @escaping (_ playlist: VariantPlaylistParser?) -> ()) {
-        self.loadManifest { succ in
-            if succ {
-                self.parseManifest()
-                let constructed = self.constructedManifestArray.joined(separator: "\n")
-                
-                if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
-                    print("[AVSubtitlesLoader] VARIANT: +++++++")
-                    print(constructed)
-                    print("[AVSubtitlesLoader] VARIANT: ------")
-                }
-                
-                if let data = constructed.data(using: .utf8) {
-                    self.manifestData = data
-                }
-                completion(self)
-            } else {
-                completion(nil)
-            }
+    func parse() async -> VariantPlaylistParser? {
+        guard let _ = await self.loadManifest() else { return nil }
+        self.parseManifest()
+        let constructed = self.constructedManifestArray.joined(separator: "\n")
+        if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
+            print("[AVSubtitlesLoader] VARIANT: +++++++")
+            print(constructed)
+            print("[AVSubtitlesLoader] VARIANT: ------")
         }
+        if let data = constructed.data(using: .utf8) {
+            self.manifestData = data
+        }
+        return self
     }
     
     fileprivate func parseManifest() {

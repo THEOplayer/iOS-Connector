@@ -171,7 +171,7 @@ All that is needed is a source with a text track description:
 ```swift
 public static var sourceWithSideloadedTextTrack: SourceDescription {
     let typedSource = TypedSource(src: "https://sourceURL.com/manifest.m3u8, type: "application/x-mpegurl")
-    let textTrack = TextTrackDescription(src: "https://sideloadedurl.com/subtitle.vtt", srclang: "language_code", isDefault: false, kind: .subtitles, label: "Label", format: .WebVTT)
+    let textTrack = TextTrackDescription(src: "https://sideloadedurl.com/subtitle.vtt", srclang: "language_code", isDefault: true, kind: .subtitles, label: "Label", format: .WebVTT)
     return SourceDescription(source: typedSource, textTracks: [textTrack])
 }
 ```
@@ -188,5 +188,4 @@ For more information on how to implement offline playback with caching, please r
 
 ### Limitations
 
-1. Caching sources with sideloaded subtitles can only be done one task at a time. This is due to some technical complexities in the underlying implementation. This limitation may be addressed in future releases.
-2. Caching is only available on iOS.
+1. Caching is only available on iOS.

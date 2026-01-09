@@ -17,24 +17,17 @@ class MasterPlaylistParser: PlaylistParser {
         super.init(url: url)
     }
     
-    func sideLoadSubtitles(subtitles: [TextTrackDescription], completion: @escaping (_ data: Data?) -> ()) {
-        self.loadManifest { succ in
-            if succ {
-                self.parseManifest()
-                self.appendSubtitlesLines(subtitles: subtitles)
-                let constructed = self.constructedManifestArray.joined(separator: "\n")
-                
-                if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
-                    print("[AVSubtitlesLoader] MASTER: +++++++")
-                    print(constructed)
-                    print("[AVSubtitlesLoader] MASTER: ------")
-                }
-                
-                completion(constructed.data(using: .utf8))
-            } else {
-                completion(nil)
-            }
+    func sideLoadSubtitles(subtitles: [TextTrackDescription]) async -> Data? {
+        guard let _ = await self.loadManifest() else { return nil }
+        self.parseManifest()
+        self.appendSubtitlesLines(subtitles: subtitles)
+        let constructed = self.constructedManifestArray.joined(separator: "\n")
+        if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
+            print("[AVSubtitlesLoader] MASTER: +++++++")
+            print(constructed)
+            print("[AVSubtitlesLoader] MASTER: ------")
         }
+        return constructed.data(using: .utf8)
     }
     
     fileprivate func parseManifest() {
@@ -83,8 +76,8 @@ class MasterPlaylistParser: PlaylistParser {
     func appendSubtitlesLines(subtitles: [TextTrackDescription]) {
         for subtitle in subtitles {
             if let label = subtitle.label, let encodedURLString = subtitle.src.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
-                let subtitleCustomSchemePath = encodedURLString.byConcatenatingScheme(scheme: URLScheme.subtitlesm3u8)
-                let subtitleLine = "#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"\(self.subtitlesGroupId)\",NAME=\"\(label)\",URI=\"\(subtitleCustomSchemePath)\",LANGUAGE=\"\(subtitle.srclang)\""
+                let defaultValue = subtitle.isDefault == true ? "YES" : "NO"
+                let subtitleLine = "#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"\(self.subtitlesGroupId)\",NAME=\"\(label)\",DEFAULT=\(defaultValue),URI=\"\(encodedURLString)\",LANGUAGE=\"\(subtitle.srclang)\""
                 if let linePosition = self.lastMediaLine {
                     self.constructedManifestArray.insert("\(subtitleLine)", at: linePosition)
                 } else {
@@ -98,6 +91,6 @@ class MasterPlaylistParser: PlaylistParser {
         guard let variantURL = self.getFullURL(from: path) else {
             return path.trimmingCharacters(in: .whitespacesAndNewlines)
         }
-        return variantURL.absoluteString.byConcatenatingScheme(scheme: URLScheme.variantm3u8) 
+        return variantURL.absoluteString
     }
 }
