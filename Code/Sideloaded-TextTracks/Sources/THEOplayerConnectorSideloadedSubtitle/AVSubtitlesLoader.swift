@@ -59,7 +59,11 @@ class AVSubtitlesLoader: NSObject {
     }
 
     func handleSubtitles(_ url: URL) -> Data? {
-        let subtitlem3u8 = self.getSubtitleManifest(for: url)
+        guard let trackDescription: THEOplayerSDK.TextTrackDescription = self.findTrackDescription(by: url) else {
+            return nil
+        }
+
+        let subtitlem3u8 = self.getSubtitleManifest(for: url, trackDescription: trackDescription)
         
         if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
             print("[AVSubtitlesLoader] SUBTITLE: +++++++")
@@ -70,9 +74,8 @@ class AVSubtitlesLoader: NSObject {
         return subtitlem3u8.data(using: .utf8)
     }
     
-    fileprivate func getSubtitleManifest(for originalURL: URL) -> String {
-        let trackDescription: THEOplayerSDK.TextTrackDescription? = self.findTrackDescription(by: originalURL)
-        let format: THEOplayerSDK.TextTrackFormat = trackDescription?.format ?? .WebVTT
+    fileprivate func getSubtitleManifest(for originalURL: URL, trackDescription: THEOplayerSDK.TextTrackDescription) -> String {
+        let format: THEOplayerSDK.TextTrackFormat = trackDescription.format ?? .WebVTT
         let timestamp: SSTextTrackDescription.WebVttTimestamp? = (trackDescription as? SSTextTrackDescription)?.vttTimestamp
         let autosync: Bool? = (trackDescription as? SSTextTrackDescription)?.automaticTimestampSyncEnabled
         let subtitlesMediaURL: String
