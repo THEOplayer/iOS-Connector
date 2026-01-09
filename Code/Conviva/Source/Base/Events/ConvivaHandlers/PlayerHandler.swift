@@ -206,7 +206,6 @@ class PlayerHandler {
         default:
             self.unreportedEncodingType = nil
         }
-        log("self.unreportedEncodingType updated to \(self.unreportedEncodingType ?? "nil")")
         
         if self.encodingTypeIsPending,
            let encodingType = self.storage?.metadataEntryForKey(ENCODING_TYPE) as? String ?? self.unreportedEncodingType {
@@ -214,7 +213,7 @@ class PlayerHandler {
             self.setContentInfo([ENCODING_TYPE:encodingType])
             self.unreportedEncodingType = nil
             self.encodingTypeIsPending = false
-            log("unreportedEncodingType was reset to nil after processing pending encodingtype")
+            log("unreportedEncodingType reset after processing pending encodingtype")
         }
     }
     
@@ -263,10 +262,10 @@ class PlayerHandler {
         
         // Do not override `encoding_type` value if already set by the customer.
         if let encodingType = self.storage?.metadataEntryForKey(ENCODING_TYPE) as? String ?? self.unreportedEncodingType {
-            log("processing encodingType based on unreportedEncodingType \(self.unreportedEncodingType ?? "nil")")
+            log("reporting encodingType \(self.unreportedEncodingType ?? "nil")")
             metadata[ENCODING_TYPE] = encodingType
             self.unreportedEncodingType = nil
-            log("reset unreportedEncodingType to nil after processing it")
+            log("unreportedEncodingType reset")
         } else {
             self.encodingTypeIsPending = true
             log("mark encodingType as pending")
