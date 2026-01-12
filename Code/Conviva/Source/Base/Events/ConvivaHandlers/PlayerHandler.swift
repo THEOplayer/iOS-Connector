@@ -195,25 +195,32 @@ class PlayerHandler {
             log("not processing currentSourceChange")
             return
         }
-        self.unreportedEncodingType = nil
+        
+        /*  EncodingType reporting: The currentSourceChange event is used to extract the encoding type of the internally selected source. For HLS, this event is dispatched right before the sourceChange event. For HESP sources, it is dispatched after the play event, when a valid endpoint has been selected.*/
+        
+        var calculatedEncodingType: String? = nil
         switch sourceType.lowercased() {
         case "application/vnd.theo.hesp+json":
-            self.unreportedEncodingType = "HESP"
+            calculatedEncodingType = "HESP"
         case "application/x-mpegurl",
             "application/vnd.apple.mpegurl",
             "video/mp2t":
-            self.unreportedEncodingType = "HLS"
+            calculatedEncodingType = "HLS"
         default:
-            self.unreportedEncodingType = nil
+            calculatedEncodingType = nil
         }
         
-        if self.encodingTypeIsPending,
-           let encodingType = self.storage?.metadataEntryForKey(ENCODING_TYPE) as? String ?? self.unreportedEncodingType {
-            // report the pending encodingType and reset the pending state
-            self.setContentInfo([ENCODING_TYPE:encodingType])
-            self.unreportedEncodingType = nil
-            self.encodingTypeIsPending = false
-            log("unreportedEncodingType reset after processing pending encodingtype")
+        if let encodingType = self.storage?.metadataEntryForKey(ENCODING_TYPE) as? String ?? calculatedEncodingType {
+            /*  For HESP sources the encodingType is not available at session startup (play event) and encodingType will have been marked as pending. Once the currentSourceChange event is dispatched, this mark indicates the calculated encodingType can be pushed immediately to conviva and the mark can be reset. */
+            if self.encodingTypeIsPending {
+                self.setContentInfo([ENCODING_TYPE:encodingType])
+                self.unreportedEncodingType = nil
+                self.encodingTypeIsPending = false
+            }
+            /*  For HLS sources we cache the encoding type till the play event (Conviva session creation), at which the cached value will be pushed to conviva and the caching is reset to prevent further reporting. */
+            else {
+                self.unreportedEncodingType = encodingType
+            }
         }
     }
     
@@ -260,15 +267,18 @@ class PlayerHandler {
         let adDescriptionMetadata: [String: Any] = collectAdDescriptionMetadata(from: convivaSessionSource.description)
         metadata.merge(adDescriptionMetadata) { (_, new) in new }
         
-        // Do not override `encoding_type` value if already set by the customer.
+        /* EncodingType reporting:
+            1. A customer set encodingType always has precedence over the calculated encodingtype
+            2. For HLS sources (unreportedEncodingType is set on earlier currentSourceChange event) we can now report the encodingType.
+            3. For HESP sources (unreportedEncodingType is still nil) we mark the encodingType as pending, because the currentSourceChange event will be dispatched after the play event).
+         */
         if let encodingType = self.storage?.metadataEntryForKey(ENCODING_TYPE) as? String ?? self.unreportedEncodingType {
             log("reporting encodingType \(self.unreportedEncodingType ?? "nil")")
             metadata[ENCODING_TYPE] = encodingType
             self.unreportedEncodingType = nil
-            log("unreportedEncodingType reset")
         } else {
             self.encodingTypeIsPending = true
-            log("mark encodingType as pending")
+            log("marked encodingType as pending")
         }
    
         self.setContentInfo(metadata)
