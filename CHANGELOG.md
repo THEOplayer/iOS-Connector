@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conviva
   - Fixed an issue where the initial metadata passed to the convivaConnector was not persistent across Conviva sessions.
   - Fixed an issue where the session's assetName was not configurable by setContentInfo, which has higher precedence than source.metadata.title.
+  - Fixed an issue with the encodingType, where sometimes the encodingType of the previous session was reported
 
 ## [10.7.0] - 2025-12-18
 
