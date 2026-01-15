@@ -22,7 +22,7 @@ class AVSubtitlesLoader: NSObject {
     private let _id: String
     private var variantTotalDuration: Double = 0
     
-    init(subtitles: [TextTrackDescription], id: String, player: THEOplayer? = nil, cachingTask: CachingTask? = nil) {
+    init(subtitles: [TextTrackDescription], id: String, player: THEOplayer? = nil) {
         self.subtitles = subtitles
         self._id = id
         self.synchronizer = SubtitlesSynchronizer(player: player)
@@ -31,8 +31,15 @@ class AVSubtitlesLoader: NSObject {
         super.init()
 
         _ = player?.addEventListener(type: PlayerEventTypes.DESTROY, listener: { [weak self] destroyEvent in self?.handleDestroyEvent() })
+    }
+
+    #if os(iOS)
+    convenience init(subtitles: [TextTrackDescription], id: String, cachingTask: CachingTask? = nil) {
+        self.init(subtitles: subtitles, id: id, player: nil)
+
         _ = cachingTask?.addEventListener(type: CachingTaskEventTypes.STATE_CHANGE, listener: { [weak self] cachingTaskStateChangeEvent in self?.handleCachingTaskStateChangeEvent(task: cachingTask) })
     }
+    #endif
 
     func handleMasterManifestRequest(_ url: URL) async -> Data? {
         let parser = MasterPlaylistParser(url: url)
@@ -115,11 +122,13 @@ class AVSubtitlesLoader: NSObject {
         Self.removeInstance(by: _id)
     }
 
+    #if os(iOS)
     private func handleCachingTaskStateChangeEvent(task: CachingTask?) {
         guard let task,
               task.status == .evicted else { return }
         Self.removeInstance(by: task.id)
     }
+    #endif
 }
 
 enum URLScheme: String {
