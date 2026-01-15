@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+
 ## [10.8.0] - 2026-01-15
 
 ### Added
@@ -14,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SideloadedSubtitle
   - Added support for simultaneous multi-source caching with sideloaded subtitles. Previously there was a limitation of caching only a single task at a time.
   - Added support to make a sideloaded subtitle selected for caching by default. Use the `isDefault` property in `SSTextTrackDescription` or `TextTrackDescription`. Only one default track can be added.
+
+### Fixed
+
+- Conviva
+  - Fixed an issue where the initial metadata passed to the convivaConnector was not persistent across Conviva sessions.
+  - Fixed an issue where the session's assetName was not configurable by setContentInfo, which has higher precedence than source.metadata.title.
 
 ## [10.7.0] - 2025-12-18
 

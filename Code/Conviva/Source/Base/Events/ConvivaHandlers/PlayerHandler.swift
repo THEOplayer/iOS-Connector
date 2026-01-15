@@ -36,9 +36,12 @@ class PlayerHandler {
     private weak var storage: ConvivaStorage?
     private var playerState: PlayerState = .CONVIVA_UNKNOWN
         
-    init(endpoints: ConvivaEndpoints, storage: ConvivaStorage) {
+    init(endpoints: ConvivaEndpoints, storage: ConvivaStorage, convivaMetadata: [String:Any]) {
         self.endpoints = endpoints
         self.storage = storage
+    
+        // store initial metadata as persistent metadata
+        self.storage?.storePersistentMetadata(convivaMetadata)
     }
     
     func setContentInfo(_ contentInfo: [String: Any]) {
@@ -71,12 +74,12 @@ class PlayerHandler {
         log("handling maybeReportPlaybackRequested")
         guard !self.currentConvivaSession.started else { return }
         
-        // collect standard metadata like playerName, assetName, stramUrl, isLive, ...
+        // collect and send standard metadata like playerName, assetName, streamUrl, isLive, ...
         self.updateMetadata()
         
-        // start session on conviva
+        // start session on conviva and send persistent metadata
         if let storage = self.storage {
-            self.endpoints?.videoAnalytics.reportPlaybackRequested(storage.metadata)
+            self.endpoints?.videoAnalytics.reportPlaybackRequested(storage.persistentMetadata)
         }
         
         // mark conviva session as started
@@ -243,7 +246,7 @@ class PlayerHandler {
         var metadata: [String: Any] = [
             CIS_SSDK_METADATA_PLAYER_NAME: self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_PLAYER_NAME) ?? Utilities.playerName,
             CIS_SSDK_METADATA_STREAM_URL: url,
-            CIS_SSDK_METADATA_ASSET_NAME: convivaSessionSource.description.metadata?.title ?? Utilities.defaultStringValue,
+            CIS_SSDK_METADATA_ASSET_NAME: self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_ASSET_NAME) ?? convivaSessionSource.description.metadata?.title ?? Utilities.defaultStringValue,
         ]
         
         let adDescriptionMetadata: [String: Any] = collectAdDescriptionMetadata(from: convivaSessionSource.description)

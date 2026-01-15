@@ -24,13 +24,14 @@ public class ConvivaConnector {
     public convenience init?(
         configuration: ConvivaConfiguration,
         player: THEOplayer,
+        convivaMetadata: [String: Any] = [:],
         externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil
     ) {
         guard let endPoints = ConvivaEndpoints(configuration: configuration) else { return nil }
-        self.init(conviva: endPoints, player: player, externalEventDispatcher: externalEventDispatcher)
+        self.init(conviva: endPoints, player: player, convivaMetadata: convivaMetadata, externalEventDispatcher: externalEventDispatcher)
     }
     
-    init(conviva: ConvivaEndpoints, player: THEOplayer, externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
+    init(conviva: ConvivaEndpoints, player: THEOplayer, convivaMetadata: [String: Any], externalEventDispatcher: THEOplayerSDK.EventDispatcherProtocol? = nil) {
         self.endPoints = conviva
         
         // App level handling
@@ -38,7 +39,7 @@ public class ConvivaConnector {
         self.appEventForwarder = AppEventForwarder(handler: self.appHandler)
         
         // Player level handling
-        self.playerHandler = PlayerHandler(endpoints: self.endPoints, storage: self.storage)
+        self.playerHandler = PlayerHandler(endpoints: self.endPoints, storage: self.storage, convivaMetadata: convivaMetadata)
         self.playerEventForwarder = PlayerEventForwarder(player: player, handler: self.playerHandler)
         
         // Ad level handling

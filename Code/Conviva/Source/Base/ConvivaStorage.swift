@@ -5,6 +5,12 @@
 class ConvivaStorage {
     private(set) var metrics: [String:Any] = [:]
     private(set) var metadata: [String:Any] = [:]
+    private(set) var persistentMetadata: [String:Any] = [:]
+    
+    // MARK: PERSISTENT METADATA
+    func storePersistentMetadata(_ map: [String:Any]) {
+        persistentMetadata = map
+    }
     
     // MARK: METADATA
     func storeMetadataEntry(key: String, value: Any) {
@@ -18,7 +24,7 @@ class ConvivaStorage {
     }
     
     func metadataEntryForKey(_ key: String) -> Any? {
-        return self.metadata[key]
+        return self.metadata[key] ?? self.persistentMetadata[key]
     }
     
     func hasMetadataEntryForKey(_ key: String) -> Bool {
