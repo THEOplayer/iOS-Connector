@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [10.8.0.1] - 2026-01-20
+
+### Fixed
+
+- SideloadedSubtitle
+  - Fixed an issue where a bad http response code for subtitle sources would cause playback issues.
 
 ## [10.8.0] - 2026-01-15
 
