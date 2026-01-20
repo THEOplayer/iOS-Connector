@@ -177,7 +177,11 @@ extension AVSubtitlesLoader: MediaPlaylistInterceptor {
         if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
             print("[AVSubtitlesLoader] intercept url", url.absoluteString, self)
         }
-        return await interceptResponse(type: type, url: url, data: data)
+        let response = await interceptResponse(type: type, url: url, data: data)
+        if response == data {
+            print("[AVSubtitlesLoader] keeping original response for url", url.absoluteString, self)
+        }
+        return response
     }
 
     private func interceptResponse(type: HlsPlaylistType, url: URL, data: Data) async -> Data {
