@@ -16,14 +16,15 @@ class AVSubtitlesLoader: NSObject {
         Self.instances.removeAll { $0._id == id }
     }
 
-    private let subtitles: [TextTrackDescription]
+    private let _subtitles: [TextTrackDescription]
+    private var subtitles: [TextTrackDescription] = []
     private let transformer = SubtitlesTransformer()
     private let synchronizer: SubtitlesSynchronizer?
     private let _id: String
     private var variantTotalDuration: Double = 0
     
     init(subtitles: [TextTrackDescription], id: String, player: THEOplayer? = nil) {
-        self.subtitles = subtitles
+        self._subtitles = subtitles
         self._id = id
         self.synchronizer = SubtitlesSynchronizer(player: player)
         self.synchronizer?.delegate = self.transformer
@@ -43,7 +44,6 @@ class AVSubtitlesLoader: NSObject {
 
     func handleMasterManifestRequest(_ url: URL) async -> Data? {
         let parser = MasterPlaylistParser(url: url)
-
         guard let responseData = await parser.sideLoadSubtitles(subtitles: subtitles) else {
             print("[AVSubtitlesLoader] ERROR: Couldn't find manifest data")
             return nil
@@ -122,6 +122,20 @@ class AVSubtitlesLoader: NSObject {
         Self.removeInstance(by: _id)
     }
 
+    private func validateSubtitles() async -> [TextTrackDescription] {
+        var validSubtitles: [TextTrackDescription] = []
+        for subtitle in _subtitles {
+            if let encodedURLString = subtitle.src.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+               let encodedURL = URL(string: encodedURLString),
+               let (_, response) = try? await URLSession.shared.data(from: encodedURL),
+               let httpResponse = response as? HTTPURLResponse,
+               200..<300 ~= httpResponse.statusCode {
+                validSubtitles.append(subtitle)
+            }
+        }
+        return validSubtitles
+    }
+
     #if os(iOS)
     private func handleCachingTaskStateChangeEvent(task: CachingTask?) {
         guard let task,
@@ -163,19 +177,27 @@ extension AVSubtitlesLoader: MediaPlaylistInterceptor {
         if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
             print("[AVSubtitlesLoader] intercept url", url.absoluteString, self)
         }
-        return await interceptResponse(type: type, url: url, data: data)
+        let response = await interceptResponse(type: type, url: url, data: data)
+        if response == data {
+            print("[AVSubtitlesLoader] keeping original response for url", url.absoluteString, self)
+        }
+        return response
     }
 
     private func interceptResponse(type: HlsPlaylistType, url: URL, data: Data) async -> Data {
         switch type {
         case .master :
             // intercept the master manifest to append the subtitles
+            subtitles = await validateSubtitles()
+            if subtitles.isEmpty { return data }
             return await self.handleMasterManifestRequest(url) ?? data
         case .video:
             // intercept the variant manifest to get the duration
+            if subtitles.isEmpty { return data }
             return await self.handleVariantManifest(url) ?? data
         case .subtitles:
             // intercept the subtitle request to respond with the HLS subtitle
+            if subtitles.isEmpty { return data }
             return self.handleSubtitles(url) ?? data
         default:
             break
