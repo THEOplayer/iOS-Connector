@@ -27,6 +27,7 @@ public class UplynkSSAIConfiguration: CustomServerSideAdInsertionConfiguration {
     public let id: ID
     public let prefix: String?
     public let preplayParameters: [String: String]
+    public let orderedPreplayParameters: [(String, String)]?
     public let assetType: AssetType
     public let contentProtected: Bool
     public let assetInfo: Bool
@@ -38,6 +39,7 @@ public class UplynkSSAIConfiguration: CustomServerSideAdInsertionConfiguration {
         assetType: AssetType,
         prefix: String? = nil,
         preplayParameters: [String: String] = [:],
+        orderedPreplayParameters: [(String, String)]? = nil,
         contentProtected: Bool = false,
         assetInfo: Bool = false,
         uplynkPingConfiguration: UplynkPingConfiguration = .init(),
@@ -47,6 +49,7 @@ public class UplynkSSAIConfiguration: CustomServerSideAdInsertionConfiguration {
         self.assetType = assetType
         self.prefix = prefix
         self.preplayParameters = preplayParameters
+        self.orderedPreplayParameters = orderedPreplayParameters
         self.contentProtected = contentProtected
         self.assetInfo = assetInfo
         self.pingConfiguration = uplynkPingConfiguration
