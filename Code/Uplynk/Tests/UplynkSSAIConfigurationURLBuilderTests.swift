@@ -63,8 +63,8 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let prefix = "https://content.uplynk.com"
         let assetID = "a123"
         
-        let validNoPingQueryParameter = "ad.pingc=0"
-        let validPingQueryParameter = "ad.pingc=1&ad.pingf=\(pingFeature.rawValue)"
+        let validNoPingQueryParameter = "ad.cping=0"
+        let validPingQueryParameter = "ad.cping=1&ad.pingf=\(pingFeature.rawValue)"
         
         let pingConfiguration = switch pingFeature {
         case .noPing:

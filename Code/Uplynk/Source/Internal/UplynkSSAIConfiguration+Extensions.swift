@@ -46,7 +46,7 @@ extension UplynkSSAIConfiguration {
         if pingFeature == .noPing {
             return ""
         } else {
-            return "&ad.pingc=1&ad.pingf=\(pingFeature.rawValue)"
+            return "&ad.cping=1&ad.pingf=\(pingFeature.rawValue)"
         }
     }
     
