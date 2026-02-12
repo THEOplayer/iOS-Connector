@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Uplynk
+  - Added `orderedPreplayParameters` to `UplynkSSAIConfiguration`, which can be used to maintain the order of preplay parameters when making a request.
+
+### Fixed
+
+- Uplynk
+  - Improved URL encoding for characters such as `%`, `&`, `=`, `+` and `,` to preserve pre-encoded values and prevent server-side double decoding issues.
+
+### Changed
+
+- Uplynk
+  - When ping feature is not configured, the player will now send an empty string instead of `"&ad.pingc=0"` to prevent unsigned parameters that could break signature validation.
+
 ## [10.8.0.1] - 2026-01-20
 
 ### Fixed

@@ -33,6 +33,8 @@ We start by creating an `UplynkSSAIConfiguration` object that describes how to c
  
 - `preplayParameters`: The `preplayParameters` object should have string-key-string-value combinations, which will be used as query parameters for the Preplay API call. Nested objects are not supported.
 
+- `orderedPreplayParameters`: The `orderedPreplayParameters` object should have string-key-string-value combinations, which will be used as query parameters for the Preplay API call. Nested objects are not supported. Unlike `preplayParameters`, `orderedPreplayParameters` preserves the order of parameters while making a request, which is neccessary to prevent unsigned parameters that could break signature validation.
+
 - `contentProtected`: Boolean value which will internally set any necessary content-protection information. No content-protection details have to be specified by the customer.
 
 - **A Preplay request must include all parameters defined within the playback request, hence these parameters must be included in the THEOplayer source**. This request must also include a digital signature if the 'Require a token for playback' option is enabled in the back-end on the corresponding live channel. (See also : [Signing a Playback URL Tutorial](https://docs.uplynk.com/docs/sign-playback-url))
@@ -62,7 +64,7 @@ Ad specific parameters can be passed in the `preplayParameters` argument of the 
                                 assetType: ...,
                                 prefix: ..., 
                                 preplayParameters: [
-                                    // Parameters here should specify the necessary ad parameters for the Preplay API
+                                    // Parameters here should specify the necessary ad parameters for the Preplay API. Use `orderedPreplayParameters` instead to pass these in the order given.
                                     "ad.param1": "param_val1",
                                     "ad.param2": "param_val2" 
                                 ],
