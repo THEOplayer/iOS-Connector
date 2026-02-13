@@ -11,6 +11,8 @@ let package = Package(
         .library(name: "THEOplayerConnectorConviva", targets: ["THEOplayerConnectorConviva"]),
         
         .library(name: "THEOplayerConnectorNielsen", targets: ["THEOplayerConnectorNielsen"]),
+
+        .library(name: "THEOplayerConnectorGemius", targets: ["THEOplayerConnectorGemius"]),
         
         .library(name: "THEOplayerConnectorUtilities", targets: ["THEOplayerConnectorUtilities"]),
 
@@ -46,6 +48,15 @@ let package = Package(
                 .target(name: "THEOplayerConnectorUtilities")
             ],
             path: "Code/Nielsen/Source"
+        ),
+
+        // GEMIUS \\
+        .target(
+            name: "THEOplayerConnectorGemius",
+            dependencies: [
+                "THEOplayerSDK",
+            ],
+            path: "Code/Gemius/Source"
         ),
         
         .target(
