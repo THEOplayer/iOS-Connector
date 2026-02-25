@@ -54,8 +54,10 @@ jobs:
       - name: Commit the version.json file
         if: inputs.version != ''
         run: |
-          git add version.json
-          git commit -m "update version.json"
+          if ! git diff --quiet version.json; then
+            git add version.json
+            git commit -m "update version.json"
+          fi
       - name: Update CHANGELOG.md file
         if: inputs.version != ''
         run: sh update_changelog.sh -v ${{ inputs.version }}
@@ -67,7 +69,7 @@ jobs:
         run: |
           git tag ${{ inputs.version }}
       - name: Push changes
-        if: inputs.version != '' && inputs.dryRun == false
+        if: inputs.version != '' && inputs.version != steps.store_previous_version.outputs.previousVersion && inputs.dryRun == false
         run: |
           git push origin
           git push origin ${{ inputs.version }}
