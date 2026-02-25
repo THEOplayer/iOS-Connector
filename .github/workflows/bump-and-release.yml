@@ -32,6 +32,7 @@ jobs:
         with:
           xcode-version: '16.2.0'
       - name: Log stacks
+        # language=bash
         run: |
           echo "Log macOS version"
           sw_vers
@@ -43,6 +44,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
       - id: store_previous_version
         name: Store previous version value
+        # language=bash
         run: |
           previousVersion=$(ruby -r "./THEOplayer-Connector-Version.rb" -e "print_theoplayer_connector_version")
           echo "previousVersion=$previousVersion" >> "$GITHUB_OUTPUT"
@@ -51,6 +53,7 @@ jobs:
         run: sh update_version_json.sh -v ${{ inputs.version }}
       - name: Commit the version.json file
         if: inputs.version != ''
+        # language=bash
         run: |
           if ! git diff --quiet version.json; then
             git add version.json
@@ -64,16 +67,19 @@ jobs:
         run: sh commit_changelog.sh
       - name: Add new git tag
         if: inputs.version != ''
+        # language=bash
         run: |
           git tag ${{ inputs.version }}
       - name: Push changes
         if: inputs.version != '' && inputs.version != steps.store_previous_version.outputs.previousVersion && inputs.dryRun == false
+        # language=bash
         run: |
           git push origin
           git push origin ${{ inputs.version }}
       - name: ${{ (inputs.dryRun == true && 'Validate') || 'Release' }} on Cocoapods
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        # language=bash
         run: |
           # make the command
           command="${{ (inputs.dryRun == true && 'spec lint') || 'trunk push' }}"
