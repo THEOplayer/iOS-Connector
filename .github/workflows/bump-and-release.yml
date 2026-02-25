@@ -51,22 +51,25 @@ jobs:
       - name: Update the version.json file
         if: inputs.version != ''
         run: sh update_version_json.sh -v ${{ inputs.version }}
-      - name: Commit and push the changes made to the version.json file
+      - name: Commit the version.json file
         if: inputs.version != ''
         run: |
           git add version.json
           git commit -m "update version.json"
-          git push
       - name: Update CHANGELOG.md file
-        if: inputs.version != '' && inputs.dryRun == false
+        if: inputs.version != ''
         run: sh update_changelog.sh -v ${{ inputs.version }}
-      - name: Commit and push the changes made to the CHANGELOG.md file
-        if: inputs.version != '' && inputs.dryRun == false
+      - name: Commit CHANGELOG.md file
+        if: inputs.version != ''
         run: sh commit_changelog.sh
-      - name: Add and push new git tag
+      - name: Add new git tag
         if: inputs.version != ''
         run: |
           git tag ${{ inputs.version }}
+      - name: Push changes
+        if: inputs.version != '' && inputs.dryRun == false
+        run: |
+          git push origin
           git push origin ${{ inputs.version }}
       - name: ${{ (inputs.dryRun == true && 'Validate') || 'Release' }} on Cocoapods
         env:
