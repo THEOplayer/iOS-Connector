@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.author           = "THEO technologies"
   s.source           = { :git => 'https://github.com/THEOplayer/iOS-Connector.git', :tag => s.version.to_s }
 
-  s.platforms    = { :ios => "13.0", :tvos => "13.0" }
+  s.platforms    = { :ios => "15.0", :tvos => "15.0" }
       
   s.static_framework = true
   s.swift_versions = ['5.3', '5.4', '5.5', '5.6', '5.7']
