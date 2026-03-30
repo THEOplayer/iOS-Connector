@@ -27,8 +27,8 @@ struct AdEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING, listener: filter.conditionalSender(handler.adPlaying)),
             player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
                 filter.conditionalSender(handler.adTimeUpdate)($0.currentTimeInMilliseconds)
-                filter.conditionalSender(handler.adRenderedFramerateUpdate)(NSNumber(value: Int(player.playerMetrics.renderedFramerate.rounded())))
-                filter.conditionalSender(handler.adDroppedFramesUpdate)(NSNumber(value: player.playerMetrics.droppedVideoFrames))
+                filter.conditionalSender(handler.adRenderedFramerateUpdate)(NSNumber(value: Int(player.metrics.renderedFramerate.rounded())))
+                filter.conditionalSender(handler.adDroppedFramesUpdate)(NSNumber(value: player.metrics.droppedVideoFrames))
             },
             player.addRemovableEventListener(type: PlayerEventTypes.PAUSE, listener: filter.conditionalSender(handler.adPause))
         ]

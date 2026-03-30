@@ -45,8 +45,8 @@ class PlayerEventForwarder {
             player.addRemovableEventListener(type: PlayerEventTypes.TIME_UPDATE) {
                 handler.timeUpdate(
                     currentTimeInMilliseconds: $0.currentTimeInMilliseconds,
-                    renderedFramerate: NSNumber(value: Int(player.playerMetrics.renderedFramerate.rounded())),
-                    droppedFrames: NSNumber(value: player.playerMetrics.droppedVideoFrames)
+                    renderedFramerate: NSNumber(value: Int(player.metrics.renderedFramerate.rounded())),
+                    droppedFrames: NSNumber(value: player.metrics.droppedVideoFrames)
                 )
             },
             player.addRemovableEventListener(type: PlayerEventTypes.SOURCE_CHANGE) {
