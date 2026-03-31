@@ -139,4 +139,41 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         XCTAssertTrue(builtPreplayURL.contains(validPrePlayParameters) ||
                       builtPreplayURL.contains(anotherValidPrePlayParameters))
     }
+    
+    /// Makes sure Uplynk URLs do not contain the sequence "?&"
+    /// FIFA raised an issue that the Uplynk backend does not support those kind of URLs.
+    /// See [THEOSD-16266] [OPTI-1771]
+    func testEmptyQueryParameter() {
+        let hasEmptyParameter: (String)->Bool = { $0.contains("?&") }
+        let faultyURL = "https://content.uplynk.com/preplay/ID?&sig=signature"
+        XCTAssert(hasEmptyParameter(faultyURL))
+
+        let assetID = "a123"
+        let vodBuilder = UplynkSSAIURLBuilder(
+            ssaiConfiguration: UplynkSSAIConfiguration(
+                id: .asset(ids: [assetID]),
+                assetType: .asset
+            )
+        )
+        let liveBuilder = UplynkSSAIURLBuilder(
+            ssaiConfiguration: UplynkSSAIConfiguration(
+                id: .asset(ids: [assetID]),
+                assetType: .channel
+            )
+        )
+        
+        let preplayVod = vodBuilder.buildPreplayVODURL()
+        let preplayFaultyLive = vodBuilder.buildPreplayLiveURL()
+        print(preplayVod)
+        XCTAssertFalse(hasEmptyParameter(preplayVod))
+        print(preplayFaultyLive)
+        XCTAssertFalse(hasEmptyParameter(preplayFaultyLive))
+
+        let preplayFaultyVod = liveBuilder.buildPreplayVODURL()
+        let preplayLive = liveBuilder.buildPreplayLiveURL()
+        print(preplayFaultyVod)
+        XCTAssertFalse(hasEmptyParameter(preplayFaultyVod))
+        print(preplayLive)
+        XCTAssertFalse(hasEmptyParameter(preplayLive))
+    }
 }
