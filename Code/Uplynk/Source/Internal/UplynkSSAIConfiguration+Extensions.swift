@@ -14,27 +14,11 @@ extension UplynkSSAIConfiguration {
     }
     
     var urlParameters: String {
-        if let orderedParams = orderedPreplayParameters, !orderedParams.isEmpty {
-            // Define strict allowed characters for query values
-            // We MUST encode '%' (to preserve pre-encoded values), '&', '=', '+', and others that alter URL structure.
-            var allowed = CharacterSet.urlQueryAllowed
-            allowed.remove(charactersIn: "&+=?%,")
-            
-            let joinedParameters = orderedParams.map { (key, value) in
-                let encodedValue = value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
-                return "\(key)=\(encodedValue)"
-            }.joined(separator: "&")
-            return "&\(joinedParameters)"
-        }
+        guard !orderedPreplayParameters.isEmpty else { return "" }
         
-        guard !preplayParameters.isEmpty else {
-            return ""
-        }
-        let joinedParameters = preplayParameters.map {
-            "\($0.key)=\($0.value)"
-        }.joined(separator: "&")
-        
-        return "&\(joinedParameters)"
+        var components = URLComponents()
+        components.percentEncodedQueryItems = orderedPreplayParameters.map(URLQueryItem.encodedForUplynk)
+        return "&\(components.percentEncodedQuery!)"
     }
     
     var pingFeature: UplynkPingFeature {
@@ -87,5 +71,17 @@ extension UplynkSSAIConfiguration {
         
             return "ext/\(userID)/\(ids.joined(separator: ","))/multiple.json"
         }
+    }
+}
+
+extension CharacterSet {
+    fileprivate static let uplynkUrlQueryValueAllowed = CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "&+=?,"))
+}
+extension URLQueryItem {
+    fileprivate static func encodedForUplynk(name: String, value: String) -> URLQueryItem {
+        URLQueryItem(
+            name: name,
+            value: value.addingPercentEncoding(withAllowedCharacters: .uplynkUrlQueryValueAllowed)
+        )
     }
 }
