@@ -63,7 +63,6 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let prefix = "https://content.uplynk.com"
         let assetID = "a123"
         
-        let validNoPingQueryParameter = ""
         let validPingQueryParameter = "ad.cping=1&ad.pingf=\(pingFeature.rawValue)"
         
         let pingConfiguration = switch pingFeature {
@@ -89,7 +88,7 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let builtPreplayURL = UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
         switch (pingFeature) {
         case .noPing:
-            XCTAssertTrue(builtPreplayURL.contains(validNoPingQueryParameter))
+            XCTAssertFalse(builtPreplayURL.contains(validPingQueryParameter), "built PreplayURL should not contain the ping query parameter \(validPingQueryParameter). url: \(builtPreplayURL)")
         default:
             XCTAssertTrue(builtPreplayURL.contains(validPingQueryParameter))
             
