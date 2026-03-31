@@ -177,20 +177,18 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
     }
     
     func testPreplayArray() {
-        let normalParameter = [("keyA", "valueA")]
-        let specialValue = "?&+=,%"
-        let specialEncodedValue = "%3F%26%2B%3D%2C%25"
-        let specialParameter = [("special",specialValue)]
-        let specialEncodedParameter = [("special", specialEncodedValue)]
-        let mixedParameters = [("keyA", "valueA"), ("special",specialValue)]
-        let mixedEncodedParamteres = [("keyA", "valueA"), ("special", specialEncodedValue)]
+        let normalParameter = ("keyA", "valueA")
+        let specialParameter = ("special","?&+=,%")
+        let specialEncodedParameter = (specialParameter.0, "%3F%26%2B%3D%2C%25")
+        let mixedParameters = [normalParameter, specialParameter]
+        let mixedEncodedParamteres = [normalParameter, specialEncodedParameter]
         
         let configs: [TestConfig] = [
-            TestConfig(assetType: .asset, preplayArray: normalParameter,  expectedParams: [("keyA", "valueA")]),
-            TestConfig(assetType: .asset, preplayArray: specialParameter, expectedParams: specialEncodedParameter),
+            TestConfig(assetType: .asset, preplayArray: [normalParameter],  expectedParams: [normalParameter]),
+            TestConfig(assetType: .asset, preplayArray: [specialParameter], expectedParams: [specialEncodedParameter]),
             TestConfig(assetType: .asset, preplayArray: mixedParameters,  expectedParams: mixedEncodedParamteres),
-            TestConfig(assetType: .channel, preplayArray: normalParameter,  expectedParams: [("keyA", "valueA")]),
-            TestConfig(assetType: .channel, preplayArray: specialParameter, expectedParams: specialEncodedParameter),
+            TestConfig(assetType: .channel, preplayArray: [normalParameter],  expectedParams: [normalParameter]),
+            TestConfig(assetType: .channel, preplayArray: [specialParameter], expectedParams: [specialEncodedParameter]),
             TestConfig(assetType: .channel, preplayArray: mixedParameters,  expectedParams: mixedEncodedParamteres)
         ]
         
