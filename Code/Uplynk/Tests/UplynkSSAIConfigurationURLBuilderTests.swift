@@ -176,4 +176,67 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         print(preplayLive)
         XCTAssertFalse(hasEmptyParameter(preplayLive))
     }
+    
+    func testPreplayArray() {
+        let normalParameter = [("keyA", "valueA")]
+        let specialValue = "?&+=,%"
+        let specialEncodedValue = "%3F%26%2B%3D%2C%25"
+        let specialParameter = [("special",specialValue)]
+        let specialEncodedParameter = ["special": specialEncodedValue]
+        let mixedParameters = [("keyA", "valueA"), ("special",specialValue)]
+        let mixedEncodedParamteres = ["keyA": "valueA", "special": specialEncodedValue]
+        
+        let configs: [TestConfig] = [
+            TestConfig(assetType: .asset, preplayArray: normalParameter,  expectedParams: ["keyA": "valueA"]),
+            TestConfig(assetType: .asset, preplayArray: specialParameter, expectedParams: specialEncodedParameter),
+            TestConfig(assetType: .asset, preplayArray: mixedParameters,  expectedParams: mixedEncodedParamteres),
+            TestConfig(assetType: .channel, preplayArray: normalParameter,  expectedParams: ["keyA": "valueA"]),
+            TestConfig(assetType: .channel, preplayArray: specialParameter, expectedParams: specialEncodedParameter),
+            TestConfig(assetType: .channel, preplayArray: mixedParameters,  expectedParams: mixedEncodedParamteres)
+        ]
+        
+        for config in configs {
+            config.assertUrlContainsPreplayParams()
+        }
+        
+        let emptyParams = TestConfig(assetType: .asset, preplayArray: [], expectedParams: [:])
+        XCTAssertFalse(emptyParams.url.contains("&"), "A config without params should not contain an `&` character")
+    }
+}
+
+struct TestConfig {
+    let assetType: UplynkSSAIConfiguration.AssetType
+    let preplayArray: [(String,String)]
+    let expectedParams: [String:String]
+    
+    var url: String {
+        let assetID = UplynkSSAIConfiguration.ID.asset(ids: ["a123"])
+        let config = UplynkSSAIConfiguration(id: assetID, assetType: assetType, orderedPreplayParameters: preplayArray)
+        let builder = UplynkSSAIURLBuilder(ssaiConfiguration: config)
+        switch assetType {
+        case .asset:   return builder.buildPreplayVODURL()
+        case .channel: return builder.buildPreplayLiveURL()
+        }
+    }
+    
+    func assertUrlContainsPreplayParams() {
+        let url = self.url
+        for (key, value) in expectedParams {
+            let exptectation = "\(key)=\(value)"
+            if !url.contains(exptectation) {
+                XCTFail("Generated url (\(url)) does not contain \(exptectation)")
+            }
+        }
+        guard let parsedUrl = URLComponents(string: url) else {
+            return XCTFail("Could not parse the generated URL \(url)")
+        }
+        let parsedQueryItems = parsedUrl.queryItems ?? []
+        for (key, value) in preplayArray {
+            guard parsedQueryItems.contains(where: { item in
+                item.name == key && item.value == value
+            }) else {
+                return XCTFail("Generated URL does not contain preplay param \(key)=\(value)")
+            }
+        }
+    }
 }
