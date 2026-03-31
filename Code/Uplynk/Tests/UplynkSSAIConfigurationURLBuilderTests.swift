@@ -182,15 +182,15 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let specialValue = "?&+=,%"
         let specialEncodedValue = "%3F%26%2B%3D%2C%25"
         let specialParameter = [("special",specialValue)]
-        let specialEncodedParameter = ["special": specialEncodedValue]
+        let specialEncodedParameter = [("special", specialEncodedValue)]
         let mixedParameters = [("keyA", "valueA"), ("special",specialValue)]
-        let mixedEncodedParamteres = ["keyA": "valueA", "special": specialEncodedValue]
+        let mixedEncodedParamteres = [("keyA", "valueA"), ("special", specialEncodedValue)]
         
         let configs: [TestConfig] = [
-            TestConfig(assetType: .asset, preplayArray: normalParameter,  expectedParams: ["keyA": "valueA"]),
+            TestConfig(assetType: .asset, preplayArray: normalParameter,  expectedParams: [("keyA", "valueA")]),
             TestConfig(assetType: .asset, preplayArray: specialParameter, expectedParams: specialEncodedParameter),
             TestConfig(assetType: .asset, preplayArray: mixedParameters,  expectedParams: mixedEncodedParamteres),
-            TestConfig(assetType: .channel, preplayArray: normalParameter,  expectedParams: ["keyA": "valueA"]),
+            TestConfig(assetType: .channel, preplayArray: normalParameter,  expectedParams: [("keyA", "valueA")]),
             TestConfig(assetType: .channel, preplayArray: specialParameter, expectedParams: specialEncodedParameter),
             TestConfig(assetType: .channel, preplayArray: mixedParameters,  expectedParams: mixedEncodedParamteres)
         ]
@@ -199,15 +199,36 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
             config.assertUrlContainsPreplayParams()
         }
         
-        let emptyParams = TestConfig(assetType: .asset, preplayArray: [], expectedParams: [:])
+        let emptyParams = TestConfig(assetType: .asset, preplayArray: [], expectedParams: [])
         XCTAssertFalse(emptyParams.url.contains("&"), "A config without params should not contain an `&` character")
+    }
+    
+    func testPreplayParameterOrdering() {
+        let preplayParams = (0..<20).map { index in
+            ("key\(index)", "value\(index)")
+        }
+        let vod = TestConfig(assetType: .asset, preplayArray: preplayParams, expectedParams: []).url
+        
+        var reversedOrder = Array(preplayParams.reversed())
+        var lastIndex = vod.startIndex
+        while let item = reversedOrder.popLast() {
+            if let range = vod.range(of: item.0) {
+                let newIndex = range.upperBound
+                if newIndex < lastIndex {
+                    XCTFail("Parameter \(item.0) is out of order. ExpectedOrder: \(preplayParams.map(\.0)), Actual: \(vod)")
+                }
+                lastIndex = newIndex
+            } else {
+                XCTFail("Missing parameter: \(item)")
+            }
+        }
     }
 }
 
 struct TestConfig {
     let assetType: UplynkSSAIConfiguration.AssetType
     let preplayArray: [(String,String)]
-    let expectedParams: [String:String]
+    let expectedParams: [(String,String)]
     
     var url: String {
         let assetID = UplynkSSAIConfiguration.ID.asset(ids: ["a123"])
