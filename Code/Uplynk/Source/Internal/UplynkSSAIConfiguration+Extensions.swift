@@ -9,28 +9,26 @@
 import Foundation
 
 extension UplynkSSAIConfiguration {
-    var drmParameters: String {
-        contentProtected ? "&manifest=m3u8&rmt=fps" : ""
-    }
-    
-    var urlParameters: String {
-        guard !orderedPreplayParameters.isEmpty else { return "" }
-        
-        var components = URLComponents()
-        components.percentEncodedQueryItems = orderedPreplayParameters.map(URLQueryItem.encodedForUplynk)
-        return "&\(components.percentEncodedQuery!)"
+    var drmParameters: [URLQueryItem] {
+        guard contentProtected else {return []}
+        return [
+            URLQueryItem(name: "manifest", value: "m3u8"),
+            URLQueryItem(name: "rmt", value: "fps")
+        ]
     }
     
     var pingFeature: UplynkPingFeature {
         UplynkPingFeature(ssaiConfiguration: self)
     }
     
-    var pingParameters: String {
+    var pingParameters: [URLQueryItem] {
         let pingFeature = pingFeature
-        if pingFeature == .noPing {
-            return ""
-        } else {
-            return "&ad.cping=1&ad.pingf=\(pingFeature.rawValue)"
+        if pingFeature == .noPing { return [] }
+        else {
+            return [
+                URLQueryItem(name: "ad.cping", value: "1"),
+                URLQueryItem(name: "ad.pingf", value: pingFeature.rawValue.description)
+            ]
         }
     }
     
@@ -71,17 +69,5 @@ extension UplynkSSAIConfiguration {
         
             return "ext/\(userID)/\(ids.joined(separator: ","))/multiple.json"
         }
-    }
-}
-
-extension CharacterSet {
-    fileprivate static let uplynkUrlQueryValueAllowed = CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "&+=?,"))
-}
-extension URLQueryItem {
-    fileprivate static func encodedForUplynk(name: String, value: String) -> URLQueryItem {
-        URLQueryItem(
-            name: name,
-            value: value.addingPercentEncoding(withAllowedCharacters: .uplynkUrlQueryValueAllowed)
-        )
     }
 }

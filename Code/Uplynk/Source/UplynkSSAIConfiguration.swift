@@ -74,8 +74,8 @@ public class UplynkSSAIConfiguration: CustomServerSideAdInsertionConfiguration {
         self.playbackURLParameters = playbackURLParameters
     }
 
-    
-//    var preplayParameters: [String: String] {
-//        Dictionary(orderedPreplayParameters) { left, right in left }
-//    }
+    @available(*, deprecated, renamed: "orderedPreplayParameters", message: "Passing preplayParameters as a dictionary is no longer supported. Use orderedPreplayParameters instead.")
+    var preplayParameters: [String: String] {
+        Dictionary(orderedPreplayParameters) { left, right in left }
+    }
 }
