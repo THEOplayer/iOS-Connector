@@ -222,6 +222,36 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
             }
         }
     }
+    
+    func testUrlWithDrmAndPing() {
+        let assetID = UplynkSSAIConfiguration.ID.asset(ids: ["a123"])
+        let extraParams = [
+            ("a", "1"),
+            ("b", "2")
+        ]
+        let drmAndPingConfig = UplynkSSAIConfiguration(
+            id: assetID,
+            assetType: .asset,
+            orderedPreplayParameters: extraParams,
+            contentProtected: true,
+            uplynkPingConfiguration: .init(adImpressions: true, freeWheelVideoViews: true, linearAdData: true)
+        )
+        XCTAssertEqual(
+            UplynkSSAIURLBuilder(ssaiConfiguration: drmAndPingConfig).buildPreplayVODURL(),
+            "https://content.uplynk.com/preplay/a123.json?v=2&manifest=m3u8&rmt=fps&ad.cping=1&ad.pingf=3&a=1&b=2"
+        )
+        
+        let drmConfig = UplynkSSAIConfiguration(
+            id: assetID,
+            assetType: .asset,
+            orderedPreplayParameters: extraParams,
+            contentProtected: true
+        )
+        XCTAssertEqual(
+            UplynkSSAIURLBuilder(ssaiConfiguration: drmConfig).buildPreplayVODURL(),
+            "https://content.uplynk.com/preplay/a123.json?v=2&manifest=m3u8&rmt=fps&a=1&b=2"
+        )
+    }
 }
 
 struct TestConfig {
