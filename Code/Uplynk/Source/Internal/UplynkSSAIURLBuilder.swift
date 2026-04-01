@@ -40,7 +40,7 @@ class UplynkSSAIURLBuilder {
     }
 
     func buildPreplayLiveURL() -> String {
-        return "\(prefix)/preplay/\(urlAssetType)/\(urlAssetID)?v=2\(queryString)"
+        return "\(prefix)/preplay/\(urlAssetType)/\(urlAssetID)?\(queryString)"
     }
 
     func buildAssetInfoURLs(

@@ -249,6 +249,17 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
             UplynkSSAIURLBuilder(ssaiConfiguration: drmConfig).buildPreplayVODURL(),
             "https://content.uplynk.com/preplay/a123.json?v=2&manifest=m3u8&rmt=fps&a=1&b=2"
         )
+        
+        let liveDrmConfig = UplynkSSAIConfiguration(
+            id: assetID,
+            assetType: .channel,
+            orderedPreplayParameters: extraParams,
+            contentProtected: true
+        )
+        XCTAssertEqual(
+            UplynkSSAIURLBuilder(ssaiConfiguration: liveDrmConfig).buildPreplayLiveURL(),
+            "https://content.uplynk.com/preplay/channel/a123.json?v=2&manifest=m3u8&rmt=fps&a=1&b=2"
+        )
     }
 }
 
