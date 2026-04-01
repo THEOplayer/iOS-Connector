@@ -25,11 +25,11 @@ class UplynkSSAIURLBuilder {
     private var urlAssetID: String { ssaiConfiguration.urlAssetID }
     private var drmParameters: [URLQueryItem] { ssaiConfiguration.drmParameters }
     private var pingParameters: [URLQueryItem] { ssaiConfiguration.pingParameters }
-    private var urlParameters: [URLQueryItem] { ssaiConfiguration.orderedPreplayParameters.map(URLQueryItem.init) }
+    private var preplayParameters: [URLQueryItem] { ssaiConfiguration.orderedPreplayParameters.map(URLQueryItem.init) }
     private var id: UplynkSSAIConfiguration.ID { ssaiConfiguration.id }
     
     var queryString: String {
-        let items = Self.versionQueryItem + drmParameters + pingParameters + urlParameters
+        let items = Self.versionQueryItem + drmParameters + pingParameters + preplayParameters
         var urlBuilder = URLComponents()
         urlBuilder.percentEncodedQueryItems = items.map(\.encodedForUplynk)
         return urlBuilder.percentEncodedQuery!
