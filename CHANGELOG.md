@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Uplynk
   - When ping feature is not configured, the player will now send an empty string instead of `"&ad.pingc=0"` to prevent unsigned parameters that could break signature validation.
+  - Deprecated the old `preplayParameters` in favor of the new `orderedPreplayParameters`
 
 ## [10.8.0.1] - 2026-01-20
 
