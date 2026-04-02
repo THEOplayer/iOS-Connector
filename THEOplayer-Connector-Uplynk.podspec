@@ -18,5 +18,5 @@ Pod::Spec.new do |s|
   s.source_files = 'Code/Uplynk/Source/**/*'
       
   s.static_framework = true
-  s.dependency 'THEOplayerSDK-core', "~> 10"
+  s.dependency 'THEOplayerSDK-core', "~> 11"
 end
