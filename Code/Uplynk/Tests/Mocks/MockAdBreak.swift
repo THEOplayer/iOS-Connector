@@ -9,6 +9,7 @@ import Foundation
 import THEOplayerSDK
 
 struct MockAdBreak: AdBreak {
+    let id: String? = UUID().uuidString
     var ads: [Ad] = []
     var maxDuration: Int = 0
     var maxRemainingDuration: Double = 0
@@ -18,6 +19,7 @@ struct MockAdBreak: AdBreak {
 }
 
 struct MockAd: Ad {
+    let isSlate = false
     var adBreak: AdBreak = MockAdBreak()
     var companions: [CompanionAd] = []
     var type: String = ""

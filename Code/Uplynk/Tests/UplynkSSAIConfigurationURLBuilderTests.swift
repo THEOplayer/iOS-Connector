@@ -63,8 +63,7 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let prefix = "https://content.uplynk.com"
         let assetID = "a123"
         
-        let validNoPingQueryParameter = "ad.pingc=0"
-        let validPingQueryParameter = "ad.pingc=1&ad.pingf=\(pingFeature.rawValue)"
+        let validPingQueryParameter = "ad.cping=1&ad.pingf=\(pingFeature.rawValue)"
         
         let pingConfiguration = switch pingFeature {
         case .noPing:
@@ -89,7 +88,7 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let builtPreplayURL = UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
         switch (pingFeature) {
         case .noPing:
-            XCTAssertTrue(builtPreplayURL.contains(validNoPingQueryParameter))
+            XCTAssertFalse(builtPreplayURL.contains(validPingQueryParameter), "built PreplayURL should not contain the ping query parameter \(validPingQueryParameter). url: \(builtPreplayURL)")
         default:
             XCTAssertTrue(builtPreplayURL.contains(validPingQueryParameter))
             
@@ -138,5 +137,165 @@ final class UplynkSSAIConfigurationURLBuilderTests: XCTestCase {
         let builtPreplayURL = UplynkSSAIURLBuilder(ssaiConfiguration: configurationWithAssetID).buildPreplayVODURL()
         XCTAssertTrue(builtPreplayURL.contains(validPrePlayParameters) ||
                       builtPreplayURL.contains(anotherValidPrePlayParameters))
+    }
+    
+    /// Makes sure Uplynk URLs do not contain the sequence "?&"
+    /// FIFA raised an issue that the Uplynk backend does not support those kind of URLs.
+    /// See [THEOSD-16266] [OPTI-1771]
+    func testEmptyQueryParameter() {
+        let hasEmptyParameter: (String)->Bool = { $0.contains("?&") }
+        let faultyURL = "https://content.uplynk.com/preplay/ID?&sig=signature"
+        XCTAssert(hasEmptyParameter(faultyURL))
+
+        let assetID = "a123"
+        let vodBuilder = UplynkSSAIURLBuilder(
+            ssaiConfiguration: UplynkSSAIConfiguration(
+                id: .asset(ids: [assetID]),
+                assetType: .asset
+            )
+        )
+        let liveBuilder = UplynkSSAIURLBuilder(
+            ssaiConfiguration: UplynkSSAIConfiguration(
+                id: .asset(ids: [assetID]),
+                assetType: .channel
+            )
+        )
+        
+        let preplayVod = vodBuilder.buildPreplayVODURL()
+        let preplayFaultyLive = vodBuilder.buildPreplayLiveURL()
+        print(preplayVod)
+        XCTAssertFalse(hasEmptyParameter(preplayVod))
+        print(preplayFaultyLive)
+        XCTAssertFalse(hasEmptyParameter(preplayFaultyLive))
+
+        let preplayFaultyVod = liveBuilder.buildPreplayVODURL()
+        let preplayLive = liveBuilder.buildPreplayLiveURL()
+        print(preplayFaultyVod)
+        XCTAssertFalse(hasEmptyParameter(preplayFaultyVod))
+        print(preplayLive)
+        XCTAssertFalse(hasEmptyParameter(preplayLive))
+    }
+    
+    func testPreplayArray() {
+        let normalParameter = ("keyA", "valueA")
+        let specialParameter = ("special","?&+=,%")
+        let specialEncodedParameter = (specialParameter.0, "%3F%26%2B%3D%2C%25")
+        let mixedParameters = [normalParameter, specialParameter]
+        let mixedEncodedParamteres = [normalParameter, specialEncodedParameter]
+        
+        let configs: [TestConfig] = [
+            TestConfig(assetType: .asset, preplayArray: [normalParameter],  expectedParams: [normalParameter]),
+            TestConfig(assetType: .asset, preplayArray: [specialParameter], expectedParams: [specialEncodedParameter]),
+            TestConfig(assetType: .asset, preplayArray: mixedParameters,  expectedParams: mixedEncodedParamteres),
+            TestConfig(assetType: .channel, preplayArray: [normalParameter],  expectedParams: [normalParameter]),
+            TestConfig(assetType: .channel, preplayArray: [specialParameter], expectedParams: [specialEncodedParameter]),
+            TestConfig(assetType: .channel, preplayArray: mixedParameters,  expectedParams: mixedEncodedParamteres)
+        ]
+        
+        for config in configs {
+            config.assertUrlContainsPreplayParams()
+        }
+        
+        let emptyParams = TestConfig(assetType: .asset, preplayArray: [], expectedParams: [])
+        XCTAssertFalse(emptyParams.url.contains("&"), "A config without params should not contain an `&` character")
+    }
+    
+    func testPreplayParameterOrdering() {
+        let preplayParams = (0..<20).map { index in
+            ("key\(index)", "value\(index)")
+        }
+        let vod = TestConfig(assetType: .asset, preplayArray: preplayParams, expectedParams: []).url
+        
+        var reversedOrder = Array(preplayParams.reversed())
+        var lastIndex = vod.startIndex
+        while let item = reversedOrder.popLast() {
+            if let range = vod.range(of: item.0) {
+                let newIndex = range.upperBound
+                if newIndex < lastIndex {
+                    XCTFail("Parameter \(item.0) is out of order. ExpectedOrder: \(preplayParams.map(\.0)), Actual: \(vod)")
+                }
+                lastIndex = newIndex
+            } else {
+                XCTFail("Missing parameter: \(item)")
+            }
+        }
+    }
+    
+    func testUrlWithDrmAndPing() {
+        let assetID = UplynkSSAIConfiguration.ID.asset(ids: ["a123"])
+        let extraParams = [
+            ("a", "1"),
+            ("b", "2")
+        ]
+        let drmAndPingConfig = UplynkSSAIConfiguration(
+            id: assetID,
+            assetType: .asset,
+            orderedPreplayParameters: extraParams,
+            contentProtected: true,
+            uplynkPingConfiguration: .init(adImpressions: true, freeWheelVideoViews: true, linearAdData: true)
+        )
+        XCTAssertEqual(
+            UplynkSSAIURLBuilder(ssaiConfiguration: drmAndPingConfig).buildPreplayVODURL(),
+            "https://content.uplynk.com/preplay/a123.json?v=2&manifest=m3u8&rmt=fps&ad.cping=1&ad.pingf=3&a=1&b=2"
+        )
+        
+        let drmConfig = UplynkSSAIConfiguration(
+            id: assetID,
+            assetType: .asset,
+            orderedPreplayParameters: extraParams,
+            contentProtected: true
+        )
+        XCTAssertEqual(
+            UplynkSSAIURLBuilder(ssaiConfiguration: drmConfig).buildPreplayVODURL(),
+            "https://content.uplynk.com/preplay/a123.json?v=2&manifest=m3u8&rmt=fps&a=1&b=2"
+        )
+        
+        let liveDrmConfig = UplynkSSAIConfiguration(
+            id: assetID,
+            assetType: .channel,
+            orderedPreplayParameters: extraParams,
+            contentProtected: true
+        )
+        XCTAssertEqual(
+            UplynkSSAIURLBuilder(ssaiConfiguration: liveDrmConfig).buildPreplayLiveURL(),
+            "https://content.uplynk.com/preplay/channel/a123.json?v=2&manifest=m3u8&rmt=fps&a=1&b=2"
+        )
+    }
+}
+
+struct TestConfig {
+    let assetType: UplynkSSAIConfiguration.AssetType
+    let preplayArray: [(String,String)]
+    let expectedParams: [(String,String)]
+    
+    var url: String {
+        let assetID = UplynkSSAIConfiguration.ID.asset(ids: ["a123"])
+        let config = UplynkSSAIConfiguration(id: assetID, assetType: assetType, orderedPreplayParameters: preplayArray)
+        let builder = UplynkSSAIURLBuilder(ssaiConfiguration: config)
+        switch assetType {
+        case .asset:   return builder.buildPreplayVODURL()
+        case .channel: return builder.buildPreplayLiveURL()
+        }
+    }
+    
+    func assertUrlContainsPreplayParams() {
+        let url = self.url
+        for (key, value) in expectedParams {
+            let exptectation = "\(key)=\(value)"
+            if !url.contains(exptectation) {
+                XCTFail("Generated url (\(url)) does not contain \(exptectation)")
+            }
+        }
+        guard let parsedUrl = URLComponents(string: url) else {
+            return XCTFail("Could not parse the generated URL \(url)")
+        }
+        let parsedQueryItems = parsedUrl.queryItems ?? []
+        for (key, value) in preplayArray {
+            guard parsedQueryItems.contains(where: { item in
+                item.name == key && item.value == value
+            }) else {
+                return XCTFail("Generated URL does not contain preplay param \(key)=\(value)")
+            }
+        }
     }
 }

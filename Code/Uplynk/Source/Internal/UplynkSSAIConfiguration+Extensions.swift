@@ -9,31 +9,26 @@
 import Foundation
 
 extension UplynkSSAIConfiguration {
-    var drmParameters: String {
-        contentProtected ? "&manifest=m3u8&rmt=fps" : ""
-    }
-    
-    var urlParameters: String {
-        guard !preplayParameters.isEmpty else {
-            return ""
-        }
-        let joinedParameters = preplayParameters.map {
-            "\($0.key)=\($0.value)"
-        }.joined(separator: "&")
-        
-        return "&\(joinedParameters)"
+    var drmParameters: [URLQueryItem] {
+        guard contentProtected else {return []}
+        return [
+            URLQueryItem(name: "manifest", value: "m3u8"),
+            URLQueryItem(name: "rmt", value: "fps")
+        ]
     }
     
     var pingFeature: UplynkPingFeature {
         UplynkPingFeature(ssaiConfiguration: self)
     }
     
-    var pingParameters: String {
+    var pingParameters: [URLQueryItem] {
         let pingFeature = pingFeature
-        if pingFeature == .noPing {
-            return "&ad.pingc=0"
-        } else {
-            return "&ad.pingc=1&ad.pingf=\(pingFeature.rawValue)"
+        if pingFeature == .noPing { return [] }
+        else {
+            return [
+                URLQueryItem(name: "ad.cping", value: "1"),
+                URLQueryItem(name: "ad.pingf", value: pingFeature.rawValue.description)
+            ]
         }
     }
     
