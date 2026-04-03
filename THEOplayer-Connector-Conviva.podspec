@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.subspec 'Base' do |base|
     base.source_files = 'Code/Conviva/Source/Base/**/*'
     base.dependency 'ConvivaSDK', '4.2.4'
-    base.dependency 'THEOplayerSDK-core', "~> 10.2"
+    base.dependency 'THEOplayerSDK-core', "~> 11"
     base.dependency 'THEOplayer-Connector-Utilities', "~> " + theoplayer_connector_major_minor_version, ">= " + theoplayer_connector_version
   end
   
@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
   s.subspec 'THEOlive' do |live|
     live.source_files = 'Code/Conviva/Source/THEOlive/**/*'
     live.dependency "#{s.name}/Base"
-    live.dependency 'THEOplayer-Integration-THEOlive', "~> 10.2"
+    live.dependency 'THEOplayer-Integration-THEOlive', "~> 11"
   end
   
   # Default
