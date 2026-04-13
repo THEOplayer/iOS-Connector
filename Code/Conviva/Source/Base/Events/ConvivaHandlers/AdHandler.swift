@@ -223,7 +223,7 @@ extension Ad {
         result["c3.ad.firstCreativeId"] = nonEmpty(googleImaAd?.wrapperCreativeIds.first) ?? nonEmpty(googleImaAd?.creativeId) ?? Utilities.defaultStringValue
         result["c3.ad.firstAdSystem"] = nonEmpty(googleImaAd?.wrapperAdSystems.first) ?? nonEmpty(googleImaAd?.adSystem) ?? Utilities.defaultStringValue
         result["c3.ad.adStitcher"] = Utilities.defaultStringValue
-        result["c3.ad.position"] = self.adBreak.calculateCurrentAdBreakPosition()
+        result["c3.ad.position"] = self.adBreak?.calculateCurrentAdBreakPosition() ?? Utilities.defaultStringValue
         // linearAd specific
         if self.type == THEOplayerSDK.AdType.linear, let duration = self.duration {
             result[CIS_SSDK_METADATA_IS_LIVE] = false

@@ -25,7 +25,7 @@ public class AdEventReporter: AdEventProcessor {
         nielsen.stop()
         nielsen.loadMetadata(
             [
-                "type": ad.adBreak.nielsenType,
+                "type": ad.adBreak?.nielsenType,
                 "assetid": ad.id
             ]
         )
