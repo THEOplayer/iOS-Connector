@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Removed
+
+- Dropped support for iOS/tvOS 13 & 14.
+
 ## [10.14.0] - 2026-04-09
 
 ### Added
