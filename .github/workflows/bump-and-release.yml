@@ -102,8 +102,16 @@ jobs:
           else
             connectors+=("$prefix-${{ inputs.connectors }}.podspec")
           fi
+          if [ -d "$HOME/.cocoapods/repos/cocoapods-specs" ]; then
+            bundle exec pod repo remove cocoapods-specs
+          fi
+          pod repo add cocoapods-specs \
+          https://x-access-token:${{ secrets.PODS_SPEC_REPO_TOKEN }}@github.com/THEOplayer/cocoapods-specs-repo-staging.git
           for connector in ${connectors[*]}
           do
+            if [[ "${{ inputs.dryRun }}" != "true" ]]; then
+              pod repo push cocoapods-specs $connector --verbose --allow-warnings
+            fi
             pod repo update
             cmd="pod $command $connector --verbose --allow-warnings"
             if [ ${{ inputs.dryRun }} == false ]; then
