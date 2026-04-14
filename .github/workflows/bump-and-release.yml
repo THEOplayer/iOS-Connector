@@ -103,7 +103,7 @@ jobs:
             connectors+=("$prefix-${{ inputs.connectors }}.podspec")
           fi
           if [ -d "$HOME/.cocoapods/repos/cocoapods-specs" ]; then
-            bundle exec pod repo remove cocoapods-specs
+            pod repo remove cocoapods-specs
           fi
           pod repo add cocoapods-specs \
           https://x-access-token:${{ secrets.PODS_SPEC_REPO_TOKEN }}@github.com/THEOplayer/cocoapods-specs-repo-staging.git
