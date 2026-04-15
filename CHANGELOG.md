@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Dropped support for iOS/tvOS 13 & 14.
+- The connectors will now be additionally published to a THEOplayer hosted Cocoapods spec repo at https://github.com/THEOplayer/cocoapods-specs. We will continue publishing to the main trunk until EOL.
 
 ## [10.14.0] - 2026-04-09
 
