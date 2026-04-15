@@ -86,7 +86,7 @@ class AVSubtitlesLoader: NSObject {
         let timestamp: SSTextTrackDescription.WebVttTimestamp? = (trackDescription as? SSTextTrackDescription)?.vttTimestamp
         let autosync: Bool? = (trackDescription as? SSTextTrackDescription)?.automaticTimestampSyncEnabled
         let subtitlesMediaURL: String
-        if (timestamp?.localTime == nil && timestamp?.pts == nil && format == .WebVTT && autosync == nil) {
+        if (timestamp?.localTime == nil && timestamp?.pts == nil && format == .WebVTT && autosync != true) {
             subtitlesMediaURL = originalURL.absoluteString
         } else {
             subtitlesMediaURL = self.transformer.composeTranformationUrl(with: originalURL.absoluteString, format: format, timestamp: timestamp)
