@@ -17,7 +17,7 @@ class SubtitlesTransformer {
     private static let PORT_RANGE: Range<in_port_t> = 8000..<49151
     private var retryAttemptsLeft: Int = 9
     private var port: in_port_t
-    private var parameters: Parameters?
+    private var parametersMap: [String: Parameters] = [:]
 
     init() {
         self.port = .random(in: Self.PORT_RANGE)
@@ -39,16 +39,23 @@ class SubtitlesTransformer {
     }
 
     func composeTranformationUrl(with subtitlesURL: String, format: THEOplayerSDK.TextTrackFormat, timestamp: SSTextTrackDescription.WebVttTimestamp?) -> String {
-        self.parameters = Parameters(contentUrl: subtitlesURL, format: format, timestamp: timestamp)
-        let urlComps = URLComponents(string: "http://\(self.host):\(self.port)/\(SubtitlesTransformer.TRANSFORM_ROUTE)")!
+        self.parametersMap[subtitlesURL] = Parameters(contentUrl: subtitlesURL, format: format, timestamp: timestamp)
+        var urlComps = URLComponents(string: "http://\(self.host):\(self.port)/\(SubtitlesTransformer.TRANSFORM_ROUTE)")!
+        urlComps.queryItems = [URLQueryItem(name: "url", value: subtitlesURL)]
         return urlComps.url?.absoluteString ?? subtitlesURL
     }
 
     private func setupServerRoutes() {
         let handler: (HttpRequest) -> HttpResponse = { req in
             // Always return with HttpResponse.ok to fail gracefully. Otherwise player will stall.
-            guard let contentURLString: String = self.parameters?.contentUrl,
-                  let decodedContentUrlString: String = contentURLString.removingPercentEncoding,
+            guard let subtitlesURLParam: String = req.queryParams.first(where: { $0.0 == "url" })?.1,
+                  let parameters: Parameters = self.parametersMap[subtitlesURLParam.removingPercentEncoding ?? subtitlesURLParam] else {
+                let errorMessage: String = "Missing subtitle content URL."
+                print("[AVSubtitlesLoader] ERROR: \(errorMessage)")
+                return HttpResponse.ok(.text(errorMessage))
+            }
+
+            guard let decodedContentUrlString: String = parameters.contentUrl.removingPercentEncoding,
                   let contentUrl: URL = URL(string: decodedContentUrlString) else {
                 let errorMessage: String = "Missing subtitle content URL."
                 print("[AVSubtitlesLoader] ERROR: \(errorMessage)")
@@ -70,7 +77,7 @@ class SubtitlesTransformer {
             var contentString: String = _contentString.replacingOccurrences(of: "\r\n", with: "\n")
 
             // SRT to VTT
-            if self.parameters?.format == THEOplayerSDK.TextTrackFormat.SRT {
+            if parameters.format == THEOplayerSDK.TextTrackFormat.SRT {
                 do {
                     let subtitles: Subtitles = try Subtitles.Coder.SRT().decode(contentString)
                     contentString = try Subtitles.Coder.VTT().encode(subtitles: subtitles)
@@ -81,8 +88,8 @@ class SubtitlesTransformer {
             }
 
             // Add/replace VTT timestamp
-            if let timestampPts: String = self.parameters?.timestamp?.pts,
-               let timestampLocalTime: String = self.parameters?.timestamp?.localTime {
+            if let timestampPts: String = parameters.timestamp?.pts,
+               let timestampLocalTime: String = parameters.timestamp?.localTime {
                 // if timestamp exists replace it, else add
                 if let modifiedString: String = TimestampStringUtils.overrideTimestamp(in: contentString, with: (timestampPts, timestampLocalTime)) {
                     contentString = modifiedString
@@ -118,7 +125,7 @@ class SubtitlesTransformer {
     }
 
     private func reset() {
-        self.parameters = nil
+        self.parametersMap.removeAll()
     }
 
     deinit {
@@ -128,7 +135,7 @@ class SubtitlesTransformer {
 }
 
 extension SubtitlesTransformer: SubtitlesSynchronizerDelegate {
-    func didUpdateTimestamp(timestamp: SSTextTrackDescription.WebVttTimestamp) {
-        self.parameters?.timestamp = timestamp
+    func didUpdateTimestamp(timestamp: SSTextTrackDescription.WebVttTimestamp, forContentUrl contentUrl: String) {
+        self.parametersMap[contentUrl]?.timestamp = timestamp
     }
 }
