@@ -106,7 +106,7 @@ jobs:
             pod repo remove cocoapods-specs
           fi
           pod repo add cocoapods-specs \
-          https://x-access-token:${{ secrets.PODS_SPEC_REPO_TOKEN }}@github.com/THEOplayer/cocoapods-specs-repo-staging.git
+          https://x-access-token:${{ secrets.PODS_SPEC_REPO_TOKEN }}@github.com/THEOplayer/cocoapods-specs.git
           for connector in ${connectors[*]}
           do
             if [[ "${{ inputs.dryRun }}" != "true" ]]; then
