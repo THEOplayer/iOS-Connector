@@ -12,6 +12,16 @@ on:
         required: true
         default: true
         type: boolean
+      cocoapodsTrunk:
+        description: 'If true, releases on Cocoapods trunk public spec repo.'
+        required: true
+        default: true
+        type: boolean
+      selfHosted:
+        description: 'If true, releases on self hosted spec repo.'
+        required: true
+        default: true
+        type: boolean
       connectors:
         description: 'Choose the Connector(s)'
         required: true
@@ -102,27 +112,33 @@ jobs:
           else
             connectors+=("$prefix-${{ inputs.connectors }}.podspec")
           fi
-          if [ -d "$HOME/.cocoapods/repos/cocoapods-specs" ]; then
-            pod repo remove cocoapods-specs
+          if [[ "${{ inputs.selfHosted }}" == "true" ]]; then
+            if [ -d "$HOME/.cocoapods/repos/cocoapods-specs" ]; then
+              pod repo remove cocoapods-specs
+            fi
+            pod repo add cocoapods-specs \
+            https://x-access-token:${{ secrets.PODS_SPEC_REPO_TOKEN }}@github.com/THEOplayer/cocoapods-specs.git
           fi
-          pod repo add cocoapods-specs \
-          https://x-access-token:${{ secrets.PODS_SPEC_REPO_TOKEN }}@github.com/THEOplayer/cocoapods-specs.git
           for connector in ${connectors[*]}
           do
-            if [[ "${{ inputs.dryRun }}" != "true" ]]; then
-              pod repo push cocoapods-specs $connector --verbose --allow-warnings
+            if [[ "${{ inputs.selfHosted }}" == "true" ]]; then
+              if [[ "${{ inputs.dryRun }}" != "true" ]]; then
+                pod repo push cocoapods-specs $connector --verbose --allow-warnings
+              fi
             fi
-            pod repo update
-            cmd="pod $command $connector --verbose --allow-warnings"
-            if [ ${{ inputs.dryRun }} == false ]; then
-              cmd="$cmd --synchronous"
-            else
-              branch=$(git rev-parse --abbrev-ref HEAD)
-              sed -i '' "s|:tag => [^,}]*|:branch => \"$branch\"|g" "$connector"
-            fi
-            $cmd
-            if [ ${{ inputs.dryRun }} == true ]; then
-              git checkout "$connector"
+            if [[ "${{ inputs.cocoapodsTrunk }}" == "true" ]]; then
+              pod repo update
+              cmd="pod $command $connector --verbose --allow-warnings"
+              if [ ${{ inputs.dryRun }} == false ]; then
+                cmd="$cmd --synchronous"
+              else
+                branch=$(git rev-parse --abbrev-ref HEAD)
+                sed -i '' "s|:tag => [^,}]*|:branch => \"$branch\"|g" "$connector"
+              fi
+              $cmd
+              if [ ${{ inputs.dryRun }} == true ]; then
+                git checkout "$connector"
+              fi
             fi
           done
   Cleanup:
