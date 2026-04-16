@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- The connectors will now be additionally published to a THEOplayer hosted Cocoapods spec repo at https://github.com/THEOplayer/cocoapods-specs. We will continue publishing to the main trunk until EOL.
+- The connectors will now be additionally published to a [THEOplayer hosted Cocoapods spec repo](https://github.com/THEOplayer/cocoapods-specs). We will continue publishing to the main trunk until EOL. For more info, please check [the SDK changelog](https://optiview.dolby.com/docs/theoplayer/changelog/#-features-1.).
 
 ### Removed
 
