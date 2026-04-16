@@ -124,6 +124,8 @@ jobs:
             if [[ "${{ inputs.selfHosted }}" == "true" ]]; then
               if [[ "${{ inputs.dryRun }}" != "true" ]]; then
                 pod repo push cocoapods-specs $connector --verbose --allow-warnings
+              else
+                echo "dryRun -> skip selfHosted release"
               fi
             fi
             if [[ "${{ inputs.cocoapodsTrunk }}" == "true" ]]; then
