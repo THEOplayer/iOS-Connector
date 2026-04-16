@@ -112,7 +112,7 @@ jobs:
           else
             connectors+=("$prefix-${{ inputs.connectors }}.podspec")
           fi
-          if [[ "${{ inputs.selfHosted }}" == "true" ]]; then
+          if [[ "${{ inputs.selfHosted }}" == "true" && "${{ inputs.dryRun }}" != "true" ]]; then
             if [ -d "$HOME/.cocoapods/repos/cocoapods-specs" ]; then
               pod repo remove cocoapods-specs
             fi
