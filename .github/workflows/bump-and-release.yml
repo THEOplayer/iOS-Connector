@@ -1,5 +1,5 @@
 name: Bump and release
-run-name: ${{ (inputs.version == '' && 'Not bumping version') || format('Bumping version to {0}', inputs.version) }} and ${{ (inputs.dryRun == true && 'validating') || 'releasing' }} ${{ inputs.connectors }} on ${{ (inputs.cocoapodsTrunk == true && inputs.selfHosted == true && 'self hosted and cocoapods trunk spec repos') || (inputs.cocoapodsTrunk == true && 'cocoapods trunk spec repo') || (inputs.selfHosted == true && 'self hosted spec repo') || 'none' }}
+run-name: ${{ (inputs.version == '' && 'Not bumping version') || format('Bumping version to {0}', inputs.version) }} and ${{ (inputs.dryRun == true && 'validating') || 'releasing' }} ${{ inputs.connectors }} on ${{ 'self hosted spec repo:' (inputs.cocoapodsTrunk == true && ✅) || ❌ }}, on ${{ 'cocoapods trunk:' (inputs.selfHosted == true && ✅) || ❌ }}
 on:
   workflow_dispatch:
     inputs:
