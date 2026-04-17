@@ -125,12 +125,13 @@ jobs:
           for connector in ${connectors[*]}
           do
             options="--verbose --allow-warnings"
-            if [[ $connector == *Nielsen.podspec ]]; then
-              options+=" --skip-import-validation"
-            fi
             if [[ "${{ inputs.selfHosted }}" == "true" ]]; then
               if [[ "${{ inputs.dryRun }}" != "true" ]]; then
-                pod repo push cocoapods-specs $connector $options --sources='https://cdn.cocoapods.org'
+                sources="--sources=https://cdn.cocoapods.org"
+                if [[ $connector == *Nielsen.podspec ]]; then
+                  sources+=",https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-specs-dynamic.git"
+                fi
+                pod repo push cocoapods-specs $connector $options $sources'
               else
                 echo "dryRun -> skip selfHosted release"
               fi
