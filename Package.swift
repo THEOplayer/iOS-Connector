@@ -85,13 +85,6 @@ let package = Package(
                 "THEOplayerConnectorUplynk"
             ],
             path: "Code/Uplynk/Tests"
-        ),
-        .testTarget(
-            name: "THEOplayerConnectorSideloadedSubtitleTests",
-            dependencies: [
-                "THEOplayerConnectorSideloadedSubtitle"
-            ],
-            path: "Code/Sideloaded-TextTracks/Tests/THEOplayerConnectorSideloadedSubtitleTests"
         )
     ]
 )
