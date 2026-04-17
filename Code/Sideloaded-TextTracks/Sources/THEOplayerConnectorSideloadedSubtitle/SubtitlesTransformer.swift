@@ -41,7 +41,8 @@ class SubtitlesTransformer {
     func composeTranformationUrl(with subtitlesURL: String, format: THEOplayerSDK.TextTrackFormat, timestamp: SSTextTrackDescription.WebVttTimestamp?) -> String {
         self.parametersMap[subtitlesURL] = Parameters(contentUrl: subtitlesURL, format: format, timestamp: timestamp)
         var urlComps = URLComponents(string: "http://\(self.host):\(self.port)/\(SubtitlesTransformer.TRANSFORM_ROUTE)")!
-        urlComps.queryItems = [URLQueryItem(name: "url", value: subtitlesURL)]
+        let timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
+        urlComps.queryItems = [URLQueryItem(name: "url", value: subtitlesURL), URLQueryItem(name: "t", value: timestamp)]
         return urlComps.url?.absoluteString ?? subtitlesURL
     }
 
