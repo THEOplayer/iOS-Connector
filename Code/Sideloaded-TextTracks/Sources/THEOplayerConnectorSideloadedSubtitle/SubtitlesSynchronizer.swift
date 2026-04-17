@@ -10,7 +10,7 @@ import AVFoundation
 @_spi(WebVTT) import THEOplayerSDK
 
 protocol SubtitlesSynchronizerDelegate: AnyObject {
-    func didUpdateTimestamp(timestamp: SSTextTrackDescription.WebVttTimestamp)
+    func didUpdateTimestamp(timestamp: SSTextTrackDescription.WebVttTimestamp, forContentUrl contentUrl: String)
 }
 
 class SubtitlesSynchronizer {
@@ -79,7 +79,7 @@ class SubtitlesSynchronizer {
 
                 let pts: String = .init(delta * 90000)
                 let localTime: String = textTrackDescription.vttTimestamp.localTime ?? "00:00:00.000"
-                self?.delegate?.didUpdateTimestamp(timestamp: .init(pts: pts, localTime: localTime))
+                self?.delegate?.didUpdateTimestamp(timestamp: .init(pts: pts, localTime: localTime), forContentUrl: textTrackDescription.src.absoluteString)
 
                 welf.trackSyncMap[textTrack.label]?.status = .resolving
                 welf.trackSyncMap[textTrack.label]?.mode = mode

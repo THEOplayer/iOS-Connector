@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.0.0] - 2026-04-16
 
+### Fixed
+
+- SideloadedSubtitle
+  - Fixed an issue where switching between sideloaded subtitle tracks would get stuck after the first switch due to cached subtitle responses.
+
 ### Removed
 
 - Dropped support for iOS/tvOS 13 & 14.
