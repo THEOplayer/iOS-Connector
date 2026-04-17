@@ -131,7 +131,7 @@ jobs:
                 if [[ $connector == *Nielsen.podspec ]]; then
                   sources+=",https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-specs-dynamic.git"
                 fi
-                pod repo push cocoapods-specs $connector $options $sources'
+                pod repo push cocoapods-specs $connector $options $sources
               else
                 echo "dryRun -> skip selfHosted release"
               fi
