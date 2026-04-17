@@ -36,7 +36,7 @@ on:
           - Uplynk
 jobs:
   Bump-And-Release:
-    runs-on: macos-14
+    runs-on: macos-26
     outputs:
       previousVersion: ${{ steps.store_previous_version.outputs.previousVersion }}
     steps:
@@ -146,7 +146,7 @@ jobs:
   Cleanup:
     needs: Bump-And-Release
     if: (inputs.dryRun == true && inputs.version != '') && (success() || failure())
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:

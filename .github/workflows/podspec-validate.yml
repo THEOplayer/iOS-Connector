@@ -12,7 +12,7 @@ run-name: Validating CocoaPods
 
 jobs:
   cocoapods-validate:
-    runs-on: macos-14
+    runs-on: macos-26
 
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
