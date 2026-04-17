@@ -1,4 +1,4 @@
-name: Smoke Tests (PR)
+name: Build and Test (PR)
 
 on:
   pull_request:
@@ -8,10 +8,10 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: smoke-tests-${{ github.head_ref || github.ref }}
+  group: build-and-test-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
-run-name: Running Smoke Tests
+run-name: Build and Test
 
 jobs:
   build-and-test:
