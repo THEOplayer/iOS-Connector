@@ -130,6 +130,7 @@ jobs:
                 sources="--sources=https://cdn.cocoapods.org"
                 if [[ $connector == *Nielsen.podspec ]]; then
                   sources+=",https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-specs-dynamic.git"
+                  options+=" --skip-import-validation"
                 fi
                 pod repo push cocoapods-specs $connector $options $sources
               else
