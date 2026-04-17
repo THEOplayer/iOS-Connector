@@ -32,6 +32,7 @@ on:
           - Utilities
           - Comscore
           - Conviva
+          - Nielsen
           - SideloadedSubtitle
           - Uplynk
 jobs:
@@ -100,10 +101,12 @@ jobs:
                 if [[ $file == *VerizonMedia.podspec || $file == *Nielsen.podspec || $file == *Yospace.podspec ]]; then
                   continue
                 fi
-                # Conviva validation depends on Utilities being available, which does not get published in a dry run
-                # => skip Conviva if dry run
-                if [[ $file == *Conviva.podspec && ${{ inputs.dryRun }} == true ]]; then
-                  continue
+                # Conviva and Nielsen validations depend on Utilities being available, which does not get published in a dry run
+                # => skip Conviva and Nielsen if dry run
+                if [[ ${{ inputs.dryRun }} == true ]]; then
+                  if [[ $file == *Conviva.podspec || $file == *Nielsen.podspec ]]; then
+                    continue
+                  fi
                 fi
                 connectors+=("$file")
               fi
@@ -121,16 +124,20 @@ jobs:
           fi
           for connector in ${connectors[*]}
           do
+            options="--verbose --allow-warnings"
+            if [[ $connector == *Nielsen.podspec ]]; then
+              options+=" --skip-import-validation"
+            fi
             if [[ "${{ inputs.selfHosted }}" == "true" ]]; then
               if [[ "${{ inputs.dryRun }}" != "true" ]]; then
-                pod repo push cocoapods-specs $connector --verbose --allow-warnings --sources='https://cdn.cocoapods.org'
+                pod repo push cocoapods-specs $connector $options --sources='https://cdn.cocoapods.org'
               else
                 echo "dryRun -> skip selfHosted release"
               fi
             fi
             if [[ "${{ inputs.cocoapodsTrunk }}" == "true" ]]; then
               pod repo update
-              cmd="pod $command $connector --verbose --allow-warnings"
+              cmd="pod $command $connector $options"
               if [ ${{ inputs.dryRun }} == false ]; then
                 cmd="$cmd --synchronous"
               else
