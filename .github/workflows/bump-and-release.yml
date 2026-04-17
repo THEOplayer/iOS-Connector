@@ -137,6 +137,10 @@ jobs:
               fi
             fi
             if [[ "${{ inputs.cocoapodsTrunk }}" == "true" ]]; then
+              if [[ $connector == *Nielsen.podspec ]]; then
+                echo "Skip Nielsen"
+                continue
+              fi
               pod repo update
               cmd="pod $command $connector $options"
               if [ ${{ inputs.dryRun }} == false ]; then
