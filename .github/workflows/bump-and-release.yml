@@ -1,5 +1,5 @@
 name: Bump and release
-run-name: ${{ (inputs.version == '' && 'Not bumping version') || format('Bumping version to {0}', inputs.version) }} and ${{ (inputs.dryRun == true && 'validating') || 'releasing' }} ${{ inputs.connectors }}
+run-name: ${{ (inputs.version == '' && 'Not bumping version') || format('Bumping version to {0}', inputs.version) }} and ${{ (inputs.dryRun == true && 'validating') || 'releasing' }} ${{ inputs.connectors }} on cocoapods trunk ${{ (inputs.cocoapodsTrunk == true && '✅') || '❌' }}, on self hosted spec repo ${{ (inputs.selfHosted == true && '✅') || '❌' }}
 on:
   workflow_dispatch:
     inputs:
@@ -9,6 +9,16 @@ on:
         type: string
       dryRun:
         description: 'Dry run to only validate without release.'
+        required: true
+        default: true
+        type: boolean
+      cocoapodsTrunk:
+        description: 'If true, releases on Cocoapods trunk public spec repo.'
+        required: true
+        default: true
+        type: boolean
+      selfHosted:
+        description: 'If true, releases on self hosted spec repo.'
         required: true
         default: true
         type: boolean
@@ -102,19 +112,35 @@ jobs:
           else
             connectors+=("$prefix-${{ inputs.connectors }}.podspec")
           fi
+          if [[ "${{ inputs.selfHosted }}" == "true" && "${{ inputs.dryRun }}" != "true" ]]; then
+            if [ -d "$HOME/.cocoapods/repos/cocoapods-specs" ]; then
+              pod repo remove cocoapods-specs
+            fi
+            pod repo add cocoapods-specs \
+            https://x-access-token:${{ secrets.PODS_SPEC_REPO_TOKEN }}@github.com/THEOplayer/cocoapods-specs.git
+          fi
           for connector in ${connectors[*]}
           do
-            pod repo update
-            cmd="pod $command $connector --verbose --allow-warnings"
-            if [ ${{ inputs.dryRun }} == false ]; then
-              cmd="$cmd --synchronous"
-            else
-              branch=$(git rev-parse --abbrev-ref HEAD)
-              sed -i '' "s|:tag => [^,}]*|:branch => \"$branch\"|g" "$connector"
+            if [[ "${{ inputs.selfHosted }}" == "true" ]]; then
+              if [[ "${{ inputs.dryRun }}" != "true" ]]; then
+                pod repo push cocoapods-specs $connector --verbose --allow-warnings
+              else
+                echo "dryRun -> skip selfHosted release"
+              fi
             fi
-            $cmd
-            if [ ${{ inputs.dryRun }} == true ]; then
-              git checkout "$connector"
+            if [[ "${{ inputs.cocoapodsTrunk }}" == "true" ]]; then
+              pod repo update
+              cmd="pod $command $connector --verbose --allow-warnings"
+              if [ ${{ inputs.dryRun }} == false ]; then
+                cmd="$cmd --synchronous"
+              else
+                branch=$(git rev-parse --abbrev-ref HEAD)
+                sed -i '' "s|:tag => [^,}]*|:branch => \"$branch\"|g" "$connector"
+              fi
+              $cmd
+              if [ ${{ inputs.dryRun }} == true ]; then
+                git checkout "$connector"
+              fi
             fi
           done
   Cleanup:
