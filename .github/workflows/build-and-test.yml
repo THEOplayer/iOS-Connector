@@ -11,8 +11,6 @@ concurrency:
   group: build-and-test-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
-run-name: Build and Test
-
 jobs:
   build-and-test:
     runs-on: macos-14
