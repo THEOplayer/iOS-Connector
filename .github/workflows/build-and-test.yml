@@ -65,7 +65,7 @@ jobs:
       - name: Run tests
         run: |
           set -euo pipefail
-          SIM_DEST='platform=iOS Simulator,name=iPhone 16'
+          SIM_DEST='platform=iOS Simulator,name=iPhone 17'
           for scheme in $TEST_SCHEMES; do
             echo "----------------------------------------"
             echo "Testing: $scheme"
