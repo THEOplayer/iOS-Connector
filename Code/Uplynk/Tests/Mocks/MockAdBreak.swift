@@ -20,7 +20,7 @@ struct MockAdBreak: AdBreak {
 
 struct MockAd: Ad {
     let isSlate = false
-    var adBreak: AdBreak = MockAdBreak()
+    var adBreak: AdBreak? = MockAdBreak()
     var companions: [CompanionAd] = []
     var type: String = ""
     var id: String?
