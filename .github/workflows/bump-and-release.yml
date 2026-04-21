@@ -126,6 +126,7 @@ jobs:
           do
             options="--verbose --allow-warnings"
             if [[ "${{ inputs.selfHosted }}" == "true" ]]; then
+              options+=" --use-json"
               if [[ "${{ inputs.dryRun }}" != "true" ]]; then
                 sources="--sources=https://cdn.cocoapods.org"
                 if [[ $connector == *Nielsen.podspec ]]; then
