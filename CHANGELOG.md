@@ -7,16 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- SideloadedSubtitle
+  - Fixed an issue where switching between sideloaded subtitle tracks would get stuck after the first switch due to cached subtitle responses.
+
 ## [11.0.0] - 2026-04-16
 
 ### Added
 
 - The connectors will now be additionally published to a [THEOplayer hosted Cocoapods spec repo](https://github.com/THEOplayer/cocoapods-specs). We will continue publishing to the main trunk until EOL. For more info, please check [the SDK changelog](https://optiview.dolby.com/docs/theoplayer/changelog/#-1100-20260416).
-
-### Fixed
-
-- SideloadedSubtitle
-  - Fixed an issue where switching between sideloaded subtitle tracks would get stuck after the first switch due to cached subtitle responses.
 
 ### Removed
 
