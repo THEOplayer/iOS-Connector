@@ -21,9 +21,9 @@ let package = Package(
         .library(name: "THEOplayerConnectorUplynk", targets: ["THEOplayerConnectorUplynk"]),
     ],
     dependencies: [
-        .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", .exactItem( "4.0.51")),
+        .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", .exactItem( "4.2.4")),
         .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-apple", from: "11.0.0"),
-        .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "9.0.0"),
+        .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "10.0.0"),
         .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
         .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
     ],
