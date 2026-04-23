@@ -19,6 +19,8 @@ let package = Package(
         .library(name: "THEOplayerConnectorYospace", targets: ["THEOplayerConnectorYospace"]),
 
         .library(name: "THEOplayerConnectorUplynk", targets: ["THEOplayerConnectorUplynk"]),
+
+        .library(name: "THEOplayerConnectorComscore", targets: ["THEOplayerConnectorComscore"]),
     ],
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", .exactItem( "4.2.4")),
@@ -26,6 +28,7 @@ let package = Package(
         .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "10.0.0"),
         .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
         .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
+        .package(name: "ComScore", url: "https://github.com/comScore/Comscore-Swift-Package-Manager", "6.10.0"..<"6.11.0"),
     ],
     targets: [
         .target(
@@ -85,6 +88,15 @@ let package = Package(
                 "THEOplayerConnectorUplynk"
             ],
             path: "Code/Uplynk/Tests"
+        ),
+
+        .target(
+            name: "THEOplayerConnectorComscore",
+            dependencies: [
+                "THEOplayerSDK",
+                "ComScore"
+            ],
+            path: "Code/Comscore/Source"
         )
     ]
 )
