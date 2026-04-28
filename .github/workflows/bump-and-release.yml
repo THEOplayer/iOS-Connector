@@ -124,6 +124,7 @@ jobs:
           fi
           for connector in ${connectors[*]}
           do
+            pod repo update
             options="--verbose --allow-warnings"
             if [[ "${{ inputs.selfHosted }}" == "true" ]]; then
               options+=" --use-json"
@@ -143,7 +144,6 @@ jobs:
                 echo "Skip Nielsen"
                 continue
               fi
-              pod repo update
               cmd="pod $command $connector $options"
               if [ ${{ inputs.dryRun }} == false ]; then
                 cmd="$cmd --synchronous"
