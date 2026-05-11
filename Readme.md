@@ -13,14 +13,14 @@ For more details about importing OptiView Player iOS SDK check the [documentatio
 
 ## Available Connectors
 
-| Connector          | Dependency                                | Documentation                                         |
-| :-------------------| :------------------------------------------| :-----------------------------------------------------:|
-| Uplynk             | `THEOplayer-Connector-Uplynk`             | [documentation](Code/Uplynk/README.md)                |
-| Comscore           | `THEOplayer-Connector-Comscore`           | [documentation](Code/Comscore/README.md)              |
-| Conviva            | `THEOplayer-Connector-Conviva`            | [documentation](Code/Conviva/README.md)               |
-| Nielsen            | `THEOplayer-Connector-Nielsen`            | [documentation](Code/Nielsen/README.md)               |
-| SideloadedSubtitle | `THEOplayer-Connector-SideloadedSubtitle` | [documentation](Code/Sideloaded-TextTracks/README.md) |
-| Yospace            | `THEOplayer-Connector-Yospace`            | [documentation](Code/Yospace/README.md)               |
+| Connector          | Dependency                                | Supported From |                    Documentation                     |
+|:-------------------|:------------------------------------------|:--------------:|:----------------------------------------------------:|
+| Uplynk             | `THEOplayer-Connector-Uplynk`             |     8.11.1     | [documentation](Code/Uplynk/README.md)               |
+| Comscore           | `THEOplayer-Connector-Comscore`           |     4.5.0      | [documentation](Code/Comscore/README.md)             |
+| Conviva            | `THEOplayer-Connector-Conviva`            |     4.1.1      | [documentation](Code/Conviva/README.md)              |
+| Nielsen            | `THEOplayer-Connector-Nielsen`            |     4.3.0      | [documentation](Code/Nielsen/README.md)              |
+| SideloadedSubtitle | `THEOplayer-Connector-SideloadedSubtitle` |     5.2.0      | [documentation](Code/Sideloaded-TextTracks/README.md)|
+| Yospace            | `THEOplayer-Connector-Yospace`            |     7.8.0      | [documentation](Code/Yospace/README.md)              |
 
 ## Installation
 
