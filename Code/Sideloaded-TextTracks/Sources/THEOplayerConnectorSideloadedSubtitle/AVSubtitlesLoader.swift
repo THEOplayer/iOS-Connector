@@ -22,6 +22,7 @@ class AVSubtitlesLoader: NSObject {
     private let synchronizer: SubtitlesSynchronizer?
     private let _id: String
     private var variantTotalDuration: Double = 0
+    private var masterURLRequest: URLRequest?
     
     init(subtitles: [TextTrackDescription], id: String, player: THEOplayer? = nil) {
         self._subtitles = subtitles
@@ -42,8 +43,8 @@ class AVSubtitlesLoader: NSObject {
     }
     #endif
 
-    func handleMasterManifestRequest(_ url: URL) async -> Data? {
-        let parser = MasterPlaylistParser(url: url)
+    func handleMasterManifestRequest(_ url: URL, request: URLRequest?) async -> Data? {
+        let parser = MasterPlaylistParser(url: url, request: request)
         guard let responseData = await parser.sideLoadSubtitles(subtitles: subtitles) else {
             print("[AVSubtitlesLoader] ERROR: Couldn't find manifest data")
             return nil
@@ -163,8 +164,13 @@ enum URLScheme: String {
 }
 
 extension AVSubtitlesLoader: MediaPlaylistInterceptor {
-    func shouldInterceptPlaylistRequest(type: HlsPlaylistType) -> Bool { false }
-    func didInterceptPlaylistRequest(type: HlsPlaylistType, request: URLRequest) async throws -> URLRequest { request }
+    func shouldInterceptPlaylistRequest(type: HlsPlaylistType) -> Bool { true }
+    func didInterceptPlaylistRequest(type: HlsPlaylistType, request: URLRequest) async throws -> URLRequest {
+        if type == .master {
+            masterURLRequest = request
+        }
+        return request
+    }
 
     func failedToPerformURLRequest(request: URLRequest, response: URLResponse) {
         if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {
@@ -190,7 +196,7 @@ extension AVSubtitlesLoader: MediaPlaylistInterceptor {
             // intercept the master manifest to append the subtitles
             subtitles = await validateSubtitles()
             if subtitles.isEmpty { return data }
-            return await self.handleMasterManifestRequest(url) ?? data
+            return await self.handleMasterManifestRequest(url, request: masterURLRequest) ?? data
         case .video:
             // intercept the variant manifest to get the duration
             if subtitles.isEmpty { return data }

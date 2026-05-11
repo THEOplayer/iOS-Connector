@@ -16,8 +16,14 @@ class PlaylistParser {
         self.manifestData = nil
     }
     
-    func loadManifest() async -> Data? {
-        if let (data, response) = try? await URLSession.shared.data(from: self.manifestURL) {
+    func loadManifest(_ headers: [String: String]? = nil) async -> Data? {
+        var request = URLRequest(url: self.manifestURL)
+        if let headers {
+            for header in headers {
+                request.setValue(header.value, forHTTPHeaderField: header.key)
+            }
+        }
+        if let (data, response) = try? await URLSession.shared.data(for: request) {
             // Update the manifestUrl to the url received in the response (to pickup possible url redirect)
             if let responseUrl = response.url {
                 self.manifestURL = responseUrl
