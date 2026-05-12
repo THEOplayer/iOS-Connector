@@ -11,13 +11,14 @@ class VariantPlaylistParser: PlaylistParser {
     fileprivate(set) var totalPlayListDuration: Double
     var constructedManifestArray = [String]()
     
-    override init(url: URL) {
+    override init(url: URL, request: URLRequest?) {
         self.totalPlayListDuration = 0
-        super.init(url: url)
+        super.init(url: url, request: request)
     }
     
     func parse() async -> VariantPlaylistParser? {
-        guard let _ = await self.loadManifest() else { return nil }
+        let headers = request?.allHTTPHeaderFields
+        guard let _ = await self.loadManifest(headers) else { return nil }
         self.parseManifest()
         let constructed = self.constructedManifestArray.joined(separator: "\n")
         if THEOplayerConnectorSideloadedSubtitle.SHOW_DEBUG_LOGS {

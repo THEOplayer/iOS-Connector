@@ -22,7 +22,7 @@ class AVSubtitlesLoader: NSObject {
     private let synchronizer: SubtitlesSynchronizer?
     private let _id: String
     private var variantTotalDuration: Double = 0
-    private var masterURLRequest: URLRequest?
+    private var requestMap: [URL: URLRequest] = [:]
     
     init(subtitles: [TextTrackDescription], id: String, player: THEOplayer? = nil) {
         self._subtitles = subtitles
@@ -53,8 +53,8 @@ class AVSubtitlesLoader: NSObject {
         return responseData
     }
     
-    func handleVariantManifest(_ url: URL) async -> Data? {
-        let parser = VariantPlaylistParser(url: url)
+    func handleVariantManifest(_ url: URL, request: URLRequest?) async -> Data? {
+        let parser = VariantPlaylistParser(url: url, request: request)
 
         guard let playlist = await parser.parse(),
            let responseData = playlist.manifestData else {
@@ -166,8 +166,8 @@ enum URLScheme: String {
 extension AVSubtitlesLoader: MediaPlaylistInterceptor {
     func shouldInterceptPlaylistRequest(type: HlsPlaylistType) -> Bool { true }
     func didInterceptPlaylistRequest(type: HlsPlaylistType, request: URLRequest) async throws -> URLRequest {
-        if type == .master {
-            masterURLRequest = request
+        if let url = request.url {
+            requestMap[url] = request
         }
         return request
     }
@@ -196,11 +196,11 @@ extension AVSubtitlesLoader: MediaPlaylistInterceptor {
             // intercept the master manifest to append the subtitles
             subtitles = await validateSubtitles()
             if subtitles.isEmpty { return data }
-            return await self.handleMasterManifestRequest(url, request: masterURLRequest) ?? data
+            return await self.handleMasterManifestRequest(url, request: requestMap[url]) ?? data
         case .video:
             // intercept the variant manifest to get the duration
             if subtitles.isEmpty { return data }
-            return await self.handleVariantManifest(url) ?? data
+            return await self.handleVariantManifest(url, request: requestMap[url]) ?? data
         case .subtitles:
             // intercept the subtitle request to respond with the HLS subtitle
             if subtitles.isEmpty { return data }

@@ -10,10 +10,12 @@ import Foundation
 class PlaylistParser {
     var manifestURL: URL
     var manifestData: Data?
+    let request: URLRequest?
     
-    init(url: URL) {
+    init(url: URL, request: URLRequest?) {
         self.manifestURL = url
         self.manifestData = nil
+        self.request = request
     }
     
     func loadManifest(_ headers: [String: String]? = nil) async -> Data? {
