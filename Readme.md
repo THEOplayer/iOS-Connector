@@ -1,15 +1,62 @@
-# THEOplayer iOS connectors
+# OptiView Player iOS SDK Connectors
 
-A collection of components that connect third party software with THEOplayer for iOS
+This repository is maintained by [Dolby OptiView](https://optiview.dolby.com/) and contains the different connectors available with the OptiView Player (formerly THEOplayer) iOS SDK.
 
--   [THEOplayer-Connector-**Conviva**](./Code/Conviva)
--   [THEOplayer-Connector-**Nielsen**](./Code/Nielsen)
--   [THEOplayer-Connector-**Comscore**](./Code/Comscore)
--   [THEOplayer-Connector-**SideloadedSubtitle**](./Code/Sideloaded-TextTracks)
--   [THEOplayer-Connector-**Yospace**](./Code/Yospace)
+The OptiView Player iOS SDK enables you to quickly deliver content playback on iOS and tvOS.
 
-## Other platforms
+Using the available connectors allows you to augment the features delivered through the iOS SDK.
+
+## Prerequisites
+
+The OptiView Player iOS SDK Connectors requires the application to import the OptiView Player iOS SDK since the connectors rely on its public APIs.
+For more details about importing OptiView Player iOS SDK check the [documentation](https://optiview.dolby.com/docs/theoplayer/getting-started/sdks/ios/getting-started/).
+
+## Available Connectors
+
+| Connector          | Dependency                                | Supported From | Documentation                                         |
+| :-------------------| :------------------------------------------| :--------------:| :-----------------------------------------------------:|
+| Uplynk             | `THEOplayer-Connector-Uplynk`             | 8.11.1         | [documentation](Code/Uplynk/README.md)                |
+| Comscore           | `THEOplayer-Connector-Comscore`           | 4.5.0          | [documentation](Code/Comscore/README.md)              |
+| Conviva            | `THEOplayer-Connector-Conviva`            | 4.1.1          | [documentation](Code/Conviva/README.md)               |
+| Nielsen            | `THEOplayer-Connector-Nielsen`            | 4.3.0          | [documentation](Code/Nielsen/README.md)               |
+| SideloadedSubtitle | `THEOplayer-Connector-SideloadedSubtitle` | 5.2.0          | [documentation](Code/Sideloaded-TextTracks/README.md) |
+| Yospace            | `THEOplayer-Connector-Yospace`            | 7.8.0          | [documentation](Code/Yospace/README.md)               |
+
+Notes:
+* OptiView Player iOS SDK Connectors are compatible with a OptiView Player SDK with the same major version number. It's not recommended to use different major versions for the iOS SDK and the Connectors.
+
+## Installation
+
+### CocoaPods
+
+In your `Podfile` add one or more of the OptiView Player iOS SDK Connectors, for example:
+
+```ruby
+pod 'THEOplayer-Connector-Conviva'
+```
+
+### Swift Package Manager
+
+In Xcode, go to **File > Add Package Dependencies...** and add:
+
+```
+https://github.com/THEOplayer/iOS-Connector
+```
+
+Then select the library products you need (e.g. `THEOplayerConnectorConviva`).
+
+## Documentation
+
+-   [OptiView Docs](https://optiview.dolby.com/docs/)
+
+## Other Platforms
 
 If you are looking for connectors for other platforms see:
 
--   [Android-connector](https://github.com/THEOplayer/android-connector)
+-   [Android SDK connectors](https://github.com/THEOplayer/android-connector)
+-   [Web SDK connectors](https://github.com/THEOplayer/web-connectors)
+-   [React Native SDK connectors](https://github.com/THEOplayer/react-native-connectors)
+
+## License
+
+The contents of this package are subject to the [Dolby OptiView Terms of Service](https://optiview.dolby.com/policies/terms-of-service/).

@@ -54,8 +54,8 @@ The THEOPlayer Yospace connector has two dependency frameworks: THEOplayerSDK an
 THEOplayerSDK is added as a dependency on both Cocoapods and SPM and will be fetched by each dependency manager.
 YOAdManagement is published as a private pod hosted on Artifactory by jfrog. In order to get the framework you will need to:
 1. Setup a Yospace developer account at https://www.yospace.com/developer
-2. Login to the Yospace Apple docs https://developer.yospace.com/sdk-documentation/apple/userguide/latest/en/index-en.html
-3. Follow the instructions to setup the artifactory, authenticate, and fetch the framework at https://developer.yospace.com/sdk-documentation/apple/userguide/latest/en/prerequisites.html
+2. Login to the Yospace Apple docs at https://docs.yospace.com/library/technical/sdks/en/ad-management-sdks-v3/apple.html
+3. Follow the instructions to setup the artifactory, authenticate, and fetch the framework at https://docs.yospace.com/library/technical/sdk-api/ad-management/apple/previous/index.html
 
 ## Usage
 
