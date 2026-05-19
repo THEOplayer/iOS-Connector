@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- SideloadedSubtitle
+  - Fixed an issue where internal network requests would cause a user agent mismatch.
+
 ## [11.0.1] - 2026-04-21
 
 ### Fixed

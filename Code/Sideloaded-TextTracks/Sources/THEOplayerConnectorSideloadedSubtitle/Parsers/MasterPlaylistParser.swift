@@ -12,13 +12,10 @@ class MasterPlaylistParser: PlaylistParser {
     var constructedManifestArray = [String]()
     fileprivate var lastMediaLine: Int?
     fileprivate let subtitlesGroupId = "THEOsubs"
-
-    override init(url: URL) {
-        super.init(url: url)
-    }
     
     func sideLoadSubtitles(subtitles: [TextTrackDescription]) async -> Data? {
-        guard let _ = await self.loadManifest() else { return nil }
+        let headers = request?.allHTTPHeaderFields
+        guard let _ = await self.loadManifest(headers) else { return nil }
         self.parseManifest()
         self.appendSubtitlesLines(subtitles: subtitles)
         let constructed = self.constructedManifestArray.joined(separator: "\n")
