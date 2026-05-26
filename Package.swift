@@ -23,9 +23,9 @@ let package = Package(
         .library(name: "THEOplayerConnectorComscore", targets: ["THEOplayerConnectorComscore"]),
     ],
     dependencies: [
-        .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", .exactItem( "4.2.4")),
-        .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-apple", from: "11.0.0"),
-        .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", from: "10.0.0"),
+        .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", "4.3.1"..<"4.4.0"),
+        .package(name: "THEOplayerSDK", url: "https://github.com/THEOplayer/theoplayer-sdk-apple", "11.0.0"..<"12.0.0"),
+        .package(name: "NielsenAppApi", url: "https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-dynamic-spm-global", "10.0.0"..<"11.0.0"),
         .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
         .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
         .package(name: "ComScore", url: "https://github.com/comScore/Comscore-Swift-Package-Manager", "6.10.0"..<"6.11.0"),
