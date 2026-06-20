@@ -1,0 +1,476 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		290B70F32E1C650F0013C58D /* THEOplayerConnectorGemius in Frameworks */ = {isa = PBXBuildFile; productRef = 290B70F22E1C650F0013C58D /* THEOplayerConnectorGemius */; };
+		290B712A2E1DC6F70013C58D /* GemiusSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 290B71292E1DC6F70013C58D /* GemiusSDK.xcframework */; };
+		290B712B2E1DC6F70013C58D /* GemiusSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 290B71292E1DC6F70013C58D /* GemiusSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		290B71312E268E680013C58D /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		290B71342E2697EE0013C58D /* THEOplayerGoogleIMAIntegration in Frameworks */ = {isa = PBXBuildFile; productRef = 290B71332E2697EE0013C58D /* THEOplayerGoogleIMAIntegration */; };
+		290B71372E269B840013C58D /* GoogleInteractiveMediaAds in Frameworks */ = {isa = PBXBuildFile; productRef = 290B71362E269B840013C58D /* GoogleInteractiveMediaAds */; };
+		295C3E152E1C6159000C4499 /* THEOplayerConnectorGemius in Frameworks */ = {isa = PBXBuildFile; productRef = 295C3E142E1C6159000C4499 /* THEOplayerConnectorGemius */; };
+		295C3E222E1C640D000C4499 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295C3E202E1C640D000C4499 /* ViewController.swift */; };
+		295C3E232E1C640D000C4499 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295C3E1E2E1C640D000C4499 /* PlayerView.swift */; };
+		295C3E242E1C640D000C4499 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295C3E1F2E1C640D000C4499 /* SceneDelegate.swift */; };
+		295C3E252E1C640D000C4499 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295C3E172E1C640D000C4499 /* AppDelegate.swift */; };
+		295C3E262E1C640D000C4499 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295C3E1B2E1C640D000C4499 /* LaunchScreen.storyboard */; };
+		295C3E272E1C640D000C4499 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 295C3E182E1C640D000C4499 /* Assets.xcassets */; };
+		295C3E292E1C640D000C4499 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295C3E1D2E1C640D000C4499 /* Main.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		290B712C2E1DC6F70013C58D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				290B712B2E1DC6F70013C58D /* GemiusSDK.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		290B71292E1DC6F70013C58D /* GemiusSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GemiusSDK.xcframework; path = "../../../../../../../Downloads/GemiusSDK_iOS_2.0.6 2/Framework/iOS/GemiusSDK.xcframework"; sourceTree = "<group>"; };
+		290B712D2E2683E00013C58D /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = ../../../../../../../AdSupport.framework; sourceTree = "<group>"; };
+		295C3DE62E1C5E14000C4499 /* GemiusReporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GemiusReporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		295C3E172E1C640D000C4499 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		295C3E182E1C640D000C4499 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		295C3E192E1C640D000C4499 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		295C3E1A2E1C640D000C4499 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		295C3E1C2E1C640D000C4499 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		295C3E1E2E1C640D000C4499 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		295C3E1F2E1C640D000C4499 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		295C3E202E1C640D000C4499 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		295C3DE32E1C5E14000C4499 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				290B712A2E1DC6F70013C58D /* GemiusSDK.xcframework in Frameworks */,
+				290B71312E268E680013C58D /* (null) in Frameworks */,
+				290B71372E269B840013C58D /* GoogleInteractiveMediaAds in Frameworks */,
+				295C3E152E1C6159000C4499 /* THEOplayerConnectorGemius in Frameworks */,
+				290B71342E2697EE0013C58D /* THEOplayerGoogleIMAIntegration in Frameworks */,
+				290B70F32E1C650F0013C58D /* THEOplayerConnectorGemius in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		290B71282E1DC6F70013C58D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				290B712D2E2683E00013C58D /* AdSupport.framework */,
+				290B71292E1DC6F70013C58D /* GemiusSDK.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		295C3DDD2E1C5E14000C4499 = {
+			isa = PBXGroup;
+			children = (
+				295C3E212E1C640D000C4499 /* GemiusReporter */,
+				290B71282E1DC6F70013C58D /* Frameworks */,
+				295C3DE72E1C5E14000C4499 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		295C3DE72E1C5E14000C4499 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				295C3DE62E1C5E14000C4499 /* GemiusReporter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		295C3E212E1C640D000C4499 /* GemiusReporter */ = {
+			isa = PBXGroup;
+			children = (
+				295C3E172E1C640D000C4499 /* AppDelegate.swift */,
+				295C3E182E1C640D000C4499 /* Assets.xcassets */,
+				295C3E192E1C640D000C4499 /* Info.plist */,
+				295C3E1B2E1C640D000C4499 /* LaunchScreen.storyboard */,
+				295C3E1D2E1C640D000C4499 /* Main.storyboard */,
+				295C3E1E2E1C640D000C4499 /* PlayerView.swift */,
+				295C3E1F2E1C640D000C4499 /* SceneDelegate.swift */,
+				295C3E202E1C640D000C4499 /* ViewController.swift */,
+			);
+			name = GemiusReporter;
+			path = "/Users/wjoos/Code/customers/nfl/iOS-Connector/Code/Gemius-Examples/SharedCode";
+			sourceTree = "<absolute>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		295C3DE52E1C5E14000C4499 /* GemiusReporter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 295C3DF92E1C5E16000C4499 /* Build configuration list for PBXNativeTarget "GemiusReporter" */;
+			buildPhases = (
+				295C3DE22E1C5E14000C4499 /* Sources */,
+				295C3DE32E1C5E14000C4499 /* Frameworks */,
+				295C3DE42E1C5E14000C4499 /* Resources */,
+				290B712C2E1DC6F70013C58D /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GemiusReporter;
+			packageProductDependencies = (
+				295C3E142E1C6159000C4499 /* THEOplayerConnectorGemius */,
+				290B70F22E1C650F0013C58D /* THEOplayerConnectorGemius */,
+				290B71332E2697EE0013C58D /* THEOplayerGoogleIMAIntegration */,
+				290B71362E269B840013C58D /* GoogleInteractiveMediaAds */,
+			);
+			productName = GemiusReporter;
+			productReference = 295C3DE62E1C5E14000C4499 /* GemiusReporter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		295C3DDE2E1C5E14000C4499 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					295C3DE52E1C5E14000C4499 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = 295C3DE12E1C5E14000C4499 /* Build configuration list for PBXProject "GemiusReporter" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 295C3DDD2E1C5E14000C4499;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				290B70F12E1C650F0013C58D /* XCLocalSwiftPackageReference "../../../../iOS-Connector" */,
+				290B71322E2697EE0013C58D /* XCRemoteSwiftPackageReference "theoplayer-sdk-apple" */,
+				290B71352E269B840013C58D /* XCRemoteSwiftPackageReference "swift-package-manager-google-interactive-media-ads-ios" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 295C3DE72E1C5E14000C4499 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				295C3DE52E1C5E14000C4499 /* GemiusReporter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		295C3DE42E1C5E14000C4499 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				295C3E262E1C640D000C4499 /* LaunchScreen.storyboard in Resources */,
+				295C3E272E1C640D000C4499 /* Assets.xcassets in Resources */,
+				295C3E292E1C640D000C4499 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		295C3DE22E1C5E14000C4499 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				295C3E222E1C640D000C4499 /* ViewController.swift in Sources */,
+				295C3E232E1C640D000C4499 /* PlayerView.swift in Sources */,
+				295C3E242E1C640D000C4499 /* SceneDelegate.swift in Sources */,
+				295C3E252E1C640D000C4499 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		295C3E1B2E1C640D000C4499 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				295C3E1A2E1C640D000C4499 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		295C3E1D2E1C640D000C4499 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				295C3E1C2E1C640D000C4499 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		295C3DFA2E1C5E16000C4499 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.gemius.ios.integration.GemiusReporter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		295C3DFB2E1C5E16000C4499 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../SharedCode/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.gemius.ios.integration.GemiusReporter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		295C3DFC2E1C5E16000C4499 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 8YAB8ZY55Y;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		295C3DFD2E1C5E16000C4499 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 8YAB8ZY55Y;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		295C3DE12E1C5E14000C4499 /* Build configuration list for PBXProject "GemiusReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				295C3DFC2E1C5E16000C4499 /* Debug */,
+				295C3DFD2E1C5E16000C4499 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		295C3DF92E1C5E16000C4499 /* Build configuration list for PBXNativeTarget "GemiusReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				295C3DFA2E1C5E16000C4499 /* Debug */,
+				295C3DFB2E1C5E16000C4499 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		290B70F12E1C650F0013C58D /* XCLocalSwiftPackageReference "../../../../iOS-Connector" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../../iOS-Connector";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		290B71322E2697EE0013C58D /* XCRemoteSwiftPackageReference "theoplayer-sdk-apple" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/THEOplayer/theoplayer-sdk-apple";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.8.0;
+			};
+		};
+		290B71352E269B840013C58D /* XCRemoteSwiftPackageReference "swift-package-manager-google-interactive-media-ads-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-interactive-media-ads-ios";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		290B70F22E1C650F0013C58D /* THEOplayerConnectorGemius */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = THEOplayerConnectorGemius;
+		};
+		290B71332E2697EE0013C58D /* THEOplayerGoogleIMAIntegration */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 290B71322E2697EE0013C58D /* XCRemoteSwiftPackageReference "theoplayer-sdk-apple" */;
+			productName = THEOplayerGoogleIMAIntegration;
+		};
+		290B71362E269B840013C58D /* GoogleInteractiveMediaAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 290B71352E269B840013C58D /* XCRemoteSwiftPackageReference "swift-package-manager-google-interactive-media-ads-ios" */;
+			productName = GoogleInteractiveMediaAds;
+		};
+		295C3E142E1C6159000C4499 /* THEOplayerConnectorGemius */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = THEOplayerConnectorGemius;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 295C3DDE2E1C5E14000C4499 /* Project object */;
+}
