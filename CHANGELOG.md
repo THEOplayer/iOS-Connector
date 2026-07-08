@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- SideloadedSubtitle
+  - Fixed a data race that could crash with `EXC_BAD_ACCESS` when playing a stream with side-loaded text tracks, caused by concurrent mutation of the internal request/subtitle collections from the playlist interception callbacks.
+
 ## [11.0.4] - 2026-05-29
 
 ### Changed

@@ -17,12 +17,23 @@ class AVSubtitlesLoader: NSObject {
     }
 
     private let _subtitles: [TextTrackDescription]
-    private var subtitles: [TextTrackDescription] = []
     private let transformer = SubtitlesTransformer()
     private let synchronizer: SubtitlesSynchronizer?
     private let _id: String
     private var variantTotalDuration: Double = 0
-    private var requestMap: [URL: URLRequest] = [:]
+
+    private let subtitlesLock = NSLock()
+    private var subtitlesStorage: [TextTrackDescription] = []
+    private var subtitles: [TextTrackDescription] {
+        get { self.subtitlesLock.lock(); defer { self.subtitlesLock.unlock() }; return self.subtitlesStorage }
+        set { self.subtitlesLock.lock(); defer { self.subtitlesLock.unlock() }; self.subtitlesStorage = newValue }
+    }
+    private let requestMapLock = NSLock()
+    private var requestMapStorage: [URL: URLRequest] = [:]
+    private var requestMap: [URL: URLRequest] {
+        get { self.requestMapLock.lock(); defer { self.requestMapLock.unlock() }; return self.requestMapStorage }
+        set { self.requestMapLock.lock(); defer { self.requestMapLock.unlock() }; self.requestMapStorage = newValue }
+    }
     
     init(subtitles: [TextTrackDescription], id: String, player: THEOplayer? = nil) {
         self._subtitles = subtitles
