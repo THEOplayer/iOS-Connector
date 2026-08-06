@@ -9,6 +9,8 @@ class AdHandler {
     static let serializationFormatter: NumberFormatter = createSerializationFormatter()
     private weak var endpoints: ConvivaEndpoints?
     private weak var storage: ConvivaStorage?
+    private var isAdBreakActive: Bool = false
+    private var failedAdBreakCounter: Int = 0
         
     init(endpoints: ConvivaEndpoints, storage: ConvivaStorage) {
         self.endpoints = endpoints
@@ -82,6 +84,7 @@ class AdHandler {
     
     func adBreakBegin(event: AdBreakBeginEvent) {
         log("handling adBreakBegin")
+        self.isAdBreakActive = true
         guard let adBreak = event.ad else { return }
         let adBreakInfo = [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: adBreak.maxDuration)),
@@ -99,6 +102,7 @@ class AdHandler {
     
     func adBreakEnd(event: AdBreakEndEvent) {
         log("handling adBreakEnd")
+        self.isAdBreakActive = false
         log("videoAnalytics.reportAdBreakEnded")
         self.endpoints?.videoAnalytics.reportAdBreakEnded()
     }
@@ -174,6 +178,40 @@ class AdHandler {
         }
     }
         
+    /// Reports an ad break that failed before any ad became available, for example when the ad server
+    /// returns an empty VAST response for a server-guided (THEOads) ad break. No ad break or ad events
+    /// are dispatched in that case, so report it here to keep Conviva's ad attempt and fill rate metrics correct.
+    func reportFailedAdBreak(message: String, podDuration: Double?, isPreRoll: Bool) {
+        guard !self.isAdBreakActive else { return }
+        self.failedAdBreakCounter += 1
+        let adBreakInfo: [String: Any] = [
+            CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: podDuration ?? 0)),
+            CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: self.failedAdBreakCounter)),
+            CIS_SSDK_AD_BREAK_POD_POSITION: isPreRoll ? "Pre-roll" : "Mid-roll",
+            "podTechnology": "Server Guided"
+        ]
+        log("videoAnalytics.reportAdBreakStarted: \(adBreakInfo)")
+        self.endpoints?.videoAnalytics.reportAdBreakStarted(
+            .ADPLAYER_CONTENT,
+            adType: .SERVER_SIDE,
+            adBreakInfo: adBreakInfo
+        )
+
+        var info: [String: Any] = ["c3.ad.technology": "Server Guided"]
+        if let contentAssetName = self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_ASSET_NAME) {
+            info["contentAssetName"] = contentAssetName
+        }
+        if let videoAnalytics = self.endpoints?.videoAnalytics {
+            info["c3.csid"] = videoAnalytics.getSessionId()
+        }
+        log("adAnalytics.setAdInfo: \(info)")
+        self.endpoints?.adAnalytics.setAdInfo(info)
+        log("adAnalytics.reportAdFailed: \(message)")
+        self.endpoints?.adAnalytics.reportAdFailed(message, adInfo: info)
+        log("videoAnalytics.reportAdBreakEnded")
+        self.endpoints?.videoAnalytics.reportAdBreakEnded()
+    }
+
     static func createSerializationFormatter() -> NumberFormatter {
         let formatter = NumberFormatter()
         formatter.usesGroupingSeparator = false
