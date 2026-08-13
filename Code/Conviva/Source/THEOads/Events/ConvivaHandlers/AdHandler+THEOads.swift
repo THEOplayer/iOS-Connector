@@ -18,8 +18,19 @@ extension AdHandler {
         self.reportFailedAdBreak(
             message: event.message ?? "No ad available",
             podDuration: interstitial.duration,
-            isPreRoll: interstitial.startTime == 0
+            podPosition: Self.calculateInterstitialAdBreakPosition(startTime: interstitial.startTime)
         )
+    }
+
+    /// The position of a THEOads interstitial based on its start time.
+    static func calculateInterstitialAdBreakPosition(startTime: Double) -> String {
+        if startTime == 0 {
+            return "Pre-roll"
+        } else if startTime < 0 || !startTime.isFinite {
+            return "Post-roll"
+        } else {
+            return "Mid-roll"
+        }
     }
 }
 #endif

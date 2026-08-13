@@ -7,21 +7,37 @@ import THEOplayerSDK
 
 class AdHandler {
     static let serializationFormatter: NumberFormatter = createSerializationFormatter()
+    /// The ad technology reported to Conviva for THEOads (SGAI).
+    /// SGAI isn't officially supported by Conviva yet, so we report it with our own string for now.
+    static let sgaiAdTechnology = "Server Guided"
     private weak var endpoints: ConvivaEndpoints?
     private weak var storage: ConvivaStorage?
     private var isAdBreakActive: Bool = false
-    private var failedAdBreakCounter: Int = 0
-        
+    private var adBreakCounter: Int = 0
+
     init(endpoints: ConvivaEndpoints, storage: ConvivaStorage) {
         self.endpoints = endpoints
         self.storage = storage
     }
-    
+
     func setAdInfo(_ adInfo: [String: Any]) {
         log("adAnalytics.setAdInfo: \(adInfo)")
         self.endpoints?.adAnalytics.setAdInfo(adInfo)
     }
-    
+
+    /// Ad metadata shared between successful and failed ad reporting: the tags needed to attach
+    /// the ad session to the content session (`c3.csid` and `contentAssetName`).
+    private func collectBaseAdMetadata() -> [String: Any] {
+        var info: [String: Any] = [:]
+        if let contentAssetName = self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_ASSET_NAME) {
+            info["contentAssetName"] = contentAssetName
+        }
+        if let videoAnalytics = self.endpoints?.videoAnalytics {
+            info["c3.csid"] = videoAnalytics.getSessionId()
+        }
+        return info
+    }
+
     private func calculatedAdTechnology(_ integrationKind: AdIntegrationKind) -> AdTechnology {
         switch integrationKind {
         case AdIntegrationKind.theoads:
@@ -33,10 +49,10 @@ class AdHandler {
             return .SERVER_SIDE
         }
     }
-    
+
     private func AdTechnologyAsString(_ integration: AdIntegrationKind) -> String {
         if integration == AdIntegrationKind.theoads {
-            return "Server Guided"
+            return Self.sgaiAdTechnology
         }
         let adTechnology = self.calculatedAdTechnology(integration)
         switch adTechnology {
@@ -86,9 +102,10 @@ class AdHandler {
         log("handling adBreakBegin")
         self.isAdBreakActive = true
         guard let adBreak = event.ad else { return }
+        self.adBreakCounter += 1
         let adBreakInfo = [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: adBreak.maxDuration)),
-            CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: adBreak.timeOffset)),
+            CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: self.adBreakCounter)),
             CIS_SSDK_AD_BREAK_POD_POSITION: adBreak.calculateCurrentAdBreakPosition(),
             "podTechnology": self.AdTechnologyAsString(adBreak.integration)
         ]
@@ -116,16 +133,10 @@ class AdHandler {
         let adTechnology = self.AdTechnologyAsString(ad.integration)
         // set Ad technology
         info["c3.ad.technology"] = adTechnology
-        
-        // set Ad contentAssetName
-        if let contentAssetName = self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_ASSET_NAME) {
-            info["contentAssetName"] = contentAssetName
-        }
-        // set Ad session ID
-        if let videoAnalytics = self.endpoints?.videoAnalytics {
-            info["c3.csid"] = videoAnalytics.getSessionId()
-        }
-        
+
+        // attach the ad session to the content session
+        self.collectBaseAdMetadata().forEach { info[$0.key] = $0.value }
+
         // Temporary workaround for missing LinearAd in Native THEOplayerGoogleIMAIntegration. Can be removed after THEO-10161 is completed.
         if !info.keys.contains(CIS_SSDK_METADATA_IS_LIVE), let duration = event.duration {
             if duration.isInfinite {
@@ -181,14 +192,14 @@ class AdHandler {
     /// Reports an ad break that failed before any ad became available, for example when the ad server
     /// returns an empty VAST response for a server-guided (THEOads) ad break. No ad break or ad events
     /// are dispatched in that case, so report it here to keep Conviva's ad attempt and fill rate metrics correct.
-    func reportFailedAdBreak(message: String, podDuration: Double?, isPreRoll: Bool) {
+    func reportFailedAdBreak(message: String, podDuration: Double?, podPosition: String) {
         guard !self.isAdBreakActive else { return }
-        self.failedAdBreakCounter += 1
+        self.adBreakCounter += 1
         let adBreakInfo: [String: Any] = [
             CIS_SSDK_AD_BREAK_POD_DURATION: Self.serialize(number: .init(value: podDuration ?? 0)),
-            CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: self.failedAdBreakCounter)),
-            CIS_SSDK_AD_BREAK_POD_POSITION: isPreRoll ? "Pre-roll" : "Mid-roll",
-            "podTechnology": "Server Guided"
+            CIS_SSDK_AD_BREAK_POD_INDEX: Self.serialize(number: .init(value: self.adBreakCounter)),
+            CIS_SSDK_AD_BREAK_POD_POSITION: podPosition,
+            "podTechnology": Self.sgaiAdTechnology
         ]
         log("videoAnalytics.reportAdBreakStarted: \(adBreakInfo)")
         self.endpoints?.videoAnalytics.reportAdBreakStarted(
@@ -197,13 +208,8 @@ class AdHandler {
             adBreakInfo: adBreakInfo
         )
 
-        var info: [String: Any] = ["c3.ad.technology": "Server Guided"]
-        if let contentAssetName = self.storage?.metadataEntryForKey(CIS_SSDK_METADATA_ASSET_NAME) {
-            info["contentAssetName"] = contentAssetName
-        }
-        if let videoAnalytics = self.endpoints?.videoAnalytics {
-            info["c3.csid"] = videoAnalytics.getSessionId()
-        }
+        var info = self.collectBaseAdMetadata()
+        info["c3.ad.technology"] = Self.sgaiAdTechnology
         log("adAnalytics.setAdInfo: \(info)")
         self.endpoints?.adAnalytics.setAdInfo(info)
         log("adAnalytics.reportAdFailed: \(message)")
