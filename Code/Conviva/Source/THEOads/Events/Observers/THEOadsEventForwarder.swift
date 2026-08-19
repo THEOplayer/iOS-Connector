@@ -15,17 +15,23 @@ class THEOadsEventForwarder {
         if let theoads = player.theoads {
             self.theoadsObserver = .init(
                 dispatcher: theoads,
-                eventListeners: Self.forwardEvents(from: theoads, to: handler)
+                eventListeners: Self.forwardEvents(from: theoads, to: handler) { [weak player] in
+                    player?.currentTime ?? 0
+                }
             )
         } else {
             self.theoadsObserver = nil
         }
     }
 
-    static func forwardEvents<Dispatcher: EventDispatcherProtocol>(from theoads: Dispatcher, to handler: AdHandler) -> [RemovableEventListenerProtocol] {
+    static func forwardEvents<Dispatcher: EventDispatcherProtocol>(
+        from theoads: Dispatcher,
+        to handler: AdHandler,
+        currentTime: @escaping () -> Double
+    ) -> [RemovableEventListenerProtocol] {
         [
             theoads.addRemovableEventListener(type: THEOadsEventTypes.INTERSTITIAL_ERROR) { event in
-                handler.interstitialError(event: event)
+                handler.interstitialError(event: event, currentTime: currentTime())
             }
         ]
     }
