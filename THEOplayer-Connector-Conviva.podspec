@@ -33,6 +33,13 @@ Pod::Spec.new do |s|
     live.dependency 'THEOplayer-Integration-THEOlive', "~> 11"
   end
   
+  # --- Subspec: THEOads (+THEOads Conviva) ---
+  s.subspec 'THEOads' do |theoads|
+    theoads.source_files = 'Code/Conviva/Source/THEOads/**/*'
+    theoads.dependency "#{s.name}/Base"
+    theoads.dependency 'THEOplayer-Integration-THEOads', "~> 11"
+  end
+
   # Default
   s.default_subspecs = ['Base', 'THEOlive']
 end

@@ -20,6 +20,10 @@ public class ConvivaConnector {
     private let theoliveForwarder: THEOliveEventForwarder
     private let theoliveHandler: THEOliveHandler
 #endif
+
+#if canImport(THEOplayerTHEOadsIntegration)
+    private let theoadsForwarder: THEOadsEventForwarder
+#endif
     
     public convenience init?(
         configuration: ConvivaConfiguration,
@@ -50,6 +54,11 @@ public class ConvivaConnector {
         // THEOlive level handling
         self.theoliveHandler = THEOliveHandler(endpoints: self.endPoints, storage: self.storage)
         self.theoliveForwarder = THEOliveEventForwarder(player: player, handler: self.theoliveHandler)
+#endif
+
+#if canImport(THEOplayerTHEOadsIntegration)
+        // THEOads level handling
+        self.theoadsForwarder = THEOadsEventForwarder(player: player, handler: self.adHandler)
 #endif
     }
     

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Conviva
+  - Fixed an issue where a THEOads ad break that failed before any ad was available, for example on an empty VAST response, was not reported as an ad attempt.
+
 ## [11.0.4] - 2026-05-29
 
 ### Changed
