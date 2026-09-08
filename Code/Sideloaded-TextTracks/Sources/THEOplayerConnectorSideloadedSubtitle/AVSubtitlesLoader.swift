@@ -166,6 +166,9 @@ enum URLScheme: String {
 extension AVSubtitlesLoader: MediaPlaylistInterceptor {
     func shouldInterceptPlaylistRequest(type: HlsPlaylistType) -> Bool { true }
     func didInterceptPlaylistRequest(type: HlsPlaylistType, request: URLRequest) async throws -> URLRequest {
+        var request = request
+        request.setValue(nil, forHTTPHeaderField: "Range")
+        request.setValue(nil, forHTTPHeaderField: "If-Range")
         if let url = request.url {
             requestMap[url] = request
         }
