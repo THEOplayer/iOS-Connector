@@ -101,7 +101,8 @@ final class THEOplayerSideloadedSubtitleConnectorTests: XCTestCase {
 
         server["/master.m3u8"] = { manifestResponse(for: $0, manifest: masterManifest) }
         server["/video.m3u8"] = { manifestResponse(for: $0, manifest: variantManifest) }
-        server["/subtitle.vtt"] = { _ in .ok(.text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nSubtitle")) }
+        server["/subtitle-en.vtt"] = { _ in .ok(.text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nEnglish")) }
+        server["/subtitle-es.vtt"] = { _ in .ok(.text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nSpanish")) }
         let port = in_port_t.random(in: 20000..<49151)
         try server.start(port, forceIPv4: true)
         defer { server.stop() }
@@ -109,16 +110,25 @@ final class THEOplayerSideloadedSubtitleConnectorTests: XCTestCase {
         let baseURL = URL(string: "http://127.0.0.1:\(port)")!
         let masterURL = baseURL.appendingPathComponent("master.m3u8")
         let variantURL = baseURL.appendingPathComponent("video.m3u8")
-        let subtitleURL = baseURL.appendingPathComponent("subtitle.vtt")
-        let subtitle = SSTextTrackDescription(
-            src: subtitleURL.absoluteString,
+        let englishSubtitleURL = baseURL.appendingPathComponent("subtitle-en.vtt")
+        let spanishSubtitleURL = baseURL.appendingPathComponent("subtitle-es.vtt")
+        let englishSubtitle = SSTextTrackDescription(
+            src: englishSubtitleURL.absoluteString,
             srclang: "en",
             isDefault: true,
             kind: .subtitles,
             label: "English",
             format: .WebVTT
         )
-        let loader = AVSubtitlesLoader(subtitles: [subtitle], id: #function, player: nil)
+        let spanishSubtitle = SSTextTrackDescription(
+            src: spanishSubtitleURL.absoluteString,
+            srclang: "es",
+            isDefault: false,
+            kind: .subtitles,
+            label: "Spanish",
+            format: .WebVTT
+        )
+        let loader = AVSubtitlesLoader(subtitles: [englishSubtitle, spanishSubtitle], id: #function, player: nil)
 
         var masterRequest = URLRequest(url: masterURL)
         masterRequest.setValue("bytes=0-1", forHTTPHeaderField: "Range")
@@ -134,6 +144,8 @@ final class THEOplayerSideloadedSubtitleConnectorTests: XCTestCase {
         let transformedMasterString = String(decoding: transformedMaster, as: UTF8.self)
         XCTAssertTrue(transformedMasterString.contains("#EXT-X-MEDIA:TYPE=SUBTITLES"))
         XCTAssertTrue(transformedMasterString.contains("SUBTITLES=\"THEOsubs\""))
+        XCTAssertTrue(transformedMasterString.contains("NAME=\"English\""))
+        XCTAssertTrue(transformedMasterString.contains("NAME=\"Spanish\""))
 
         var variantRequest = URLRequest(url: variantURL)
         variantRequest.setValue("bytes=100-200", forHTTPHeaderField: "Range")
@@ -149,10 +161,52 @@ final class THEOplayerSideloadedSubtitleConnectorTests: XCTestCase {
         let transformedVariantString = String(decoding: transformedVariant, as: UTF8.self)
         XCTAssertTrue(transformedVariantString.contains("#EXTINF:10.000"))
         XCTAssertTrue(transformedVariantString.contains(baseURL.appendingPathComponent("segment.ts").absoluteString))
+
+        for subtitleURL in [englishSubtitleURL, spanishSubtitleURL] {
+            let subtitleManifest = try XCTUnwrap(loader.handleSubtitles(subtitleURL))
+            let subtitleManifestString = String(decoding: subtitleManifest, as: UTF8.self)
+            XCTAssertTrue(subtitleManifestString.contains("#EXT-X-TARGETDURATION:10"))
+            XCTAssertTrue(subtitleManifestString.contains("#EXTINF:10.000"))
+            XCTAssertTrue(subtitleManifestString.contains(subtitleURL.absoluteString))
+        }
+
         lock.lock()
         let interceptedRanges = rangedRequestPaths
         lock.unlock()
         XCTAssertTrue(interceptedRanges.isEmpty)
+    }
+
+    func testSourceReplacementWithSubtitlesDoesNotThrow() {
+        let player = THEOplayer(with: nil)
+        player.preload = .none
+        let source = makeSourceDescription()
+
+        XCTAssertNoThrow(player.setSourceWithSubtitles(source: source))
+        XCTAssertNotNil(player.source)
+        XCTAssertNoThrow(player.setSourceWithSubtitles(source: nil))
+        XCTAssertNil(player.source)
+    }
+
+    #if os(iOS)
+    func testCachingTaskCreationWithSubtitlesDoesNotThrow() {
+        let task = THEOplayer.cache.createTaskWithSubtitles(source: makeSourceDescription(), parameters: nil)
+        defer { task?.remove() }
+
+        XCTAssertNotNil(task)
+    }
+    #endif
+
+    private func makeSourceDescription() -> SourceDescription {
+        let source = TypedSource(src: "https://example.com/master.m3u8", type: "application/x-mpegurl")
+        let subtitle = SSTextTrackDescription(
+            src: "https://example.com/subtitle.vtt",
+            srclang: "en",
+            isDefault: true,
+            kind: .subtitles,
+            label: "English",
+            format: .WebVTT
+        )
+        return SourceDescription(source: source, textTracks: [subtitle])
     }
 }
 
