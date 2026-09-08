@@ -71,6 +71,7 @@ let package = Package(
             dependencies: [
                 "THEOplayerConnectorSideloadedSubtitle",
                 "THEOplayerSDK",
+                "Swifter",
             ],
             path: "Code/Sideloaded-TextTracks/Tests/THEOplayerConnectorSideloadedSubtitleTests"
         ),
