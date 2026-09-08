@@ -86,9 +86,9 @@ final class THEOplayerSideloadedSubtitleConnectorTests: XCTestCase {
 
         func manifestResponse(for request: HttpRequest, manifest: String) -> HttpResponse {
             guard request.headers["range"] == nil else {
-                lock.lock()
-                rangedRequestPaths.append(request.path)
-                lock.unlock()
+                lock.withLock {
+                    rangedRequestPaths.append(request.path)
+                }
                 return .raw(
                     206,
                     "Partial Content",
@@ -103,10 +103,10 @@ final class THEOplayerSideloadedSubtitleConnectorTests: XCTestCase {
         server["/video.m3u8"] = { manifestResponse(for: $0, manifest: variantManifest) }
         server["/subtitle-en.vtt"] = { _ in .ok(.text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nEnglish")) }
         server["/subtitle-es.vtt"] = { _ in .ok(.text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nSpanish")) }
-        let port = in_port_t.random(in: 20000..<49151)
-        try server.start(port, forceIPv4: true)
+        try server.start(0, forceIPv4: true, priority: .userInitiated)
         defer { server.stop() }
 
+        let port = try server.port()
         let baseURL = URL(string: "http://127.0.0.1:\(port)")!
         let masterURL = baseURL.appendingPathComponent("master.m3u8")
         let variantURL = baseURL.appendingPathComponent("video.m3u8")
@@ -170,9 +170,9 @@ final class THEOplayerSideloadedSubtitleConnectorTests: XCTestCase {
             XCTAssertTrue(subtitleManifestString.contains(subtitleURL.absoluteString))
         }
 
-        lock.lock()
-        let interceptedRanges = rangedRequestPaths
-        lock.unlock()
+        let interceptedRanges = lock.withLock {
+            rangedRequestPaths
+        }
         XCTAssertTrue(interceptedRanges.isEmpty)
     }
 
