@@ -26,6 +26,7 @@ jobs:
         THEOplayerConnectorUplynk
       # Test schemes to run
       TEST_SCHEMES: >-
+        THEOplayerConnectorSideloadedSubtitleTests
         THEOplayerConnectorUplynkTests
 
     steps:
