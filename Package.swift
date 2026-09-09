@@ -66,6 +66,15 @@ let package = Package(
             ],
             path: "Code/Sideloaded-TextTracks/Sources/THEOplayerConnectorSideloadedSubtitle" 
         ),
+        .testTarget(
+            name: "THEOplayerConnectorSideloadedSubtitleTests",
+            dependencies: [
+                "THEOplayerConnectorSideloadedSubtitle",
+                "THEOplayerSDK",
+                "Swifter",
+            ],
+            path: "Code/Sideloaded-TextTracks/Tests/THEOplayerConnectorSideloadedSubtitleTests"
+        ),
 
         .target(
             name: "THEOplayerConnectorYospace",
