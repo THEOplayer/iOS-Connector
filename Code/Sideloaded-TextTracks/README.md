@@ -58,6 +58,7 @@ theoplayer.textTracks.addEventListener(type: TextTrackListEventTypes.ADD_TRACK) 
 ```
 
 5. Loading thumbnail metadata through sideloaded WebVTT subtitles is not supported.
+6. HTTP range requests for HLS playlists are ignored. The connector removes `Range` and `If-Range` headers because it requires complete playlist data. Media segment range requests are unaffected.
 
 ## Setting a time offset
 
