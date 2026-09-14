@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [11.0.6] - 2026-09-14
+
 ### Fixed
 
 - SideloadedSubtitle
