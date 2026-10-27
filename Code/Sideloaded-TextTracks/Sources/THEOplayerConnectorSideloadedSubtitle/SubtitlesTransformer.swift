@@ -111,8 +111,8 @@ class SubtitlesTransformer {
 
     @objc private func restartServerIfUnreachable() {
         guard !self.isServerReachable() else { return }
+        print("[AVSubtitlesLoader] Local server is unreachable, restarting it on port", self.port)
         self.startServer()
-        print("[AVSubtitlesLoader] Local server was unreachable, restarted it on port", self.port)
     }
 
     private func isServerReachable() -> Bool {
