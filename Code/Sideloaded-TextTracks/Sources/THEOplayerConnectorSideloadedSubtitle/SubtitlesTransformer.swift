@@ -10,19 +10,20 @@ import AVFoundation
 import Swifter
 import SwiftSubtitles
 import THEOplayerSDK
+import UIKit
 
 class SubtitlesTransformer {
-    private let server = HttpServer()
+    private(set) var server = HttpServer()
     private static let TRANSFORM_ROUTE: String = "transformSubtitle"
     private static let PORT_RANGE: Range<in_port_t> = 8000..<49151
-    private var retryAttemptsLeft: Int = 9
+    private static let MAX_START_ATTEMPTS: Int = 10
     private var port: in_port_t
     private var parametersMap: [String: Parameters] = [:]
 
     init() {
         self.port = .random(in: Self.PORT_RANGE)
-        self.setupServerRoutes()
         self.startServer()
+        NotificationCenter.default.addObserver(self, selector: #selector(self.restartServerIfUnreachable), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
 
     private struct Parameters {
@@ -47,9 +48,10 @@ class SubtitlesTransformer {
     }
 
     private func setupServerRoutes() {
-        let handler: (HttpRequest) -> HttpResponse = { req in
+        let handler: (HttpRequest) -> HttpResponse = { [weak self] req in
             // Always return with HttpResponse.ok to fail gracefully. Otherwise player will stall.
-            guard let subtitlesURLParam: String = req.queryParams.first(where: { $0.0 == "url" })?.1,
+            guard let self = self,
+                  let subtitlesURLParam: String = req.queryParams.first(where: { $0.0 == "url" })?.1,
                   let parameters: Parameters = self.parametersMap[subtitlesURLParam.removingPercentEncoding ?? subtitlesURLParam] else {
                 let errorMessage: String = "Missing subtitle content URL."
                 print("[AVSubtitlesLoader] ERROR: \(errorMessage)")
@@ -107,21 +109,34 @@ class SubtitlesTransformer {
         self.server["/\(Self.TRANSFORM_ROUTE)"] = handler
     }
 
-    private func startServer() {
-        do {
-            try self.server.start(self.port)
-        } catch SocketError.bindFailed(let message) where message == "Address already in use" {
-            print("[AVSubtitlesLoader] ERROR starting local server:", message)
+    @objc private func restartServerIfUnreachable() {
+        guard !self.isServerReachable() else { return }
+        print("[AVSubtitlesLoader] Local server is unreachable, restarting it on port", self.port)
+        self.startServer()
+    }
 
-            guard self.retryAttemptsLeft > 0 else {
+    private func isServerReachable() -> Bool {
+        let request = URLRequest(url: URL(string: "http://localhost:\(self.port)/")!, timeoutInterval: 1)
+        let (_, error) = URLSession.shared.synchronousDataTask(urlrequest: request)
+        return error == nil
+    }
+
+    // A fresh server is needed because the accept loop of a stopped Swifter server can still call stop() on it later.
+    private func startServer() {
+        self.server.stop()
+        self.server = HttpServer()
+        self.setupServerRoutes()
+        for _ in 0..<Self.MAX_START_ATTEMPTS {
+            do {
+                try self.server.start(self.port, priority: .userInitiated)
+                return
+            } catch SocketError.bindFailed(let message) where message == "Address already in use" {
+                print("[AVSubtitlesLoader] ERROR starting local server:", message)
+                self.port = .random(in: Self.PORT_RANGE)
+            } catch let err {
+                print("[AVSubtitlesLoader] ERROR starting local server:", err)
                 return
             }
-
-            self.retryAttemptsLeft -= 1
-            self.port = .random(in: Self.PORT_RANGE)
-            self.startServer()
-        } catch let err {
-            print("[AVSubtitlesLoader] ERROR starting local server:", err)
         }
     }
 
