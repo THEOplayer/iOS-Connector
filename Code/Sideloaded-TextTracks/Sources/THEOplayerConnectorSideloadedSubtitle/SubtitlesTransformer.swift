@@ -128,7 +128,7 @@ class SubtitlesTransformer {
         self.setupServerRoutes()
         for _ in 0..<Self.MAX_START_ATTEMPTS {
             do {
-                try self.server.start(self.port)
+                try self.server.start(self.port, priority: .userInitiated)
                 return
             } catch SocketError.bindFailed(let message) where message == "Address already in use" {
                 print("[AVSubtitlesLoader] ERROR starting local server:", message)
