@@ -187,6 +187,20 @@ final class THEOplayerSideloadedSubtitleConnectorTests: XCTestCase {
         XCTAssertNil(player.source)
     }
 
+    func testReplacingSubtitledSourceReleasesPreviousLoader() {
+        let player = THEOplayer(with: nil)
+        player.preload = .none
+        player.setSourceWithSubtitles(source: makeSourceDescription())
+        weak var first = AVSubtitlesLoader.instances.last
+        XCTAssertNotNil(first)
+
+        player.setSourceWithSubtitles(source: makeSourceDescription())
+
+        XCTAssertNil(first)
+
+        player.setSourceWithSubtitles(source: nil)
+    }
+
     #if os(iOS)
     func testCachingTaskCreationWithSubtitlesDoesNotThrow() {
         let task = THEOplayer.cache.createTaskWithSubtitles(source: makeSourceDescription(), parameters: nil)

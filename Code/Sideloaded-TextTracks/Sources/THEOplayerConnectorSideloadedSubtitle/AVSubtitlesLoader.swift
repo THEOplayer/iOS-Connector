@@ -10,7 +10,7 @@ import AVFoundation
 import THEOplayerSDK
 
 class AVSubtitlesLoader: NSObject {
-    private static var instances: [AVSubtitlesLoader] = []
+    private(set) static var instances: [AVSubtitlesLoader] = []
     static func addInstance(_ loader: AVSubtitlesLoader) { Self.instances.append(loader) }
     static func removeInstance(by id: String) {
         Self.instances.removeAll { $0._id == id }
@@ -223,6 +223,7 @@ extension THEOplayer {
         - Once used this method, always use it to set a source (even if there are no sideloaded subtitles in it), otherwise the subtitle helper logic can break the playback behavior
      */
     public func setSourceWithSubtitles(source: SourceDescription?) {
+        AVSubtitlesLoader.removeInstance(by: String(self.uid))
         if let source = source,
            let sideLoadedTextTracks = SourceValidator.getValidTextTracks(source) {
                 let loader = AVSubtitlesLoader(
@@ -232,8 +233,6 @@ extension THEOplayer {
                 )
                 AVSubtitlesLoader.addInstance(loader)
                 self.network.addMediaPlaylistInterceptor(loader)
-        } else {
-            AVSubtitlesLoader.removeInstance(by: String(self.uid))
         }
         
         self.source = source
