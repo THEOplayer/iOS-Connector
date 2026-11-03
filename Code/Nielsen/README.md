@@ -23,7 +23,7 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 ### [Cocoapods](https://guides.cocoapods.org/using/getting-started.html#getting-started)
 
 1. Create a Podfile if you don't already have one. From the root of your project directory, run the following command: `pod init`
-2. To your Podfile, add links to the registries of Cocoapods and Nielsen: `source 'https://cdn.cocoapods.org/'` and `source 'https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-specs-dynamic.git'`
+2. To your Podfile, add the OptiView Player specs source first: `source 'https://github.com/THEOplayer/cocoapods-specs.git'`, followed by the public and Nielsen sources: `source 'https://cdn.cocoapods.org/'` and `source 'https://github.com/NielsenDigitalSDK/nielsenappsdk-ios-specs-dynamic.git'`.
 3. To your Podfile, add the connector pods that you want to use in your app: `pod 'THEOplayer-Connector-Nielsen'`
 4. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
 
