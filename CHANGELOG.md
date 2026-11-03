@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- New CocoaPods connector releases are now published exclusively to the [OptiView Player specs repository](https://github.com/THEOplayer/cocoapods-specs). Add `source 'https://github.com/THEOplayer/cocoapods-specs.git'` before `source 'https://cdn.cocoapods.org/'` in your Podfile to receive new releases. Keep the public source for third-party dependencies.
+
 ### Fixed
 
 - SideloadedSubtitle
