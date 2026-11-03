@@ -23,7 +23,7 @@ class SubtitlesTransformer {
     init() {
         self.port = .random(in: Self.PORT_RANGE)
         self.startServer()
-        NotificationCenter.default.addObserver(self, selector: #selector(self.restartServerIfUnreachable), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
 
     private struct Parameters {
@@ -109,16 +109,20 @@ class SubtitlesTransformer {
         self.server["/\(Self.TRANSFORM_ROUTE)"] = handler
     }
 
-    @objc private func restartServerIfUnreachable() {
-        guard !self.isServerReachable() else { return }
-        print("[AVSubtitlesLoader] Local server is unreachable, restarting it on port", self.port)
-        self.startServer()
+    @objc private func handleWillEnterForeground() {
+        self.restartServerIfUnreachable()
     }
 
-    private func isServerReachable() -> Bool {
+    func restartServerIfUnreachable(completion: (() -> Void)? = nil) {
         let request = URLRequest(url: URL(string: "http://localhost:\(self.port)/")!, timeoutInterval: 1)
-        let (_, error) = URLSession.shared.synchronousDataTask(urlrequest: request)
-        return error == nil
+        URLSession.shared.dataTask(with: request) { [weak self] _, _, error in
+            DispatchQueue.main.async {
+                defer { completion?() }
+                guard let self = self, error != nil else { return }
+                print("[AVSubtitlesLoader] Local server is unreachable, restarting it on port", self.port)
+                self.startServer()
+            }
+        }.resume()
     }
 
     // A fresh server is needed because the accept loop of a stopped Swifter server can still call stop() on it later.

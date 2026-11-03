@@ -32,6 +32,8 @@ final class SubtitlesTransformerTests: XCTestCase {
         }
 
         NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+        let restarted = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in transformer.server !== oldServer }, object: nil)
+        await fulfillment(of: [restarted], timeout: 5)
 
         XCTAssertTrue(transformer.server !== oldServer)
         XCTAssertEqual(try transformer.server.port(), oldPort)
@@ -53,7 +55,9 @@ final class SubtitlesTransformerTests: XCTestCase {
         let url = URL(string: transformer.composeTranformationUrl(with: originURL, format: .SRT, timestamp: nil))!
         _ = try await URLSession.shared.data(from: url)
 
-        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+        await withCheckedContinuation { continuation in
+            transformer.restartServerIfUnreachable { continuation.resume() }
+        }
 
         XCTAssertTrue(transformer.server === server)
         XCTAssertTrue(server.operating)
