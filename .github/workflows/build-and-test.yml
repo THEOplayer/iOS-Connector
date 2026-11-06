@@ -24,10 +24,12 @@ jobs:
         THEOplayerConnectorNielsen
         THEOplayerConnectorSideloadedSubtitle
         THEOplayerConnectorUplynk
+        THEOplayerConnectorLens
       # Test schemes to run
       TEST_SCHEMES: >-
         THEOplayerConnectorSideloadedSubtitleTests
         THEOplayerConnectorUplynkTests
+        THEOplayerConnectorLensTests
 
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
