@@ -327,7 +327,7 @@ public final class THEOplayerLensAdapter: LensPlayerAdapter {
         let live = known ? duration(player).map { $0.isInfinite } : nil
         return LensPlayerProperties(
             live: live,
-            lowLatency: live == true && isLowLatency(typedSource(of: announced)) ? true : nil,
+            lowLatency: isLowLatency(typedSource(of: announced)) ? true : nil,
             tracks: known ? tracks(player) : nil,
             targetBuffer: positive(player.abr.targetBuffer),
             bufferStable: known ? player.readyState == .HAVE_ENOUGH_DATA : nil,

@@ -12,7 +12,8 @@ public struct LensConfiguration {
     public var destinations: [LensDestination]
     public var consent: LensConsent
     public var strict: Bool
-    public var heartbeatMs: Int64
+    /// The cadence of the session's liveness report; nil for Lens's default.
+    public var heartbeatMs: Int64?
     public var batch: LensBatch?
     /// Returns the content ID to report for a source. Without it, or when it returns nil, a Google DAI source is
     /// reported by its asset IDs, and Lens derives the content ID of any other source from its URL.
@@ -22,7 +23,7 @@ public struct LensConfiguration {
         destinations: [LensDestination] = [],
         consent: LensConsent = .granted,
         strict: Bool = false,
-        heartbeatMs: Int64 = 30_000,
+        heartbeatMs: Int64? = nil,
         batch: LensBatch? = nil,
         contentId: ContentIdProvider? = nil
     ) {
@@ -58,17 +59,16 @@ public final class LensConnector {
     /// - Throws: The error of `Lens.join` for invalid options.
     public init(player: THEOplayer, configuration: LensConfiguration = LensConfiguration()) throws {
         adapter = THEOplayerLensAdapter(player: player, contentId: configuration.contentId)
-        handle = try Lens.join(
-            LensJoinOptions(
-                namespace: "theoplayer",
-                destinations: configuration.destinations,
-                consent: configuration.consent,
-                strict: configuration.strict,
-                heartbeatMs: configuration.heartbeatMs,
-                player: adapter,
-                batch: configuration.batch
-            )
+        var options = LensJoinOptions(
+            namespace: "theoplayer",
+            destinations: configuration.destinations,
+            consent: configuration.consent,
+            strict: configuration.strict,
+            player: adapter,
+            batch: configuration.batch
         )
+        if let heartbeatMs = configuration.heartbeatMs { options.heartbeatMs = heartbeatMs }
+        handle = try Lens.join(options)
         destroyObserver = DispatchObserver(
             dispatcher: player,
             eventListeners: [
