@@ -1,6 +1,6 @@
 # THEOplayer Connector for OptiView Lens: example
 
-`LensExample.xcodeproj` is an iOS app that plays a few streams with THEOplayer and reports them to the OptiView Lens SDK through the [Lens connector](../Lens). It uses the connector from this repository checkout.
+`LensExample.xcodeproj` is an iOS app that plays a few streams with THEOplayer and reports them to the OptiView Lens SDK through the [Lens connector](../Lens), with `LensConnector`. It uses the connector from this repository checkout.
 
 Before running it, fill in `LensExample/Config.swift`:
 

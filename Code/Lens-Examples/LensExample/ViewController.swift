@@ -14,7 +14,7 @@ class ViewController: UIViewController {
         configuration.license = theoplayerLicense
         return THEOplayer(configuration: configuration.build())
     }()
-    private var lens: LensHandle?
+    private var lensConnector: LensConnector?
     private let playerContainer = UIView()
     private let sessionLabel = UILabel()
     private var sessionTimer: Timer?
@@ -25,15 +25,12 @@ class ViewController: UIViewController {
         layout()
         player.addAsSubview(of: playerContainer)
 
-        // One adapter per player: every Lens handle that observes this player shares it.
-        let adapter = THEOplayerLensAdapter(player: player)
         do {
             try Lens.configure(LensConfigureOptions(backend: .disabled))
-            lens = try Lens.join(
-                LensJoinOptions(
-                    namespace: "lens-example",
-                    destinations: lensDestinationUrl.map { [LensDestination(url: $0, format: .json)] } ?? [],
-                    player: adapter
+            lensConnector = try LensConnector(
+                player: player,
+                configuration: LensConfiguration(
+                    destinations: lensDestinationUrl.map { [LensDestination(url: $0, format: .json)] } ?? []
                 )
             )
         } catch {
@@ -51,12 +48,12 @@ class ViewController: UIViewController {
 
     deinit {
         sessionTimer?.invalidate()
-        lens?.dispose()
+        lensConnector?.destroy()
     }
 
     private func showSession() {
-        guard let lens else { return }
-        sessionLabel.text = lens.session.map { "Lens session \($0.sessionId)" } ?? "No Lens session: press play"
+        guard let lensConnector else { return }
+        sessionLabel.text = lensConnector.handle.session.map { "Lens session \($0.sessionId)" } ?? "No Lens session: press play"
     }
 
     private func load(_ src: String) {
