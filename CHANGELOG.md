@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - SideloadedSubtitle
   - Fixed an issue where variant playlists failed to load when the master playlist listed them as relative URIs with a query string, because the query string was percent-encoded into the path.
+  - Fixed an issue where percent-escaped characters in playlist URIs (for example `%2B`, `%2F` or `%3D` in a signed token) were decoded, which could break segment, key or variant requests.
 
 ## [11.0.7] - 2026-11-05
 
