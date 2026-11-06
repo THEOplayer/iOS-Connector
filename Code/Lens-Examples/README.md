@@ -26,19 +26,20 @@ In `LensExample/Config.swift`, you can also set:
 The scenario is the same on every platform's Lens demo, so that their reports can be compared in the backend. It takes about a minute, and its source is reported with the content ID `lens-connector-scenario`:
 
 1. Load Big Buck Bunny (`https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8`), as a new source.
-2. Play, and play for 10 s once playing.
+2. Play for 10 s.
 3. Pause for 3 s.
 4. Play for 5 s.
-5. Seek to 2:00, and play for 5 s.
-6. Mute for 3 s, then unmute.
-7. Play at rate 2 for 5 s, then at rate 1.
-8. Go fullscreen, stay 5 s once fullscreen, then go back inline and wait until inline.
-9. Seek to 5 s before the end, play to the end, and wait 3 s.
-10. Unload the source.
+5. Seek to 120 s, play for 5 s.
+6. Mute for 3 s, then unmute for 2 s.
+7. Play at rate 2 for 5 s, then at rate 1 for 2 s.
+8. Go picture-in-picture or fullscreen for 5 s, then inline for 2 s. This demo goes fullscreen.
+9. Seek to 5 s before the end, play to the end, wait 2 s, and unload the source.
+
+Steps that change the player (play, pause, seek, presentation mode) count their time from when the player has made the change.
 
 Lens reports `sta=e` at the end, and no quit report after it: the session is over once the content has ended.
 
-To run the scenario unattended, and send it to staging, launch the app with arguments, for example on a booted simulator:
+Press **Run scenario** to run it, with **Send to staging** on or off; press it again to stop. To run it unattended, launch the app with arguments, for example on a booted simulator:
 
 ```sh
 xcrun simctl launch booted com.theoplayer.connector.LensExample -runScenario YES -sendToStaging YES

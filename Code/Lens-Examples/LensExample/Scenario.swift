@@ -61,41 +61,43 @@ final class Scenario {
 
     private func steps() async throws {
         restore()
-        step("1/10 Load Big Buck Bunny")
+        step("1/9 Load Big Buck Bunny")
         // A new description, so each run is a new source and a new session.
         let source = SourceDescription(source: TypedSource(src: Self.src, type: "application/x-mpegurl"))
         self.source = source
         try await next(PlayerEventTypes.SOURCE_CHANGE) { player.source = source }
-        step("2/10 Play for 10 s")
+        step("2/9 Play for 10 s")
         try await next(PlayerEventTypes.PLAYING) { player.play() }
         try await wait(10)
-        step("3/10 Pause for 3 s")
+        step("3/9 Pause for 3 s")
         try await next(PlayerEventTypes.PAUSE) { player.pause() }
         try await wait(3)
-        step("4/10 Play for 5 s")
+        step("4/9 Play for 5 s")
         try await next(PlayerEventTypes.PLAYING) { player.play() }
         try await wait(5)
-        step("5/10 Seek to 2:00, play for 5 s")
+        step("5/9 Seek to 120 s, play for 5 s")
         try await next(PlayerEventTypes.SEEKED) { player.currentTime = 120 }
         try await wait(5)
-        step("6/10 Mute for 3 s")
+        step("6/9 Mute for 3 s, unmute for 2 s")
         player.muted = true
         try await wait(3)
         player.muted = false
-        step("7/10 Play at 2× for 5 s")
+        try await wait(2)
+        step("7/9 Rate 2× for 5 s, 1× for 2 s")
         player.playbackRate = 2
         try await wait(5)
         player.playbackRate = 1
-        step("8/10 Fullscreen for 5 s")
+        try await wait(2)
+        step("8/9 Fullscreen for 5 s, inline for 2 s")
         try await next(PlayerEventTypes.PRESENTATION_MODE_CHANGE) { player.presentationMode = .fullscreen }
         try await wait(5)
         try await next(PlayerEventTypes.PRESENTATION_MODE_CHANGE) { player.presentationMode = .inline }
-        step("9/10 Seek to 5 s before the end, play to the end")
+        try await wait(2)
+        step("9/9 Seek to 5 s before the end, play to the end, wait 2 s, unload")
         let duration = player.duration ?? 0
         try await next(PlayerEventTypes.SEEKED) { player.currentTime = max(duration - 5, 0) }
         try await next(PlayerEventTypes.ENDED, timeout: 30) {}
-        try await wait(3)
-        step("10/10 Unload the source")
+        try await wait(2)
         try await next(PlayerEventTypes.SOURCE_CHANGE) { player.stop() }
     }
 
