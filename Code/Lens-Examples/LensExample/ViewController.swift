@@ -9,10 +9,14 @@ import THEOplayerConnectorLens
 import THEOplayerSDK
 import UIKit
 
-/// Launch arguments, e.g. `-sendToStaging YES -runScenario YES`; the staging switch is also remembered between runs.
+/// Settings the app remembers, which launch arguments also set, e.g. `-sendToStaging YES -runScenario YES`
+/// or `-destinationUrl https://… -destinationFormat cmcd`.
 private enum Defaults {
     static let sendToStaging = "sendToStaging"
     static let runScenario = "runScenario"
+    static let destinationUrl = "destinationUrl"
+    /// `cmcd` (the default) or `json`.
+    static let destinationFormat = "destinationFormat"
 }
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -32,6 +36,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     private let scenarioLabel = UILabel()
     private let stagingLabel = UILabel()
     private let stagingSwitch = UISwitch()
+    private let destinationLabel = UILabel()
+    private var destinationSent = 0
+    private var destinationLastStatus: Int?
     private let scenarioButton = UIButton(configuration: .filled())
     private let reportsTable = UITableView(frame: .zero, style: .plain)
     private var reports: [[String: Any]] = []
@@ -50,27 +57,18 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         LensReceiver.forwardsToStaging = stagingSwitch.isOn
         LensReceiver.onReport = { [weak self] in self?.received($0) }
         LensReceiver.onStagingPost = { [weak self] in self?.stagingPosted($0) }
+        LensReceiver.onExtraPost = { [weak self] in self?.destinationPosted($0) }
         LensReceiver.start()
         showStaging()
         scenario.onStep = { [weak self] in self?.scenarioStepped($0) }
 
-        let destinations = ([LensReceiver.url] + [lensDestinationUrl].compactMap { $0 }).map {
-            LensDestination(url: $0, format: .json, heartbeat: true)
-        }
         do {
             // Lens reports to the staging ingest, which the app forwards to only while the switch is on.
             try LensDev.enableDevelopmentBackend()
-            lensConnector = try LensConnector(
-                player: player,
-                configuration: LensConfiguration(
-                    destinations: destinations,
-                    heartbeatMs: 10_000,
-                    contentId: { [weak self] in $0 === self?.scenario.source ? Scenario.contentId : nil }
-                )
-            )
         } catch {
             sessionLabel.text = "Lens: \(error)"
         }
+        connect()
         sessionTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             self?.showSession()
         }
@@ -91,6 +89,91 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     deinit {
         sessionTimer?.invalidate()
         lensConnector?.destroy()
+    }
+
+    /// Joins Lens with the in-app receiver and the destination of your own, if any. Destinations are set at join, so
+    /// changing yours joins again, which ends the current session.
+    private func connect() {
+        lensConnector?.destroy()
+        lensConnector = nil
+        let defaults = UserDefaults.standard
+        let extraUrl = defaults.string(forKey: Defaults.destinationUrl).flatMap { $0.isEmpty ? nil : $0 }
+        let extraFormat: LensFormat = defaults.string(forKey: Defaults.destinationFormat) == "json" ? .json : .cmcd
+        LensReceiver.extraUrl = extraUrl
+        var destinations = [LensDestination(url: LensReceiver.url, format: .json, heartbeat: true)]
+        if let extraUrl {
+            destinations.append(LensDestination(url: extraUrl, format: extraFormat, heartbeat: true))
+        }
+        destinationSent = 0
+        destinationLastStatus = nil
+        showDestination()
+        do {
+            lensConnector = try LensConnector(
+                player: player,
+                configuration: LensConfiguration(
+                    destinations: destinations,
+                    heartbeatMs: 10_000,
+                    contentId: { [weak self] in $0 === self?.scenario.source ? Scenario.contentId : nil }
+                )
+            )
+        } catch {
+            sessionLabel.text = "Lens: \(error)"
+        }
+    }
+
+    // MARK: Destination
+
+    private func editDestination() {
+        let defaults = UserDefaults.standard
+        let alert = UIAlertController(
+            title: "Your destination",
+            message: "Lens also sends every report to this URL, in the format you pick. Changing it ends the current session.",
+            preferredStyle: .alert
+        )
+        alert.addTextField {
+            $0.placeholder = "https://collector.example.com/cmcd"
+            $0.text = defaults.string(forKey: Defaults.destinationUrl)
+            $0.keyboardType = .URL
+            $0.autocapitalizationType = .none
+            $0.autocorrectionType = .no
+        }
+        let save = { [weak self, weak alert] (format: String) in
+            let url = alert?.textFields?.first?.text?.trimmingCharacters(in: .whitespaces) ?? ""
+            guard let scheme = URL(string: url)?.scheme?.lowercased(), ["http", "https"].contains(scheme) else {
+                self?.destinationLabel.text = "Destination not saved: enter an http or https URL"
+                return
+            }
+            defaults.set(url, forKey: Defaults.destinationUrl)
+            defaults.set(format, forKey: Defaults.destinationFormat)
+            self?.connect()
+        }
+        alert.addAction(UIAlertAction(title: "Save as CMCD", style: .default) { _ in save("cmcd") })
+        alert.addAction(UIAlertAction(title: "Save as JSON", style: .default) { _ in save("json") })
+        if defaults.string(forKey: Defaults.destinationUrl) != nil {
+            alert.addAction(UIAlertAction(title: "Remove", style: .destructive) { [weak self] _ in
+                defaults.removeObject(forKey: Defaults.destinationUrl)
+                defaults.removeObject(forKey: Defaults.destinationFormat)
+                self?.connect()
+            })
+        }
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+    }
+
+    private func destinationPosted(_ status: Int) {
+        destinationSent += 1
+        destinationLastStatus = status
+        showDestination()
+    }
+
+    private func showDestination() {
+        guard let url = LensReceiver.extraUrl else {
+            destinationLabel.text = "No destination of your own"
+            return
+        }
+        let format = UserDefaults.standard.string(forKey: Defaults.destinationFormat) == "json" ? "JSON" : "CMCD"
+        let last = destinationLastStatus.map { $0 < 0 ? ", last failed" : ", last HTTP \($0)" } ?? ""
+        destinationLabel.text = "\(format) to \(url) (\(destinationSent) sent\(last))"
     }
 
     // MARK: Player
@@ -243,6 +326,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let stagingRow = UIStackView(arrangedSubviews: [stagingSwitch, stagingLabel])
         stagingRow.spacing = 8
         stagingRow.alignment = .center
+        let destinationButton = button("Destination…") { [weak self] _ in self?.editDestination() }
+        destinationButton.setContentHuggingPriority(.required, for: .horizontal)
+        destinationLabel.font = .preferredFont(forTextStyle: .footnote)
+        destinationLabel.numberOfLines = 2
+        destinationLabel.lineBreakMode = .byTruncatingMiddle
+        let destinationRow = UIStackView(arrangedSubviews: [destinationButton, destinationLabel])
+        destinationRow.spacing = 8
+        destinationRow.alignment = .center
 
         sessionLabel.font = .monospacedSystemFont(ofSize: 12, weight: .regular)
         sessionLabel.numberOfLines = 0
@@ -260,7 +351,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         reportsTable.delegate = self
 
         playerContainer.backgroundColor = .black
-        let stack = UIStackView(arrangedSubviews: [playerContainer] + controls + [scenarioRow, stagingRow, sessionLabel, header, reportsTable])
+        let stack = UIStackView(arrangedSubviews: [playerContainer] + controls + [scenarioRow, stagingRow, destinationRow, sessionLabel, header, reportsTable])
         stack.axis = .vertical
         stack.spacing = 8
         stack.setCustomSpacing(12, after: playerContainer)

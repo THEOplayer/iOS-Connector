@@ -19,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		0595736CB1C4E25C161BCAF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		0FD35DE090C16D1460BC0759 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4A1B464FAA8A8AC17E8BE700 /* LensExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LensExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6401D44393B218039D887E70 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		75D78A81E1A9C50211B30664 /* Lens-iOS-connector */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Lens-iOS-connector"; path = ../..; sourceTree = SOURCE_ROOT; };
@@ -62,6 +63,7 @@
 			children = (
 				0595736CB1C4E25C161BCAF8 /* AppDelegate.swift */,
 				C8753DD4AC5F3E283A269E22 /* Config.swift */,
+				0FD35DE090C16D1460BC0759 /* Info.plist */,
 				C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */,
 				D612104EA5996CDD02E63B42 /* Scenario.swift */,
 				6401D44393B218039D887E70 /* ViewController.swift */,
@@ -159,6 +161,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LensExample/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -300,6 +303,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LensExample/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

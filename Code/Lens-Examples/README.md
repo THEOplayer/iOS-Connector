@@ -16,10 +16,9 @@ The reports are captured inside the app, without a server: Lens sends them to a 
 
 The example also enables the Lens development backend (the `LensSDKDev` product), which sends the reports to the staging ingest. The app sends them on only while **Send to staging** is on, and answers them itself otherwise. Next to the switch, the app counts the reports it sent, with the last HTTP status, and the ones it kept. The switch is remembered between launches.
 
-In `LensExample/Config.swift`, you can also set:
+To send the reports to an endpoint of your own as well, such as a test CMCD endpoint, press **Destination…**, enter its URL, and save it as CMCD or JSON. Next to the button, the app counts the reports it sent there, with the last HTTP status. The destination is remembered between launches; changing or removing it joins Lens again, which ends the current session. The example allows plain `http` endpoints.
 
-- `theoplayerLicense`: your THEOplayer license, needed for streams of your own. The example streams play without one.
-- `lensDestinationUrl`: an endpoint that also receives the reports as JSON, such as a request inspector.
+In `LensExample/Config.swift`, you can set `theoplayerLicense`, your THEOplayer license, needed for streams of your own. The example streams play without one.
 
 ## The scenario
 
@@ -48,3 +47,5 @@ Press **Run scenario** to run it, with **Send to staging** on or off; press it a
 ```sh
 xcrun simctl launch booted com.theoplayer.connector.LensExample -runScenario YES -sendToStaging YES
 ```
+
+`-destinationUrl <url>` and `-destinationFormat cmcd|json` set a destination of your own for that launch.
