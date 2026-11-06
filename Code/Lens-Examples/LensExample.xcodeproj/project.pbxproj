@@ -8,10 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		05A45CFB730C3C8D509763CD /* THEOplayerConnectorLens in Frameworks */ = {isa = PBXBuildFile; productRef = BD50A467F2B86C01A21AEA62 /* THEOplayerConnectorLens */; };
+		43C7581412A3DF206EC4C660 /* LensSDKDev in Frameworks */ = {isa = PBXBuildFile; productRef = FFB346B2F06C0F4AC773535B /* LensSDKDev */; };
 		63CEC8FC59C233CCE147F3E5 /* LensReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */; };
 		6727ECB29D2D4568413C9146 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6401D44393B218039D887E70 /* ViewController.swift */; };
 		90E843D6E688C47241AF4E1D /* LensSDK in Frameworks */ = {isa = PBXBuildFile; productRef = EB42CA8795D0CA38474E88C6 /* LensSDK */; };
 		C09042638B031720488EE0B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0595736CB1C4E25C161BCAF8 /* AppDelegate.swift */; };
+		C42B1C4E8257439E0DFB63F1 /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = D612104EA5996CDD02E63B42 /* Scenario.swift */; };
 		EEC733A15D5F02DEBF8363A6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8753DD4AC5F3E283A269E22 /* Config.swift */; };
 /* End PBXBuildFile section */
 
@@ -22,6 +24,7 @@
 		75D78A81E1A9C50211B30664 /* Lens-iOS-connector */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Lens-iOS-connector"; path = ../..; sourceTree = SOURCE_ROOT; };
 		C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LensReceiver.swift; sourceTree = "<group>"; };
 		C8753DD4AC5F3E283A269E22 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		D612104EA5996CDD02E63B42 /* Scenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +34,7 @@
 			files = (
 				05A45CFB730C3C8D509763CD /* THEOplayerConnectorLens in Frameworks */,
 				90E843D6E688C47241AF4E1D /* LensSDK in Frameworks */,
+				43C7581412A3DF206EC4C660 /* LensSDKDev in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +63,7 @@
 				0595736CB1C4E25C161BCAF8 /* AppDelegate.swift */,
 				C8753DD4AC5F3E283A269E22 /* Config.swift */,
 				C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */,
+				D612104EA5996CDD02E63B42 /* Scenario.swift */,
 				6401D44393B218039D887E70 /* ViewController.swift */,
 			);
 			path = LensExample;
@@ -91,6 +96,7 @@
 			packageProductDependencies = (
 				BD50A467F2B86C01A21AEA62 /* THEOplayerConnectorLens */,
 				EB42CA8795D0CA38474E88C6 /* LensSDK */,
+				FFB346B2F06C0F4AC773535B /* LensSDKDev */,
 			);
 			productName = LensExample;
 			productReference = 4A1B464FAA8A8AC17E8BE700 /* LensExample.app */;
@@ -138,6 +144,7 @@
 				C09042638B031720488EE0B7 /* AppDelegate.swift in Sources */,
 				EEC733A15D5F02DEBF8363A6 /* Config.swift in Sources */,
 				63CEC8FC59C233CCE147F3E5 /* LensReceiver.swift in Sources */,
+				C42B1C4E8257439E0DFB63F1 /* Scenario.swift in Sources */,
 				6727ECB29D2D4568413C9146 /* ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -358,6 +365,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C9E8062C083781BFD2E012E1 /* XCRemoteSwiftPackageReference "optiview-lens-sdk-swift" */;
 			productName = LensSDK;
+		};
+		FFB346B2F06C0F4AC773535B /* LensSDKDev */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C9E8062C083781BFD2E012E1 /* XCRemoteSwiftPackageReference "optiview-lens-sdk-swift" */;
+			productName = LensSDKDev;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -6,12 +6,40 @@ Open the project, pick an iPhone simulator or device, and run. The app:
 
 - loads one of a few example streams, or a URL of your own (`Load a source`),
 - plays, pauses, stops, seeks, mutes, changes the rate and goes fullscreen, which Lens reports as state changes, `m`/`um`, `pr` and `pe`/`pc`,
+- runs a fixed scenario (`Run scenario`, below),
 - shows the current Lens session, which starts at the first play request on a source,
 - lists every report Lens sends, newest first, with its namespace, event, playback state and main keys. Tap a report for all its keys.
 
-The reports are captured inside the app: the example disables the OptiView backend and adds a destination that the app answers itself. Heartbeats are sent every 10 seconds.
+## Where the reports go
 
-In `LensExample/Config.swift`, you can set:
+The reports are captured inside the app, without a server: Lens sends them to a JSON destination that the app answers itself, and shows them in the list. Heartbeats are sent every 10 seconds.
+
+The example also enables the Lens development backend (the `LensSDKDev` product), which sends the reports to the staging ingest. The app sends them on only while **Send to staging** is on, and answers them itself otherwise. Next to the switch, the app counts the reports it sent, with the last HTTP status, and the ones it kept. The switch is remembered between launches.
+
+In `LensExample/Config.swift`, you can also set:
 
 - `theoplayerLicense`: your THEOplayer license, needed for streams of your own. The example streams play without one.
 - `lensDestinationUrl`: an endpoint that also receives the reports as JSON, such as a request inspector.
+
+## The scenario
+
+The scenario is the same on every platform's Lens demo, so that their reports can be compared in the backend. It takes about a minute, and its source is reported with the content ID `lens-connector-scenario`:
+
+1. Load Big Buck Bunny (`https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8`), as a new source.
+2. Play, and play for 10 s once playing.
+3. Pause for 3 s.
+4. Play for 5 s.
+5. Seek to 2:00, and play for 5 s.
+6. Mute for 3 s, then unmute.
+7. Play at rate 2 for 5 s, then at rate 1.
+8. Go fullscreen, stay 5 s once fullscreen, then go back inline and wait until inline.
+9. Seek to 5 s before the end, play to the end, and wait 3 s.
+10. Unload the source.
+
+Lens reports `sta=e` at the end, and no quit report after it: the session is over once the content has ended.
+
+To run the scenario unattended, and send it to staging, launch the app with arguments, for example on a booted simulator:
+
+```sh
+xcrun simctl launch booted com.theoplayer.connector.LensExample -runScenario YES -sendToStaging YES
+```

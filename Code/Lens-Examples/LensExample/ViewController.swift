@@ -4,9 +4,16 @@
 //
 
 import LensSDK
+import LensSDKDev
 import THEOplayerConnectorLens
 import THEOplayerSDK
 import UIKit
+
+/// Launch arguments, e.g. `-sendToStaging YES -runScenario YES`; the staging switch is also remembered between runs.
+private enum Defaults {
+    static let sendToStaging = "sendToStaging"
+    static let runScenario = "runScenario"
+}
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     private let player: THEOplayer = {
@@ -14,11 +21,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         configuration.license = theoplayerLicense
         return THEOplayer(configuration: configuration.build())
     }()
+    private lazy var scenario = Scenario(player: player)
     private var lensConnector: LensConnector?
     private let playerContainer = UIView()
     private let sessionLabel = UILabel()
+    private let scenarioLabel = UILabel()
+    private let stagingLabel = UILabel()
+    private let stagingSwitch = UISwitch()
+    private let scenarioButton = UIButton(configuration: .filled())
     private let reportsTable = UITableView(frame: .zero, style: .plain)
     private var reports: [[String: Any]] = []
+    private var stagingSent = 0
+    private var stagingAnswered = 0
+    private var stagingLastStatus: Int?
     private var sessionTimer: Timer?
 
     override func viewDidLoad() {
@@ -27,22 +42,40 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         layout()
         player.addAsSubview(of: playerContainer)
 
+        stagingSwitch.isOn = UserDefaults.standard.bool(forKey: Defaults.sendToStaging)
+        LensReceiver.forwardsToStaging = stagingSwitch.isOn
         LensReceiver.onReport = { [weak self] in self?.received($0) }
+        LensReceiver.onStagingPost = { [weak self] in self?.stagingPosted($0) }
         LensReceiver.start()
+        showStaging()
+        scenario.onStep = { [weak self] in self?.scenarioStepped($0) }
+
         let destinations = ([LensReceiver.url] + [lensDestinationUrl].compactMap { $0 }).map {
             LensDestination(url: $0, format: .json, heartbeat: true)
         }
         do {
-            try Lens.configure(LensConfigureOptions(backend: .disabled))
+            // Lens reports to the staging ingest, which the app forwards to only while the switch is on.
+            try LensDev.enableDevelopmentBackend()
             lensConnector = try LensConnector(
                 player: player,
-                configuration: LensConfiguration(destinations: destinations, heartbeatMs: 10_000)
+                configuration: LensConfiguration(
+                    destinations: destinations,
+                    heartbeatMs: 10_000,
+                    contentId: { [weak self] in $0 === self?.scenario.source ? Scenario.contentId : nil }
+                )
             )
         } catch {
             sessionLabel.text = "Lens: \(error)"
         }
         sessionTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             self?.showSession()
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if UserDefaults.standard.bool(forKey: Defaults.runScenario), !scenario.isRunning {
+            scenario.run()
         }
     }
 
@@ -76,6 +109,38 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     private func showSession() {
         guard let lensConnector else { return }
         sessionLabel.text = lensConnector.handle.session.map { "Lens session \($0.sessionId)" } ?? "No Lens session: load a source and play"
+    }
+
+    // MARK: Scenario and staging
+
+    private func toggleScenario() {
+        scenario.isRunning ? scenario.stop() : scenario.run()
+    }
+
+    private func scenarioStepped(_ step: String) {
+        scenarioLabel.text = step
+        scenarioButton.configuration?.title = scenario.isRunning ? "Stop scenario" : "Run scenario"
+    }
+
+    private func stagingToggled() {
+        LensReceiver.forwardsToStaging = stagingSwitch.isOn
+        UserDefaults.standard.set(stagingSwitch.isOn, forKey: Defaults.sendToStaging)
+        showStaging()
+    }
+
+    private func stagingPosted(_ status: Int?) {
+        if let status {
+            stagingSent += 1
+            stagingLastStatus = status
+        } else {
+            stagingAnswered += 1
+        }
+        showStaging()
+    }
+
+    private func showStaging() {
+        let last = stagingLastStatus.map { $0 < 0 ? ", last failed" : ", last HTTP \($0)" } ?? ""
+        stagingLabel.text = "Send to staging (\(stagingSent) sent\(last), \(stagingAnswered) kept in app)"
     }
 
     // MARK: Reports
@@ -154,6 +219,21 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             ]),
         ]
 
+        scenarioButton.setTitle("Run scenario", for: .normal)
+        scenarioButton.addAction(UIAction { [weak self] _ in self?.toggleScenario() }, for: .primaryActionTriggered)
+        scenarioButton.setContentHuggingPriority(.required, for: .horizontal)
+        scenarioLabel.text = "Scenario: Big Buck Bunny, about 1 minute"
+        scenarioLabel.font = .preferredFont(forTextStyle: .footnote)
+        scenarioLabel.numberOfLines = 2
+        let scenarioRow = UIStackView(arrangedSubviews: [scenarioButton, scenarioLabel])
+        scenarioRow.spacing = 8
+        stagingSwitch.addAction(UIAction { [weak self] _ in self?.stagingToggled() }, for: .valueChanged)
+        stagingLabel.font = .preferredFont(forTextStyle: .footnote)
+        stagingLabel.numberOfLines = 2
+        let stagingRow = UIStackView(arrangedSubviews: [stagingSwitch, stagingLabel])
+        stagingRow.spacing = 8
+        stagingRow.alignment = .center
+
         sessionLabel.font = .monospacedSystemFont(ofSize: 12, weight: .regular)
         sessionLabel.numberOfLines = 0
         let reportsHeader = UILabel()
@@ -170,7 +250,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         reportsTable.delegate = self
 
         playerContainer.backgroundColor = .black
-        let stack = UIStackView(arrangedSubviews: [playerContainer] + controls + [sessionLabel, header, reportsTable])
+        let stack = UIStackView(arrangedSubviews: [playerContainer] + controls + [scenarioRow, stagingRow, sessionLabel, header, reportsTable])
         stack.axis = .vertical
         stack.spacing = 8
         stack.setCustomSpacing(12, after: playerContainer)
