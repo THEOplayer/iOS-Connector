@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		05A45CFB730C3C8D509763CD /* THEOplayerConnectorLens in Frameworks */ = {isa = PBXBuildFile; productRef = BD50A467F2B86C01A21AEA62 /* THEOplayerConnectorLens */; };
+		63CEC8FC59C233CCE147F3E5 /* LensReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */; };
 		6727ECB29D2D4568413C9146 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6401D44393B218039D887E70 /* ViewController.swift */; };
 		90E843D6E688C47241AF4E1D /* LensSDK in Frameworks */ = {isa = PBXBuildFile; productRef = EB42CA8795D0CA38474E88C6 /* LensSDK */; };
 		C09042638B031720488EE0B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0595736CB1C4E25C161BCAF8 /* AppDelegate.swift */; };
@@ -19,6 +20,7 @@
 		4A1B464FAA8A8AC17E8BE700 /* LensExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LensExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6401D44393B218039D887E70 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		75D78A81E1A9C50211B30664 /* Lens-iOS-connector */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Lens-iOS-connector"; path = ../..; sourceTree = SOURCE_ROOT; };
+		C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LensReceiver.swift; sourceTree = "<group>"; };
 		C8753DD4AC5F3E283A269E22 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -56,6 +58,7 @@
 			children = (
 				0595736CB1C4E25C161BCAF8 /* AppDelegate.swift */,
 				C8753DD4AC5F3E283A269E22 /* Config.swift */,
+				C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */,
 				6401D44393B218039D887E70 /* ViewController.swift */,
 			);
 			path = LensExample;
@@ -134,6 +137,7 @@
 			files = (
 				C09042638B031720488EE0B7 /* AppDelegate.swift in Sources */,
 				EEC733A15D5F02DEBF8363A6 /* Config.swift in Sources */,
+				63CEC8FC59C233CCE147F3E5 /* LensReceiver.swift in Sources */,
 				6727ECB29D2D4568413C9146 /* ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
