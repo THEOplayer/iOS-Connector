@@ -21,6 +21,8 @@ let package = Package(
         .library(name: "THEOplayerConnectorUplynk", targets: ["THEOplayerConnectorUplynk"]),
 
         .library(name: "THEOplayerConnectorComscore", targets: ["THEOplayerConnectorComscore"]),
+
+        .library(name: "THEOplayerConnectorLens", targets: ["THEOplayerConnectorLens"]),
     ],
     dependencies: [
         .package(name: "ConvivaSDK", url: "https://github.com/Conviva/conviva-ios-sdk-spm", "4.3.1"..<"4.4.0"),
@@ -29,6 +31,7 @@ let package = Package(
         .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
         .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
         .package(name: "ComScore", url: "https://github.com/comScore/Comscore-Swift-Package-Manager", "6.10.0"..<"6.11.0"),
+        .package(url: "https://github.com/Dolby-OptiView/optiview-lens-sdk-swift", "0.6.0"..<"0.7.0"),
     ],
     targets: [
         .target(
@@ -106,6 +109,25 @@ let package = Package(
                 "ComScore"
             ],
             path: "Code/Comscore/Source"
+        ),
+
+        .target(
+            name: "THEOplayerConnectorLens",
+            dependencies: [
+                "THEOplayerSDK",
+                .product(name: "LensSDK", package: "optiview-lens-sdk-swift"),
+                .target(name: "THEOplayerConnectorUtilities")
+            ],
+            path: "Code/Lens/Source"
+        ),
+        .testTarget(
+            name: "THEOplayerConnectorLensTests",
+            dependencies: [
+                "THEOplayerConnectorLens",
+                "THEOplayerSDK",
+                .product(name: "LensSDK", package: "optiview-lens-sdk-swift"),
+            ],
+            path: "Code/Lens/Tests"
         )
     ]
 )
