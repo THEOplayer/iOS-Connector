@@ -140,6 +140,22 @@ final class THEOplayerLensAdapterTests: XCTestCase {
         XCTAssertEqual(order.compactMap { $0 }.count, 4, "\(recorder.facts)")
     }
 
+    func testPlayingANewSourceWhilePlayingIsAPlayRequest() {
+        let player = THEOplayer()
+        let recorder = Recorder(THEOplayerLensAdapter(player: player))
+        load(mp4Source, into: player)
+        player.play()
+        recorder.wait(in: self) { $0 == .playing }
+
+        load(SourceDescription(source: TypedSource(src: TestMedia.mp4.absoluteString, type: "video/mp4")), into: player)
+        let sourceIndex = recorder.facts.count - 1
+        player.play()
+        recorder.wait(in: self) { _ in recorder.facts[sourceIndex...].contains(.playing) }
+
+        let next = Array(recorder.facts[sourceIndex...])
+        XCTAssertLessThan(next.firstIndex(of: .play) ?? .max, next.firstIndex(of: .playing) ?? .max, "\(next)")
+    }
+
     func testAPreloadedSourceReportsItsOwnProperties() {
         let player = THEOplayer()
         player.preload = .auto
@@ -260,17 +276,102 @@ final class THEOplayerLensAdapterTests: XCTestCase {
         XCTAssertEqual(adapter.snapshot().paused, true)
     }
 
-    func testLensStartsASessionAtTheFirstPlayRequest() throws {
-        try Lens.configure(LensConfigureOptions(backend: .disabled))
+    func testAContentIdProviderNamesTheSource() {
         let player = THEOplayer()
-        let handle = try Lens.join(LensJoinOptions(namespace: "connector-test", player: THEOplayerLensAdapter(player: player)))
-        defer { handle.dispose() }
+        let recorder = Recorder(THEOplayerLensAdapter(player: player) { $0.sources.first?.src == self.hlsUrl ? "movie-1" : nil })
+
+        load(hlsSource, into: player)
+        load(SourceDescription(source: TypedSource(src: Self.localUrl("other.mp4"), type: "video/mp4")), into: player)
+
+        XCTAssertEqual(recorder.sources.map(\.source?.contentId), ["movie-1", nil])
+        XCTAssertEqual(recorder.sources.first?.source?.url, hlsUrl)
+    }
+
+    func testAContentIdProviderOverridesTheGoogleDAIAssetIds() {
+        let player = THEOplayer()
+        let recorder = Recorder(THEOplayerLensAdapter(player: player) { _ in "movie-1" })
+        let dai = GoogleDAITypedSource(
+            ssai: GoogleDAILiveConfiguration(
+                assetKey: "live-asset",
+                apiKey: "",
+                authToken: nil,
+                streamActivityMonitorID: nil,
+                adTagParameters: nil
+            )
+        )
+        dai.src = hlsUrl
+
+        load(SourceDescription(source: dai), into: player)
+
+        XCTAssertEqual(recorder.sources.map(\.source?.contentId), ["movie-1"])
+        XCTAssertEqual(recorder.sources.map(\.source?.url), [nil])
+    }
+
+    func testLowLatencyNeedsALatencyConfigurationOrALowLatencyType() {
+        func source(_ type: String, latency: SourceLatencyConfiguration? = nil) -> TypedSource {
+            TypedSource(src: hlsUrl, type: type, latencyConfiguration: latency)
+        }
+        XCTAssertTrue(isLowLatency(source("application/x-mpegurl", latency: SourceLatencyConfiguration(targetOffset: 3))))
+        XCTAssertTrue(isLowLatency(source("application/vnd.theo.hesp+json")))
+        XCTAssertTrue(isLowLatency(source("application/millicast")))
+        XCTAssertFalse(isLowLatency(source("application/vnd.theo.live+channel")))
+        XCTAssertFalse(isLowLatency(source("application/x-mpegurl")))
+    }
+
+    func testTheConnectorStartsASessionAtTheFirstPlayRequest() throws {
+        let player = THEOplayer()
+        let connector = try connect(player)
+        defer { connector.destroy() }
         load(mp4Source, into: player)
-        XCTAssertNil(handle.session)
+        XCTAssertNil(connector.handle.session)
 
         player.play()
 
+        waitForSession(of: connector.handle)
+    }
+
+    func testTheConnectorStopsWithItsPlayer() throws {
+        var player: THEOplayer? = THEOplayer()
+        let connector = try connect(player!)
+        load(mp4Source, into: player!)
+        player?.play()
+        waitForSession(of: connector.handle)
+
+        player = nil
+
+        XCTAssertNil(connector.handle.session)
+        waitForRelease(of: connector.adapter)
+    }
+
+    func testDestroyingTheConnectorEndsTheSession() throws {
+        let player = THEOplayer()
+        let connector = try connect(player)
+        load(mp4Source, into: player)
+        player.play()
+        waitForSession(of: connector.handle)
+
+        connector.destroy()
+
+        XCTAssertNil(connector.handle.session)
+        waitForRelease(of: connector.adapter)
+    }
+
+    func testTheConnectorRejectsInvalidOptions() {
+        XCTAssertThrowsError(try LensConnector(player: THEOplayer(), configuration: LensConfiguration(heartbeatMs: 10)))
+    }
+
+    private func connect(_ player: THEOplayer) throws -> LensConnector {
+        try Lens.configure(LensConfigureOptions(backend: .disabled))
+        return try LensConnector(player: player)
+    }
+
+    private func waitForSession(of handle: LensHandle) {
         wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in handle.session != nil }, object: nil)], timeout: 5)
+    }
+
+    /// Lens releases its subscription once its last handle on the player is disposed.
+    private func waitForRelease(of adapter: THEOplayerLensAdapter) {
+        wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !adapter.subscribed }, object: nil)], timeout: 5)
     }
 
     /// Sets the source and waits for THEOplayer to take it: it holds sources until it has selected its license.

@@ -7,7 +7,12 @@ import LensSDK
 import THEOplayerConnectorUtilities
 import THEOplayerSDK
 
+/// Returns the content ID (1-128 printable ASCII) to report for a source, or nil to report the default one.
+public typealias ContentIdProvider = (SourceDescription) -> String?
+
 /// Reports a THEOplayer to the OptiView Lens SDK, through the player's public API.
+///
+/// A `LensConnector` creates one and joins Lens with it; use the adapter directly only to join Lens yourself.
 ///
 /// - Remark:
 ///     - Create one adapter per player and hand the same instance to every `Lens.join` that observes it: Lens tells
@@ -20,6 +25,7 @@ public final class THEOplayerLensAdapter: LensPlayerAdapter {
     public let playerVersion: String? = THEOplayer.version
 
     private weak var player: THEOplayer?
+    private let contentId: ContentIdProvider?
     private var listeners: [(id: Int, listener: (LensPlayerFact) -> Void)] = []
     private var nextListenerId = 0
     private var lifetimeObserver: DispatchObserver?
@@ -37,9 +43,13 @@ public final class THEOplayerLensAdapter: LensPlayerAdapter {
     private var lastProperties = LensPlayerProperties()
     private var lastSnapshot = LensPlayerSnapshot(currentTime: 0, paused: true, ended: false)
 
-    /// - Parameter player: The player to report.
-    public init(player: THEOplayer) {
+    /// - Parameters:
+    ///   - player: The player to report.
+    ///   - contentId: Returns the content ID to report for a source. Without it, or when it returns nil, a Google DAI
+    ///     source is reported by its asset IDs, and Lens derives the content ID of any other source from its URL.
+    public init(player: THEOplayer, contentId: ContentIdProvider? = nil) {
         self.player = player
+        self.contentId = contentId
         loadedSource = player.source
         // Kept for the player's lifetime: which source THEOplayer chose and loaded is only ever told by an event.
         lifetimeObserver = DispatchObserver(
@@ -69,6 +79,9 @@ public final class THEOplayerLensAdapter: LensPlayerAdapter {
             }
         }
     }
+
+    /// Whether Lens observes the adapter.
+    var subscribed: Bool { !listeners.isEmpty }
 
     public func snapshot() -> LensPlayerSnapshot {
         guard let player, !destroyed, !player.isDestroyed else { return lastSnapshot }
@@ -293,10 +306,11 @@ public final class THEOplayerLensAdapter: LensPlayerAdapter {
     }
 
     private func lensSource(of description: SourceDescription?) -> LensPlayerSource? {
-        guard let player, let typedSource = typedSource(of: description) else { return nil }
-        // Google DAI replaces the source URL with the stream it resolved: name it by its asset IDs instead.
-        let contentId = googleDAIContentId(typedSource)
-        let url = contentId == nil ? nonEmpty(typedSource.src) : nil
+        guard let player, let description, let typedSource = typedSource(of: description) else { return nil }
+        // Google DAI replaces the source URL with the stream it resolved, so that URL is left out.
+        let googleDAI = typedSource.ssai is GoogleDAIConfiguration
+        let contentId = self.contentId?(description).flatMap(nonEmpty) ?? googleDAIContentId(typedSource)
+        let url = googleDAI ? nil : nonEmpty(typedSource.src)
         guard url != nil || contentId != nil else { return nil }
         return LensPlayerSource(
             url: url,
@@ -311,10 +325,9 @@ public final class THEOplayerLensAdapter: LensPlayerAdapter {
     private func properties(known: Bool) -> LensPlayerProperties {
         guard let player, !destroyed, !player.isDestroyed else { return LensPlayerProperties() }
         let live = known ? duration(player).map { $0.isInfinite } : nil
-        let type = typedSource(of: announced)?.type.lowercased() ?? ""
         return LensPlayerProperties(
             live: live,
-            lowLatency: live == true && lowLatencyTypes.contains(type) ? true : nil,
+            lowLatency: live == true && isLowLatency(typedSource(of: announced)) ? true : nil,
             tracks: known ? tracks(player) : nil,
             targetBuffer: positive(player.abr.targetBuffer),
             bufferStable: known ? player.readyState == .HAVE_ENOUGH_DATA : nil,
@@ -352,9 +365,13 @@ public final class THEOplayerLensAdapter: LensPlayerAdapter {
     }
 }
 
-private let lowLatencyTypes: Set<String> = [
-    "application/vnd.theo.hesp+json", "application/vnd.theo.live+channel", "application/millicast",
-]
+/// A THEOlive channel alone says nothing: it can be regular HLS, LL-HLS or HESP.
+private let lowLatencyTypes: Set<String> = ["application/vnd.theo.hesp+json", "application/millicast"]
+
+func isLowLatency(_ source: TypedSource?) -> Bool {
+    guard let source else { return false }
+    return source.latencyConfiguration != nil || lowLatencyTypes.contains(source.type.lowercased())
+}
 
 private func mediaTrack(_ track: MediaTrack, kind: LensTrackKind, hls: Bool) -> LensTrack {
     // HLS declares a bitrate on variants only, which THEOplayer also gives the audio qualities.
