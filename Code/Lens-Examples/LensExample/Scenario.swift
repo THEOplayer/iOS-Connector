@@ -11,7 +11,7 @@ import THEOplayerSDK
 @MainActor
 final class Scenario {
     /// The content ID the scenario's source is reported with, to find its sessions in the backend.
-    static let contentId = "lens-connector-scenario"
+    static let contentId = "lens-connector-demo-scenario"
     static let src = "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
 
     enum Failure: Error, CustomStringConvertible {
@@ -88,8 +88,8 @@ final class Scenario {
         try await wait(5)
         player.playbackRate = 1
         try await wait(2)
-        step("8/9 Fullscreen for 5 s, inline for 2 s")
-        try await next(PlayerEventTypes.PRESENTATION_MODE_CHANGE) { player.presentationMode = .fullscreen }
+        step("8/9 Picture-in-picture for 5 s, inline for 2 s")
+        try await next(PlayerEventTypes.PRESENTATION_MODE_CHANGE) { player.presentationMode = .pictureInPicture }
         try await wait(5)
         try await next(PlayerEventTypes.PRESENTATION_MODE_CHANGE) { player.presentationMode = .inline }
         try await wait(2)

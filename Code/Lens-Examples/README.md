@@ -5,7 +5,7 @@
 Open the project, pick an iPhone simulator or device, and run. The app:
 
 - loads one of a few example streams, or a URL of your own (`Load a source`),
-- plays, pauses, stops, seeks, mutes, changes the rate and goes fullscreen, which Lens reports as state changes, `m`/`um`, `pr` and `pe`/`pc`,
+- plays, pauses, stops, seeks, mutes, changes the rate and goes fullscreen or picture-in-picture, which Lens reports as state changes, `m`/`um`, `pr` and `pe`/`pc`,
 - runs a fixed scenario (`Run scenario`, below),
 - shows the current Lens session, which starts at the first play request on a source,
 - lists every report Lens sends, newest first, with its namespace, event, playback state and main keys. Tap a report for all its keys.
@@ -23,7 +23,7 @@ In `LensExample/Config.swift`, you can also set:
 
 ## The scenario
 
-The scenario is the same on every platform's Lens demo, so that their reports can be compared in the backend. It takes about a minute, and its source is reported with the content ID `lens-connector-scenario`:
+The scenario is the same on every platform's Lens demo, so that their reports can be compared in the backend. It takes about a minute, and its source is reported with the content ID `lens-connector-demo-scenario`:
 
 1. Load Big Buck Bunny (`https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8`), as a new source.
 2. Play for 10 s.
@@ -32,10 +32,14 @@ The scenario is the same on every platform's Lens demo, so that their reports ca
 5. Seek to 120 s, play for 5 s.
 6. Mute for 3 s, then unmute for 2 s.
 7. Play at rate 2 for 5 s, then at rate 1 for 2 s.
-8. Go picture-in-picture or fullscreen for 5 s, then inline for 2 s. This demo goes fullscreen.
+8. Go picture-in-picture for 5 s, then inline for 2 s.
 9. Seek to 5 s before the end, play to the end, wait 2 s, and unload the source.
 
-Steps that change the player (play, pause, seek, presentation mode) count their time from when the player has made the change.
+Every platform makes the same choices behind these timings:
+
+- A play step counts from when playback starts (`playing`), not from the play request, so a slow startup does not shorten it.
+- A seek step waits for the seek to complete (`seeked`) before counting.
+- Picture-in-picture is the player's own: the in-page one on web, and here THEOplayer's in-app one (`nativePictureInPicture` off), not the system's. A presentation step counts from when the player has changed mode.
 
 Lens reports `sta=e` at the end, and no quit report after it: the session is over once the content has ended.
 

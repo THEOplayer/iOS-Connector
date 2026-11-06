@@ -19,6 +19,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     private let player: THEOplayer = {
         let configuration = THEOplayerConfigurationBuilder()
         configuration.license = theoplayerLicense
+        // The player's in-app picture-in-picture, as the in-page one of the web demo, not the system's.
+        let pip = PiPConfigurationBuilder()
+        pip.nativePictureInPicture = false
+        configuration.pip = pip.build()
         return THEOplayer(configuration: configuration.build())
     }()
     private lazy var scenario = Scenario(player: player)
@@ -215,7 +219,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                     player.playbackRate = player.playbackRate == 1 ? 2 : 1
                     sender.configuration?.title = player.playbackRate == 1 ? "Rate 2×" : "Rate 1×"
                 },
+            ]),
+            row([
                 button("Fullscreen") { [weak self] _ in self?.player.presentationMode = .fullscreen },
+                button("PiP") { [weak self] _ in
+                    guard let player = self?.player else { return }
+                    player.presentationMode = player.presentationMode == .pictureInPicture ? .inline : .pictureInPicture
+                },
             ]),
         ]
 
