@@ -7,6 +7,8 @@ final class PlaylistParserTests: XCTestCase {
     private let manifestURL = URL(string: "https://cdn.example.com/vod/movie/index.m3u8?token=abc")!
     private let manifestURLWithoutQuery = URL(string: "https://cdn.example.com/vod/movie/index.m3u8")!
 
+    // MARK: - Relative URIs with a query string (#132)
+
     func testRelativeURIKeepsQueryString() {
         let parser = PlaylistParser(url: manifestURL, request: nil)
 
@@ -39,14 +41,6 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/movie/video.m3u8")
     }
 
-    func testRelativeURIWithRawSpaceIsEscaped() {
-        let parser = PlaylistParser(url: manifestURLWithoutQuery, request: nil)
-
-        let url = parser.getFullURL(from: "seg one.ts")
-
-        XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/movie/seg%20one.ts")
-    }
-
     func testAbsoluteURIIsNotChanged() {
         let parser = PlaylistParser(url: manifestURL, request: nil)
 
@@ -55,7 +49,7 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertEqual(url?.absoluteString, "https://other.example.com/video.m3u8?token=xyz")
     }
 
-    // MARK: - Percent-encoding (PR37 regression: %20 must not become %2520)
+    // MARK: - Encoded filenames are not double-encoded (#37: %20 must not become %2520)
 
     func testRelativeURIWithEncodedSpacesIsNotDoubleEncoded() {
         let parser = PlaylistParser(url: manifestURLWithoutQuery, request: nil)
@@ -80,6 +74,8 @@ final class PlaylistParserTests: XCTestCase {
 
         XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/movie/a%2520b.m3u8")
     }
+
+    // MARK: - Existing percent-escapes are kept as written (#134)
 
     func testRelativeURIKeepsEscapedQuestionMarkInFileName() {
         let parser = PlaylistParser(url: manifestURLWithoutQuery, request: nil)
@@ -114,7 +110,17 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/movie/proxy/https%3A%2F%2Forigin.com%2Fvideo.m3u8%3Ftoken%3Dabc")
     }
 
-    // MARK: - Reference forms
+    // MARK: - Invalid characters are escaped when the URI can't be parsed (#134: raw spaces before iOS 17)
+
+    func testRelativeURIWithRawSpaceIsEscaped() {
+        let parser = PlaylistParser(url: manifestURLWithoutQuery, request: nil)
+
+        let url = parser.getFullURL(from: "seg one.ts")
+
+        XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/movie/seg%20one.ts")
+    }
+
+    // MARK: - Relative references resolve to absolute URLs (#12, RFC 3986 §5.2)
 
     func testRootRelativeURIIsResolvedAgainstManifestHost() {
         let parser = PlaylistParser(url: manifestURL, request: nil)
@@ -148,6 +154,16 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/movie/video.m3u8?accountId=1")
     }
 
+    func testRelativeURIInParentDirectoryDoesNotInheritManifestQuery() {
+        let parser = PlaylistParser(url: manifestURL, request: nil)
+
+        let url = parser.getFullURL(from: "../other/video.m3u8")
+
+        XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/other/video.m3u8")
+    }
+
+    // MARK: - Blank playlist lines are not rewritten (VariantPlaylistParser passes every non-# line, #37)
+
     func testEmptyURIReturnsNil() {
         let parser = PlaylistParser(url: manifestURL, request: nil)
 
@@ -160,16 +176,9 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertNil(parser.getFullURL(from: " \t\r\n"))
     }
 
-    func testRelativeURIInParentDirectoryDoesNotInheritManifestQuery() {
-        let parser = PlaylistParser(url: manifestURL, request: nil)
-
-        let url = parser.getFullURL(from: "../other/video.m3u8")
-
-        XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/other/video.m3u8")
-    }
-
     // MARK: - Playlist rewriting (local HTTP fixtures)
 
+    // #12: variant and media URIs are made absolute
     func testMasterPlaylistRewritesVariantAndMediaURIs() async throws {
         let master = """
         #EXTM3U
@@ -194,6 +203,7 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertTrue(lines.contains { $0.hasPrefix("#EXT-X-I-FRAME-STREAM-INF:") && $0.contains("URI=\"\(base)/vod/iframes/i.m3u8\"") }, "\(lines)")
     }
 
+    // #17: the final URL after a redirect is the base
     func testMasterPlaylistResolvesAgainstRedirectedURL() async throws {
         let master = "#EXTM3U\n#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID=\"aud\",NAME=\"English\",URI=\"audio.m3u8\"\n#EXT-X-STREAM-INF:BANDWIDTH=1000,AUDIO=\"aud\"\nvideo.m3u8?sig=1\n"
         let (server, base) = try startServer(["/final/dir/master.m3u8": master])
@@ -209,6 +219,7 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertTrue(lines.contains { $0.contains("URI=\"\(base)/final/dir/audio.m3u8\"") }, "\(lines)")
     }
 
+    // #20: EXT-X-KEY/EXT-X-MAP URI attributes; #37: EXT-X-BYTERANGE between EXTINF and the segment
     func testVariantPlaylistRewritesSegmentKeyAndMapURIs() async throws {
         let variant = """
         #EXTM3U
@@ -255,6 +266,7 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertTrue(keyLine.contains("URI=\"\(base)/vod/movie/keys/key.bin?token=k1&exp=2\""), keyLine)
     }
 
+    // #134
     func testVariantPlaylistKeepsEscapedSignatureBytes() async throws {
         let variant = """
         #EXTM3U
@@ -277,6 +289,7 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertTrue(keyLine.contains("URI=\"\(base)/vod/movie/key.bin?sig=k%2F1%2B%3D\""), keyLine)
     }
 
+    // #134: raw-space segment is kept before iOS 17
     func testVariantPlaylistKeepsSegmentWithRawSpace() async throws {
         let variant = """
         #EXTM3U
