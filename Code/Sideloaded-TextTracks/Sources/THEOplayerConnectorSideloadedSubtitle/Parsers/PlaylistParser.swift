@@ -52,7 +52,17 @@ class PlaylistParser {
     func getFullURL(from path: String) -> URL? {
         let uri = path.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !uri.isEmpty else { return nil }
-        return URL(string: uri, relativeTo: self.manifestURL)?.absoluteURL
+
+        if let url = URL(string: uri, relativeTo: self.manifestURL) {
+            return url.absoluteURL
+        }
+
+        // Before iOS 17, URL(string:) rejects invalid characters such as raw spaces.
+        // Escape only those and keep existing %XX escapes and URL delimiters as written.
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.insert(charactersIn: "%#[]")
+        guard let escaped = uri.addingPercentEncoding(withAllowedCharacters: allowed) else { return nil }
+        return URL(string: escaped, relativeTo: self.manifestURL)?.absoluteURL
     }
     
     func updateRelativeUri(line: HLSLine) {

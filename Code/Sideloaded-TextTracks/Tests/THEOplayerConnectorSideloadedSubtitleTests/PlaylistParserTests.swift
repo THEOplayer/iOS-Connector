@@ -39,6 +39,14 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/movie/video.m3u8")
     }
 
+    func testRelativeURIWithRawSpaceIsEscaped() {
+        let parser = PlaylistParser(url: manifestURLWithoutQuery, request: nil)
+
+        let url = parser.getFullURL(from: "seg one.ts")
+
+        XCTAssertEqual(url?.absoluteString, "https://cdn.example.com/vod/movie/seg%20one.ts")
+    }
+
     func testAbsoluteURIIsNotChanged() {
         let parser = PlaylistParser(url: manifestURL, request: nil)
 
@@ -267,6 +275,25 @@ final class PlaylistParserTests: XCTestCase {
         XCTAssertTrue(lines.contains("\(base)/vod/movie/seg1.ts?exp=2&sig=ab%2Fcd%2B%3D%3D"), "\(lines)")
         let keyLine = try XCTUnwrap(lines.first { $0.hasPrefix("#EXT-X-KEY:") })
         XCTAssertTrue(keyLine.contains("URI=\"\(base)/vod/movie/key.bin?sig=k%2F1%2B%3D\""), keyLine)
+    }
+
+    func testVariantPlaylistKeepsSegmentWithRawSpace() async throws {
+        let variant = """
+        #EXTM3U
+        #EXT-X-TARGETDURATION:6
+        #EXTINF:6.000,
+        seg one.ts
+        #EXT-X-ENDLIST
+
+        """
+        let (server, base) = try startServer(["/video.m3u8": variant])
+        defer { server.stop() }
+        let parser = VariantPlaylistParser(url: URL(string: "\(base)/video.m3u8")!, request: nil)
+
+        let result = await parser.parse()
+
+        let lines = String(decoding: try XCTUnwrap(try XCTUnwrap(result).manifestData), as: UTF8.self).components(separatedBy: "\n")
+        XCTAssertTrue(lines.contains("\(base)/seg%20one.ts"), "\(lines)")
     }
 
     private func startServer(_ playlists: [String: String]) throws -> (HttpServer, String) {
