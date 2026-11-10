@@ -330,17 +330,34 @@ final class THEOplayerLensAdapterTests: XCTestCase {
         waitForSession(of: connector.handle)
     }
 
-    func testTheConnectorStopsWithItsPlayer() throws {
-        var player: THEOplayer? = THEOplayer()
-        let connector = try connect(player!)
-        load(mp4Source, into: player!)
-        player?.play()
+    func testAnSDKJoiningWithThePlayerSharesTheSession() throws {
+        let player = THEOplayer()
+        let connector = try connect(player)
+        defer { connector.destroy() }
+        let other = try Lens.join(LensJoinOptions(namespace: "other_sdk", player: player))
+        defer { other.dispose() }
+        load(mp4Source, into: player)
+        player.play()
         waitForSession(of: connector.handle)
 
+        XCTAssertNotNil(other.session)
+        XCTAssertEqual(other.session?.sessionId, connector.handle.session?.sessionId)
+    }
+
+    /// Lens keeps the player alive while a handle on it exists, disposed or not.
+    func testDestroyingAndReleasingTheConnectorReleasesThePlayer() throws {
+        var player: THEOplayer? = THEOplayer()
+        weak var released = player
+        var connector: LensConnector? = try connect(player!)
+        load(mp4Source, into: player!)
+        player?.play()
+        waitForSession(of: connector!.handle)
+
+        connector?.destroy()
+        connector = nil
         player = nil
 
-        XCTAssertNil(connector.handle.session)
-        waitForRelease(of: connector.adapter)
+        wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in released == nil }, object: nil)], timeout: 5)
     }
 
     func testDestroyingTheConnectorEndsTheSession() throws {

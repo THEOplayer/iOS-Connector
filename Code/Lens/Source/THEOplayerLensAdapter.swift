@@ -15,14 +15,16 @@ public typealias ContentIdProvider = (SourceDescription) -> String?
 /// A `LensConnector` creates one and joins Lens with it; use the adapter directly only to join Lens yourself.
 ///
 /// - Remark:
-///     - Create one adapter per player and hand the same instance to every `Lens.join` that observes it: Lens tells
-///       players apart by adapter identity.
+///     - Lens keys the session on the player itself: other SDKs share it by joining Lens with the player. Lens observes
+///       one adapter per player, so create one per player.
 ///     - Use it on the main queue, as the player.
-///     - The adapter does not retain the player.
+///     - The adapter does not retain the player, but Lens does while handles are joined with it.
 ///     - Do not enable THEOplayer's own CMCD reporting for a player that Lens observes.
 public final class THEOplayerLensAdapter: LensPlayerAdapter {
     public let playerName = "THEOplayer"
     public let playerVersion: String? = THEOplayer.version
+    /// The player, which Lens keys its session on; the adapter itself once the player is gone.
+    public var target: AnyObject { player ?? self }
 
     private weak var player: THEOplayer?
     private let contentId: ContentIdProvider?

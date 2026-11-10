@@ -31,7 +31,7 @@ let package = Package(
         .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
         .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
         .package(name: "ComScore", url: "https://github.com/comScore/Comscore-Swift-Package-Manager", "6.10.0"..<"6.11.0"),
-        .package(url: "https://github.com/Dolby-OptiView/optiview-lens-sdk-swift", "0.6.0"..<"0.7.0"),
+        .package(url: "https://github.com/Dolby-OptiView/optiview-lens-sdk-swift", "0.6.2"..<"0.7.0"),
     ],
     targets: [
         .target(

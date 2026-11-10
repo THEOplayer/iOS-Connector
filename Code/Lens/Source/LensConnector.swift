@@ -3,7 +3,6 @@
 //
 
 import LensSDK
-import THEOplayerConnectorUtilities
 import THEOplayerSDK
 
 /// The configuration of a `LensConnector`: the options of `Lens.join`, without the namespace and the player, which the
@@ -40,21 +39,21 @@ public struct LensConfiguration {
 ///
 /// The connector joins Lens with a player adapter for the given player, in the `theoplayer` namespace, so Lens reports
 /// playback on its own: sessions, playback states, errors and the player's CMCD keys.
+///
+/// - Important: Lens keeps the player alive while the connector is joined. Call `destroy()` when you are done with the
+///   player, before you release it.
 public final class LensConnector {
     /// The Lens handle the connector joined with, in the `theoplayer` namespace. Use it to set consent or flush. To
-    /// report events of your own, join Lens in your own namespace with `adapter`.
+    /// report events of your own, join Lens in your own namespace with the player.
     public let handle: LensHandle
 
-    /// The Lens player adapter for the player. Another SDK reporting to Lens joins with this same adapter to share the
-    /// player's session.
+    /// The Lens player adapter for the player.
     public let adapter: THEOplayerLensAdapter
-
-    private var destroyObserver: DispatchObserver?
 
     /// Creates a connector for the given player and joins Lens.
     ///
     /// - Parameters:
-    ///   - player: The player to report. The connector does not retain it.
+    ///   - player: The player to report.
     ///   - configuration: The options to join Lens with.
     /// - Throws: The error of `Lens.join` for invalid options.
     public init(player: THEOplayer, configuration: LensConfiguration = LensConfiguration()) throws {
@@ -69,17 +68,10 @@ public final class LensConnector {
         )
         if let heartbeatMs = configuration.heartbeatMs { options.heartbeatMs = heartbeatMs }
         handle = try Lens.join(options)
-        destroyObserver = DispatchObserver(
-            dispatcher: player,
-            eventListeners: [
-                player.addRemovableEventListener(type: PlayerEventTypes.DESTROY) { [weak self] _ in self?.destroy() }
-            ]
-        )
     }
 
-    /// Ends the session and stops reporting the player. The connector is destroyed with its player.
+    /// Ends the session, stops reporting the player, and lets Lens release it.
     public func destroy() {
-        destroyObserver = nil
         handle.dispose()
     }
 }
