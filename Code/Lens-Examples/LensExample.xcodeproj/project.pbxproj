@@ -1,0 +1,381 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05A45CFB730C3C8D509763CD /* THEOplayerConnectorLens in Frameworks */ = {isa = PBXBuildFile; productRef = BD50A467F2B86C01A21AEA62 /* THEOplayerConnectorLens */; };
+		43C7581412A3DF206EC4C660 /* LensSDKDev in Frameworks */ = {isa = PBXBuildFile; productRef = FFB346B2F06C0F4AC773535B /* LensSDKDev */; };
+		63CEC8FC59C233CCE147F3E5 /* LensReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */; };
+		6727ECB29D2D4568413C9146 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6401D44393B218039D887E70 /* ViewController.swift */; };
+		90E843D6E688C47241AF4E1D /* LensSDK in Frameworks */ = {isa = PBXBuildFile; productRef = EB42CA8795D0CA38474E88C6 /* LensSDK */; };
+		C09042638B031720488EE0B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0595736CB1C4E25C161BCAF8 /* AppDelegate.swift */; };
+		C42B1C4E8257439E0DFB63F1 /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = D612104EA5996CDD02E63B42 /* Scenario.swift */; };
+		EEC733A15D5F02DEBF8363A6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8753DD4AC5F3E283A269E22 /* Config.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0595736CB1C4E25C161BCAF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		0FD35DE090C16D1460BC0759 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4A1B464FAA8A8AC17E8BE700 /* LensExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LensExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6401D44393B218039D887E70 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		75D78A81E1A9C50211B30664 /* Lens-iOS-connector */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Lens-iOS-connector"; path = ../..; sourceTree = SOURCE_ROOT; };
+		C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LensReceiver.swift; sourceTree = "<group>"; };
+		C8753DD4AC5F3E283A269E22 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		D612104EA5996CDD02E63B42 /* Scenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7491CAF7AC316FD6A47E5097 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05A45CFB730C3C8D509763CD /* THEOplayerConnectorLens in Frameworks */,
+				90E843D6E688C47241AF4E1D /* LensSDK in Frameworks */,
+				43C7581412A3DF206EC4C660 /* LensSDKDev in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		34E387F1BF26B100769109D4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4A1B464FAA8A8AC17E8BE700 /* LensExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		500EF6A589942868F315F14C /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				75D78A81E1A9C50211B30664 /* Lens-iOS-connector */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		CC3833AB5B496A9CEF7F79FC /* LensExample */ = {
+			isa = PBXGroup;
+			children = (
+				0595736CB1C4E25C161BCAF8 /* AppDelegate.swift */,
+				C8753DD4AC5F3E283A269E22 /* Config.swift */,
+				0FD35DE090C16D1460BC0759 /* Info.plist */,
+				C7E6CDD3D598D4ABECAA0102 /* LensReceiver.swift */,
+				D612104EA5996CDD02E63B42 /* Scenario.swift */,
+				6401D44393B218039D887E70 /* ViewController.swift */,
+			);
+			path = LensExample;
+			sourceTree = "<group>";
+		};
+		DF6D653915A1F2F78C5270F2 = {
+			isa = PBXGroup;
+			children = (
+				CC3833AB5B496A9CEF7F79FC /* LensExample */,
+				500EF6A589942868F315F14C /* Packages */,
+				34E387F1BF26B100769109D4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		62038F9D901A250F507F1B2E /* LensExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09FB58C20CD885D8BC74D227 /* Build configuration list for PBXNativeTarget "LensExample" */;
+			buildPhases = (
+				5CC122D662E78AF1144D72BA /* Sources */,
+				7491CAF7AC316FD6A47E5097 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LensExample;
+			packageProductDependencies = (
+				BD50A467F2B86C01A21AEA62 /* THEOplayerConnectorLens */,
+				EB42CA8795D0CA38474E88C6 /* LensSDK */,
+				FFB346B2F06C0F4AC773535B /* LensSDKDev */,
+			);
+			productName = LensExample;
+			productReference = 4A1B464FAA8A8AC17E8BE700 /* LensExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		19997A7BD2AB255E760C3EB9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = EE05A1B853B83E42F82BE7EE /* Build configuration list for PBXProject "LensExample" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = DF6D653915A1F2F78C5270F2;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C9E8062C083781BFD2E012E1 /* XCRemoteSwiftPackageReference "optiview-lens-sdk-swift" */,
+				AA6C5E45EC5CD078756BF947 /* XCLocalSwiftPackageReference "../.." */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 34E387F1BF26B100769109D4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				62038F9D901A250F507F1B2E /* LensExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5CC122D662E78AF1144D72BA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C09042638B031720488EE0B7 /* AppDelegate.swift in Sources */,
+				EEC733A15D5F02DEBF8363A6 /* Config.swift in Sources */,
+				63CEC8FC59C233CCE147F3E5 /* LensReceiver.swift in Sources */,
+				C42B1C4E8257439E0DFB63F1 /* Scenario.swift in Sources */,
+				6727ECB29D2D4568413C9146 /* ViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0B6845CDE374E088EF1EF49D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LensExample/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.connector.LensExample;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		28DA32B65290217B330E05CB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4EC178116CA703D51F969778 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AF38D51A041BA11FAEA9DF5B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LensExample/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.theoplayer.connector.LensExample;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		09FB58C20CD885D8BC74D227 /* Build configuration list for PBXNativeTarget "LensExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B6845CDE374E088EF1EF49D /* Debug */,
+				AF38D51A041BA11FAEA9DF5B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EE05A1B853B83E42F82BE7EE /* Build configuration list for PBXProject "LensExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28DA32B65290217B330E05CB /* Debug */,
+				4EC178116CA703D51F969778 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		AA6C5E45EC5CD078756BF947 /* XCLocalSwiftPackageReference "../.." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C9E8062C083781BFD2E012E1 /* XCRemoteSwiftPackageReference "optiview-lens-sdk-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Dolby-OptiView/optiview-lens-sdk-swift";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.6.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BD50A467F2B86C01A21AEA62 /* THEOplayerConnectorLens */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = THEOplayerConnectorLens;
+		};
+		EB42CA8795D0CA38474E88C6 /* LensSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C9E8062C083781BFD2E012E1 /* XCRemoteSwiftPackageReference "optiview-lens-sdk-swift" */;
+			productName = LensSDK;
+		};
+		FFB346B2F06C0F4AC773535B /* LensSDKDev */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C9E8062C083781BFD2E012E1 /* XCRemoteSwiftPackageReference "optiview-lens-sdk-swift" */;
+			productName = LensSDKDev;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 19997A7BD2AB255E760C3EB9 /* Project object */;
+}

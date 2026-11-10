@@ -21,6 +21,7 @@ For more details about importing OptiView Player iOS SDK check the [documentatio
 | Nielsen            | `THEOplayer-Connector-Nielsen`            | 4.3.0          | [documentation](Code/Nielsen/README.md)               |
 | SideloadedSubtitle | `THEOplayer-Connector-SideloadedSubtitle` | 5.2.0          | [documentation](Code/Sideloaded-TextTracks/README.md) |
 | Yospace            | `THEOplayer-Connector-Yospace`            | 7.8.0          | [documentation](Code/Yospace/README.md)               |
+| Lens               | `THEOplayerConnectorLens` (SPM only)      | 11.1.0         | [documentation](Code/Lens/README.md)                  |
 
 Notes:
 * OptiView Player iOS SDK Connectors are compatible with a OptiView Player SDK with the same major version number. It's not recommended to use different major versions for the iOS SDK and the Connectors.
