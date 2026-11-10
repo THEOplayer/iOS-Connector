@@ -24,7 +24,7 @@ import THEOplayerConnectorLens
 let lensConnector = try LensConnector(player: player)
 ```
 
-Lens starts a session at the first play request on each source, and ends it when the source is replaced or removed. The connector does not retain the player.
+Lens starts a session at the first play request on each source, and ends it when the source is replaced or removed. Lens keeps the player alive while the connector is joined: destroy the connector before you release the player (see Destroying).
 
 Lens reports to the OptiView ingest by default. The configuration takes the options of `Lens.join`, except the namespace and the player, for example to add destinations of your own:
 
@@ -54,12 +54,12 @@ let lensConnector = try LensConnector(
 
 ### Your own events
 
-To report events of your own, join Lens in your own registered namespace with `lensConnector.adapter`. Lens reports one session per player adapter, so your events and the player's playback share that session. Another SDK that reports this player to Lens joins with the adapter the same way.
+To report events of your own, join Lens in your own registered namespace with the player itself. Lens keys the session on the player, so your events and the player's playback share that session. Another SDK that reports this player to Lens joins with the player the same way, without needing the connector or its adapter.
 
 ```swift
 import LensSDK
 
-let lens = try Lens.join(LensJoinOptions(namespace: "my_namespace", player: lensConnector.adapter))
+let lens = try Lens.join(LensJoinOptions(namespace: "my_namespace", player: player))
 lens.emitCustom("chapterStart", payload: LensPayload(custom: ["chapter": 3]))
 ```
 
@@ -67,11 +67,14 @@ lens.emitCustom("chapterStart", payload: LensPayload(custom: ["chapter": 3]))
 
 ### Destroying
 
-The connector ends the session and stops reporting when the player is released, or when you destroy it:
+Lens holds on to the player while a handle on it exists, so a THEOplayer, which is destroyed when it is released, stays alive until you destroy the connector and release it. When you are done with the player, end the session and stop reporting it first:
 
 ```swift
 lensConnector.destroy()
+lensConnector = nil
 ```
+
+Do the same with any handle of your own on the player: `lens.dispose()`, then release it.
 
 Do not enable THEOplayer's own CMCD reporting on a player that Lens observes.
 

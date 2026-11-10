@@ -355,7 +355,7 @@
 			repositoryURL = "https://github.com/Dolby-OptiView/optiview-lens-sdk-swift";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.6.0;
+				minimumVersion = 0.6.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
