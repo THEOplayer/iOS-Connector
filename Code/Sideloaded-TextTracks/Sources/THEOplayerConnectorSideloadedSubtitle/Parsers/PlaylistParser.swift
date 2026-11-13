@@ -50,23 +50,19 @@ class PlaylistParser {
     }
     
     func getFullURL(from path: String) -> URL? {
-        // Remove any existing percentencoding and add 1 pass of percentEncoding to make sure correct URL can be build up on all iOS version
-        guard let trimmedPath = path.trimmingCharacters(in: .whitespacesAndNewlines).removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            return nil
+        let uri = path.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !uri.isEmpty else { return nil }
+
+        if let url = URL(string: uri, relativeTo: self.manifestURL) {
+            return url.absoluteURL
         }
-        var url: URL? = nil
-        if #available(iOS 17.0, tvOS 17.0, *) {
-            url = URL(string: trimmedPath, encodingInvalidCharacters: false) // don't allow an extra percentEncoding pass.
-        } else {
-            url = URL(string: trimmedPath)
-        }
-        if let createdUrl = url,
-           createdUrl.scheme == nil,
-           let decodedPath = trimmedPath.removingPercentEncoding { // drop the percentEncoding as this will be reapplied by appendingPathComponent
-            return self.manifestURL.deletingLastPathComponent().appendingPathComponent(decodedPath)
-        }
-        
-        return url
+
+        // Before iOS 17, URL(string:) rejects invalid characters such as raw spaces.
+        // Escape only those and keep existing %XX escapes and URL delimiters as written.
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.insert(charactersIn: "%#[]")
+        guard let escaped = uri.addingPercentEncoding(withAllowedCharacters: allowed) else { return nil }
+        return URL(string: escaped, relativeTo: self.manifestURL)?.absoluteURL
     }
     
     func updateRelativeUri(line: HLSLine) {
