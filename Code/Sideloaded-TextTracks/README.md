@@ -10,12 +10,21 @@ This connector is intended to be used for subtitle text tracks specific with the
 
 ## Installation
 
-### [Cocoapods](https://guides.cocoapods.org/using/getting-started.html#getting-started)
+### [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#getting-started)
 
 1. Create a Podfile if you don't already have one. From the root of your project directory, run the following command: `pod init`
-2. To your Podfile, add the OptiView Player specs source first: `source 'https://github.com/THEOplayer/cocoapods-specs.git'`, followed by the public source for third-party dependencies: `source 'https://cdn.cocoapods.org/'`.
-3. To your Podfile, add the connector pods that you want to use in your app: `pod 'THEOplayer-Connector-SideloadedSubtitle'`
-4. Install the pods using `pod install`, then open your `.xcworkspace` file to see the project in Xcode.
+2. Add the sources and connector pod to your Podfile, including [our CocoaPods spec repo](https://optiview.dolby.com/docs/theoplayer/getting-started/sdks/ios/cocoapods-spec-repo/):
+
+   ```ruby
+   source 'https://github.com/THEOplayer/cocoapods-specs'
+   source 'https://cdn.cocoapods.org/'
+
+   target 'MyApp' do
+     pod 'THEOplayer-Connector-SideloadedSubtitle'
+   end
+   ```
+
+3. Install the pods using `pod install`, then open your `.xcworkspace` file to see the project in Xcode.
 
 
 ## Usage
