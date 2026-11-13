@@ -61,9 +61,15 @@ class PlaylistParser {
             url = URL(string: trimmedPath)
         }
         if let createdUrl = url,
-           createdUrl.scheme == nil,
-           let decodedPath = trimmedPath.removingPercentEncoding { // drop the percentEncoding as this will be reapplied by appendingPathComponent
-            return self.manifestURL.deletingLastPathComponent().appendingPathComponent(decodedPath)
+           createdUrl.scheme == nil {
+            // Resolve against the manifest URL so a query string (e.g. `?hdntl=...`) stays a query
+            // instead of being percent-encoded into the path by `appendingPathComponent`.
+            if let resolvedUrl = URL(string: trimmedPath, relativeTo: self.manifestURL)?.absoluteURL {
+                return resolvedUrl
+            }
+            if let decodedPath = trimmedPath.removingPercentEncoding { // drop the percentEncoding as this will be reapplied by appendingPathComponent
+                return self.manifestURL.deletingLastPathComponent().appendingPathComponent(decodedPath)
+            }
         }
         
         return url

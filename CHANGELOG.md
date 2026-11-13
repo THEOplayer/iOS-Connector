@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SideloadedSubtitle
   - Fixed an issue where subtitles failed to load after the app returned from the background, because the system had closed the connector's local server.
   - Fixed an issue where the connector's local server kept running after its source was replaced or the player was destroyed.
+  - Fixed an issue where variant playlists failed to load when the master playlist listed them as relative URIs with a query string, because the query string was percent-encoded into the path.
 
 ## [11.0.6] - 2026-09-14
 
