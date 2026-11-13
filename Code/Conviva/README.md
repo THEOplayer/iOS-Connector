@@ -25,9 +25,10 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 ### [Cocoapods](https://guides.cocoapods.org/using/getting-started.html#getting-started)
 
 1. Create a Podfile if you don't already have one. From the root of your project directory, run the following command: `pod init`
-2. To your Podfile, add the Conviva connector pods that you want to use in your app: `pod 'THEOplayer-Connector-Conviva'`
+2. To your Podfile, add the OptiView Player specs source first: `source 'https://github.com/THEOplayer/cocoapods-specs.git'`, followed by the public source for third-party dependencies: `source 'https://cdn.cocoapods.org/'`.
+3. To your Podfile, add the Conviva connector pods that you want to use in your app: `pod 'THEOplayer-Connector-Conviva'`
    - When using THEOads, also add the THEOads subspec so that failed THEOads ad breaks (e.g. an empty VAST response) are reported to Conviva: `pod 'THEOplayer-Connector-Conviva/THEOads'`
-3. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
+4. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
 
 To support custom feature builds of THEOplayerSDK perform the following steps:
 
@@ -80,4 +81,3 @@ connector.setContentInfo(contentInfo)
 ## Lifecycle
 
 Hold a reference to your connector. Once the connector is released from memory it will clean up itself and stop reporting to Conviva.
-

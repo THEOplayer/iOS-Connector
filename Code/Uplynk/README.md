@@ -27,8 +27,9 @@ To support custom feature builds of THEOplayerSDK perform the following steps:
 ### [Cocoapods](https://guides.cocoapods.org/using/getting-started.html#getting-started)
 
 1. Create a Podfile if you don't already have one. From the root of your project directory, run the following command: `pod init`
-2. To your Podfile, add the Uplynk connector pods that you want to use in your app: `pod 'THEOplayer-Connector-Uplynk'`
-3. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
+2. To your Podfile, add the OptiView Player specs source first: `source 'https://github.com/THEOplayer/cocoapods-specs.git'`, followed by the public source for third-party dependencies: `source 'https://cdn.cocoapods.org/'`.
+3. To your Podfile, add the Uplynk connector pods that you want to use in your app: `pod 'THEOplayer-Connector-Uplynk'`
+4. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
 
 To support custom feature builds of THEOplayerSDK perform the following steps:
 
@@ -44,4 +45,3 @@ Learn more about Uplynk and how to use the connector in the following list of ar
 - [Preplay](./docs/preplay.md): this article provides information on how to configure a Uplynk source.
 - [Ads](./docs/ads.md): this article provides information on which APIs can be leveraged to track and enhance the ad-viewing experience.
 - [Ping](./docs/ping.md): this article provides information on how to leverage the Ping service and which THEOplayer APIs you should use.
-

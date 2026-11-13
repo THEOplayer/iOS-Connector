@@ -29,9 +29,12 @@ Notes:
 
 ### CocoaPods
 
-In your `Podfile` add one or more of the OptiView Player iOS SDK Connectors, for example:
+New connector releases are published to the [OptiView Player CocoaPods specs repository](https://github.com/THEOplayer/cocoapods-specs). In your `Podfile`, add this source first and keep the public CocoaPods source for third-party dependencies. Then add one or more of the OptiView Player iOS SDK Connectors, for example:
 
 ```ruby
+source 'https://github.com/THEOplayer/cocoapods-specs.git'
+source 'https://cdn.cocoapods.org/'
+
 pod 'THEOplayer-Connector-Conviva'
 ```
 
