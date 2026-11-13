@@ -4,12 +4,21 @@ THEOplayer-Connector-Comscore provides an integration between the THEOplayerSDK 
 
 ## Installation
 
-### [Cocoapods](https://guides.cocoapods.org/using/getting-started.html#getting-started)
+### [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#getting-started)
 
 1. Create a Podfile if you don't already have one. From the root of your project directory, run the following command: `pod init`
-2. To your Podfile, add links to the registry of Cocoapods: `source 'https://cdn.cocoapods.org/'`. If this fails, bypass their CDN by using `source 'https://github.com/CocoaPods/Specs.git'`
-3. To your Podfile, add the connector pods that you want to use in your app: `pod 'THEOplayer-Connector-Comscore'`
-4. Install the pods using `pod install` , then open your `.xcworkspace` file to see the project in Xcode.
+2. Add the sources and connector pod to your Podfile, including [our CocoaPods spec repo](https://optiview.dolby.com/docs/theoplayer/getting-started/sdks/ios/cocoapods-spec-repo/):
+
+   ```ruby
+   source 'https://github.com/THEOplayer/cocoapods-specs'
+   source 'https://cdn.cocoapods.org/'
+
+   target 'MyApp' do
+     pod 'THEOplayer-Connector-Comscore'
+   end
+   ```
+
+3. Install the pods using `pod install`, then open your `.xcworkspace` file to see the project in Xcode.
 
 To support custom feature builds of THEOplayerSDK perform the following steps:
 

@@ -32,8 +32,15 @@ Notes:
 In your `Podfile` add one or more of the OptiView Player iOS SDK Connectors, for example:
 
 ```ruby
-pod 'THEOplayer-Connector-Conviva'
+source 'https://github.com/THEOplayer/cocoapods-specs'
+source 'https://cdn.cocoapods.org/'
+
+target 'MyApp' do
+  pod 'THEOplayer-Connector-Conviva'
+end
 ```
+
+See [our CocoaPods spec repo](https://optiview.dolby.com/docs/theoplayer/getting-started/sdks/ios/cocoapods-spec-repo/) for more information.
 
 ### Swift Package Manager
 
