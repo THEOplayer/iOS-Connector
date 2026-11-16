@@ -4,7 +4,7 @@ THEOplayer-Connector-Lens reports a THEOplayer to the [OptiView Lens SDK](https:
 
 ## Installation
 
-The Lens SDK is distributed with Swift Package Manager only, and so is this connector.
+This connector is distributed with Swift Package Manager. It requires the THEOplayer iOS SDK 11.16.0 or later, the Lens SDK 0.7, and Xcode 26.2 or later.
 
 In Xcode, go to **File > Add Package Dependencies...** and add:
 
@@ -12,7 +12,7 @@ In Xcode, go to **File > Add Package Dependencies...** and add:
 https://github.com/THEOplayer/iOS-Connector
 ```
 
-Then select the `THEOplayerConnectorLens` product. To call the Lens SDK from your app, for example to configure it or to report events of your own, also add `https://github.com/Dolby-OptiView/optiview-lens-sdk-swift` and select its `LensSDK` product.
+Then select the `THEOplayerConnectorLens` product. To call the Lens SDK from your app, for example to configure it or to report events of your own, also add `https://github.com/Dolby-OptiView/optiview-lens-sdk-swift` and select its `LensSDK` product. The Lens SDK is a prebuilt dynamic framework: the connector links it, and your app embeds it once, which Xcode does for an app target, so every Lens-based SDK in the app shares that copy.
 
 ## Usage
 
@@ -24,7 +24,9 @@ import THEOplayerConnectorLens
 let lensConnector = try LensConnector(player: player)
 ```
 
-Lens starts a session at the first play request on each source, and ends it when the source is replaced or removed. Lens keeps the player alive while the connector is joined: destroy the connector before you release the player (see Destroying).
+Lens decides a session when a source is set, starts reporting it at the first play request, and ends it when the source is replaced or removed. Lens keeps the player alive while the connector is joined: destroy the connector before you release the player (see Destroying).
+
+The connector keeps the player's `cmcd.linkedSessionId` equal to the Lens session ID, so the CMCD data THEOplayer sends itself carries it as `lsid` and links to the Lens session. It sets it when it joins, updates it on every session change, and clears it when destroyed.
 
 Lens reports to the OptiView ingest by default. The configuration takes the options of `Lens.join`, except the namespace and the player, for example to add destinations of your own:
 

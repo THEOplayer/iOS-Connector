@@ -195,7 +195,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     private func showSession() {
         guard let lensConnector else { return }
-        sessionLabel.text = lensConnector.handle.session.map { "Lens session \($0.sessionId)" } ?? "No Lens session: load a source and play"
+        sessionLabel.text = lensConnector.handle.session.map { "Lens session \($0.sessionId)" } ?? "No Lens session: load a source"
     }
 
     // MARK: Scenario and staging

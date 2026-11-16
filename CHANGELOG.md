@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Lens
-  - Added the Lens connector, which reports THEOplayer playback to OptiView Lens. It is available through Swift Package Manager only.
+  - Added the Lens connector, which reports THEOplayer playback to OptiView Lens and links THEOplayer's own CMCD data to the Lens session. It is available through Swift Package Manager only.
 
 ## [11.0.7] - 2026-11-05
 
