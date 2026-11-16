@@ -318,16 +318,53 @@ final class THEOplayerLensAdapterTests: XCTestCase {
         XCTAssertFalse(isLowLatency(source("application/x-mpegurl")))
     }
 
-    func testTheConnectorStartsASessionAtTheFirstPlayRequest() throws {
+    func testTheConnectorDecidesTheSessionWithTheSourceAndKeepsItAtPlay() throws {
         let player = THEOplayer()
         let connector = try connect(player)
         defer { connector.destroy() }
-        load(mp4Source, into: player)
         XCTAssertNil(connector.handle.session)
-
-        player.play()
-
+        load(mp4Source, into: player)
         waitForSession(of: connector.handle)
+        let decided = connector.handle.session?.sessionId
+
+        waitForNext(PlayerEventTypes.PLAYING, on: player) { player.play() }
+
+        XCTAssertEqual(connector.handle.session?.sessionId, decided)
+    }
+
+    func testThePlayersLinkedSessionIdFollowsTheLensSession() throws {
+        let player = THEOplayer()
+        let connector = try connect(player)
+        XCTAssertNil(player.cmcd.linkedSessionId)
+
+        load(mp4Source, into: player)
+        waitForSession(of: connector.handle)
+        let first = connector.handle.session?.sessionId
+        XCTAssertNotNil(first)
+        XCTAssertEqual(player.cmcd.linkedSessionId, first)
+
+        load(SourceDescription(source: TypedSource(src: TestMedia.mp4.absoluteString, type: "video/mp4")), into: player)
+        wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in connector.handle.session?.sessionId != first }, object: nil)], timeout: 5)
+        XCTAssertNotNil(connector.handle.session)
+        XCTAssertEqual(player.cmcd.linkedSessionId, connector.handle.session?.sessionId)
+
+        connector.destroy()
+
+        XCTAssertNil(player.cmcd.linkedSessionId)
+    }
+
+    func testTheLinkedSessionIdIsSetWhenJoiningASessionInProgress() throws {
+        let player = THEOplayer()
+        try Lens.configure(LensConfigureOptions(backend: .disabled))
+        let other = try Lens.join(LensJoinOptions(namespace: "other_sdk", player: player))
+        defer { other.dispose() }
+        let session = other.startSession()
+
+        let connector = try LensConnector(player: player)
+        defer { connector.destroy() }
+
+        XCTAssertEqual(connector.handle.session?.sessionId, session.sessionId)
+        XCTAssertEqual(player.cmcd.linkedSessionId, session.sessionId)
     }
 
     func testAnSDKJoiningWithThePlayerSharesTheSession() throws {
@@ -384,6 +421,16 @@ final class THEOplayerLensAdapterTests: XCTestCase {
 
     private func waitForSession(of handle: LensHandle) {
         wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in handle.session != nil }, object: nil)], timeout: 5)
+    }
+
+    /// Runs `action`, then waits for the player's next event of `type`.
+    private func waitForNext<E: EventProtocol>(_ type: EventType<E>, on player: THEOplayer, after action: () -> Void) {
+        let fired = expectation(description: type.name)
+        fired.assertForOverFulfill = false
+        let listener = player.addEventListener(type: type) { _ in fired.fulfill() }
+        action()
+        wait(for: [fired], timeout: 5)
+        player.removeEventListener(type: type, listener: listener)
     }
 
     /// Lens releases its subscription once its last handle on the player is disposed.
