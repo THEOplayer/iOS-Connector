@@ -73,13 +73,13 @@ public final class LensConnector {
         handle = try Lens.join(options)
         sessionLink = SessionLink(player: player)
         handle.addSessionDelegate(sessionLink)
-        player.cmcd.linkedSessionId = handle.session?.sessionId
+        player.cmcd.lensSessionId = handle.session?.sessionId
     }
 
     /// Ends the session, stops reporting the player, and lets Lens release it.
     public func destroy() {
         handle.removeSessionDelegate(sessionLink)
-        sessionLink.player?.cmcd.linkedSessionId = nil
+        sessionLink.player?.cmcd.lensSessionId = nil
         handle.dispose()
     }
 }
@@ -93,6 +93,6 @@ private final class SessionLink: LensSessionDelegate {
     }
 
     func lensHandle(_ handle: LensHandle, didChangeSession session: LensSession?) {
-        player?.cmcd.linkedSessionId = session?.sessionId
+        player?.cmcd.lensSessionId = session?.sessionId
     }
 }

@@ -332,28 +332,28 @@ final class THEOplayerLensAdapterTests: XCTestCase {
         XCTAssertEqual(connector.handle.session?.sessionId, decided)
     }
 
-    func testThePlayersLinkedSessionIdFollowsTheLensSession() throws {
+    func testThePlayersLensSessionIdFollowsTheLensSession() throws {
         let player = THEOplayer()
         let connector = try connect(player)
-        XCTAssertNil(player.cmcd.linkedSessionId)
+        XCTAssertNil(player.cmcd.lensSessionId)
 
         load(mp4Source, into: player)
         waitForSession(of: connector.handle)
         let first = connector.handle.session?.sessionId
         XCTAssertNotNil(first)
-        XCTAssertEqual(player.cmcd.linkedSessionId, first)
+        XCTAssertEqual(player.cmcd.lensSessionId, first)
 
         load(SourceDescription(source: TypedSource(src: TestMedia.mp4.absoluteString, type: "video/mp4")), into: player)
         wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in connector.handle.session?.sessionId != first }, object: nil)], timeout: 5)
         XCTAssertNotNil(connector.handle.session)
-        XCTAssertEqual(player.cmcd.linkedSessionId, connector.handle.session?.sessionId)
+        XCTAssertEqual(player.cmcd.lensSessionId, connector.handle.session?.sessionId)
 
         connector.destroy()
 
-        XCTAssertNil(player.cmcd.linkedSessionId)
+        XCTAssertNil(player.cmcd.lensSessionId)
     }
 
-    func testTheLinkedSessionIdIsSetWhenJoiningASessionInProgress() throws {
+    func testTheLensSessionIdIsSetWhenJoiningASessionInProgress() throws {
         let player = THEOplayer()
         try Lens.configure(LensConfigureOptions(backend: .disabled))
         let other = try Lens.join(LensJoinOptions(namespace: "other_sdk", player: player))
@@ -364,7 +364,7 @@ final class THEOplayerLensAdapterTests: XCTestCase {
         defer { connector.destroy() }
 
         XCTAssertEqual(connector.handle.session?.sessionId, session.sessionId)
-        XCTAssertEqual(player.cmcd.linkedSessionId, session.sessionId)
+        XCTAssertEqual(player.cmcd.lensSessionId, session.sessionId)
     }
 
     func testAnSDKJoiningWithThePlayerSharesTheSession() throws {
