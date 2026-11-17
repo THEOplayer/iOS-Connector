@@ -26,7 +26,7 @@ let lensConnector = try LensConnector(player: player)
 
 Lens decides a session when a source is set, starts reporting it at the first play request, and ends it when the source is replaced or removed. Lens keeps the player alive while the connector is joined: destroy the connector before you release the player (see Destroying).
 
-The connector keeps the player's `cmcd.linkedSessionId` equal to the Lens session ID, so the CMCD data THEOplayer sends itself carries it as `lsid` and links to the Lens session. It sets it when it joins, updates it on every session change, and clears it when destroyed.
+The connector also links the CMCD data THEOplayer sends itself to the Lens session: while the connector is joined, that data carries the current Lens session ID as `lsid`.
 
 Lens reports to the OptiView ingest by default. The configuration takes the options of `Lens.join`, except the namespace and the player, for example to add destinations of your own:
 

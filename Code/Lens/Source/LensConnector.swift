@@ -38,8 +38,8 @@ public struct LensConfiguration {
 /// The connector between a THEOplayer and Dolby OptiView Lens.
 ///
 /// The connector joins Lens with a player adapter for the given player, in the `theoplayer` namespace, so Lens reports
-/// playback on its own: sessions, playback states, errors and the player's CMCD keys. It keeps the player's
-/// `cmcd.linkedSessionId` equal to the Lens session ID, so the player's own CMCD data links to the Lens session.
+/// playback on its own: sessions, playback states, errors and the player's CMCD keys. While joined, the CMCD data the
+/// player sends itself carries the Lens session ID, linking it to the Lens session.
 ///
 /// - Important: Lens keeps the player alive while the connector is joined. Call `destroy()` when you are done with the
 ///   player, before you release it.
