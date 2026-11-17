@@ -3,7 +3,7 @@
 //
 
 import LensSDK
-import THEOplayerSDK
+@_spi(Core) import THEOplayerSDK
 
 /// The configuration of a `LensConnector`: the options of `Lens.join`, without the namespace and the player, which the
 /// connector provides.

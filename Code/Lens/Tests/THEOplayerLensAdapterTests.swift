@@ -1,7 +1,7 @@
 import LensSDK
 import XCTest
 @testable import THEOplayerConnectorLens
-import THEOplayerSDK
+@_spi(Core) import THEOplayerSDK
 
 @MainActor
 final class THEOplayerLensAdapterTests: XCTestCase {
