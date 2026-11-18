@@ -10,6 +10,8 @@ enum TestSources {
     // The default (unlicensed) player only plays sources hosted on theoplayer.com.
     static let bigBuckBunny = "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
     static let elephantsDream = "https://cdn.theoplayer.com/video/elephants-dream/playlist.m3u8"
+    // Segment 4 (18-24 s) of every video variant returns HTTP 403.
+    static let missingSegment = "https://cdn.theoplayer.com/video/elephants-dream/404/index.m3u8"
 
     static func hls(_ url: String = bigBuckBunny) -> SourceDescription {
         SourceDescription(source: TypedSource(src: url, type: "application/x-mpegurl"))

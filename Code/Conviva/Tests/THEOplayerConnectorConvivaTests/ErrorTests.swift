@@ -38,4 +38,32 @@ final class ErrorTests: XCTestCase {
 
         XCTAssertTrue(analytics.video.playbackFailed.isEmpty)
     }
+
+    // C4
+    func testNetworkErrorIsReportedAsWarningAndKeepsSession() {
+        let harness = makeHarness()
+        harness.player.source = TestSources.hls(TestSources.missingSegment)
+        harness.player.currentTime = 15
+
+        // Snapshot inside the listener: AVPlayer may give up on the stream later and raise a fatal ERROR.
+        let networkErrorReceived = expectation(description: "network ERROR event")
+        var errorsAtNetworkError: [(message: String, severity: ErrorSeverity)] = []
+        var failedAtNetworkError: [String] = []
+        var endedAtNetworkError = -1
+        let listener = harness.player.network.addEventListener(type: NetworkEventTypes.ERROR) { _ in
+            guard endedAtNetworkError < 0 else { return }
+            errorsAtNetworkError = harness.video.playbackErrors
+            failedAtNetworkError = harness.video.playbackFailed
+            endedAtNetworkError = harness.video.playbackEndedCount
+            networkErrorReceived.fulfill()
+        }
+        harness.player.play()
+        wait(for: [networkErrorReceived], timeout: 60)
+        harness.player.network.removeEventListener(type: NetworkEventTypes.ERROR, listener: listener)
+
+        XCTAssertEqual(harness.video.playbackRequested.count, 1)
+        XCTAssertEqual(errorsAtNetworkError.map(\.severity), [.ERROR_WARNING])
+        XCTAssertEqual(failedAtNetworkError, [])
+        XCTAssertEqual(endedAtNetworkError, 0)
+    }
 }
