@@ -19,7 +19,7 @@ class RecordingStreamAnalytics: NSObject, CISStreamAnalyticsProtocol {
 
     func reportPlaybackMetric(_ key: String, value: Any?) { metrics.append((key, value)) }
     func cleanup() { cleanupCount += 1 }
-    func reportPlayerState(_ playerState: PlayerState) {}
+    func report(_ playerState: PlayerState) {}
     func getSessionId() -> Int32 { 42 }
     func getSessionKey() -> Int32 { 42 }
     func getMetadataInfo() -> [AnyHashable: Any] { [:] }

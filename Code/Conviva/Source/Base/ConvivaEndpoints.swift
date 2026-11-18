@@ -17,7 +17,7 @@ class ConvivaEndpoints {
         }
         self.init(analytics: analytics)
     }
-    
+
     /// Lets tests inject a recording `CISAnalytics` instead of the Conviva SDK one.
     init(analytics: CISAnalytics) {
         self.analytics = analytics

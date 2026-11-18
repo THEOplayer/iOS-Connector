@@ -21,13 +21,13 @@ final class EncodingTypeTests: XCTestCase {
     }
 
     // C6 — HESP needs the THEOlive integration; the connector only learns the type from CURRENT_SOURCE_CHANGE.
-    func testHespEncodingTypeIsReportedOnceSourceIsSelected() throws {
-        let endpoint = try fetchTHEOliveDemoEndpoint()
+    func testHespEncodingTypeIsReportedOnceSourceIsSelected() {
         let harness = makeHarness()
-        harness.player.addIntegration(THEOliveIntegrationFactory.createIntegration())
-        harness.player.source = SourceDescription(source: TypedSource(src: endpoint.hespSrc, type: "application/vnd.theo.hesp+json"))
+        harness.player.source = SourceDescription(source: TheoLiveSource(channelId: TestSources.theoliveDemoChannel))
 
-        waitForEvent(PlayerEventTypes.PLAY, on: harness.player) { harness.player.play() }
+        guard waitForEvent(PlayerEventTypes.PLAY, on: harness.player, after: { harness.player.play() }) != nil else {
+            return
+        }
         XCTAssertEqual(harness.video.playbackRequested.count, 1)
 
         waitUntil("HESP encoding_type reported") { !harness.video.contentInfoValues(ENCODING_TYPE).isEmpty }

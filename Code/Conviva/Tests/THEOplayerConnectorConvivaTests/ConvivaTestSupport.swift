@@ -12,6 +12,7 @@ enum TestSources {
     static let elephantsDream = "https://cdn.theoplayer.com/video/elephants-dream/playlist.m3u8"
     // Segment 4 (18-24 s) of every video variant returns HTTP 403.
     static let missingSegment = "https://cdn.theoplayer.com/video/elephants-dream/404/index.m3u8"
+    static let theoliveDemoChannel = "demo"
 
     static func hls(_ url: String = bigBuckBunny) -> SourceDescription {
         SourceDescription(source: TypedSource(src: url, type: "application/x-mpegurl"))
@@ -21,7 +22,6 @@ enum TestSources {
 /// The public THEOlive demo channel. The default license implicitly allows theo.live sources.
 struct THEOliveDemoEndpoint: Decodable {
     let hlsSrc: String
-    let hespSrc: String
 }
 
 /// A real player with a `ConvivaConnector` that reports to a `RecordingAnalytics`.
@@ -64,7 +64,7 @@ extension XCTestCase {
         let harness = ConvivaHarness(convivaMetadata: convivaMetadata)
         addTeardownBlock {
             harness.connector.destroy()
-            harness.player.destroy()
+            harness.player.stop()
         }
         return harness
     }
@@ -100,11 +100,20 @@ extension XCTestCase {
     func fetchTHEOliveDemoEndpoint(file: StaticString = #filePath, line: UInt = #line) throws -> THEOliveDemoEndpoint {
         struct Distribution: Decodable { let endpoints: [THEOliveDemoEndpoint] }
         let fetched = expectation(description: "THEOlive discovery response")
+        let url = URL(string: "https://discovery.theo.live/v2/distributions/\(TestSources.theoliveDemoChannel)")!
         var result: Result<Data, Error> = .failure(URLError(.timedOut))
-        URLSession.shared.dataTask(with: URL(string: "https://discovery.theo.live/v2/distributions/demo")!) { data, _, error in
-            result = data.map { .success($0) } ?? .failure(error ?? URLError(.badServerResponse))
-            fetched.fulfill()
-        }.resume()
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            DispatchQueue.main.async {
+                if let data, (response as? HTTPURLResponse)?.statusCode == 200 {
+                    result = .success(data)
+                } else {
+                    result = .failure(error ?? URLError(.badServerResponse))
+                }
+                fetched.fulfill()
+            }
+        }
+        task.resume()
+        defer { task.cancel() }
         wait(for: [fetched], timeout: 30)
         let distribution = try JSONDecoder().decode(Distribution.self, from: result.get())
         return try XCTUnwrap(distribution.endpoints.first, "No THEOlive demo endpoint", file: file, line: line)

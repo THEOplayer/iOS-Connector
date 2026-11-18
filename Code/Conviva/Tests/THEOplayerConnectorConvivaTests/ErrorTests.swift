@@ -2,6 +2,7 @@
 //  ErrorTests.swift
 //
 
+import ConvivaSDK
 import XCTest
 import THEOplayerSDK
 @testable import THEOplayerConnectorConviva

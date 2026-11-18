@@ -26,11 +26,13 @@ final class SessionLifecycleTests: XCTestCase {
     func testEndedReportsStoppedAndEndsSession() {
         let harness = makeHarness()
         let player = harness.player
-        waitForEvent(PlayerEventTypes.DURATION_CHANGE, on: player) { player.source = TestSources.hls() }
+        waitForEvent(PlayerEventTypes.DURATION_CHANGE, on: player) {
+            player.source = TestSources.hls()
+            player.play()
+        }
         guard let duration = player.duration, duration.isFinite else { return XCTFail("VOD source without finite duration") }
 
-        player.currentTime = duration - 2
-        waitForEvent(PlayerEventTypes.ENDED, on: player, timeout: 60) { player.play() }
+        waitForEvent(PlayerEventTypes.ENDED, on: player, timeout: 60) { player.currentTime = duration - 2 }
 
         XCTAssertEqual(harness.video.playbackRequested.count, 1)
         XCTAssertEqual(harness.video.playerStates.last, .CONVIVA_STOPPED)
