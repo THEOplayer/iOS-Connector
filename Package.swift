@@ -40,6 +40,15 @@ let package = Package(
             ],
             path: "Code/Conviva/Source"
         ),
+        .testTarget(
+            name: "THEOplayerConnectorConvivaTests",
+            dependencies: [
+                "THEOplayerConnectorConviva",
+                "THEOplayerSDK",
+                "ConvivaSDK",
+            ],
+            path: "Code/Conviva/Tests/THEOplayerConnectorConvivaTests"
+        ),
 
         .target(
             name: "THEOplayerConnectorNielsen",
