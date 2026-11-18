@@ -149,6 +149,8 @@ class PlayerHandler {
     func pause(event: PauseEvent) {
         log("handling pause")
         self.playerState = .CONVIVA_PAUSED
+        // On iOS, PAUSE is dispatched right after ENDED, when the Conviva session has already been ended.
+        guard self.currentConvivaSession.started else { return }
         self.reportPlayerState()
     }
     
