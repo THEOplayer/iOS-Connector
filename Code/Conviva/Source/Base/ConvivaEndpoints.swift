@@ -10,12 +10,16 @@ class ConvivaEndpoints {
     let videoAnalytics: CISVideoAnalytics
     let adAnalytics: CISAdAnalytics
     
-    init?(configuration: ConvivaConfiguration) {
+    convenience init?(configuration: ConvivaConfiguration) {
         guard let analytics = CISAnalyticsCreator.create(withCustomerKey: configuration.customerKey,
                                                          settings: configuration.convivaSettingsDictionary) else {
             return nil
         }
-        
+        self.init(analytics: analytics)
+    }
+    
+    /// Lets tests inject a recording `CISAnalytics` instead of the Conviva SDK one.
+    init(analytics: CISAnalytics) {
         self.analytics = analytics
         self.videoAnalytics = self.analytics.createVideoAnalytics()
         self.adAnalytics = self.analytics.createAdAnalytics(withVideoAnalytics: videoAnalytics)
