@@ -22,6 +22,20 @@ final class LiveDetectionTests: XCTestCase {
     }
 
     // C5
+    func testInfiniteDurationReportsLive() throws {
+        let endpoint = try fetchTHEOliveDemoEndpoint()
+        let harness = makeHarness()
+
+        let event = waitForEvent(PlayerEventTypes.DURATION_CHANGE, on: harness.player) {
+            harness.player.source = TestSources.hls(endpoint.hlsSrc)
+        }
+
+        XCTAssertEqual(event?.duration, .infinity)
+        XCTAssertEqual(harness.video.contentInfoValues(CIS_SSDK_METADATA_IS_LIVE).last as? NSNumber, true)
+        XCTAssertTrue(harness.video.contentInfoValues(CIS_SSDK_METADATA_DURATION).isEmpty)
+    }
+
+    // C5
     func testCustomerIsLiveIsNotOverwritten() {
         let harness = makeHarness()
 

@@ -16,6 +16,12 @@ enum TestSources {
     }
 }
 
+/// The public THEOlive demo channel. The default license implicitly allows theo.live sources.
+struct THEOliveDemoEndpoint: Decodable {
+    let hlsSrc: String
+    let hespSrc: String
+}
+
 /// A real player with a `ConvivaConnector` that reports to a `RecordingAnalytics`.
 final class ConvivaHarness {
     let player = THEOplayer(with: nil)
@@ -86,6 +92,20 @@ extension XCTestCase {
             XCTFail("No \(type.name) event within \(timeout)s", file: file, line: line)
         }
         return received
+    }
+
+    /// Asks THEOlive discovery for the demo channel's current endpoint, so tests don't depend on its engine path.
+    func fetchTHEOliveDemoEndpoint(file: StaticString = #filePath, line: UInt = #line) throws -> THEOliveDemoEndpoint {
+        struct Distribution: Decodable { let endpoints: [THEOliveDemoEndpoint] }
+        let fetched = expectation(description: "THEOlive discovery response")
+        var result: Result<Data, Error> = .failure(URLError(.timedOut))
+        URLSession.shared.dataTask(with: URL(string: "https://discovery.theo.live/v2/distributions/demo")!) { data, _, error in
+            result = data.map { .success($0) } ?? .failure(error ?? URLError(.badServerResponse))
+            fetched.fulfill()
+        }.resume()
+        wait(for: [fetched], timeout: 30)
+        let distribution = try JSONDecoder().decode(Distribution.self, from: result.get())
+        return try XCTUnwrap(distribution.endpoints.first, "No THEOlive demo endpoint", file: file, line: line)
     }
 
     func waitUntil(_ description: String, timeout: TimeInterval = 30, _ condition: @escaping () -> Bool) {

@@ -45,6 +45,7 @@ let package = Package(
             dependencies: [
                 "THEOplayerConnectorConviva",
                 "THEOplayerSDK",
+                .product(name: "THEOplayerTHEOliveIntegration", package: "THEOplayerSDK"),
                 "ConvivaSDK",
             ],
             path: "Code/Conviva/Tests/THEOplayerConnectorConvivaTests"
