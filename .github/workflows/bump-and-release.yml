@@ -26,17 +26,17 @@ on:
       utilities:
         description: 'Utilities'
         required: false
-        default: true
+        default: false
         type: boolean
       comscore:
         description: 'Comscore'
         required: false
-        default: true
+        default: false
         type: boolean
       conviva:
         description: 'Conviva'
         required: false
-        default: true
+        default: false
         type: boolean
       nielsen:
         description: 'Nielsen'
@@ -46,12 +46,12 @@ on:
       sideloadedSubtitle:
         description: 'SideloadedSubtitle'
         required: false
-        default: true
+        default: false
         type: boolean
       uplynk:
         description: 'Uplynk'
         required: false
-        default: true
+        default: false
         type: boolean
 jobs:
   Bump-And-Release:
