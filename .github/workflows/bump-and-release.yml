@@ -41,7 +41,7 @@ on:
       nielsen:
         description: 'Nielsen'
         required: false
-        default: true
+        default: false
         type: boolean
       sideloadedSubtitle:
         description: 'SideloadedSubtitle'
