@@ -65,31 +65,19 @@ jobs:
         run: |
           prefix="THEOplayer-Connector"
           connectors=()
-          if [[ "${{ inputs.utilities }}" == "true" ]]; then
-            connectors+=("$prefix-Utilities.podspec")
+          # Conviva and Nielsen need the new Utilities, which a dry run doesn't publish
+          skipUtilitiesDependents=false
+          if [[ "${{ inputs.dryRun }}" == "true" && "${{ inputs.utilities }}" == "true" ]]; then
+            skipUtilitiesDependents=true
           fi
-          if [[ "${{ inputs.comscore }}" == "true" ]]; then
-            connectors+=("$prefix-Comscore.podspec")
-          fi
-          if [[ "${{ inputs.conviva }}" == "true" ]]; then
-            if [[ "${{ inputs.dryRun }}" == "true" && "${{ inputs.utilities }}" == "true" ]]; then
-              echo "::notice::Skipping Conviva in dry run because the selected Utilities version is not published."
-            else
-              connectors+=("$prefix-Conviva.podspec")
-            fi
-          fi
-          if [[ "${{ inputs.nielsen }}" == "true" ]]; then
-            if [[ "${{ inputs.dryRun }}" == "true" && "${{ inputs.utilities }}" == "true" ]]; then
-              echo "::notice::Skipping Nielsen in dry run because the selected Utilities version is not published."
-            else
-              connectors+=("$prefix-Nielsen.podspec")
-            fi
-          fi
-          if [[ "${{ inputs.sideloadedSubtitle }}" == "true" ]]; then
-            connectors+=("$prefix-SideloadedSubtitle.podspec")
-          fi
-          if [[ "${{ inputs.uplynk }}" == "true" ]]; then
-            connectors+=("$prefix-Uplynk.podspec")
+          [[ "${{ inputs.utilities }}" == "true" ]] && connectors+=("$prefix-Utilities.podspec")
+          [[ "${{ inputs.comscore }}" == "true" ]] && connectors+=("$prefix-Comscore.podspec")
+          [[ "${{ inputs.conviva }}" == "true" && $skipUtilitiesDependents == false ]] && connectors+=("$prefix-Conviva.podspec")
+          [[ "${{ inputs.nielsen }}" == "true" && $skipUtilitiesDependents == false ]] && connectors+=("$prefix-Nielsen.podspec")
+          [[ "${{ inputs.sideloadedSubtitle }}" == "true" ]] && connectors+=("$prefix-SideloadedSubtitle.podspec")
+          [[ "${{ inputs.uplynk }}" == "true" ]] && connectors+=("$prefix-Uplynk.podspec")
+          if [[ $skipUtilitiesDependents == true && ( "${{ inputs.conviva }}" == "true" || "${{ inputs.nielsen }}" == "true" ) ]]; then
+            echo "::notice::Dry run with Utilities: skipping Conviva and Nielsen (new Utilities version is not published)."
           fi
           if [[ ${#connectors[@]} -eq 0 ]]; then
             echo "::error::Select at least one connector."
