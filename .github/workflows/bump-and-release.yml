@@ -2,16 +2,13 @@ name: Bump and release
 run-name: >-
   ${{ (inputs.version == '' && 'Not bumping version') || format('Bumping version to {0}', inputs.version) }}
   and ${{ (inputs.dryRun == true && 'validating') || 'releasing' }}
-  ${{ (inputs.utilities && inputs.comscore && inputs.conviva && inputs.nielsen && inputs.sideloadedSubtitle && inputs.uplynk && 'all connectors')
-  || ((inputs.utilities || inputs.comscore || inputs.conviva || inputs.nielsen || inputs.sideloadedSubtitle || inputs.uplynk)
-  && format('[{0}{1}{2}{3}{4}{5}]',
+  [${{ format('{0}{1}{2}{3}{4}{5}',
   inputs.utilities && 'Utilities' || '',
   inputs.comscore && (inputs.utilities && ', Comscore' || 'Comscore') || '',
   inputs.conviva && ((inputs.utilities || inputs.comscore) && ', Conviva' || 'Conviva') || '',
   inputs.nielsen && ((inputs.utilities || inputs.comscore || inputs.conviva) && ', Nielsen' || 'Nielsen') || '',
   inputs.sideloadedSubtitle && ((inputs.utilities || inputs.comscore || inputs.conviva || inputs.nielsen) && ', SideloadedSubtitle' || 'SideloadedSubtitle') || '',
-  inputs.uplynk && ((inputs.utilities || inputs.comscore || inputs.conviva || inputs.nielsen || inputs.sideloadedSubtitle) && ', Uplynk' || 'Uplynk') || ''))
-  || 'no connectors' }} on the self hosted spec repo
+  inputs.uplynk && ((inputs.utilities || inputs.comscore || inputs.conviva || inputs.nielsen || inputs.sideloadedSubtitle) && ', Uplynk' || 'Uplynk') || '') }}] on the self hosted spec repo
 on:
   workflow_dispatch:
     inputs:
