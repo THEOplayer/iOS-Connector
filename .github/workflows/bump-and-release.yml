@@ -1,5 +1,14 @@
 name: Bump and release
-run-name: ${{ (inputs.version == '' && 'Not bumping version') || format('Bumping version to {0}', inputs.version) }} and ${{ (inputs.dryRun == true && 'validating') || 'releasing' }} ${{ inputs.connectors }} on the self hosted spec repo
+run-name: >-
+  ${{ (inputs.version == '' && 'Not bumping version') || format('Bumping version to {0}', inputs.version) }}
+  and ${{ (inputs.dryRun == true && 'validating') || 'releasing' }}
+  [${{ format('{0}{1}{2}{3}{4}{5}',
+  inputs.utilities && 'Utilities' || '',
+  inputs.comscore && (inputs.utilities && ', Comscore' || 'Comscore') || '',
+  inputs.conviva && ((inputs.utilities || inputs.comscore) && ', Conviva' || 'Conviva') || '',
+  inputs.nielsen && ((inputs.utilities || inputs.comscore || inputs.conviva) && ', Nielsen' || 'Nielsen') || '',
+  inputs.sideloadedSubtitle && ((inputs.utilities || inputs.comscore || inputs.conviva || inputs.nielsen) && ', SideloadedSubtitle' || 'SideloadedSubtitle') || '',
+  inputs.uplynk && ((inputs.utilities || inputs.comscore || inputs.conviva || inputs.nielsen || inputs.sideloadedSubtitle) && ', Uplynk' || 'Uplynk') || '') }}] on the self hosted spec repo
 on:
   workflow_dispatch:
     inputs:
@@ -12,25 +21,67 @@ on:
         required: true
         default: true
         type: boolean
-      connectors:
-        description: 'Choose the Connector(s)'
-        required: true
-        type: choice
-        default: 'All'
-        options:
-          - All
-          - Utilities
-          - Comscore
-          - Conviva
-          - Nielsen
-          - SideloadedSubtitle
-          - Uplynk
+      utilities:
+        description: 'Utilities'
+        required: false
+        default: false
+        type: boolean
+      comscore:
+        description: 'Comscore'
+        required: false
+        default: false
+        type: boolean
+      conviva:
+        description: 'Conviva'
+        required: false
+        default: false
+        type: boolean
+      nielsen:
+        description: 'Nielsen'
+        required: false
+        default: false
+        type: boolean
+      sideloadedSubtitle:
+        description: 'SideloadedSubtitle'
+        required: false
+        default: false
+        type: boolean
+      uplynk:
+        description: 'Uplynk'
+        required: false
+        default: false
+        type: boolean
 jobs:
   Bump-And-Release:
     runs-on: macos-26
     outputs:
       previousVersion: ${{ steps.store_previous_version.outputs.previousVersion }}
     steps:
+      - id: select_connectors
+        name: Select connectors
+        shell: bash
+        run: |
+          prefix="THEOplayer-Connector"
+          connectors=()
+          # Conviva and Nielsen need the new Utilities, which a dry run doesn't publish
+          skipUtilitiesDependents=false
+          if [[ "${{ inputs.dryRun }}" == "true" && "${{ inputs.utilities }}" == "true" ]]; then
+            skipUtilitiesDependents=true
+          fi
+          [[ "${{ inputs.utilities }}" == "true" ]] && connectors+=("$prefix-Utilities.podspec")
+          [[ "${{ inputs.comscore }}" == "true" ]] && connectors+=("$prefix-Comscore.podspec")
+          [[ "${{ inputs.conviva }}" == "true" && $skipUtilitiesDependents == false ]] && connectors+=("$prefix-Conviva.podspec")
+          [[ "${{ inputs.nielsen }}" == "true" && $skipUtilitiesDependents == false ]] && connectors+=("$prefix-Nielsen.podspec")
+          [[ "${{ inputs.sideloadedSubtitle }}" == "true" ]] && connectors+=("$prefix-SideloadedSubtitle.podspec")
+          [[ "${{ inputs.uplynk }}" == "true" ]] && connectors+=("$prefix-Uplynk.podspec")
+          if [[ $skipUtilitiesDependents == true && ( "${{ inputs.conviva }}" == "true" || "${{ inputs.nielsen }}" == "true" ) ]]; then
+            echo "::notice::Dry run with Utilities: skipping Conviva and Nielsen (new Utilities version is not published)."
+          fi
+          if [[ ${#connectors[@]} -eq 0 ]]; then
+            echo "::error::Select at least one connector."
+            exit 1
+          fi
+          echo "podspecs=${connectors[*]}" >> "$GITHUB_OUTPUT"
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '26.3.0'
@@ -71,37 +122,10 @@ jobs:
           git push origin ${{ inputs.version }}
       - name: ${{ (inputs.dryRun == true && 'Validate') || 'Release' }} on the self hosted spec repo
         shell: bash
+        env:
+          CONNECTOR_PODSPECS: ${{ steps.select_connectors.outputs.podspecs }}
         run: |
-          # make the list of connectors
-          prefix="THEOplayer-Connector"
-          connectors=()
-          if [ "${{ inputs.connectors }}" == "All" ]; then
-            files=(*)
-            for file in ${files[*]}
-            do
-              if [[ $file == *.podspec ]]; then
-                # we add the Utilities later at index 0
-                if [[ $file == *Utilities.podspec ]]; then
-                  continue
-                fi
-                # blacklisted podspecs
-                if [[ $file == *VerizonMedia.podspec || $file == *Nielsen.podspec || $file == *Yospace.podspec ]]; then
-                  continue
-                fi
-                # Conviva and Nielsen validations depend on Utilities being available, which does not get published in a dry run
-                # => skip Conviva and Nielsen if dry run
-                if [[ ${{ inputs.dryRun }} == true ]]; then
-                  if [[ $file == *Conviva.podspec || $file == *Nielsen.podspec ]]; then
-                    continue
-                  fi
-                fi
-                connectors+=("$file")
-              fi
-            done
-            connectors=("$prefix-Utilities.podspec" "${connectors[@]}")
-          else
-            connectors+=("$prefix-${{ inputs.connectors }}.podspec")
-          fi
+          read -r -a connectors <<< "$CONNECTOR_PODSPECS"
           if [[ "${{ inputs.dryRun }}" == "true" ]]; then
             trap 'git checkout -- "${connectors[@]}"' EXIT
           else
@@ -131,7 +155,7 @@ jobs:
           done
   Cleanup:
     needs: Bump-And-Release
-    if: (inputs.dryRun == true && inputs.version != '') && (success() || failure())
+    if: (inputs.dryRun == true && inputs.version != '' && needs.Bump-And-Release.outputs.previousVersion != '') && (success() || failure())
     runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
