@@ -78,8 +78,6 @@ lensConnector = nil
 
 Do the same with any handle of your own on the player: `lens.dispose()`, then release it.
 
-Do not enable THEOplayer's own CMCD reporting on a player that Lens observes.
-
 ## Limitations
 
 - THEOplayer exposes the quality being played, not the one being loaded. Lens therefore reports the top and lowest bitrates (`tb`/`lb`, or `tab`/`lab` for HLS), and the playhead bitrate (`pb`) outside HLS, but not the encoded bitrate (`br`) or bitrate changes (`bc`).
