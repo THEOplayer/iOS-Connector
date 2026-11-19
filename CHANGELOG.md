@@ -7,17 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Fixed
-
-- Conviva
-  - Fixed an issue where the Paused player state was reported to Conviva after the session had ended.
-
 ### Changed
 
 - New CocoaPods connector releases are now published exclusively to the [OptiView Player specs repository](https://github.com/THEOplayer/cocoapods-specs). Add `source 'https://github.com/THEOplayer/cocoapods-specs.git'` before `source 'https://cdn.cocoapods.org/'` in your Podfile to receive new releases. Keep the public source for third-party dependencies.
 
 ### Fixed
 
+- Conviva
+  - Fixed an issue where the Paused player state was reported to Conviva after the session had ended.
 - SideloadedSubtitle
   - Fixed an issue where variant playlists failed to load when the master playlist listed them as relative URIs with a query string, because the query string was percent-encoded into the path.
   - Fixed an issue where percent-escaped characters in playlist URIs (for example `%2B`, `%2F` or `%3D` in a signed token) were decoded, which could break segment, key or variant requests.
