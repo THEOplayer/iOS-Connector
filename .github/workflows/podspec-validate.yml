@@ -143,6 +143,7 @@ jobs:
 
             pod lib lint "$spec" \
               "${include_flag[@]}" \
+              --sources="https://github.com/THEOplayer/cocoapods-specs.git,https://cdn.cocoapods.org/" \
               --verbose --allow-warnings
           done
 
