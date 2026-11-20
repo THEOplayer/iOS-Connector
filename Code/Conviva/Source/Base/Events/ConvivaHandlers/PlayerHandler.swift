@@ -241,7 +241,7 @@ class PlayerHandler {
         // store source for next session (to be started on PLAY event)
         var newSource: THEOConvivaSession.Source? = nil
         if let source = event.source {
-            newSource = .init(description: source, url: selectedSource ?? "unknown")
+            newSource = .init(description: source, url: selectedSource ?? source.sources.first?.src ?? "unknown")
         }
         self.currentConvivaSession.source = newSource
     }
