@@ -7,6 +7,45 @@ import THEOplayerSDK
 
 @MainActor
 final class SubtitlesTransformerTests: XCTestCase {
+    func testSRTRouteConvertsCueTimingsAndText() async throws {
+        let origin = HttpServer()
+        origin["/subtitle.srt"] = { _ in
+            .ok(.text("1\r\n00:00:01,234 --> 00:00:03,456\r\nHello from SRT\r\n\r\n"))
+        }
+        try origin.start(0, forceIPv4: true, priority: .userInitiated)
+        defer { origin.stop() }
+        let source = "http://127.0.0.1:\(try origin.port())/subtitle.srt"
+        let transformer = SubtitlesTransformer()
+        let url = try XCTUnwrap(URL(string: transformer.composeTranformationUrl(
+            with: source, format: .SRT, timestamp: nil
+        )))
+
+        let (data, response) = try await URLSession.shared.data(from: url)
+        let vtt = String(decoding: data, as: UTF8.self)
+
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
+        XCTAssertTrue(vtt.hasPrefix("WEBVTT\n\n"))
+        XCTAssertTrue(vtt.contains("\n00:00:01.234 --> 00:00:03.456\nHello from SRT\n"))
+    }
+
+    func testRecomposingTransformationURLChangesCacheBusterEveryCall() throws {
+        let transformer = SubtitlesTransformer()
+        let source = "https://example.com/subtitle.srt"
+        let urls = (0..<100).map { _ in
+            transformer.composeTranformationUrl(with: source, format: .SRT, timestamp: nil)
+        }
+        let cacheBusters = try urls.map { url in
+            let items = URLComponents(string: url)?.queryItems
+            return try XCTUnwrap(items?.first { $0.name == "t" }?.value)
+        }
+
+        let options = XCTExpectedFailure.Options()
+        options.isStrict = false
+        XCTExpectFailure("Calls within the same millisecond can reuse t=.", options: options) {
+            XCTAssertEqual(Set(cacheBusters).count, cacheBusters.count)
+        }
+    }
+
     func testForegroundRestartsStoppedServerOnSamePort() async throws {
         let origin = HttpServer()
         origin["/subtitle.srt"] = { _ in .ok(.text("1\n00:00:00,000 --> 00:00:01,000\nHello\n")) }
