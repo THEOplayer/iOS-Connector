@@ -20,9 +20,12 @@ final class MockServerSideAdIntegrationController: ServerSideAdIntegrationContro
         case beginAd(ad: Ad)
         case endAd(ad: Ad)
         case skipAd(ad: Ad)
+        case reportAdImpression(ad: Ad)
+        case reportAdClick(ad: Ad)
         case removeAd(ad: Ad)
         case createAdBreak(params: AdBreakInit)
         case updateAdBreak(adBreak: AdBreak, params: AdBreakInit)
+        case endAdBreak(adBreak: AdBreak)
         case removeAdBreak(adBreak: AdBreak)
         case removeAllAds
         case error(error: Error)
@@ -56,6 +59,14 @@ final class MockServerSideAdIntegrationController: ServerSideAdIntegrationContro
         events.append(.skipAd(ad: ad))
     }
     
+    func reportAdImpression(ad: Ad) {
+        events.append(.reportAdImpression(ad: ad))
+    }
+    
+    func reportAdClick(ad: Ad) {
+        events.append(.reportAdClick(ad: ad))
+    }
+    
     func removeAd(ad: Ad) {
         events.append(.removeAd(ad: ad))
     }
@@ -68,6 +79,10 @@ final class MockServerSideAdIntegrationController: ServerSideAdIntegrationContro
     
     func updateAdBreak(adBreak: AdBreak, params: AdBreakInit) {
         events.append(.updateAdBreak(adBreak: adBreak, params: params))
+    }
+    
+    func endAdBreak(adBreak: AdBreak) {
+        events.append(.endAdBreak(adBreak: adBreak))
     }
     
     func removeAdBreak(adBreak: AdBreak) {
