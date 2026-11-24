@@ -5,10 +5,21 @@
 import ConvivaSDK
 import XCTest
 import THEOplayerSDK
+import THEOplayerTHEOliveIntegration
 @testable import THEOplayerConnectorConviva
 
 @MainActor
 final class SourceChangeTests: XCTestCase {
+    func testTHEOliveStreamUrlUsesAppSetSource() {
+        let harness = makeHarness()
+        let source = TheoLiveSource(channelId: TestSources.theoliveDemoChannel)
+        harness.player.source = SourceDescription(source: source)
+
+        waitForEvent(PlayerEventTypes.PLAY, on: harness.player) { harness.player.play() }
+
+        XCTAssertEqual(harness.video.contentInfoValues(CIS_SSDK_METADATA_STREAM_URL).first as? String, source.src)
+    }
+
     // C2
     func testNewSourceEndsPreviousSession() {
         let harness = makeHarness()
