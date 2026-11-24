@@ -126,9 +126,7 @@ class AVSubtitlesLoader: NSObject {
     private func validateSubtitles() async -> [TextTrackDescription] {
         var validSubtitles: [TextTrackDescription] = []
         for subtitle in _subtitles {
-            if let encodedURLString = subtitle.src.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-               let encodedURL = URL(string: encodedURLString),
-               let (_, response) = try? await URLSession.shared.data(from: encodedURL),
+            if let (_, response) = try? await URLSession.shared.data(from: subtitle.src),
                let httpResponse = response as? HTTPURLResponse,
                200..<300 ~= httpResponse.statusCode {
                 validSubtitles.append(subtitle)

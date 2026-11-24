@@ -72,9 +72,9 @@ class MasterPlaylistParser: PlaylistParser {
     
     func appendSubtitlesLines(subtitles: [TextTrackDescription]) {
         for subtitle in subtitles {
-            if let label = subtitle.label, let encodedURLString = subtitle.src.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            if let label = subtitle.label {
                 let defaultValue = subtitle.isDefault == true ? "YES" : "NO"
-                let subtitleLine = "#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"\(self.subtitlesGroupId)\",NAME=\"\(label)\",DEFAULT=\(defaultValue),URI=\"\(encodedURLString)\",LANGUAGE=\"\(subtitle.srclang)\""
+                let subtitleLine = "#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"\(self.subtitlesGroupId)\",NAME=\"\(label)\",DEFAULT=\(defaultValue),URI=\"\(subtitle.src.absoluteString)\",LANGUAGE=\"\(subtitle.srclang)\""
                 if let linePosition = self.lastMediaLine {
                     self.constructedManifestArray.insert("\(subtitleLine)", at: linePosition)
                 } else {
