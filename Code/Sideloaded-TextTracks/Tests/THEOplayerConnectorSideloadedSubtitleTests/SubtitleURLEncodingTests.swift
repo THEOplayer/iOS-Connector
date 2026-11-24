@@ -53,9 +53,12 @@ final class SubtitleURLEncodingTests: XCTestCase {
             XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
             XCTAssertTrue(String(decoding: data, as: UTF8.self).contains("\n\(track.srclang)\n"), track.src.absoluteString)
         }
-        lock.lock()
-        XCTAssertEqual(Set(requested), Set(served.keys).union(["/master.m3u8"]))
-        lock.unlock()
+        let recorded = { () -> [String] in
+            lock.lock()
+            defer { lock.unlock() }
+            return requested
+        }
+        XCTAssertEqual(Set(recorded()), Set(served.keys).union(["/master.m3u8"]))
     }
 
 
