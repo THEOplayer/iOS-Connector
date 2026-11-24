@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- SideloadedSubtitle
+  - Fixed an issue where sideloaded subtitles were not loaded when their URL contained percent-escaped characters, for example `%20` for a space or `%2B` in a signed token.
+
 ## [11.0.8] - 2026-11-19
 
 ### Changed
