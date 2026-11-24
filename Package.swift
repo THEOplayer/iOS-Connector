@@ -29,6 +29,7 @@ let package = Package(
         .package(name: "Swifter", url: "https://github.com/httpswift/swifter.git", .exactItem("1.5.0")),
         .package(name: "SwiftSubtitles", url: "https://github.com/dagronf/SwiftSubtitles.git", .exactItem("0.9.1")),
         .package(name: "ComScore", url: "https://github.com/comScore/Comscore-Swift-Package-Manager", "6.10.0"..<"6.11.0"),
+        .package(name: "GoogleInteractiveMediaAds", url: "https://github.com/googleads/swift-package-manager-google-interactive-media-ads-ios", "3.18.0"..<"4.0.0"),
     ],
     targets: [
         .target(
@@ -39,6 +40,16 @@ let package = Package(
                 .target(name: "THEOplayerConnectorUtilities")
             ],
             path: "Code/Conviva/Source"
+        ),
+        .testTarget(
+            name: "THEOplayerConnectorConvivaTests",
+            dependencies: [
+                "THEOplayerConnectorConviva",
+                .product(name: "THEOplayerTHEOliveIntegration", package: "THEOplayerSDK"),
+                .product(name: "THEOplayerTHEOadsIntegration", package: "THEOplayerSDK"),
+                .product(name: "GoogleInteractiveMediaAds", package: "GoogleInteractiveMediaAds", condition: .when(platforms: [.iOS])),
+            ],
+            path: "Code/Conviva/Tests/THEOplayerConnectorConvivaTests"
         ),
 
         .target(
