@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Conviva
+  - Fixed an issue where failed OptiView Ads ad breaks were reported to Conviva without an ad position.
 - SideloadedSubtitle
   - Fixed an issue where sideloaded subtitles were not loaded when their URL contained percent-escaped characters, for example `%20` for a space or `%2B` in a signed token.
 
