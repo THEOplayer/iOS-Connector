@@ -101,14 +101,13 @@ extension XCTestCase {
         return received
     }
 
-    /// Starts playback and waits for the first active quality, optionally preloading the video tracks.
-    func playAndWaitForActiveQuality(
+    /// Waits for the first active quality of a video track added after `trigger`.
+    func waitForActiveQuality(
         of player: THEOplayer,
-        preloadMetadata: Bool = true,
         timeout: TimeInterval = 30,
         file: StaticString = #filePath,
         line: UInt = #line,
-        prepare: () -> Void
+        after trigger: () -> Void
     ) -> Quality? {
         let qualityChanged = XCTestExpectation(description: "ACTIVE_QUALITY_CHANGED event")
         var received: Quality?
@@ -129,22 +128,8 @@ extension XCTestCase {
             }
         }
 
-        if preloadMetadata {
-            player.preload = .auto
-            guard waitForEvent(PlayerEventTypes.LOADED_META_DATA, on: player, timeout: timeout, file: file, line: line, after: prepare) != nil else {
-                return nil
-            }
-        } else {
-            prepare()
-        }
-
-        let playing = expectation(description: "PLAYING event")
-        playing.assertForOverFulfill = false
-        let playingListener = player.addEventListener(type: PlayerEventTypes.PLAYING) { _ in playing.fulfill() }
-        defer { player.removeEventListener(type: PlayerEventTypes.PLAYING, listener: playingListener) }
-
-        player.play()
-        wait(for: [playing, qualityChanged], timeout: timeout)
+        trigger()
+        wait(for: [qualityChanged], timeout: timeout)
         if received == nil {
             XCTFail("No ACTIVE_QUALITY_CHANGED event within \(timeout)s", file: file, line: line)
         }
