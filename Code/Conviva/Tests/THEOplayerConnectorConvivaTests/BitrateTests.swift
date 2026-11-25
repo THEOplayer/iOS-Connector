@@ -30,7 +30,7 @@ final class BitrateTests: XCTestCase {
         let player = harness.player
         let controller = harness.registerCustomAdIntegration()
 
-        let quality = try XCTUnwrap(playAndWaitForActiveQuality(of: player) {
+        let quality = try XCTUnwrap(playAndWaitForActiveQuality(of: player, preloadMetadata: false) {
             player.source = TestSources.hls()
             let adBreak = controller.createAdBreak(params: AdBreakInit(timeOffset: 0, maxDuration: 30))
             controller.beginAd(ad: controller.createAd(params: AdInit(type: "linear", duration: 30), adBreak: adBreak))

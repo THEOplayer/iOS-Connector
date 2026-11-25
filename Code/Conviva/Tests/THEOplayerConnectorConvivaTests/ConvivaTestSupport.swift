@@ -101,15 +101,16 @@ extension XCTestCase {
         return received
     }
 
-    /// Loads the video tracks before starting playback and waits for the first active quality.
+    /// Starts playback and waits for the first active quality, optionally preloading the video tracks.
     func playAndWaitForActiveQuality(
         of player: THEOplayer,
+        preloadMetadata: Bool = true,
         timeout: TimeInterval = 30,
         file: StaticString = #filePath,
         line: UInt = #line,
         prepare: () -> Void
     ) -> Quality? {
-        let qualityChanged = expectation(description: "ACTIVE_QUALITY_CHANGED event")
+        let qualityChanged = XCTestExpectation(description: "ACTIVE_QUALITY_CHANGED event")
         var received: Quality?
         var qualityListeners: [(VideoTrack, EventListener)] = []
         let trackListener = player.videoTracks.addEventListener(type: VideoTrackListEventTypes.ADD_TRACK) { event in
@@ -128,9 +129,13 @@ extension XCTestCase {
             }
         }
 
-        player.preload = .auto
-        guard waitForEvent(PlayerEventTypes.LOADED_META_DATA, on: player, timeout: timeout, file: file, line: line, after: prepare) != nil else {
-            return nil
+        if preloadMetadata {
+            player.preload = .auto
+            guard waitForEvent(PlayerEventTypes.LOADED_META_DATA, on: player, timeout: timeout, file: file, line: line, after: prepare) != nil else {
+                return nil
+            }
+        } else {
+            prepare()
         }
 
         let playing = expectation(description: "PLAYING event")
