@@ -101,27 +101,45 @@ extension XCTestCase {
         return received
     }
 
-    /// Waits for the first active quality of a video track added after `trigger`, after the connector has handled it.
-    @discardableResult
-    func waitForActiveQuality(
+    /// Loads the video tracks before starting playback and waits for the first active quality.
+    func playAndWaitForActiveQuality(
         of player: THEOplayer,
         timeout: TimeInterval = 30,
         file: StaticString = #filePath,
         line: UInt = #line,
-        after trigger: () -> Void
+        prepare: () -> Void
     ) -> Quality? {
         let qualityChanged = expectation(description: "ACTIVE_QUALITY_CHANGED event")
         var received: Quality?
+        var qualityListeners: [(VideoTrack, EventListener)] = []
         let trackListener = player.videoTracks.addEventListener(type: VideoTrackListEventTypes.ADD_TRACK) { event in
-            _ = (event.track as? VideoTrack)?.addEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED) { event in
+            guard let track = event.track as? VideoTrack else { return }
+            let listener = track.addEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED) { event in
                 guard received == nil else { return }
                 received = event.quality
                 DispatchQueue.main.async { qualityChanged.fulfill() }
             }
+            qualityListeners.append((track, listener))
         }
-        trigger()
-        wait(for: [qualityChanged], timeout: timeout)
-        player.videoTracks.removeEventListener(type: VideoTrackListEventTypes.ADD_TRACK, listener: trackListener)
+        defer {
+            player.videoTracks.removeEventListener(type: VideoTrackListEventTypes.ADD_TRACK, listener: trackListener)
+            for (track, listener) in qualityListeners {
+                track.removeEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED, listener: listener)
+            }
+        }
+
+        player.preload = .auto
+        guard waitForEvent(PlayerEventTypes.LOADED_META_DATA, on: player, timeout: timeout, file: file, line: line, after: prepare) != nil else {
+            return nil
+        }
+
+        let playing = expectation(description: "PLAYING event")
+        playing.assertForOverFulfill = false
+        let playingListener = player.addEventListener(type: PlayerEventTypes.PLAYING) { _ in playing.fulfill() }
+        defer { player.removeEventListener(type: PlayerEventTypes.PLAYING, listener: playingListener) }
+
+        player.play()
+        wait(for: [playing, qualityChanged], timeout: timeout)
         if received == nil {
             XCTFail("No ACTIVE_QUALITY_CHANGED event within \(timeout)s", file: file, line: line)
         }
