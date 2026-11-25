@@ -210,6 +210,7 @@ class AdHandler {
 
         var info = self.collectBaseAdMetadata()
         info["c3.ad.technology"] = Self.sgaiAdTechnology
+        info["c3.ad.position"] = podPosition
         log("adAnalytics.setAdInfo: \(info)")
         self.endpoints?.adAnalytics.setAdInfo(info)
         log("adAnalytics.reportAdFailed: \(message)")
