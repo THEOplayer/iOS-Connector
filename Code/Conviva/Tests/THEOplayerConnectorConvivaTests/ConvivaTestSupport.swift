@@ -117,7 +117,7 @@ extension XCTestCase {
             let listener = track.addEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED) { event in
                 guard received == nil else { return }
                 received = event.quality
-                DispatchQueue.main.async { qualityChanged.fulfill() }
+                qualityChanged.fulfill()
             }
             qualityListeners.append((track, listener))
         }
