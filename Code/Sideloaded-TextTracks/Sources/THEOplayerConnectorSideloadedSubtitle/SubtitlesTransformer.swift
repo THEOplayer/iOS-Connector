@@ -58,8 +58,7 @@ class SubtitlesTransformer {
                 return HttpResponse.ok(.text(errorMessage))
             }
 
-            guard let decodedContentUrlString: String = parameters.contentUrl.removingPercentEncoding,
-                  let contentUrl: URL = URL(string: decodedContentUrlString) else {
+            guard let contentUrl: URL = URL(string: parameters.contentUrl) else {
                 let errorMessage: String = "Missing subtitle content URL."
                 print("[AVSubtitlesLoader] ERROR: \(errorMessage)")
                 return HttpResponse.ok(.text(errorMessage))

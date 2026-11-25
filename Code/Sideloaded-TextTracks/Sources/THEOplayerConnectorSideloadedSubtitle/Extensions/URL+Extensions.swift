@@ -41,8 +41,9 @@ extension URL {
             return false
         }
 
-        let disallowedCharacterSet = CharacterSet.urlQueryAllowed.inverted
-        guard self.absoluteString.rangeOfCharacter(from: disallowedCharacterSet) == nil else {
+        var allowedCharacterSet = CharacterSet.urlQueryAllowed
+        allowedCharacterSet.insert("%")
+        guard self.absoluteString.rangeOfCharacter(from: allowedCharacterSet.inverted) == nil else {
             print("[AVSubtitlesLoader] URL contains invalid characters.")
             return false
         }
