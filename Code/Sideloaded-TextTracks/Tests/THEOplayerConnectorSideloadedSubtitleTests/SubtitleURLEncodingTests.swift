@@ -60,31 +60,4 @@ final class SubtitleURLEncodingTests: XCTestCase {
         }
         XCTAssertEqual(Set(recorded()), Set(served.keys).union(["/master.m3u8"]))
     }
-
-
-    private func startOrigin(_ origin: HttpServer) throws -> URL {
-        origin["/master.m3u8"] = { _ in .ok(.text("#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=1000\nvideo.m3u8")) }
-        try origin.start(0, forceIPv4: true, priority: .userInitiated)
-        return try XCTUnwrap(URL(string: "http://127.0.0.1:\(try origin.port())/master.m3u8"))
-    }
-
-    private func subtitle(on master: URL, _ filename: String, language: String) -> SSTextTrackDescription {
-        let url = master.deletingLastPathComponent().appendingPathComponent(filename)
-        return SSTextTrackDescription(
-            src: url.absoluteString, srclang: language, kind: .subtitles, label: filename, format: .WebVTT
-        )
-    }
-
-    private func intercept(_ url: URL, type: HlsPlaylistType, with loader: AVSubtitlesLoader) async throws -> String {
-        let (data, response) = try await URLSession.shared.data(from: url)
-        let rewritten = try await loader.didInterceptPlaylistResponse(type: type, url: url, response: response, data: data)
-        return String(decoding: rewritten, as: UTF8.self)
-    }
-
-    private func subtitleSegmentURL(for track: SSTextTrackDescription, with loader: AVSubtitlesLoader) throws -> URL {
-        let data = try XCTUnwrap(loader.handleSubtitles(track.src), "No subtitle playlist for \(track.src)")
-        let lines = String(decoding: data, as: UTF8.self).components(separatedBy: "\n")
-        let uri = try XCTUnwrap(lines.first { !$0.isEmpty && !$0.hasPrefix("#") })
-        return try XCTUnwrap(URL(string: uri))
-    }
 }
