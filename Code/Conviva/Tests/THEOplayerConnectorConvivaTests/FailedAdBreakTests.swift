@@ -93,5 +93,31 @@ final class FailedAdBreakTests: XCTestCase {
         XCTAssertEqual(AdHandler.calculateInterstitialAdBreakPosition(startTime: -1), "Post-roll")
         XCTAssertEqual(AdHandler.calculateInterstitialAdBreakPosition(startTime: .infinity), "Post-roll")
     }
+
+    func testFailedAdInfoIncludesPositionForInterstitialStartTime() {
+        let cases: [(startTime: Double, expectedPosition: String)] = [
+            (0, "Pre-roll"),
+            (30, "Mid-roll"),
+            (-1, "Post-roll"),
+            (.infinity, "Post-roll")
+        ]
+        for (startTime, expectedPosition) in cases {
+            let analytics = RecordingAnalytics()
+            let endpoints = ConvivaEndpoints(analytics: analytics)
+            let storage = ConvivaStorage()
+            let handler = AdHandler(endpoints: endpoints, storage: storage)
+
+            handler.reportFailedAdBreak(
+                message: "No ad available",
+                podDuration: 12.5,
+                podPosition: AdHandler.calculateInterstitialAdBreakPosition(startTime: startTime)
+            )
+
+            XCTAssertEqual(analytics.ad.adInfos.count, 1, "Start time: \(startTime)")
+            XCTAssertEqual(analytics.ad.adInfos.first?["c3.ad.technology"] as? String, "Server Guided")
+            XCTAssertEqual(analytics.ad.adInfos.first?["c3.ad.position"] as? String, expectedPosition, "Start time: \(startTime)")
+            withExtendedLifetime((endpoints, storage)) {}
+        }
+    }
 #endif
 }
