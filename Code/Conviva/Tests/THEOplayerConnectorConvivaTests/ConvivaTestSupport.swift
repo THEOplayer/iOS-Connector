@@ -101,8 +101,7 @@ extension XCTestCase {
         return received
     }
 
-    /// Waits for the first active quality of a video track added after `trigger`, after the connector has handled it.
-    @discardableResult
+    /// Waits for the first active quality of a video track added after `trigger`.
     func waitForActiveQuality(
         of player: THEOplayer,
         timeout: TimeInterval = 30,
@@ -110,18 +109,27 @@ extension XCTestCase {
         line: UInt = #line,
         after trigger: () -> Void
     ) -> Quality? {
-        let qualityChanged = expectation(description: "ACTIVE_QUALITY_CHANGED event")
+        let qualityChanged = XCTestExpectation(description: "ACTIVE_QUALITY_CHANGED event")
         var received: Quality?
+        var qualityListeners: [(VideoTrack, EventListener)] = []
         let trackListener = player.videoTracks.addEventListener(type: VideoTrackListEventTypes.ADD_TRACK) { event in
-            _ = (event.track as? VideoTrack)?.addEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED) { event in
+            guard let track = event.track as? VideoTrack else { return }
+            let listener = track.addEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED) { event in
                 guard received == nil else { return }
                 received = event.quality
-                DispatchQueue.main.async { qualityChanged.fulfill() }
+                qualityChanged.fulfill()
+            }
+            qualityListeners.append((track, listener))
+        }
+        defer {
+            player.videoTracks.removeEventListener(type: VideoTrackListEventTypes.ADD_TRACK, listener: trackListener)
+            for (track, listener) in qualityListeners {
+                track.removeEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED, listener: listener)
             }
         }
+
         trigger()
         wait(for: [qualityChanged], timeout: timeout)
-        player.videoTracks.removeEventListener(type: VideoTrackListEventTypes.ADD_TRACK, listener: trackListener)
         if received == nil {
             XCTFail("No ACTIVE_QUALITY_CHANGED event within \(timeout)s", file: file, line: line)
         }
