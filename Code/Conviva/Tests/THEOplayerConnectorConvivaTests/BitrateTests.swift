@@ -48,14 +48,26 @@ final class BitrateTests: XCTestCase {
     func testBitrateIsReportedAgainForNewSession() throws {
         let harness = makeHarness()
         let player = harness.player
-        guard waitForActiveQuality(of: player, after: {
-            waitForEvent(PlayerEventTypes.PLAYING, on: player) {
-                player.source = TestSources.hls()
-                player.play()
-            }
-        }) != nil else { return }
+        func reportedBitrate() -> NSNumber? {
+            harness.video.metricValues(CIS_SSDK_PLAYBACK_METRIC_BITRATE).last as? NSNumber
+        }
 
-        let lastBitrate = try XCTUnwrap(harness.video.metricValues(CIS_SSDK_PLAYBACK_METRIC_BITRATE).last as? NSNumber)
+        _ = try XCTUnwrap(waitForEvent(PlayerEventTypes.TIME_UPDATE, on: player, matching: { $0.currentTime > 0 }) {
+            player.source = TestSources.hls(TestSources.elephantsDream)
+            player.play()
+        })
+
+        if reportedBitrate() == nil {
+            let seekTime = try XCTUnwrap(player.duration) / 2
+            player.abr.preferredPeakBitRate = 1_000_000
+            _ = try XCTUnwrap(waitForEvent(PlayerEventTypes.TIME_UPDATE, on: player, matching: {
+                $0.currentTime > seekTime && reportedBitrate() != nil
+            }) {
+                player.currentTime = seekTime
+            })
+        }
+
+        let lastBitrate = try XCTUnwrap(reportedBitrate())
         XCTAssertEqual(harness.video.playbackRequested.count, 1)
         XCTAssertEqual(harness.video.playerStates.last, .CONVIVA_PLAYING)
 
